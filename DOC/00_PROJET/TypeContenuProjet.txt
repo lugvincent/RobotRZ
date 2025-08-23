@@ -1,0 +1,11 @@
+Contenu typique :       Pourquoi ?    QUoi ?
+
+    OBJECTIFS.md : Le but ultime. Que doit faire le robot ? Quels problèmes résout-il ? (ex: "Surveiller la température ambiante et envoyer une alerte SMS si elle dépasse 30°C").
+
+    CAS_USAGE.md : Les scénarios utilisateurs. Comment interagit-on avec le système ? (ex: "En tant qu'utilisateur, je veux recevoir une notification lorsque la plante a besoin d'eau").
+
+    BESOINS.md : La liste des fonctionnalités (ex: "Doit mesurer la température", "Doit se connecter au Wi-Fi", "Doit avoir une autonomie de 24h").
+
+    JOURNAL_DE_BORD.md : Les décisions et l'historique. Pourquoi avoir choisi cette technologie ? (ex: "2023-10-27: Choix de Node-RED pour sa flexibilité et son interface web plutôt qu'un script Python complexe").
+
+    GLOSSAIRE.md : Définition des termes techniques spécifiques au projet (ex: "Boucle principale : routine Arduino qui s'exécute toutes les 100ms").

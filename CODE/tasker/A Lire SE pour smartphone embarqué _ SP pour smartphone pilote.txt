@@ -1,0 +1,2 @@
+Normalement on peut se passer de tasker sur SP. 
+Ceci d'autant plus que le pilotage peut se faire  en utilisant que node-red.

@@ -1,0 +1,30 @@
+Les scripts placés dans .termux/tasker/ sont utilisés par Tasker
+et permettent d'être lancé depuis Tasker... .
+Ils sont configuré dans : créer action  ... plug-in... Termux:Tasker...
+j'ai choisi de les mettre à l'extérieur de tasker pour éviter pb de sécurité .
+Mais ils doivent être sauvegardé séparément des sauvegardes de tasker.
+Pour plus de sécu. j'en garde une copie dans le présent répertoire.
+
+Mais ils doivent avoir un original placé dans : ~/.termux/tasker/
+
+📌 Solution sûre : Sauvegarder les scripts séparément
+
+Plutôt que de tout mettre directement dans Tasker, tu peux :
+✅ Stocker les scripts dans ~/.termux/tasker/ (comme on l’a vu)
+✅ Faire une sauvegarde de ces scripts sur ton PC ou sur un cloud sécurisé
+✅ Utiliser Tasker uniquement pour appeler ces scripts
+Exemple :
+
+1️⃣ Dans Termux, crée un script :
+
+mkdir -p ~/.termux/tasker
+nano ~/.termux/tasker/start_node_red.sh
+
+2️⃣ Ajoute ce contenu :
+
+#!/data/data/com.termux/files/usr/bin/bash
+ssh u0_a154@$(ip route | awk '/default/ {print $9}') -p 8022 "node-red-start"
+
+3️⃣ Sauvegarde (CTRL+X → Y → Entrée) et rends-le exécutable :
+
+chmod +x ~/.termux/tasker/start_node_red.sh

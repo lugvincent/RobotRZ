@@ -1,0 +1,139 @@
+<TaskerData sr="" dvi="1" tv="6.5.9">
+	<Task sr="task107">
+		<cdate>1741253039003</cdate>
+		<edate>1750238574860</edate>
+		<id>107</id>
+		<nme>2-Valide_Connexion</nme>
+		<pri>100</pri>
+		<Action sr="act0" ve="7">
+			<code>341</code>
+			<label>ssid courant</label>
+			<Int sr="arg0" val="5"/>
+			<Str sr="arg1" ve="3"/>
+			<Str sr="arg2" ve="3">%Test_SSID</Str>
+		</Action>
+		<Action sr="act1" ve="7">
+			<code>341</code>
+			<label>Vérifier les valeurs actuelles de Se - Test_Ip_SE</label>
+			<Int sr="arg0" val="11"/>
+			<Str sr="arg1" ve="3"/>
+			<Str sr="arg2" ve="3">%Test_Ip_SE</Str>
+		</Action>
+		<Action sr="act10" ve="7">
+			<code>38</code>
+		</Action>
+		<Action sr="act11" ve="7">
+			<code>47</code>
+			<Str sr="arg0" ve="3">RS2_Activ_suite</Str>
+			<Int sr="arg1" val="1"/>
+			<Int sr="arg10" val="1"/>
+			<Int sr="arg2" val="100"/>
+			<Int sr="arg3" val="100"/>
+			<Int sr="arg4" val="0"/>
+			<Int sr="arg5" val="1"/>
+			<Int sr="arg6" val="1"/>
+			<Int sr="arg7" val="1"/>
+			<Int sr="arg8" val="1"/>
+			<Int sr="arg9" val="1"/>
+		</Action>
+		<Action sr="act2" ve="7">
+			<code>37</code>
+			<label>maison</label>
+			<ConditionList sr="if">
+				<bool0>And</bool0>
+				<Condition sr="c0" ve="3">
+					<lhs>%Test_Ip_SE</lhs>
+					<op>2</op>
+					<rhs>192.168.1.12</rhs>
+				</Condition>
+				<Condition sr="c1" ve="3">
+					<lhs>%Test_SSID</lhs>
+					<op>2</op>
+					<rhs>Livebox_8C76</rhs>
+				</Condition>
+			</ConditionList>
+		</Action>
+		<Action sr="act3" ve="7">
+			<code>547</code>
+			<Str sr="arg0" ve="3">%R_SE_Etat</Str>
+			<Str sr="arg1" ve="3">OK</Str>
+			<Int sr="arg2" val="0"/>
+			<Int sr="arg3" val="0"/>
+			<Int sr="arg4" val="0"/>
+			<Int sr="arg5" val="3"/>
+			<Int sr="arg6" val="1"/>
+		</Action>
+		<Action sr="act4" ve="7">
+			<code>547</code>
+			<Str sr="arg0" ve="3">%InfoCourante</Str>
+			<Str sr="arg1" ve="3">Méthode de com via Wifi de la Box de la maison. 
+C'est ok.
+J'envois un message au pilote par Mqtt, il va pouvoir prendre le contrôle.😉</Str>
+			<Int sr="arg2" val="0"/>
+			<Int sr="arg3" val="0"/>
+			<Int sr="arg4" val="0"/>
+			<Int sr="arg5" val="3"/>
+			<Int sr="arg6" val="1"/>
+		</Action>
+		<Action sr="act5" ve="7">
+			<code>43</code>
+			<label>Cas hot Spot</label>
+			<ConditionList sr="if">
+				<bool0>And2</bool0>
+				<Condition sr="c0" ve="3">
+					<lhs>%Mode_Connect</lhs>
+					<op>2</op>
+					<rhs>Wifi_Hot</rhs>
+				</Condition>
+				<Condition sr="c1" ve="3">
+					<lhs>%Test_SSID</lhs>
+					<op>2</op>
+					<rhs>PhVmz</rhs>
+				</Condition>
+			</ConditionList>
+		</Action>
+		<Action sr="act6" ve="7">
+			<code>547</code>
+			<Str sr="arg0" ve="3">%R_SE_ETAT</Str>
+			<Str sr="arg1" ve="3">OK</Str>
+			<Int sr="arg2" val="0"/>
+			<Int sr="arg3" val="0"/>
+			<Int sr="arg4" val="0"/>
+			<Int sr="arg5" val="3"/>
+			<Int sr="arg6" val="1"/>
+		</Action>
+		<Action sr="act7" ve="7">
+			<code>547</code>
+			<Str sr="arg0" ve="3">%InfoCourante</Str>
+			<Str sr="arg1" ve="3">Méthode de com via Hot Spot vers smartphone Philippe PhVmz. 
+C'est ok.
+J'envois un message au pilote par Mqtt, il va pouvoir prendre le contrôle.😉</Str>
+			<Int sr="arg2" val="0"/>
+			<Int sr="arg3" val="0"/>
+			<Int sr="arg4" val="0"/>
+			<Int sr="arg5" val="3"/>
+			<Int sr="arg6" val="1"/>
+		</Action>
+		<Action sr="act8" ve="7">
+			<code>43</code>
+			<label>capture qd ni home, ni hot</label>
+			<ConditionList sr="if">
+				<Condition sr="c0" ve="3">
+					<lhs>%Mode_Connect</lhs>
+					<op>3</op>
+					<rhs>Wifi_Maison</rhs>
+				</Condition>
+			</ConditionList>
+		</Action>
+		<Action sr="act9" ve="7">
+			<code>547</code>
+			<Str sr="arg0" ve="3">%InfoCourante</Str>
+			<Str sr="arg1" ve="3">Vous avez choisis un autre mode de connexion que Maison où hot spot .. si vous avez pris Distant sans que SE ai une carte Sim, c'est mort, et pour les autres, ils ne sont pas encore implémentés 😕 votre mode de connexion choisis : %Mode_Connect et votre connexion actuelle : %Test_SSID</Str>
+			<Int sr="arg2" val="0"/>
+			<Int sr="arg3" val="0"/>
+			<Int sr="arg4" val="0"/>
+			<Int sr="arg5" val="3"/>
+			<Int sr="arg6" val="1"/>
+		</Action>
+	</Task>
+</TaskerData>

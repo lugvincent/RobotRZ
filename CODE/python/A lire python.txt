@@ -1,0 +1,2 @@
+Tracking ball était pour la version avec camera rpi
+xboxok9 est le fichier python de pilotage de la xbox depuis node-red avec la version Raspberry

@@ -1,0 +1,16 @@
+# Ignore les fichiers de credentials sensibles de Node-RED
+CODE/node-red/flows_cred.json
+CODE/node-red/**/*_cred.json
+
+# Ignore les dossiers de dépendances et fichiers de build
+CODE/arduino/.pio
+CODE/arduino/.pioenvs
+CODE/node-red/node_modules/
+
+# Ignore les fichiers de configuration système
+.DS_Store
+Thumbs.db
+
+# Ignore les fichiers compilés ou de cache
+*.pyc
+__pycache__/

@@ -1,3 +1,4 @@
+//config.h
 #ifndef CONFIG_H
 #define CONFIG_H
 
@@ -15,7 +16,7 @@ enum ModeRzB {
 
 // ===== Communication - Paramètres VPIV =====
 #define MAX_PROPERTIES 10   // Nombre max de propriétés par message
-#define MAX_INSTANCES  10   // Nombre max d'instances
+#define MAX_INSTANCES  15   // Nombre max d'instances
 #define MAX_VALUE_LEN  20   // Taille max des valeurs (caractères)
 
 // ===== LEDs =====

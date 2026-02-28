@@ -1,0 +1,61 @@
+{
+    "gyro": {
+        "modeGyro": "OFF"
+    },
+    "mg": {
+        "modeMG": "BRUT",
+        "frequence": 5,
+        "modeRZ": [
+            1,
+            2,
+            3
+        ]
+    },
+    "sys": {
+        "mode": "FLOW",
+        "frequence": 10,
+        "thresholds": {
+            "cpu": {
+                "alert": 85
+            },
+            "thermal": {
+                "alert": 80
+            }
+        },
+        "alerts": {
+            "cpu": true,
+            "thermal": true
+        }
+    },
+    "cam": {
+        "profiles": {
+            "normal": {
+                "res": "1920x1080",
+                "fps": 30
+            },
+            "optimized": {
+                "res": "1280x720",
+                "fps": 15
+            }
+        },
+        "status": {
+            "active": "Off",
+            "current_side": "rear"
+        }
+    },
+    "stt": {
+        "modeSTT": "KWS",
+        "threshold": 1e-20,
+        "keyphrase": "rz",
+        "lang": "fr",
+        "lib_path": "lib_pocketsphinx"
+    },
+    "mic": {
+        "sensibilite": 80,
+        "filtre_bruit": true,
+        "volume": 100
+    },
+    "global_overrides": {
+        "modeRZ": 1
+    }
+}

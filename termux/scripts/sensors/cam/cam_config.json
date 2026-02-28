@@ -1,0 +1,24 @@
+{
+    "status": {
+        "active": "Off",
+        "current_side": "rear",
+        "mode": "off",
+        "last_ip": "0.0.0.0"
+    },
+    "profiles": {
+        "normal": {
+            "res": "720p",
+            "fps": 30,
+            "quality": 80
+        },
+        "optimized": {
+            "res": "low",
+            "fps": 10,
+            "quality": 50
+        }
+    },
+    "locks": {
+        "zoom_active": false,
+        "security_app_active": false
+    }
+}

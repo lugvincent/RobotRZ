@@ -1,0 +1,18 @@
+{
+    "CfgS": {
+        "modeRZ": 1,
+        "typePtge": 0,
+        "reset": false
+    },
+    "Urg": {
+        "source": "URG_NONE",
+        "statut": "cleared",
+        "niveau": "warn"
+    },
+    "COM": {
+        "debug": "",
+        "error": "",
+        "info": "",
+        "warn": ""
+    }
+}

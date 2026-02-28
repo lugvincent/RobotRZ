@@ -1,0 +1,62 @@
+[
+    {
+        "id": "MTR_FORWARD",
+        "description": "Commande d'avancée",
+        "category": "MOTOR",
+        "context": [
+            "MOVE"
+        ],
+        "priority": "HIGH",
+        "cost": "LOW",
+        "scope": "SP",
+        "synonyms": [
+            "avance",
+            "tout droit",
+            "vas-y"
+        ],
+        "params": [
+            "speed"
+        ],
+        "param_alias": {
+            "speed": [
+                "vitesse",
+                "rapide",
+                "lent"
+            ]
+        },
+        "vpiv_type": "SIMPLE",
+        "vpiv": [
+            {
+                "var": "Mtr",
+                "prop": "speed",
+                "inst": "*",
+                "val": "50"
+            }
+        ]
+    },
+    {
+        "id": "MTR_STOP",
+        "description": "Commande d'arrêt",
+        "category": "MOTOR",
+        "context": [
+            "ANY"
+        ],
+        "priority": "HIGH",
+        "cost": "LOW",
+        "scope": "SP",
+        "synonyms": [
+            "stop",
+            "arrête",
+            "freine"
+        ],
+        "vpiv_type": "SIMPLE",
+        "vpiv": [
+            {
+                "var": "Mtr",
+                "prop": "speed",
+                "inst": "*",
+                "val": "0"
+            }
+        ]
+    }
+]

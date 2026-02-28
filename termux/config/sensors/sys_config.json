@@ -1,0 +1,23 @@
+{
+    "enabled": true,
+    "frequence": 5,
+    "thresholds": {
+        "cpu": 80,
+        "thermal": 70,
+        "storage": 90
+    },
+    "alerts": {
+        "cpu": {
+            "enabled": true,
+            "level": "warn"
+        },
+        "thermal": {
+            "enabled": true,
+            "level": "danger"
+        },
+        "storage": {
+            "enabled": true,
+            "level": "warn"
+        }
+    }
+}

@@ -1,0 +1,18 @@
+{
+  "modeGyro": "OFF",
+  "paraM": {
+    "frequence_Hz": 20,
+    "freqOdo_Hz": 40,
+    "seuilMesure_xyz": [
+      10,
+      10,
+      5
+    ],
+    "seuilAlerte_xy": [
+      30,
+      35
+    ],
+    "nbValPourMoy": 5,
+    "ajustMagnetic_deg10": 0
+  }
+}

@@ -1,0 +1,11 @@
+*.sh     text eol=lf
+*.py     text eol=lf
+*.json   text eol=lf
+*.md     text eol=lf
+*.cpp    text
+*.c      text
+*.h      text
+*.ino    text
+*.yml    text eol=lf
+.yaml   text eol=lf
+node-red/flows/.json text eol=lf

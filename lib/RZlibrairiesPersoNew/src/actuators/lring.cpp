@@ -272,7 +272,9 @@ void lring_emergencyTrigger(uint8_t urgCode)
 
     _applyUrgence_on_full();
 
-    sendInfo("Lring", "urg", "*", String((int)urgCode).c_str());
+    char urgBuf[8];
+    snprintf(urgBuf, sizeof(urgBuf), "%d", (int)urgCode);
+    sendInfo("Lring", "urg", "*", urgBuf);
 }
 
 /* ==========================================================

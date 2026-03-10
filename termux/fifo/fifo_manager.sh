@@ -20,51 +20,42 @@
 #   
 # =============================================================================
 
-BASE_DIR="/data/data/com.termux/files/home/scripts_RZ_SE/termux"
-FIFO_DIR="$BASE_DIR/fifo"
-LOG_FILE="$BASE_DIR/logs/fifo_manager.log"
-INTERPRETER="$BASE_DIR/scripts/utils/rz_tasker_interpreter.sh"
+# Chemins
+FIFO_DIR="/data/data/com.termux/files/home/scripts_RZ_SE/termux/fifo"  # Sur smartphone
+# FIFO_DIR="/tmp/fifo"   # Sur PC si nécessaire
 
-log() { echo "[$(date '+%H:%M:%S')] [FIFO_MGR] $1" >> "$LOG_FILE"; }
-
+# Création des FIFO
 create_fifos() {
-    mkdir -p "$FIFO_DIR"
-    for f in fifo_tasker_in fifo_termux_in fifo_return; do
-        [ -p "$FIFO_DIR/$f" ] || mkfifo "$FIFO_DIR/$f"
-    done
-    log "FIFOs créés ou vérifiés dans $FIFO_DIR"
+  mkdir -p "$FIFO_DIR"
+  [ -p "$FIFO_DIR/fifo_tasker_in" ] || mkfifo "$FIFO_DIR/fifo_tasker_in"
+  [ -p "$FIFO_DIR/fifo_termux_in" ] || mkfifo "$FIFO_DIR/fifo_termux_in"
+  [ -p "$FIFO_DIR/fifo_return" ] || mkfifo "$FIFO_DIR/fifo_return"
+  [ -p "$FIFO_DIR/fifo_appli_in" ] || mkfifo "$FIFO_DIR/fifo_appli_in"
 }
 
-# --- LA FONCTION MANQUANTE : L'ÉCOUTE ACTIVE ---
-listen_and_route() {
-    create_fifos
-    log "Démarrage de l'écoute active..."
-
-    # Boucle infinie pour maintenir le pipe ouvert
-    while true; do
-        # On lit le pipe ligne par ligne
-        if read -r trame < "$FIFO_DIR/fifo_termux_in"; then
-            if [[ -n "$trame" ]]; then
-                log "Trame reçue : $trame"
-                
-                # AIGUILLAGE : 
-                # Si c'est une commande Tasker (Catégorie A ou E dans tes VPIV)
-                # Ou si c'est une commande moteur (V) à envoyer au robot
-                bash "$INTERPRETER" "$trame"
-            fi
-        fi
-    done
-}
-
+# Nettoyage des FIFO
 clean_fifos() {
-    rm -f "$FIFO_DIR"/fifo_*
-    log "FIFOs supprimés."
+  rm -f "$FIFO_DIR"/fifo_*
 }
 
-# --- EXÉCUTION ---
-case "$1" in
-    "create") create_fifos ;;
-    "clean")  clean_fifos ;;
-    "listen") listen_and_route ;; # <--- Le mode principal à lancer au boot
-    *) echo "Usage: $0 {create|clean|listen}" ;;
-esac
+# Vérification des FIFO
+check_fifos() {
+  for fifo in fifo_tasker_in fifo_termux_in fifo_return fifo_appli_in; do
+    if [ ! -p "$FIFO_DIR/$fifo" ]; then
+      echo "FIFO manquant: $fifo"
+      return 1
+    fi
+  done
+  return 0
+}
+
+# Exécution
+if [ "$1" = "create" ]; then
+  create_fifos
+elif [ "$1" = "clean" ]; then
+  clean_fifos
+elif [ "$1" = "check" ]; then
+  check_fifos
+else
+  echo "Usage: fifo_manager.sh {create|clean|check}"
+fi

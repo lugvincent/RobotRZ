@@ -42,7 +42,7 @@ static int mvtsafe_state = MVTSAFE_STATE_OK;
 
 static void _send_vpiv_state(const char *what, const char *val)
 {
-    sendInfo("mvtSafe", what, "*", val);
+    sendInfo("SecMvt", what, "*", val);
 }
 
 // ---------------------------------
@@ -142,7 +142,7 @@ void mvtsafe_setMode(const char *mode)
         mvtsafe_mode = MVTSAFE_MODE_HARD;
     else
     {
-        sendError("mvtSafe", "mode", "*", "unknown");
+        sendError("SecMvt", "mode", "*", "unknown");
         return;
     }
 
@@ -212,7 +212,7 @@ void mvtsafe_process()
             {
                 mvtsafe_setMaxScale(mvtsafe_maxScale * 0.5f);
                 _apply_soft_reduction();
-                sendInfo("mvtSafe", "alert", "*", "danger_soft");
+                sendInfo("SecMvt", "alert", "*", "danger_soft");
             }
         }
         mvtsafe_state = newState;
@@ -223,7 +223,7 @@ void mvtsafe_process()
     {
         char buf[64];
         snprintf(buf, sizeof(buf), "s:%d,w:%d,d:%d,scale:%.2f", mvtsafe_state, mvtsafe_warn_cm, mvtsafe_danger_cm, (double)mvtsafe_maxScale);
-        sendInfo("mvtSafe", "status", "*", buf);
+        sendInfo("SecMvt", "status", "*", buf);
         lastPub = now;
     }
 }

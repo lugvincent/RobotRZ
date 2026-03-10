@@ -1,8 +1,22 @@
 {
-    "status": {
-        "active": "Off",
-        "current_side": "rear",
+    "front": {
         "mode": "off",
+        "res": "720p",
+        "fps": 15,
+        "quality": 80,
+        "urgDelay": 5,
+        "streamURL": ""
+    },
+    "rear": {
+        "mode": "off",
+        "res": "1080p",
+        "fps": 30,
+        "quality": 80,
+        "urgDelay": 5,
+        "streamURL": ""
+    },
+    "status": {
+        "current_side": "rear",
         "last_ip": "0.0.0.0"
     },
     "profiles": {

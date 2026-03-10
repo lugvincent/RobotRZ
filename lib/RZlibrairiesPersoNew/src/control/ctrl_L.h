@@ -1,92 +1,109 @@
-/***********************************************************************
- * FICHIER : src/control/ctrl_L.h
+/************************************************************
+ * FICHIER  : src/control/ctrl_L.h
+ * CHEMIN   : arduino/mega/src/control/ctrl_L.h
+ * VERSION  : 1.1  —  Mars 2026
+ * AUTEUR   : Vincent Philippe
  *
- * MODULE  : ctrl_L  (contrôle par laisse)
+ * RÔLE
+ * ----
+ *   Interface publique du module de contrôle par laisse (ctrl_L).
+ *   À inclure dans main.cpp et dispatch_Ctrl_L.cpp.
  *
- * RÔLE :
- *   Pilotage local du robot par laisse physique.
+ * RÉSUMÉ DU FONCTIONNEMENT
+ * ------------------------
+ *   Le robot suit l'utilisateur en maintenant une distance cible :
+ *     - DISTANCE  → régulée par les capteurs US arrière
+ *       Si l'utilisateur s'éloigne : robot accélère
+ *       Si l'utilisateur se rapproche : robot ralentit ou recule
+ *       Zone morte : pas de correction dans ±dead_zone_mm
  *
- *   - Orientation :
- *       assurée exclusivement par le capteur de force (SF)
- *       → déséquilibre gauche / droite des moteurs
+ *     - ORIENTATION → régulée par le capteur de force (FS / laisse physique)
+ *       La traction sur la laisse oriente le robot dans la direction de l'utilisateur
+ *       Zone morte ±5 : évite les micro-rotations
  *
- *   - Distance utilisateur / robot :
- *       régulée par les capteurs ultrason (US)
- *       → adaptation progressive de la vitesse longitudinale
+ * CONDITIONS D'ACTIVATION
+ * -----------------------
+ *   cfg_typePtge == 3 (laisse seul)
+ *   cfg_typePtge == 4 (laisse + vocal)
+ *   → Activation automatique depuis dispatch_CfgS.cpp
  *
- * CONDITIONS D’ACTIVATION :
- *   - cfg_typePtge == 3  (laisse)
- *   - cfg_typePtge == 4  (laisse + vocal)
+ * INTERFACE VPIV PUBLIÉE (A->SP)
+ * --------------------------------
+ *   $I:ctrl_L:status:*:OK#      — fonctionnement normal
+ *   $I:ctrl_L:status:*:OFF#     — module désactivé
+ *   $I:ctrl_L:status:*:FceKO#   — traction excessive sur la laisse
+ *   $I:ctrl_L:status:*:VtKO#    — utilisateur trop rapide (non impl. pour l'instant)
+ *   Publié uniquement si l'état change (anti-spam).
  *
- * PRIORITÉS :
- *   - urgence (Urg) > ctrl_L > tout autre pilotage
- *
- * INTERFACE VPIV (retour info) :
- *   $I:ctrl_L:L:*:OK#     → fonctionnement normal (1 seule émission)
- *   $I:ctrl_L:L:*:FceKO#  → traction excessive sur la laisse
- *   $I:ctrl_L:L:*:VtKO#   → utilisateur trop rapide pour le robot
- *
- ***********************************************************************/
+ * USAGE DANS loop()
+ * ------------------
+ *   ctrl_L_update() DOIT être appelé à chaque tour de loop().
+ *   Sans cet appel, le contrôle est inopérant.
+ ************************************************************/
 
-// pragma once, include stdint -> v moderne de ifndef ... define ... endif
 #pragma once
 #include <stdint.h>
 #include <stdbool.h>
 
-/* --------------------------------------------------------------------
- * Initialisation du module ctrl_L
- * - charge les paramètres depuis config
- * - initialise les buffers internes (US)
- * ------------------------------------------------------------------*/
+/* ================================================================
+ * INITIALISATION
+ *   - Charge les paramètres depuis config.cpp
+ *   - Initialise le buffer de moyenne glissante US
+ *   - Appeler une seule fois depuis setup()
+ * ================================================================ */
 void ctrl_L_init();
 
-/* --------------------------------------------------------------------
- * Boucle de contrôle laisse
- * - appelée périodiquement dans loop()
- * - calcule vitesse + rotation
- * - applique les consignes moteurs
- * ------------------------------------------------------------------*/
+/* ================================================================
+ * BOUCLE DE CONTRÔLE LAISSE
+ *   - Appeler à chaque tour de loop() (non-bloquant)
+ *   - Cadence interne : 200 ms (PERIOD_MS)
+ *   - Calcule distance + orientation → commande moteurs
+ * ================================================================ */
 void ctrl_L_update();
 
-/* --------------------------------------------------------------------
- * Activation / désactivation explicite du contrôle laisse
- * - désactivation => arrêt moteurs
- * ------------------------------------------------------------------*/
+/* ================================================================
+ * ACTIVATION / DÉSACTIVATION
+ *   - Désactivation → arrêt immédiat des moteurs
+ * ================================================================ */
 void ctrl_L_setEnabled(bool on);
 bool ctrl_L_isEnabled();
 
-/* --------------------------------------------------------------------
- * Paramètres dynamiques (réglables via Node-RED)
- * ------------------------------------------------------------------*/
+/* ================================================================
+ * PARAMÈTRES DYNAMIQUES — modifiables via VPIV ($V:Ctrl_L:*:...:...#)
+ * ================================================================ */
 
-/* Distance cible utilisateur / robot (mm) */
+/* Distance cible utilisateur/robot (mm)
+ * Valeur de référence pour la régulation — dist_mesurée doit rester ≈ target */
 void ctrl_L_setTargetDistance(uint16_t mm);
 
-/* Vitesse maximale autorisée */
+/* Vitesse longitudinale maximale autorisée (avant/arrière)
+ * Limite le gain de la régulation — adapter selon l'environnement */
 void ctrl_L_setMaxSpeed(int16_t v);
 
-/* Rotation maximale autorisée (différentiel moteurs) */
+/* Rotation maximale autorisée (différentiel moteurs gauche/droite) */
 void ctrl_L_setMaxTurn(int16_t w);
 
-/* Taille de la fenêtre de moyenne glissante US */
+/* Taille de la fenêtre de moyenne glissante US (1..10 mesures)
+ * Plus grande → réponse plus douce, moins réactive aux variations brusques */
 void ctrl_L_setUsWindow(uint8_t n);
 
 /* Zone morte autour de la distance cible (mm)
- * → évite oscillations et micro-corrections
- */
+ * Dans cette zone : speed = 0 → pas de correction
+ * Évite oscillations et micro-corrections continues */
 void ctrl_L_setDeadZone(uint16_t mm);
 
-/* --------------------------------------------------------------------
- * Mode test :
- * - calcule les consignes
- * - n’applique pas les moteurs
- * - utilisé pour calibration
- * ------------------------------------------------------------------*/
+/* ================================================================
+ * MODE TEST
+ *   - Calcule les consignes vitesse/rotation
+ *   - N'envoie PAS les consignes aux moteurs
+ *   - Utile pour calibration sans mouvement du robot
+ * ================================================================ */
 void ctrl_L_setTestMode(bool on);
 
-/* --------------------------------------------------------------------
- * Récupération de l’état actuel du contrôle laisse
- * - "OK" : fonctionnement normal
- * - "FceKO" : traction excessive sur la laisse
- * ------------------------------------------------------------------*/
-const char *ctrl_L_getStatus(); // Nouvelle fonction et non void pour renvoyer l'état détaillé
+/* ================================================================
+ * ÉTAT DU CONTRÔLE LAISSE
+ *   "OFF"    : module inactif
+ *   "OK"     : fonctionnement normal
+ *   "FceKO"  : force excessive sur la laisse
+ * ================================================================ */
+const char *ctrl_L_getStatus();

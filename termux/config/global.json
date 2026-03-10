@@ -14,5 +14,13 @@
         "error": "",
         "info": "",
         "warn": ""
+    },
+    "Sys": {
+        "cpu": 0,
+        "thermal": 0,
+        "storage": 0,
+        "mem": 0,
+        "batt": 0,
+        "last_update": ""
     }
 }

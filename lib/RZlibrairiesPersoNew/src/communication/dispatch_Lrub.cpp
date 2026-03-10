@@ -1,20 +1,66 @@
 /************************************************************
- * FICHIER : src/communication/dispatch_Lrub.cpp
- * ROLE    : Dispatcher VPIV pour LRUB (ruban LED) - SIMPLE
+ * FICHIER  : src/communication/dispatch_Lrub.cpp
+ * CHEMIN   : arduino/mega/src/communication/dispatch_Lrub.cpp
+ * VERSION  : 1.1  —  Mars 2026
+ * AUTEUR   : Vincent Philippe
  *
- * Propriétés supportées :
- *  - "col" : "R,G,B"    -> applique couleur (tous)
- *  - "int" : intensité 0..255
- *  - "act" : 1/0 ou true/false
- *  - "effetFuite"   : fuite (1/0)
- *  - "init": réinitialiser le module
+ * RÔLE
+ * ----
+ *   Dispatcher VPIV pour le ruban LED (module Lrub).
+ *   Reçoit les trames VPIV entrantes ($V:Lrub:...) et
+ *   appelle les fonctions correspondantes du module lrub.cpp.
  *
- * Instance :
- *  - "*" => tous (par défaut)
- *  - "N" => indice unique
- *  - "[a,b]" => liste d'indices
+ * PROPRIÉTÉS SUPPORTÉES (SP->A)
+ * ------------------------------
+ *   col        : couleur RGB — valeur = "R,G,B"  (ex : "255,0,0" = rouge)
+ *                Ex : $V:Lrub:*:col:255,128,0#
  *
- * Usage : $V:Lrub:<prop>:<inst>:<value>#
+ *   lumin      : intensité lumineuse — valeur = 0..255
+ *                (ex : $V:Lrub:*:lumin:128#)
+ *                NOTE : anciennement "int" — renommé car "int" est un type C++,
+ *                ce qui prête à confusion lors de la lecture du code.
+ *
+ *   act        : activation — 1/0 ou true/false
+ *                Ex : $V:Lrub:*:act:1#
+ *
+ *   timeout    : extinction automatique après N millisecondes
+ *                valeur = durée en ms (ex : "5000" = 5 secondes)
+ *                valeur = "0" pour annuler un timeout en cours
+ *                Ex : $V:Lrub:*:timeout:5000#
+ *
+ *   effetFuite : effet visuel "fuite" — 1 pour activer, 0 pour revenir couleur config
+ *                Ex : $V:Lrub:*:effetFuite:1#
+ *
+ *   init       : réinitialise le module (couleur et état par défaut config)
+ *                Ex : $V:Lrub:*:init:1#
+ *
+ * INSTANCES
+ * ---------
+ *   "*"     → tous les pixels (défaut)
+ *   "N"     → pixel unique à l'indice N
+ *   "[a,b]" → liste de pixels
+ *   (pour col uniquement — les autres propriétés s'appliquent au ruban entier)
+ *
+ * PROPRIÉTÉS PUBLIÉES EN RETOUR (A->SP)
+ * ---------------------------------------
+ *   col        (I) : confirmation couleur appliquée
+ *   lumin      (I) : confirmation intensité appliquée
+ *   act        (I) : confirmation activation/désactivation
+ *   timeout    (I) : notification "OK" quand l'extinction automatique s'est déclenchée
+ *   effetFuite (I) : confirmation effet appliqué
+ *   init       (I) : confirmation réinitialisation
+ *
+ * ARTICULATION
+ * ------------
+ *   vpiv_dispatch.cpp → dispatch_Lrub.cpp → lrub.cpp → lrub_hardware.cpp
+ *   La gestion du timeout (décompte et extinction) est dans lrub_processTimeout()
+ *   appelé périodiquement depuis loop() dans main.cpp.
+ *
+ * PRÉCAUTIONS
+ * -----------
+ *   - lrub_processTimeout() DOIT être appelé dans loop() pour que le timeout fonctionne.
+ *   - Un timeout de 0 annule un timeout en cours sans éteindre le ruban.
+ *   - lumin n'affecte pas la couleur, seulement la luminosité globale.
  ************************************************************/
 
 #include "vpiv_dispatch.h"
@@ -28,9 +74,6 @@
 #include <string.h>
 #include <stdlib.h>
 
-// parseIndexList (déjà dans vpiv_utils) : retourne 0 => ALL, >0 => n indices
-// parseRGB(const char* s, int out[3]) -> out[0..2]
-
 namespace Lrub
 {
 
@@ -39,8 +82,7 @@ namespace Lrub
         if (!prop || !inst)
             return false;
 
-        // parse instances- parseIndexList (déjà dans vpiv_utils) :
-        // retourne 0 => ALL, >0 => n indices
+        // Décode les indices d'instance (0 = tous, >0 = liste)
         int indices[LRUB_NUM_PIXELS];
         int n = parseIndexList(inst, indices, LRUB_NUM_PIXELS);
         if (n < 0)
@@ -49,7 +91,10 @@ namespace Lrub
             return false;
         }
 
-        // ----- col -----
+        // ----------------------------------------------------------------
+        // col — couleur RGB
+        //   value = "R,G,B"  (entiers 0..255 séparés par virgules)
+        // ----------------------------------------------------------------
         if (strcmp(prop, "col") == 0)
         {
             if (!value)
@@ -64,30 +109,35 @@ namespace Lrub
                 return false;
             }
 
-            if (n == 0) // tous les indices
-            {
-                lrub_applyColorAll(rgb[0], rgb[1], rgb[2]);
-            }
-            else // indices fournis
-            {
-                lrub_applyColorIndices(indices, n, rgb[0], rgb[1], rgb[2]);
-            }
+            if (n == 0)
+                lrub_applyColorAll(rgb[0], rgb[1], rgb[2]); // tous les pixels
+            else
+                lrub_applyColorIndices(indices, n, rgb[0], rgb[1], rgb[2]); // pixels spécifiques
 
             sendInfo("Lrub", "col", inst, value);
             return true;
         }
 
-        // ----- int (intensité) -----
-        if (strcmp(prop, "int") == 0)
+        // ----------------------------------------------------------------
+        // lumin — intensité lumineuse globale (0..255)
+        //   Anciennement "int" — renommé pour éviter la confusion avec le type C++ int.
+        //   N'affecte pas la couleur, seulement la luminosité.
+        // ----------------------------------------------------------------
+        if (strcmp(prop, "lumin") == 0)
         {
             int intensity = value ? atoi(value) : cfg_lrub_brightness;
             lrub_setIntensity(intensity);
+
             char buf[16];
             snprintf(buf, sizeof(buf), "%d", intensity);
-            sendInfo("Lrub", "int", inst, buf); // utilise l'instance d'origine
+            sendInfo("Lrub", "lumin", inst, buf);
+            return true;
         }
 
-        // ----- act (on/off) -----
+        // ----------------------------------------------------------------
+        // act — activation / désactivation du ruban
+        //   1 ou "true" → allumé ; 0 ou "false" → éteint
+        // ----------------------------------------------------------------
         if (strcmp(prop, "act") == 0)
         {
             bool on = (value && (strcmp(value, "1") == 0 || strcasecmp(value, "true") == 0));
@@ -96,7 +146,38 @@ namespace Lrub
             return true;
         }
 
-        // ----- f (fuite) -----
+        // ----------------------------------------------------------------
+        // timeout — extinction automatique après N millisecondes
+        //   value = "5000" → extinction dans 5 secondes
+        //   value = "0"    → annule le timeout en cours (ne pas éteindre)
+        //   La gestion du décompte est dans lrub_processTimeout() / loop()
+        // ----------------------------------------------------------------
+        if (strcmp(prop, "timeout") == 0)
+        {
+            unsigned long ms = value ? (unsigned long)atol(value) : 0;
+            if (ms == 0)
+            {
+                // Annulation du timeout sans extinction
+                lrub_setTimeout(0);
+                sendInfo("Lrub", "timeout", "*", "annule");
+            }
+            else
+            {
+                // Planifie l'extinction dans ms millisecondes
+                lrub_setTimeout(millis() + ms);
+
+                char buf[16];
+                snprintf(buf, sizeof(buf), "%lu", ms);
+                sendInfo("Lrub", "timeout", "*", buf); // confirme la durée programmée
+            }
+            return true;
+        }
+
+        // ----------------------------------------------------------------
+        // effetFuite — effet visuel alterné pairs/impairs
+        //   1 → déclenche l'effet
+        //   0 → revient à la couleur de configuration
+        // ----------------------------------------------------------------
         if (strcmp(prop, "effetFuite") == 0)
         {
             bool on = (value && (strcmp(value, "1") == 0 || strcasecmp(value, "true") == 0));
@@ -104,11 +185,15 @@ namespace Lrub
                 lrub_effectFuite();
             else
                 lrub_applyColorAll(cfg_lrub_redRB, cfg_lrub_greenRB, cfg_lrub_blueRB);
+
             sendInfo("Lrub", "effetFuite", "*", on ? "1" : "0");
             return true;
         }
 
-        // ----- init -----
+        // ----------------------------------------------------------------
+        // init — réinitialisation complète du module
+        //   Recharge les valeurs par défaut (config), annule timeout
+        // ----------------------------------------------------------------
         if (strcmp(prop, "init") == 0)
         {
             lrub_init();
@@ -116,8 +201,8 @@ namespace Lrub
             return true;
         }
 
-        // propriété inconnue
+        // Propriété non reconnue
         return false;
     }
 
-} // namespace LrubDispatch
+} // namespace Lrub

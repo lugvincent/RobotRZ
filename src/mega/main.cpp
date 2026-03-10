@@ -1,25 +1,50 @@
 // =====================================================================
-// INCLUDES GLOBAUX — toujours AVANT tout
-// chemin : arduino/mega/src/main.cpp
-// role : point d'entrée du programme, setup() et loop()
+// FICHIER  : src/main.cpp
+// CHEMIN   : arduino/mega/src/main.cpp
+// VERSION  : 1.1  —  Mars 2026
+// AUTEUR   : Vincent Philippe
+//
+// RÔLE
+// ----
+//   Point d'entrée du firmware Arduino Mega.
+//   Initialise tous les modules via RZ_initAll() et appelle
+//   les tâches périodiques à chaque tour de loop().
+//
+// ORDRE DE SETUP
+// --------------
+//   1. Ports série (Serial + MOTEURS_SERIAL)
+//   2. RZ_initAll() : initialise tous les modules dans le bon ordre
+//      (config → comm → urg → actionneurs → capteurs → navigation → sécurité)
+//      RZ_initAll() émet lui-même $I:System:boot:*:OK# via sendInfo()
+//
+// ORDRE DE LOOP (non bloquant)
+// ----------------------------
+//   1. Réception + parsing VPIV    (communication_processInput)
+//   2. Tâches périodiques capteurs (lring, mic, us, fs, mvt_ir, odom)
+//   3. Sécurité anti-collision     (mvtsafe_process)
+//   4. Pilotage par laisse         (ctrl_L_update)
+//   5. LED ruban timeout           (lrub_processTimeout)
+//   6. Servo PWM                   (srv_process)
+//   7. Moteurs keepalive UNO       (mtr_processPeriodic)
+//   8. Watchdog loop trop lente    (urg_handle si > LOOP_MAX_MS)
+//
+// PRÉCAUTIONS
+// -----------
+//   - Ne jamais appeler delay() dans loop()
+//   - LOOP_MAX_MS = 80ms : si dépassé → urgence URG_LOOP_TOO_SLOW
+//   - mtr_processPeriodic() DOIT être dans loop() :
+//     le keepalive 100ms vers l'UNO évite son timeout safety (1000ms)
 // =====================================================================
-#include <Arduino.h>
 
-// Librairie perso (inclut automatiquement toutes tes sous-librairies)
+#include <Arduino.h>
 #include <RZlibrairiesPersoNew.h>
 
-// Sécurité
 #include "safety/mvt_safe.h"
-
-// Communication VPIV (réception, parsing, routage)
 #include "communication/communication.h"
-
-// Modules système
 #include "config/config.h"
 #include "system/urg.h"
 #include "control/ctrl_L.h"
 
-// Modules capteurs et actionneurs
 #include "sensors/us.h"
 #include "sensors/mic.h"
 #include "sensors/fs.h"
@@ -30,55 +55,46 @@
 #include "actuators/lrub.h"
 #include "actuators/srv.h"
 
-// Modules navigation
 #include "navigation/Odom.h"
 
 // =====================================================================
-// VARIABLES GÉNÉRALES POUR LE TEMPO LOOP()
+// TEMPORISATION LOOP
 // =====================================================================
-unsigned long loopStartTime = 0;
-const unsigned long LOOP_MAX_MS = 80; // Objectif : loop < 80ms
+static unsigned long loopStartTime = 0;
+static const unsigned long LOOP_MAX_MS = 80UL; // Objectif : loop < 80ms
 
 // =====================================================================
-// SETUP()
+// SETUP
 // =====================================================================
 void setup()
 {
-    // -------------------------------
     // Ports série
-    // -------------------------------
     Serial.begin(115200);
     while (!Serial)
     {
-    } // sécurité sur MEGA (optionnel)
-    MOTEURS_SERIAL.begin(115200); // Arduino UNO moteurs
+    }                             // sécurité Mega (USB CDC)
+    MOTEURS_SERIAL.begin(115200); // liaison Mega → UNO moteurs
 
-    // -------------------------------
-    // Init des modules
-    // -------------------------------
-    RZ_initAll(); // init toutes les librairies perso
-
-    // -------------------------------
-    // Message de diagnostic
-    // -------------------------------
-    Serial.println("$I:System:boot:*:OK#");
-    Serial.flush();
+    // Initialisation de tous les modules.
+    // RZ_initAll() émet $I:System:boot:*:OK# via sendInfo() en fin d'init.
+    // Ne pas réémettre ici pour éviter un double message côté SP.
+    RZ_initAll();
 }
 
 // =====================================================================
-// LOOP()
+// LOOP
 // =====================================================================
 void loop()
 {
-    loopStartTime = millis(); // début mesure durée loop
+    loopStartTime = millis();
 
     // -----------------------------------------------------------------
-    // 1️⃣ Réception + parsing VPIV
+    // 1. Réception + parsing VPIV (non bloquant)
     // -----------------------------------------------------------------
-    communication_processInput(); // non bloquant
+    communication_processInput();
 
     // -----------------------------------------------------------------
-    // 2️⃣ Tâches périodiques
+    // 2. Tâches périodiques capteurs / actionneurs
     // -----------------------------------------------------------------
     lring_processPeriodic();
     mic_processPeriodic();
@@ -86,46 +102,43 @@ void loop()
     fs_processPeriodic();
     mvt_ir_processPeriodic();
     odom_processPeriodic();
+
+    // -----------------------------------------------------------------
+    // 3. Sécurité anti-collision
+    // -----------------------------------------------------------------
     mvtsafe_process();
 
     // -----------------------------------------------------------------
-    // Pilotage par Laisse - ctrl_L (si actif)
+    // 4. Pilotage par laisse (si actif, typePtge 3 ou 4)
     // -----------------------------------------------------------------
     ctrl_L_update();
 
     // -----------------------------------------------------------------
-    // 3️⃣ Gestion timers LED ring + ruban
+    // 5. LED ruban — gestion extinction automatique (timeout)
     // -----------------------------------------------------------------
     lrub_processTimeout();
 
     // -----------------------------------------------------------------
-    // 4️⃣ Autres tâches non périodiques
+    // 6. Servo — PWM 50 Hz
     // -----------------------------------------------------------------
-    srv_process(); // PWM 50 Hz
+    srv_process();
 
     // -----------------------------------------------------------------
-    // 5️⃣ Vérifications de sécurité
+    // 7. Moteurs — keepalive vers UNO (toutes les 100ms)
+    //    OBLIGATOIRE : le UNO a un timeout safety de 1000ms.
+    //    Sans cet appel, l'UNO freine progressivement vers 0.
     // -----------------------------------------------------------------
-    // mvtsafe_process() déjà appelé au 2️⃣ → surcharge éventuelle gérée
-    // Pas besoin de rappeler, sauf si tu veux double-check
+    mtr_processPeriodic();
 
     // -----------------------------------------------------------------
-    // 6️⃣ Diagnostic du temps d'exécution (loop watchdog)
+    // 8. Watchdog — durée de loop
+    //    Si la loop dépasse LOOP_MAX_MS → urgence URG_LOOP_TOO_SLOW
     // -----------------------------------------------------------------
     unsigned long dt = millis() - loopStartTime;
     if (dt > LOOP_MAX_MS)
     {
-        // Crée un buffer pour envoyer le temps en string
         char buf[16];
         snprintf(buf, sizeof(buf), "%lu", dt);
-
-        // Envoi VPIV en cas de loop trop long
-        // sendError("LoopTooSlow", "dt", "*", buf);
-        urg_handle(URG_LOOP_TOO_SLOW);
+        urg_handle(URG_LOOP_TOO_SLOW); // déclenche urgence + arrêt moteurs
     }
-
-    // -----------------------------------------------------------------
-    // 7️⃣ → Fin de loop()
-    // Pas de delay() ici !
-    // -----------------------------------------------------------------
 }

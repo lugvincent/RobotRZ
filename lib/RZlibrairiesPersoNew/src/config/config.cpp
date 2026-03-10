@@ -97,19 +97,15 @@ unsigned long cfg_mic_win_ms = MIC_WIN_MS_DEFAULT;
 // MTR — MOTEURS
 // ======================================================================
 
-char cfg_mtr_acc = MOTOR_ACC_DEFAULT_CHAR;
-char cfg_mtr_spd = MOTOR_SPD_DEFAULT_CHAR;
-char cfg_mtr_dir = MOTOR_DIR_DEFAULT_CHAR;
 bool cfg_mtr_active = MOTOR_AUTORISE_DEFAULT;
 
-bool cfg_mtr_mode_modern = MTR_MODE_DEFAULT_MODERN;
 float cfg_mtr_kturn = MTR_DEFAULT_KTURN;
 int cfg_mtr_inputScale = MTR_INPUT_SCALE;
 int cfg_mtr_outputScale = MTR_OUTPUT_SCALE;
 
 int cfg_mtr_targetL = 0;
 int cfg_mtr_targetR = 0;
-int cfg_mtr_targetA = 1;
+int cfg_mtr_targetA = 2; // lissage moyen par défaut (0=direct, 4=très doux)
 
 // ======================================================================
 // ODOM — ODOMÉTRIE

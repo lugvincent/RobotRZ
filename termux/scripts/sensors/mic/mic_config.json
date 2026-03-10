@@ -1,0 +1,16 @@
+{
+    "mic": {
+        "modeMicro": "off",
+        "paraMicro": {
+            "freqCont": 300,
+            "winSize": 300,
+            "seuilDelta": 30,
+            "holdTime": 500,
+            "seuilFaible": 100,
+            "seuilMoyen": 400,
+            "seuilFort": 700,
+            "pasBalayage": 10,
+            "timeoutOrientation": 15
+        }
+    }
+}

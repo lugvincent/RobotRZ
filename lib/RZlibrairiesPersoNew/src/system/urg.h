@@ -41,7 +41,6 @@ void urg_clear();
 bool urg_isActive();
 
 // Envoi d’une notification VPIV
-void urg_sendAlert(uint8_t code);
 
 /************************************************************
  * HOOK MOTEURS — fourni par moteur (mtr_hardware.cpp)

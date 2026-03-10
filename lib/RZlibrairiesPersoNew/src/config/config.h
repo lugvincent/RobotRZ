@@ -133,12 +133,7 @@ extern unsigned long cfg_mic_win_ms;
 /* MTR — MOTEURS                                                          */
 /* ===================================================================== */
 
-#define MOTOR_ACC_DEFAULT_CHAR '1'
-#define MOTOR_SPD_DEFAULT_CHAR '0'
-#define MOTOR_DIR_DEFAULT_CHAR '0'
 #define MOTOR_AUTORISE_DEFAULT false
-
-#define MTR_MODE_DEFAULT_MODERN true
 
 #define MTR_INPUT_SCALE 100
 #define MTR_OUTPUT_SCALE 400
@@ -146,12 +141,8 @@ extern unsigned long cfg_mic_win_ms;
 
 static const int MTR_ACCEL_STEP_FOR_A[5] = {400, 40, 24, 12, 6};
 
-extern char cfg_mtr_acc;
-extern char cfg_mtr_spd;
-extern char cfg_mtr_dir;
 extern bool cfg_mtr_active;
 
-extern bool cfg_mtr_mode_modern;
 extern float cfg_mtr_kturn;
 extern int cfg_mtr_inputScale;
 extern int cfg_mtr_outputScale;

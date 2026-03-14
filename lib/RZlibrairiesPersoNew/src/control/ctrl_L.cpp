@@ -307,6 +307,6 @@ void ctrl_L_update()
     if (strcmp(last_status, new_status) != 0)
     {
         strncpy(last_status, new_status, sizeof(last_status) - 1);
-        sendInfo("ctrl_L", "status", "*", new_status);
+        sendInfo("Ctrl_L", "status", "*", new_status);
     }
 }

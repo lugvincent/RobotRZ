@@ -23,25 +23,25 @@
 #      → Appel curl asynchrone pour ne pas bloquer le manager.
 # 3. Si caméra inactive :
 #      → Commande via termux-torch on/off (mode natif Android).
-# 4. Dans tous les cas : envoi ACK VPIV $I:Torch:active:SE:<état>#
+# 4. Dans tous les cas : envoi ACK VPIV $I:TorchSE:active:SE:<état>#
 # 5. En cas d'erreur : envoi $I:COM:error:SE:"..."# vers SP (via FIFO).
 #
 # TABLE A — VPIV PRODUITS
 # -----------------------
 #   SP → SE :
-#     $V:Torch:active:*:On#    Demande allumage torche
-#     $V:Torch:active:*:Off#   Demande extinction torche
+#     $V:TorchSE:active:*:On#    Demande allumage torche
+#     $V:TorchSE:active:*:Off#   Demande extinction torche
 #
 #   SE → SP :
-#     $I:Torch:active:SE:On#   ACK allumage effectué
-#     $I:Torch:active:SE:Off#  ACK extinction effectuée
-#     $I:COM:error:SE:"Torch : termux-torch indisponible"#
-#     $I:COM:error:SE:"Torch : API caméra inaccessible (http://IP:8080/)"#
-#     $I:COM:error:SE:"Torch : cam_config.json illisible ou absent"#
+#     $I:TorchSE:active:SE:On#   ACK allumage effectué
+#     $I:TorchSE:active:SE:Off#  ACK extinction effectuée
+#     $I:COM:error:SE:"TorchSE : termux-torch indisponible"#
+#     $I:COM:error:SE:"TorchSE : API caméra inaccessible (http://IP:8080/)"#
+#     $I:COM:error:SE:"TorchSE : cam_config.json illisible ou absent"#
 #
 # INTERACTIONS
 # ------------
-#   Appelé par  : rz_vpiv_parser.sh (sur réception $V:Torch:active:*:<val>#)
+#   Appelé par  : rz_vpiv_parser.sh (sur réception $V:TorchSE:active:*:<val>#)
 #   Lit         : config/sensors/cam_config.json (état caméra)
 #   Écrit dans  : fifo/fifo_termux_in → rz_vpiv_parser.sh → MQTT → SP
 #
@@ -62,8 +62,8 @@
 #   fifo_termux_in  : créé par fifo_manager.sh
 #
 # AUTEUR  : Vincent Philippe
-# VERSION : 2.0  (COM:error sur 3 sources, en-tête complet, cohérence Table A)
-# DATE    : 2026-03-05
+# VERSION : 2.1  (VAR Torch → TorchSE — cohérence Table A v3 et rz_vpiv_parser.sh)
+# DATE    : 2026-03-12
 # =============================================================================
 
 # =============================================================================
@@ -122,12 +122,12 @@ set_torch() {
 
     # --- Lecture état caméra dans cam_config.json ---
     if [ ! -f "$CONFIG_CAM" ]; then
-        send_error "Torch : cam_config.json illisible ou absent ($CONFIG_CAM)"
+        send_error "TorchSE : cam_config.json illisible ou absent ($CONFIG_CAM)"
         exit 1
     fi
 
     if ! cam_active=$(jq -r '.status.active // "Off"' "$CONFIG_CAM" 2>/dev/null); then
-        send_error "Torch : cam_config.json illisible ou absent ($CONFIG_CAM)"
+        send_error "TorchSE : cam_config.json illisible ou absent ($CONFIG_CAM)"
         exit 1
     fi
 
@@ -144,7 +144,7 @@ set_torch() {
         fi
 
         if [ -z "$ip_local" ]; then
-            send_error "Torch : impossible de lire l'adresse IP wlan0"
+            send_error "TorchSE : impossible de lire l'adresse IP wlan0"
             exit 1
         fi
 
@@ -163,7 +163,7 @@ set_torch() {
         if kill -0 "$pid_curl" 2>/dev/null; then
             # curl encore en cours après 4s = timeout dépassé
             kill "$pid_curl" 2>/dev/null
-            send_error "Torch : API caméra inaccessible (http://${ip_local}:8080/)"
+            send_error "TorchSE : API caméra inaccessible (http://${ip_local}:8080/)"
             exit 1
         fi
 
@@ -174,7 +174,7 @@ set_torch() {
         log_torch "Mode Autonome : commande via termux-torch."
 
         if ! command -v termux-torch &>/dev/null; then
-            send_error "Torch : termux-torch indisponible (pkg install termux-api)"
+            send_error "TorchSE : termux-torch indisponible (pkg install termux-api)"
             exit 1
         fi
 
@@ -186,10 +186,10 @@ set_torch() {
     fi
 
     # -----------------------------------------------------------------------
-    # ACK VPIV → SP (Table A : $I:Torch:active:SE:<état>#)
+    # ACK VPIV → SP (Table A : $I:TorchSE:active:SE:<état>#)
     # ⚠️ \$ obligatoire — $I serait une variable shell vide (trame corrompue)
     # -----------------------------------------------------------------------
-    send_vpiv "\$I:Torch:active:SE:${state}#"
+    send_vpiv "\$I:TorchSE:active:SE:${state}#"
     log_torch "Torche → ${state}  ACK envoyé."
 }
 
@@ -202,14 +202,14 @@ case "$1" in
         # Validation valeur
         if [[ "$2" != "On" && "$2" != "Off" ]]; then
             log_torch "ERREUR : valeur '$2' invalide pour active (attendu : On|Off)"
-            send_error "Torch : valeur active invalide : '$2' (attendu : On|Off)"
+            send_error "TorchSE : valeur active invalide : '$2' (attendu : On|Off)"
             exit 1
         fi
         set_torch "$2"
         ;;
     *)
         log_torch "Propriété inconnue ou non supportée en v1 : '$1'"
-        send_error "Torch : propriété inconnue : '$1'"
+        send_error "TorchSE : propriété inconnue : '$1'"
         exit 1
         ;;
 esac

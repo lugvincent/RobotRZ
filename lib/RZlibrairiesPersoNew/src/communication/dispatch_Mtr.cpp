@@ -40,18 +40,25 @@
  *
  * scale — facteur de réduction des vitesses
  * ------------------------------------------
- *   Format  : float 0.0..1.0 (ex : "0.50")
+ *   Format  : entier 0..1000 encodé ×1000 (règle pas-de-float-dans-VPIV)
  *   Réduit toutes les vitesses L et R par ce facteur.
- *   0.0 = arrêt complet (sans modifier les consignes cibles)
- *   1.0 = vitesse normale
- *   Ex : $V:Mtr:*:scale:0.50#   → moitié de vitesse
+ *     0    = arrêt complet (sans modifier les consignes cibles)
+ *     500  = moitié de la vitesse nominale
+ *     1000 = vitesse normale
+ *   Ex : $V:Mtr:*:scale:500#    → moitié de vitesse (= 0.500)
+ *   Ex : $V:Mtr:*:scale:750#    → 3/4 de vitesse    (= 0.750)
+ *   Conversion interne : s_float = s_int / 1000.0f
  *
  * kturn — coefficient de rotation
  * ---------------------------------
- *   Format  : float 0.0..2.0 (ex : "0.80")
+ *   Format  : entier 0..2000 encodé ×1000 (règle pas-de-float-dans-VPIV)
  *   Amplifie ou réduit l'effet de omega sur les roues.
- *   0.5 = rotation douce ; 1.0 = standard ; 1.5 = rotation franche
- *   Ex : $V:Mtr:*:kturn:0.80#
+ *     500  = rotation douce
+ *     1000 = standard
+ *     1500 = rotation franche
+ *   Ex : $V:Mtr:*:kturn:800#    → coefficient 0.800
+ *   Ex : $V:Mtr:*:kturn:1000#   → coefficient 1.000 (standard)
+ *   Conversion interne : k_float = k_int / 1000.0f
  *
  * act — activation du module
  * ---------------------------
@@ -71,8 +78,8 @@
  *   targets  (I) : L,R,A après chaque cmd (depuis mtr.cpp)
  *   stop     (I) : "OK" après stop
  *   override (I) : "stop" ou "cleared"
- *   scale    (I) : valeur float appliquée
- *   kturn    (I) : valeur float appliquée
+ *   scale    (I) : entier ×1000 appliqué (ex : 750 = 0.750)
+ *   kturn    (I) : entier ×1000 appliqué (ex : 800 = 0.800)
  *   act      (I) : "1" ou "0"
  *   state    (I) : "L,R,A" état courant (réponse à read)
  *
@@ -189,30 +196,69 @@ namespace Mtr
         }
 
         /* --------------------------------------------------------
-         * scale — facteur de réduction des vitesses (0.0..1.0)
+         * scale — facteur de réduction des vitesses
+         *
+         * Encodage VPIV : entier ×1000 (règle pas-de-float-dans-VPIV)
+         *   Valeur reçue : 0..1000
+         *   Conversion   : s_float = s_int / 1000.0f → transmise à mtr_scaleTargets()
+         *
+         * Effet de bord : mtr_scaleTargets() publie le retour ACK.
+         *   Le retour est également en entier ×1000 ($I:Mtr:scale:*:750#).
+         *
+         * Garde-fou : valeurs < 0 → clamp à 0, valeurs > 1000 → clamp à 1000.
          * -------------------------------------------------------- */
         if (strcmp(prop, "scale") == 0)
         {
             if (!value)
                 return false;
 
-            float s = (float)atof(value);
-            mtr_scaleTargets(s);
-            // NOTE : mtr_scaleTargets() publie $I:Mtr:scale:*:<val>#
+            // Lecture de la valeur entière ×1000 (ex : "750" = facteur 0.750)
+            int s_int = atoi(value);
+
+            // Clamp protecteur côté dispatcher (mtr_scaleTargets clampera aussi)
+            if (s_int < 0)
+                s_int = 0;
+            if (s_int > 1000)
+                s_int = 1000;
+
+            // Conversion vers float interne (usage calcul uniquement, jamais dans VPIV)
+            float s_float = s_int / 1000.0f;
+            mtr_scaleTargets(s_float, s_int); // s_int transmis pour l'ACK conforme
+            // NOTE : mtr_scaleTargets() publie $I:Mtr:scale:*:<s_int># (entier ×1000)
             return true;
         }
 
         /* --------------------------------------------------------
          * kturn — coefficient de rotation dans le calcul différentiel
+         *
+         * Encodage VPIV : entier ×1000 (règle pas-de-float-dans-VPIV)
+         *   Valeur reçue : 0..2000
+         *   Conversion   : k_float = k_int / 1000.0f → transmise à mtr_setKturn()
+         *
+         * Effet de bord : mtr_setKturn() publie le retour ACK.
+         *   Le retour est également en entier ×1000 ($I:Mtr:kturn:*:800#).
+         *
+         * Garde-fou : valeurs < 0 → clamp à 0, valeurs > 2000 → clamp à 2000.
+         *   kturn > 2.0 produirait des valeurs L/R hors plage → dangereux.
          * -------------------------------------------------------- */
         if (strcmp(prop, "kturn") == 0)
         {
             if (!value)
                 return false;
 
-            float k = (float)atof(value);
-            mtr_setKturn(k);
-            // NOTE : mtr_setKturn() publie $I:Mtr:kturn:*:<val>#
+            // Lecture de la valeur entière ×1000 (ex : "800" = coefficient 0.800)
+            int k_int = atoi(value);
+
+            // Clamp protecteur côté dispatcher (mtr_setKturn clampera aussi)
+            if (k_int < 0)
+                k_int = 0;
+            if (k_int > 2000)
+                k_int = 2000;
+
+            // Conversion vers float interne (usage calcul uniquement, jamais dans VPIV)
+            float k_float = k_int / 1000.0f;
+            mtr_setKturn(k_float, k_int); // k_int transmis pour l'ACK conforme
+            // NOTE : mtr_setKturn() publie $I:Mtr:kturn:*:<k_int># (entier ×1000)
             return true;
         }
 

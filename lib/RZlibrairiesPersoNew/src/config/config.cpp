@@ -108,49 +108,42 @@ int cfg_mtr_targetR = 0;
 int cfg_mtr_targetA = 2; // lissage moyen par défaut (0=direct, 4=très doux)
 
 // ======================================================================
-// ODOM — ODOMÉTRIE
+// ODOM — ODOMÉTRIE DIFFÉRENTIELLE
+// ======================================================================
+// Note : les coefficients (cfg_odo_coeff_*) sont intentionnellement
+// laissés à 0 ici. Ils seront calculés par _recompute_coeffs_from_physical()
+// lors du premier appel à odom_init() dans RZ_initAll().
+// ⚠ Ne pas ajouter de constructeur statique ici — Arduino ne garantit
+// pas l'ordre d'initialisation des constructeurs globaux.
 // ======================================================================
 
 const char *odomNames[] = {"encL", "encR"};
 
 bool cfg_odom_active = true;
-unsigned long cfg_odom_period_ms = 50UL;
-unsigned long cfg_odom_report_period_ms = 200UL;
 bool cfg_odom_pendingReport = false;
 
-double cfg_odo_wheel_diameter_m = ODO_WHEEL_DIAMETER_M_DEFAULT;
-double cfg_odo_track_m = ODO_TRACK_M_DEFAULT;
-int cfg_odo_encoder_cpr = ODO_ENCODER_CPR_DEFAULT;
+unsigned long cfg_odom_period_ms = ODO_FREQ_CALC_MS_DEFAULT;  /* période calcul (ms)   */
+unsigned long cfg_odom_freq_pos_ms = ODO_FREQ_POS_MS_DEFAULT; /* période envoi pos (ms)*/
+unsigned long cfg_odom_freq_vel_ms = ODO_FREQ_VEL_MS_DEFAULT; /* période envoi vel (ms)*/
 
+/* Paramètres physiques initiaux — valeurs indicatives, à calibrer sur robot réel */
+double cfg_odo_wheel_diameter_m = ODO_WHEEL_DIAMETER_MM_DEFAULT / 1000.0;
+double cfg_odo_track_m = ODO_TRACK_MM_DEFAULT / 1000.0;
+int cfg_odo_encoder_cpr = ODO_ENCODER_CPR_DEFAULT;
+int cfg_odo_left_gain_x1000 = ODO_LEFT_GAIN_X1000_DEFAULT;
+int cfg_odo_right_gain_x1000 = ODO_RIGHT_GAIN_X1000_DEFAULT;
+
+/* Coefficients calculés — initialisés à 0, seront calculés par odom_init() */
 double cfg_odo_coeff_gLong = 0.0;
 double cfg_odo_coeff_dLong = 0.0;
 double cfg_odo_coeff_gAngl = 0.0;
 double cfg_odo_coeff_dAngl = 0.0;
 
+/* Dernières données de fusion capteurs externes */
 float cfg_odo_lastGyro_dps = 0.0f;
 unsigned long cfg_odo_lastGyro_ts_ms = 0;
 float cfg_odo_lastCompass_deg = 0.0f;
 int cfg_odo_lastCompass_quality = 0;
-
-static void _compute_default_odom_coeffs()
-{
-    double wheel_circ = M_PI * cfg_odo_wheel_diameter_m;
-    double dist_per_tick = wheel_circ / (double)cfg_odo_encoder_cpr;
-
-    cfg_odo_coeff_gLong = dist_per_tick;
-    cfg_odo_coeff_dLong = dist_per_tick;
-
-    if (cfg_odo_track_m != 0.0)
-    {
-        cfg_odo_coeff_dAngl = 1.0 / cfg_odo_track_m;
-        cfg_odo_coeff_gAngl = 1.0 / cfg_odo_track_m;
-    }
-}
-
-__attribute__((constructor)) static void _init_odom_coeffs_ctor()
-{
-    _compute_default_odom_coeffs();
-}
 
 // ======================================================================
 // SRV — SERVOMOTEURS

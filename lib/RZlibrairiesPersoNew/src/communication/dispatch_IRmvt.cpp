@@ -1,5 +1,5 @@
 /************************************************************
- * FICHIER : src/communication/dispatch_IRmvt.cpp 
+ * FICHIER : src/communication/dispatch_IRmvt.cpp
  * ROLE    : Dispatcher VPIV du capteur IR de mouvement
  ************************************************************/
 
@@ -18,7 +18,7 @@ static bool _ensure_instance_star(const char *inst)
         return false;
     if (inst[0] == '*' && inst[1] == '\0')
         return true;
-    // accepte aussi "0" si tu veux, mais par convention MvtIR -> "*"
+    // accepte aussi "0" si tu veux, mais par convention IRmvt -> "*"
     return false;
 }
 
@@ -30,14 +30,14 @@ namespace IRmvt
 
         if (!_ensure_instance_star(inst))
         {
-            sendError("MvtIR", "instance", inst ? inst : "*", "only '*' supported");
+            sendError("IRmvt", "instance", inst ? inst : "*", "only '*' supported");
             return false;
         }
 
         if (strcmp(prop, "read") == 0)
         {
             mvt_ir_readInstant();
-            sendInfo("MvtIR", "read", "*", "OK");
+            sendInfo("IRmvt", "read", "*", "OK");
             return true;
         }
         if (strcmp(prop, "act") == 0)
@@ -66,8 +66,8 @@ namespace IRmvt
         }
 
         // propriété non reconnue
-        sendError("MvtIR", "prop", prop ? prop : "*", "unknown");
+        sendError("IRmvt", "prop", prop ? prop : "*", "unknown");
         return false;
     }
 
-} // namespace MvtIRDispatch
+} // namespace IRmvtDispatch

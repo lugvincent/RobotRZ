@@ -1,0 +1,66 @@
+MODULE;PROP;CAT;DIR;TYPE;INST;FORMAT_VALUE;INITIAL;STATUT;DESCRIPTION;EXEMPLE_VPIV
+CfgS;modeRZ;V;SP?SE/SP?A;enum;*;0=ARRET|1=VEILLE|2=FIXE|3=DEPLACEMENT|4=AUTONOME;ini;EXPOSE;Mode opérationnel global du robot;$V:CfgS:*:modeRZ:3#
+CfgS;modeRZ;I;SE?SP/A?SP;enum;*;0-4;dyn;ETAT;ACK changement de mode;$I:CfgS:*:modeRZ:3#
+CfgS;typePtge;V;SP?SE/SP?A;enum;*;0=Ecran|1=Vocal|2=Manette|3=Laisse|4=Laisse+Vocal;ini;EXPOSE;Type de pilotage du robot;$V:CfgS:*:typePtge:4#
+CfgS;typePtge;I;SE?SP/A?SP;enum;*;0-4;dyn;ETAT;ACK changement pilotage;$I:CfgS:*:typePtge:4#
+CfgS;(emg);V;SP?SE/SP?A;string;*;clear;-;-;Effacement urgence active;$V:CfgS:*:emg:clear#
+CfgS;(emg);I;SE?SP/A?SP;boolean;*;0;dyn;ETAT;ACK effacement urgence;$I:CfgS:*:emg:0#
+CfgS;(reset);V;SP?SE/SP?A;boolean;*;1;-;-;Réinitialisation complète système (bloqué si urgence active);$V:CfgS:*:reset:1#
+CfgS;(reset);I;SE?SP/A?SP;string;*;"OK|""urgence active clear first""";dyn;ETAT;ACK reset;$I:CfgS:*:reset:OK#
+Urg;source;E;SE?SP/A?SP;enum;SE/A;URG_NONE|URG_LOW_BAT|URG_MOTOR_STALL|URG_SENSOR_FAIL|URG_BUFFER_OVERFLOW|URG_PARSING_ERROR|URG_CPU_CHARGE|URG_APPLI_FAIL|URG_OVERHEAT|URG_LOOP_TOO_SLOW|URG_UNKNOWN;dyn;ETAT;Origine de l'urgence (réflexe capteur);$E:Urg:source:SE:URG_CPU_CHARGE#
+Urg;etat;E;SP?SE/SP?A;enum;*;cleared|active|warn|danger;dyn;ETAT;Niveau urgence - SP décide après réception source;$E:Urg:etat:*:danger#
+Urg;etat;I;SE?SP/A?SP;enum;SE/A;cleared|active|warn|danger;dyn;ETAT;ACK réception état urgence;$I:Urg:etat:SE:danger#
+Urg;(clear);V;SP?SE/SP?A;boolean;*;1;-;-;Demande effacement urgence (alias CfgS.emg);$V:Urg:clear:*:1#
+COM;debug;I;SE?SP/A?SP;string;SE/A;texte libre;dyn;-;Message debug (affichage Node-RED uniquement);"$I:COM:debug:SE:""valeur x=42""#"
+COM;error;I;SE?SP/A?SP;string;SE/A;texte libre;dyn;-;Erreur non critique (sans réaction automatique);"$I:COM:error:SE:""Appli:zoom refusé""#"
+COM;info;I;SE?SP/A?SP;string;SE/A;texte libre;dyn;-;Information générale;"$I:COM:info:SE:""Caméra démarrée""#"
+COM;warn;I;SE?SP/A?SP;string;SE/A;texte libre;dyn;-;Avertissement (affichage jaune Node-RED);"$I:COM:warn:SE:""CPU 81%""#"
+Gyro;modeGyro;V;SP?SE;enum;*;OFF|DATACont|DATAMoy|ALERTE;ini;EXPOSE;Mode capteur gyroscope;$V:Gyro:*:modeGyro:DATACont#
+Gyro;angleVSEBase;V;SP?SE;number;*;deg×10 (ex:150=15.0°);ini;EXPOSE;Angle correction tangage BASE+THB (mode ALERTE);$V:Gyro:*:angleVSEBase:150#
+Gyro;paraGyro;V;SP?SE;object;*;{freqCont_Hz freqMoy_Hz nbValPourMoy seuilMesure_xyz seuilAlerte_xy};ini;EXPOSE;Paramètres complets gyro (objet JSON sérialisé);$V:Gyro:*:paraGyro:{...}#
+Gyro;dataCont;F;SE?SP;object;*;[x y z] rad/s×100;dyn;ETAT;Flux brut continu (mode DATACont);$F:Gyro:*:dataCont:[120 -45 980]#
+Gyro;dataMoy;F;SE?SP;object;*;[x y z] rad/s×100 moyenné;dyn;ETAT;Flux moyenné (mode DATAMoy);$F:Gyro:*:dataMoy:[115 -40 975]#
+Gyro;(alerte);E;SE?SP;object;SE;{axe val} rad/s×100;dyn;ETAT;Dépassement seuil alerte chute (mode ALERTE);$E:Gyro:alerte:SE:{x 350}#
+Mag;modeMg;V;SP?SE;enum;*;OFF|DATABrutCont|DATAGeoCont|DATAGeoMoy|DATAMgCont|DATAMgMoy;ini;EXPOSE;Mode capteur magnétomètre;$V:Mag:*:modeMg:DATAMgCont#
+Mag;paraMg;V;SP?SE;object;*;{freqCont_Hz freqMoy_Hz nbValPourMoy seuilMesure_xyz_uT100};ini;EXPOSE;Paramètres complets magnéto;$V:Mag:*:paraMg:{...}#
+Mag;dataBrut;F;SE?SP;object;*;[x y z] µT×100;dyn;ETAT;Flux brut [x y z] (mode DATABrutCont);$F:Mag:*:dataBrut:[120 -45 980]#
+Mag;dataGeo;F;SE?SP;number;*;deg×10 (0-3600);dyn;ETAT;Cap géographique continu/moyenné;$F:Mag:*:dataGeo:1250#
+Mag;dataMg;F;SE?SP;number;*;deg×10 (0-3600);dyn;ETAT;Cap magnétique continu/moyenné;$F:Mag:*:dataMg:1250#
+Sys;modeSys;V;SP?SE;enum;*;OFF|FLOW|MOY|ALERTE;ini;EXPOSE;Mode surveillance système;$V:Sys:*:modeSys:FLOW#
+Sys;paraSys;V;SP?SE;object;*;{freqCont_s freqMoy_s nbCycles thresholds{cpu thermal storage mem batt}};ini;EXPOSE;Paramètres surveillance (? batt sens inversé);$V:Sys:*:paraSys:{...}#
+Sys;dataContCpu;F;SE?SP;number;*;% (0-100);dyn;ETAT;Charge CPU courante (mode FLOW);$F:Sys:*:dataContCpu:45#
+Sys;dataContTherm;F;SE?SP;number;*;°C;dyn;ETAT;Température courante;$F:Sys:*:dataContTherm:38#
+Sys;dataContStorage;F;SE?SP;number;*;% (0-100);dyn;ETAT;Occupation stockage SDCard;$F:Sys:*:dataContStorage:62#
+Sys;dataContMem;F;SE?SP;number;*;% (0-100);dyn;ETAT;Occupation RAM;$F:Sys:*:dataContMem:55#
+Sys;dataContBatt;F;SE?SP;number;*;% (0-100) ? alerte si < seuil;dyn;ETAT;Niveau batterie SE;$F:Sys:*:dataContBatt:78#
+Sys;(alert);E;SE?SP;enum;SE;URG_CPU_CHARGE|URG_OVERHEAT|URG_SENSOR_FAIL|URG_LOW_BAT;dyn;ETAT;Réflexe urgence si seuil franchi 10s;$E:Urg:source:SE:URG_CPU_CHARGE#
+CamSE;active;V;SP?SE;boolean;front|rear|*;On|Off;ini;EXPOSE;Démarrage/arrêt caméra (instance = côté);$V:CamSE:active:rear:On#
+CamSE;active;I;SE?SP;boolean;front|rear|*;On|Off;dyn;ETAT;ACK état caméra;$I:CamSE:active:rear:On#
+CamSE;mode;V;SP?SE;enum;*;front|rear|switch;ini;EXPOSE;Changement côté ou bascule;$V:CamSE:mode:*:front#
+CamSE;streamURL;F;SE?SP;string;front|rear;URL http://IP:8080/video;dyn;ETAT;URL flux vidéo IP Webcam;$F:CamSE:streamURL:rear:{http://192.168.1.10:8080/video}#
+CamSE;snapURL;I;SE?SP;string;*;URL http://IP:8080/shot.jpg;dyn;ETAT;URL snapshot;$I:CamSE:snapURL:*:{http://192.168.1.10:8080/shot.jpg}#
+CamSE;(snap);V;SP?SE;boolean;*;1;-;-;Demande snapshot immédiat;$V:CamSE:snap:*:1#
+MicroSE;modeMicro;V;SP?SE;enum;*;off|normal|intensite|orientation|surveillance;ini;EXPOSE;Mode micro smartphone;$V:MicroSE:*:modeMicro:intensite#
+MicroSE;paraMicro;V;SP?SE;object;*;{freqCont_ms winSize_ms seuilDelta holdTime seuilFaible seuilMoyen seuilFort pasBalayage timeoutOrientation};ini;EXPOSE;Paramètres micro (objet JSON sérialisé);$V:MicroSE:*:paraMicro:{...}#
+MicroSE;dataContRMS;F;SE?SP;number;*;RMS×10 (0-1000);dyn;ETAT;Niveau sonore courant (mode normal/intensite);$F:MicroSE:*:dataContRMS:245#
+MicroSE;dataMoyRMS;F;SE?SP;number;*;RMS×10 moyenné;dyn;ETAT;Niveau moyen sur fenêtre glissante;$F:MicroSE:*:dataMoyRMS:230#
+MicroSE;(alerte);E;SE?SP;enum;SE;faible|moyen|fort;dyn;ETAT;Seuil maintenu > holdTime ms;$E:MicroSE:alerte:SE:fort#
+MicroSE;orientation;I;SE?SP;number;*;deg (-90..+90);dyn;ETAT;Direction son après balayage servo TGD;$I:MicroSE:*:orientation:-30#
+STT;modeSTT;V;SP?SE;enum;*;KWS|OFF;ini;EXPOSE;Mode reconnaissance vocale locale (PocketSphinx);$V:STT:*:modeSTT:KWS#
+Appli;Baby;A;SP?SE;boolean;*;On|Off;ini;EXPOSE;Lancement/arrêt app Baby via Tasker (RZ_Baby);$A:Appli:Baby:*:On#
+Appli;Baby;I;SE?SP;string;*;OK|FAIL;dyn;ETAT;ACK état app Baby;$I:Appli:Baby:*:OK#
+Appli;tasker;A;SP?SE;boolean;*;On|Off;ini;EXPOSE;Activation Tasker global (am start direct);$A:Appli:tasker:*:On#
+Appli;tasker;I;SE?SP;string;*;OK|FAIL;dyn;ETAT;ACK Tasker - retour sendInfo(CfgS modeRZ) si Off;$I:Appli:tasker:*:OK#
+Appli;zoom;A;SP?SE;boolean;*;On|Off;ini;EXPOSE;Application Zoom SE;$A:Appli:zoom:*:On#
+Appli;zoom;I;SE?SP;string;*;OK|FAIL;dyn;ETAT;ACK état Zoom;$I:Appli:zoom:*:OK#
+Appli;BabyMonitor;A;SP?SE;boolean;*;On|Off;ini;EXPOSE;App surveillance bébé via Tasker;$A:Appli:BabyMonitor:*:On#
+Appli;BabyMonitor;I;SE?SP;string;*;OK|FAIL;dyn;ETAT;ACK état BabyMonitor;$I:Appli:BabyMonitor:*:OK#
+Appli;NavGPS;A;SP?SE;boolean;*;On|Off;ini;EXPOSE;Application Navigation GPS via Tasker;$A:Appli:NavGPS:*:On#
+Appli;NavGPS;I;SE?SP;string;*;OK|FAIL;dyn;ETAT;ACK état NavGPS;$I:Appli:NavGPS:*:OK#
+Appli;ExprTasker;A;SP?SE;string;Expression;nom: neutre|sourire|triste|étonnement|colère;-;EXPOSE;Joue expression via RZ_Expression (Tasker);$A:Appli:ExprTasker:Expression:sourire#
+Appli;ExprTasker;A;SP?SE;string;Info;texte libre (affiché scène Tasker);-;EXPOSE;Affiche texte info via RZ_Info (Tasker);$A:Appli:ExprTasker:Info:Bonjour je suis RZ#
+Appli;ExprTasker;A;SP?SE;string;Off;*;-;EXPOSE;Retour neutre forcé via RZ_Expression(neutre);$A:Appli:ExprTasker:Off:*#
+Appli;ExprTasker;I;SE?SP;string;Expression|Info|Off;OK|FAIL;dyn;ETAT;ACK miroir de la commande reçue;$I:Appli:ExprTasker:Expression:OK#
+Appli;ExprTasker;I;SE?SP;string;etat;on|off|pb;dyn;ETAT;État global ExprTasker (pb=Tasker KO ou erreur);$I:Appli:ExprTasker:etat:on#
+CfgS;typeReseau;V;SP?SE;enum;4K|Wifi4KSP|WifiSPSsI|WifiInternetBox;;ini;EXPOSEE;- CfgS.typeReseau -> nouvelle propriété pour CfgS avec 4 valeurs : 4K (SE à une carte SIM)| Wifi4KSP (SE a internet et consomme le 4K de SP) | WifiSPSsI (liaison SP mais pas internet) | WifiInternetBox(SE Internet illimite) ;
+CfgS;typeReseau;I;SE? SP;enum;4K|Wifi4KSP|WifiSPSsI|WifiInternetBox;;dyn;ETAT;ACK - CfgS.typeReseau -> nouvelle propriété pour CfgS avec 4 valeurs : 4K (SE à une carte SIM)| Wifi4KSP (SE a internet et consomme le 4K de SP) | WifiSPSsI (liaison SP mais pas internet) | WifiInternetBox(SE Internet illimite) ;

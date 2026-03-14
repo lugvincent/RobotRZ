@@ -41,19 +41,19 @@
 # TABLE A — VPIV PRODUITS
 # -----------------------
 # SP → SE :
-#   $V:CamSE:mode:<side>:stream#
-#   $V:CamSE:mode:<side>:snapshot#
-#   $V:CamSE:mode:<side>:off#
+#   $V:CamSE:modeCam:<side>:stream#
+#   $V:CamSE:modeCam:<side>:snapshot#
+#   $V:CamSE:modeCam:<side>:off#
 #   $V:CamSE:paraCam:<side>:{"res":"720p","fps":30,"quality":80,"urgDelay":5}#
-#   $V:CamSE:(snap):<side>:OK#
+#   $V:CamSE:snap:<side>:1#
 #
 # SE → SP :
-#   $I:CamSE:mode:<side>:stream#          ACK mode appliqué
-#   $I:CamSE:mode:<side>:off#             ACK arrêt
-#   $I:CamSE:mode:<side>:error#           Mode erreur positionné
+#   $I:CamSE:modeCam:<side>:stream#       ACK mode appliqué
+#   $I:CamSE:modeCam:<side>:off#          ACK arrêt
+#   $I:CamSE:modeCam:<side>:error#        Mode erreur positionné
 #   $I:CamSE:paraCam:<side>:{...}#        ACK paramètres appliqués
 #   $I:CamSE:StreamURL:<side>:<url>#      URL stream ou snapshot
-#   $E:CamSE:(error):<side>:<CODE>#       Événement erreur
+#   $E:CamSE:error:<side>:<CODE>#         Événement erreur
 #   $I:COM:error:SE:"CamSE <side> : ..."# Erreur non critique
 #   $E:Urg:source:SE:URG_SENSOR_FAIL#     Urgence (typePtge 0 ou 2)
 #
@@ -88,9 +88,8 @@
 #   fifo_termux_in : créé par fifo_manager.sh
 #
 # AUTEUR  : Vincent Philippe
-# VERSION : 2.0  (Table A complète, instances front/rear, mode absorbe active,
-#                  paraCam, gestion erreur URG/COM selon typePtge)
-# DATE    : 2026-03-05
+# VERSION : 2.1  (mode → modeCam, (snap) → snap, (error) → error — cohérence Table A v3)
+# DATE    : 2026-03-12
 # =============================================================================
 
 # =============================================================================
@@ -141,7 +140,7 @@ get_ip() {
 
 # =============================================================================
 # GESTION ERREURS
-# Envoie (error) + mode:error + URG ou COM:error selon typePtge
+# Envoie error + modeCam:error + URG ou COM:error selon typePtge
 # $1 = instance (front|rear)
 # $2 = code erreur (CAM_START_FAIL | CAM_IP_FAIL | CAM_CONFIG_FAIL)
 # =============================================================================
@@ -154,10 +153,10 @@ handle_error() {
 
     log_cam "ERREUR [$side] : $code"
 
-    # Événement erreur caméra → SP (Table A : (error) CAT=E)
-    send_vpiv "\$E:CamSE:(error):${side}:${code}#"
+    # Événement erreur caméra → SP (Table A : PROP=error, CAT=E, NATURE=Event)
+    send_vpiv "\$E:CamSE:error:${side}:${code}#"
 
-    # Passage mode:error dans cam_config.json
+    # Passage modeCam:error dans cam_config.json
     send_mode_state "$side" "error"
 
     # Lecture typePtge dans global.json
@@ -192,9 +191,9 @@ send_mode_state() {
        "$CONFIG_CAM" > "${CONFIG_CAM}.tmp" \
     && mv "${CONFIG_CAM}.tmp" "$CONFIG_CAM"
 
-    # ACK mode → SP
-    send_vpiv "\$I:CamSE:mode:${side}:${mode_val}#"
-    log_cam "mode[$side] → $mode_val"
+    # ACK modeCam → SP
+    send_vpiv "\$I:CamSE:modeCam:${side}:${mode_val}#"
+    log_cam "modeCam[$side] → $mode_val"
 }
 
 # =============================================================================
@@ -342,8 +341,8 @@ stop_webcam() {
         jq '.front.mode = "off" | .rear.mode = "off"' \
            "$CONFIG_CAM" > "${CONFIG_CAM}.tmp" \
         && mv "${CONFIG_CAM}.tmp" "$CONFIG_CAM"
-        send_vpiv "\$I:CamSE:mode:front:off#"
-        send_vpiv "\$I:CamSE:mode:rear:off#"
+        send_vpiv "\$I:CamSE:modeCam:front:off#"
+        send_vpiv "\$I:CamSE:modeCam:rear:off#"
     else
         send_mode_state "$side" "off"
     fi
@@ -445,9 +444,9 @@ fi
 case "$PROP" in
 
     # -----------------------------------------------------------------------
-    # mode : commande principale (off | stream | snapshot)
+    # modeCam : commande principale (off | stream | snapshot)
     # -----------------------------------------------------------------------
-    "mode")
+    "modeCam")
         case "$VAL" in
             "off")
                 stop_webcam "$SIDE"
@@ -456,8 +455,8 @@ case "$PROP" in
                 start_webcam "$SIDE" "$VAL" &
                 ;;
             *)
-                log_cam "ERREUR : mode '$VAL' inconnu (attendu : off|stream|snapshot)"
-                send_vpiv "\$I:COM:error:SE:\"CamSE ${SIDE} : mode inconnu '${VAL}'\"#"
+                log_cam "ERREUR : modeCam '$VAL' inconnu (attendu : off|stream|snapshot)"
+                send_vpiv "\$I:COM:error:SE:\"CamSE ${SIDE} : modeCam inconnu '${VAL}'\"#"
                 exit 1
                 ;;
         esac
@@ -471,9 +470,10 @@ case "$PROP" in
         ;;
 
     # -----------------------------------------------------------------------
-    # (snap) : capture snapshot immédiate — répond via StreamURL
+    # snap : capture snapshot immédiate — répond via StreamURL
+    # (remplace l'ancienne notation (snap) avec parenthèses)
     # -----------------------------------------------------------------------
-    "(snap)")
+    "snap")
         take_snapshot "$SIDE"
         ;;
 
@@ -481,7 +481,7 @@ case "$PROP" in
     # Propriété inconnue
     # -----------------------------------------------------------------------
     *)
-        log_cam "Propriété inconnue ou non supportée en v1 : '$PROP'"
+        log_cam "Propriété inconnue ou non supportée : '$PROP'"
         send_vpiv "\$I:COM:error:SE:\"CamSE : propriété inconnue '${PROP}'\"#"
         exit 1
         ;;

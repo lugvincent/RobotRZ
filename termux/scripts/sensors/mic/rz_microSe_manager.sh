@@ -18,7 +18,7 @@
 # -----------------
 #   off         : arrêt enregistrement, aucun flux VPIV
 #   normal      : dataContRMS publié à chaque mesure (freqCont ms)
-#   intensite   : dataContRMS si delta > seuilDelta + (alerte) si seuil franchi
+#   intensite   : dataContRMS si delta > seuilDelta + alerte si seuil franchi
 #                 pendant holdTime ms (amortisseur bruit de fond)
 #   orientation : balayage servo TGD → direction (angle max RMS)
 #   surveillance: intensite + balayage auto si RMS > seuilMoyen → direction
@@ -39,7 +39,7 @@
 # ----------------------------
 # Un seuil est considéré "franchi" uniquement s'il est maintenu >= holdTime ms.
 # Évite les faux déclenchements sur pics courts (choc, bruit ponctuel).
-# (alerte) envoyé à chaque CHANGEMENT de niveau (montée ET retour silence).
+# alerte envoyé à chaque CHANGEMENT de niveau (montée ET retour silence).
 #
 # TABLE A — VPIV PRODUITS
 # -----------------------
@@ -51,7 +51,7 @@
 #   $I:MicroSE:modeMicro:*:intensite#       ACK mode
 #   $I:MicroSE:paraMicro:*:{...}#           ACK paramètres
 #   $F:MicroSE:dataContRMS:*:342#           Niveau RMS (0–1000)
-#   $E:MicroSE:(alerte):*:fort#             Seuil franchi (faible|moyen|fort|silence)
+#   $E:MicroSE:alerte:*:fort#              Seuil franchi (faible|moyen|fort|silence)
 #   $F:MicroSE:direction:*:35#              Angle orientation (orientation/surveillance)
 #   $I:COM:error:SE:"MicroSE : ..."#        Erreur non critique
 #
@@ -79,9 +79,8 @@
 #   rz_balayage_sonore.sh : dans le même répertoire
 #
 # AUTEUR  : Vincent Philippe
-# VERSION : 2.0  (Table A complète, fenêtre glissante, holdTime, delta filtre,
-#                  5 modes, balayage via VPIV Srv:TGD, sans mosquitto_pub)
-# DATE    : 2026-03-05
+# VERSION : 2.1  ((alerte) → alerte — cohérence Table A v3, pas de parenthèses dans PROP)
+# DATE    : 2026-03-12
 # =============================================================================
 
 # =============================================================================
@@ -109,7 +108,7 @@ modeMicro="off"
 freqCont=300        # ms — période mesure RMS
 winSize=300         # ms — durée enregistrement WAV par mesure
 seuilDelta=30       # RMS×10 — delta min pour envoi dataContRMS
-holdTime=500        # ms — durée maintien seuil avant (alerte)
+holdTime=500        # ms — durée maintien seuil avant alerte
 seuilFaible=100     # RMS×10
 seuilMoyen=400      # RMS×10
 seuilFort=700       # RMS×10
@@ -286,7 +285,7 @@ get_niveau() {
 
 # =============================================================================
 # GESTION ALERTE (holdTime)
-# Vérifie si le niveau est maintenu depuis holdTime ms avant d'envoyer (alerte).
+# Vérifie si le niveau est maintenu depuis holdTime ms avant d'envoyer alerte.
 # $1 = nouveau niveau calculé
 # =============================================================================
 
@@ -305,9 +304,9 @@ check_alerte() {
     # Niveau stable : vérifier si holdTime écoulé
     local duree=$(( now - timestamp_seuil ))
     if (( duree >= holdTime )) && [ "$niveau_actuel" != "$niveau_precedent" ]; then
-        # Seuil maintenu suffisamment longtemps → envoi (alerte)
-        send_vpiv "\$E:MicroSE:(alerte):*:${niveau_actuel}#"
-        log_mic "(alerte) → ${niveau_actuel} (maintenu ${duree}ms)"
+        # Seuil maintenu suffisamment longtemps → envoi alerte (NATURE=Event)
+        send_vpiv "\$E:MicroSE:alerte:*:${niveau_actuel}#"
+        log_mic "alerte → ${niveau_actuel} (maintenu ${duree}ms)"
         niveau_precedent="$niveau_actuel"
     fi
 }

@@ -14,14 +14,14 @@
 #   - jq (pour JSON)
 #
 # AUTEUR: Vincent Philippe
-# VERSION: 1.2 ajout du contexte "Mixte" et gestion améliorée des transitions
-# DATE: 2026-02-06
+# VERSION: 1.3  (correction chemin FIFO_IN : fifo_termux_in → fifo/fifo_termux_in)
+# DATE: 2026-03-12
 # =============================================================================
 # --- CONFIGURATION DES CHEMINS ---
 BASE_DIR="/data/data/com.termux/files/home/scripts_RZ_SE/termux"
 GLOBAL_CONFIG="$BASE_DIR/config/global.json"
 LOG_FILE="$BASE_DIR/logs/state_manager.log"
-FIFO_IN="$BASE_DIR/fifo_termux_in"
+FIFO_IN="$BASE_DIR/fifo/fifo_termux_in"
 MQTT_HOST="robotz-vincent.duckdns.org"
 
 # --- INITIALISATION ---

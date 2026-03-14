@@ -1,7 +1,7 @@
 /************************************************************
  * FICHIER  : src/communication/dispatch_Lrub.cpp
  * CHEMIN   : arduino/mega/src/communication/dispatch_Lrub.cpp
- * VERSION  : 1.1  —  Mars 2026
+ * VERSION  : 1.2  —  Mars 2026
  * AUTEUR   : Vincent Philippe
  *
  * RÔLE
@@ -56,6 +56,14 @@
  *   La gestion du timeout (décompte et extinction) est dans lrub_processTimeout()
  *   appelé périodiquement depuis loop() dans main.cpp.
  *
+ * CORRECTION v1.2
+ * ---------------
+ *   Suppression de #include "hardware/lrub_hardware.h" : inutile dans ce fichier.
+ *   Ce dispatcher appelle uniquement les fonctions de lrub.cpp (API haut-niveau).
+ *   L'accès au matériel se fait via lrub.cpp → lrub_hardware.cpp, pas directement ici.
+ *   Inclure lrub_hardware.h ici créait une dépendance inutile et rendait le code
+ *   plus fragile aux évolutions de l'API matérielle.
+ *
  * PRÉCAUTIONS
  * -----------
  *   - lrub_processTimeout() DOIT être appelé dans loop() pour que le timeout fonctionne.
@@ -66,7 +74,7 @@
 #include "vpiv_dispatch.h"
 #include "system/urg.h"
 #include "actuators/lrub.h"
-#include "hardware/lrub_hardware.h"
+// ⚠ PAS d'include lrub_hardware.h ici — accès matériel via lrub.cpp uniquement
 #include "config/config.h"
 #include "communication/vpiv_utils.h"
 #include "communication/communication.h"

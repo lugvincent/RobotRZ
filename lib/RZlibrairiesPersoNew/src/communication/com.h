@@ -1,48 +1,60 @@
 #ifndef COM_H
 #define COM_H
+
+// =====================================================================
+// FICHIER  : com.h
+// CHEMIN   : lib/RZlibrairiesPersoNew/src/communication/com.h
+// VERSION  : 1.1  —  Mars 2026
+// AUTEUR   : Vincent Philippe
+//
+// RÔLE
+// ----
+//   Déclarations du module COM : messages informatifs et debug
+//   publiés vers SP via VPIV (CAT=I).
+//
+// MESSAGES VPIV PRODUITS (A→SP)
+// ------------------------------
+//   $I:COM:info:A:<message>#    — information de fonctionnement (ACK, notifications)
+//   $I:COM:debug:A:<message>#   — debug — ne pas activer en production
+//   $I:COM:warn:A:<message>#    — avertissement non bloquant
+//   $I:COM:error:A:<message>#   — erreur non critique (pas d'arrêt auto)
+//
+// ARTICULATION
+// ------------
+//   com.h (déclarations) → dispatch_com.cpp (implémentation complète)
+//   vpiv_dispatch.cpp → Com::dispatch() → sendInfo()/sendError()
+//
+// CORRECTION v1.1
+// ---------------
+//   Suppression de l'implémentation inline de Com::dispatch présente dans v1.0.
+//   Cette inline violait la règle ODR (One Definition Rule) : dispatch_com.cpp
+//   définissait déjà Com::dispatch → double définition → comportement indéfini
+//   à l'édition de liens (le linker choisissait l'une des deux, imprévisible).
+//   De plus la version inline était INCOMPLÈTE (gérait seulement "info",
+//   ignorait "debug", "warn", "error").
+//   Désormais : seule la DÉCLARATION est ici. L'implémentation est dans
+//   dispatch_com.cpp (info + debug + warn + error — complète).
+//
+// PRÉCAUTIONS
+// -----------
+//   Ne JAMAIS mettre d'implémentation non-inline dans un .h inclus dans
+//   plusieurs .cpp → violations ODR immédiates en C++.
+// =====================================================================
+
 #include "vpiv_dispatch.h"
-#include "communication.h" // Pour sendInfo
-/**
- * Module COM : Gestion des messages informatifs et de debug.
- *
- * Rôles :
- *   - Centraliser les messages non-critiques (info, debug, warn, error).
- *   - Utiliser CAT=I pour tous les messages (pas de réaction automatique).
- *   - Distinguer les types pour l'affichage (couleurs, filtrage).
- *
- * Messages VPIV :
- *   - $I:Com:info:A:message#
- *   - $I:Com:debug:A:message#
- *   - $I:Com:warn:A:message#
- *   - $I:Com:error:A:message#
- */
+#include "communication.h" // Pour sendInfo, sendError
 
 namespace Com
 {
-    // Fonction vide (inline dans le .h)
+    // Initialisation — aucun matériel, aucun état interne
     inline void init()
     {
-        // Rien à faire (pas de log, pas d'initialisation)
+        // Rien à faire pour ce module
     }
 
-    // Déclaration du dispatcher (à implémenter dans le même fichier)
+    // Dispatcher VPIV — implémentation dans dispatch_com.cpp
+    // Propriétés gérées : info | debug | warn | error
     bool dispatch(const char *prop, const char *inst, const char *value);
 }
 
-// Implémentation du dispatcher (inline dans le .h si simple pas besoin de .cpp)
-inline bool Com::dispatch(const char *prop, const char *inst, const char *value)
-{
-    if (!prop || !value)
-        return false;
-
-    // Gestion des messages (à étendre si nécessaire)
-    if (strcmp(prop, "info") == 0)
-    {
-        sendInfo("Com", "info", inst, value);
-        return true;
-    }
-    // Les autres propriétés (debug, warn, error) ne sont pas initialisées ici
-    return false;
-}
-
-#endif
+#endif // COM_H

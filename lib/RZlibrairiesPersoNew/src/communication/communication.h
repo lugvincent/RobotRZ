@@ -30,12 +30,28 @@
 #endif
 
 // Représentation parsée d'un message VPIV (raw sans $ et #)
+//
+// ⚠️  CONVENTION — à lire avant toute modification
+// ---------------------------------------------------------------
+// Le format VPIV réel sur la liaison série est :
+//   $<CAT>:<MODULE>:<INST>:<PROP>:<VALUE>#
+//   ex : $V:Mic:*:modeMicsF:MOY#
+//        → MODULE=Mic, INST=*, PROP=modeMicsF, VALUE=MOY
+//
+// parseVPIV() remplit les champs dans l'ordre d'arrivée (token 3 et 4) :
+//   out.prop  ← INST (token 3)  ⚠️ contient l'INSTANCE, pas la propriété
+//   out.inst  ← PROP (token 4)  ⚠️ contient la PROPRIÉTÉ, pas l'instance
+//
+// Cette inversion est compensée dans l'appel au routeur :
+//   dispatchVPIV(msg.module, msg.inst, msg.prop, msg.value)
+// Les dispatchers reçoivent bien (prop=PROP, inst=INST).
+// ---------------------------------------------------------------
 typedef struct
 {
     char type;                    // 'V','I','F','E'...
-    char module[VPIV_MAX_TOKEN];  // ex "Mic", "Us", "SCfg"
-    char prop[VPIV_MAX_TOKEN];    // ex "read", "thd", "freq"
-    char inst[VPIV_MAX_TOKEN];    // ex "*", "0", "[0,2]"
+    char module[VPIV_MAX_TOKEN];  // ex "Mic", "Us", "CfgS"
+    char prop[VPIV_MAX_TOKEN];    // ⚠️ contient l'INST de la trame (ex "*", "0")
+    char inst[VPIV_MAX_TOKEN];    // ⚠️ contient la PROP de la trame (ex "modeMicsF")
     char value[VPIV_MAX_MSG_LEN]; // le reste (peut contenir des ',','[]' etc.)
 } MessageVPIV;
 

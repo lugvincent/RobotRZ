@@ -51,7 +51,7 @@
  *   mtr_overrideStop() : arrêt forcé immédiat, ignore toute commande
  *                        jusqu'à mtr_clearOverride()
  *   mtr_scaleTargets() : réduit toutes les vitesses (0.0 = arrêt, 1.0 = normal)
- *                        utilisé par mvt_safe.cpp pour ralentir progressivement
+ *                        Appelé depuis dispatch_Mtr.cpp (VPIV scale ×1000 → float).
  *   mtr_stopAll()      : arrêt propre (remet targets à 0)
  *
  * PROPRIÉTÉS VPIV PUBLIÉES (A->SP)
@@ -68,8 +68,8 @@
  *   cmd      (V) : "v,omega,accelLevel"  — commande principale
  *   stop     (V) : arrêt propre
  *   override (V) : "stop" ou "clear"
- *   scale    (V) : facteur 0.0..1.0
- *   kturn    (V) : coefficient de rotation
+ *   scale    (V) : entier 0..1000 ×1000  (ex: 750 = facteur 0.750)
+ *   kturn    (V) : entier 0..2000 ×1000  (ex: 800 = coefficient 0.800)
  *   read     (V) : demande l'état courant
  *
  * ARTICULATION
@@ -136,18 +136,32 @@ void mtr_overrideStop();
  * Publie $I:Mtr:override:*:cleared# */
 void mtr_clearOverride();
 
-/* Facteur de réduction de vitesse (0.0..1.0).
- *   1.0 = vitesse normale
- *   0.5 = toutes les vitesses réduites de moitié
- *   0.0 = arrêt complet
- * Publie $I:Mtr:scale:*:<valeur># */
-void mtr_scaleTargets(float s);
+/* Facteur de réduction de vitesse.
+ *
+ *   s      (float) : facteur interne 0.0..1.0 — calcul uniquement, jamais dans VPIV.
+ *   s_int  (int)   : valeur ×1000 issue du VPIV (0..1000) — publiée dans l'ACK.
+ *
+ *   Exemples : s=1.0/s_int=1000 → vitesse normale
+ *              s=0.5/s_int=500  → moitié de vitesse
+ *              s=0.0/s_int=0    → arrêt complet
+ *
+ *   Publie $I:Mtr:scale:*:<s_int>#  (entier ×1000, pas de float dans VPIV).
+ *   Appelé uniquement depuis dispatch_Mtr.cpp. */
+void mtr_scaleTargets(float s, int s_int);
 
 /* ================================================================
  * RÉGLAGE DU COEFFICIENT DE ROTATION
- *   kturn : amplification omega dans le calcul différentiel
- *   Publie $I:Mtr:kturn:*:<valeur>#
+ *
+ *   k      (float) : coefficient 0.0..2.0 — utilisé dans computeDiffDrive().
+ *                    Jamais publié dans le VPIV.
+ *   k_int  (int)   : valeur ×1000 issue du VPIV (0..2000) — publiée dans l'ACK.
+ *
+ *   Valeurs typiques :
+ *     500/0.5 → rotation douce   800/0.8 → confort   1000/1.0 → standard
+ *
+ *   Publie $I:Mtr:kturn:*:<k_int>#  (entier ×1000, pas de float dans VPIV).
+ *   Appelé uniquement depuis dispatch_Mtr.cpp.
  * ================================================================ */
-void mtr_setKturn(float k);
+void mtr_setKturn(float k, int k_int);
 
 #endif // MTR_ACTUATORS_H

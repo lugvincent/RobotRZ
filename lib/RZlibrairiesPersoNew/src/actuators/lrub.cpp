@@ -1,16 +1,33 @@
 /************************************************************
- * FICHIER : src/actuators/lrub.cpp
- * ROLE    : Implémentation haut-niveau du ruban LED (LRUB) - SIMPLE
+ * FICHIER  : src/actuators/lrub.cpp
+ * CHEMIN   : lib/RZlibrairiesPersoNew/src/actuators/lrub.cpp
+ * VERSION  : 1.2  —  Mars 2026
+ * AUTEUR   : Vincent Philippe
  *
- * Utilise les primitives bas-niveau définies dans:
- *   src/hardware/lrub_hardware.h  (lrubhw_*)
+ * RÔLE
+ * ----
+ *   Implémentation haut-niveau du ruban LED (LRUB).
+ *   Appelle les primitives bas-niveau de lrub_hardware.cpp.
  *
- * Comportement :
- *  - mode STATIC : couleur appliquée (sur tout ou indices)
- *  - mode EXTERN  : idem (on considère que pixel-by-pixel = EXTERN)
- *  - act 0/1 pour on/off
- *  - effet "fuite" simple
- *  - timeout possible pour extinction automatique
+ * COMPORTEMENT
+ * ------------
+ *   - mode STATIC/EXTERN : couleur fixe sur tout le ruban ou indices
+ *   - act 0/1 : on/off
+ *   - Effet "fuite" : alternance pairs/impairs
+ *   - Timeout : extinction automatique après délai (géré par processTimeout)
+ *
+ * ARTICULATION
+ * ------------
+ *   dispatch_Lrub.cpp → lrub.cpp → lrub_hardware.cpp
+ *   loop() → lrub_processTimeout()
+ *
+ * CORRECTION v1.2
+ * ---------------
+ *   Suppression de lrub_dispatchVPIV() :
+ *   - Jamais appelée dans le projet (code mort confirmé)
+ *   - Était une copie incomplète de dispatch_Lrub.cpp
+ *   - Utilisait encore "int" au lieu de "lumin" (prop obsolète)
+ *   - Sa déclaration a été supprimée de lrub.h simultanément
  ************************************************************/
 
 #include "lrub.h"
@@ -137,65 +154,7 @@ void lrub_processTimeout()
     }
 }
 
-/* Dispatcher helper (ouvre la possibilité d'appeler directement depuis le module VPIV) */
-bool lrub_dispatchVPIV(const char *prop, const char *inst, const char *value)
-{
-    // Ceci est redondant avec dispatch_Lrub.cpp mais pratique pour tests.
-    (void)inst; // inst traitée au niveau du dispatcher
-    if (!prop)
-        return false;
-
-    if (strcmp(prop, "col") == 0)
-    {
-        // value = "R,G,B"
-        if (!value)
-            return false;
-        int rgb[3];
-        if (!parseRGB(value, rgb))
-        {
-            sendError("Lrub", "col", "*", "bad_rgb");
-            return false;
-        }
-        lrub_applyColorAll(rgb[0], rgb[1], rgb[2]);
-        sendInfo("Lrub", "col", "*", value);
-        return true;
-    }
-
-    if (strcmp(prop, "int") == 0)
-    {
-        int v = atoi(value);
-        lrub_setIntensity(v);
-        char buf[16];
-        snprintf(buf, sizeof(buf), "%d", v);
-        sendInfo("Lrub", "int", "*", buf);
-        return true;
-    }
-
-    if (strcmp(prop, "act") == 0)
-    {
-        bool on = (value && (strcmp(value, "1") == 0 || strcasecmp(value, "true") == 0));
-        lrub_setActive(on);
-        sendInfo("Lrub", "act", "*", on ? "1" : "0");
-        return true;
-    }
-
-    if (strcmp(prop, "effetFuite") == 0)
-    { // effet fuite
-        bool on = (value && (strcmp(value, "1") == 0 || strcasecmp(value, "true") == 0));
-        if (on)
-            lrub_effectFuite();
-        else
-            lrub_applyColorAll(cfg_lrub_redRB, cfg_lrub_greenRB, cfg_lrub_blueRB);
-        sendInfo("Lrub", "effetFuite", "*", on ? "1" : "0");
-        return true;
-    }
-
-    if (strcmp(prop, "init") == 0)
-    {
-        lrub_init();
-        sendInfo("Lrub", "init", "*", "OK");
-        return true;
-    }
-
-    return false;
-}
+// =====================================================================
+// FIN DU MODULE LRUB
+// Le dispatch VPIV est géré par dispatch_Lrub.cpp (namespace Lrub::dispatch)
+// =====================================================================

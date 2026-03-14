@@ -26,13 +26,13 @@ static void _send_value_vpiv(int v)
 {
     char buf[8];
     snprintf(buf, sizeof(buf), "%d", v);
-    sendInfo("MvtIR", "value", "*", buf);
+    sendInfo("IRmvt", "value", "*", buf);
 }
 
 // Envoi alerte
 static void _send_alert_vpiv()
 {
-    sendInfo("MvtIR", "alert", "*", "1");
+    sendInfo("IRmvt", "alert", "*", "1");
 }
 
 // Initialisation
@@ -55,7 +55,7 @@ void mvt_ir_setActive(bool on)
 {
     cfg_mvtir_active = on;
     // ack
-    sendInfo("MvtIR", "act", "*", on ? "1" : "0");
+    sendInfo("IRmvt", "act", "*", on ? "1" : "0");
 }
 
 // Fréquence (ms)
@@ -66,7 +66,7 @@ void mvt_ir_setFreqMs(unsigned long ms)
     cfg_mvtir_freq_ms = ms;
     char buf[16];
     snprintf(buf, sizeof(buf), "%lu", ms);
-    sendInfo("MvtIR", "freq", "*", buf);
+    sendInfo("IRmvt", "freq", "*", buf);
 }
 
 // Seuil
@@ -77,7 +77,7 @@ void mvt_ir_setThreshold(int n)
     cfg_mvtir_threshold = n;
     char buf[16];
     snprintf(buf, sizeof(buf), "%d", n);
-    sendInfo("MvtIR", "thd", "*", buf);
+    sendInfo("IRmvt", "thd", "*", buf);
 }
 
 // Mode : met en place valeurs par défaut associées
@@ -90,7 +90,7 @@ void mvt_ir_setMode(const char *mode)
         cfg_mvtir_active = false;
         strncpy(cfg_mvtir_mode, "idle", sizeof(cfg_mvtir_mode) - 1);
         cfg_mvtir_mode[sizeof(cfg_mvtir_mode) - 1] = '\0';
-        sendInfo("MvtIR", "mode", "*", "idle");
+        sendInfo("IRmvt", "mode", "*", "idle");
         return;
     }
     if (strcmp(mode, "monitor") == 0)
@@ -100,7 +100,7 @@ void mvt_ir_setMode(const char *mode)
         cfg_mvtir_threshold = 1;
         strncpy(cfg_mvtir_mode, "monitor", sizeof(cfg_mvtir_mode) - 1);
         cfg_mvtir_mode[sizeof(cfg_mvtir_mode) - 1] = '\0';
-        sendInfo("MvtIR", "mode", "*", "monitor");
+        sendInfo("IRmvt", "mode", "*", "monitor");
         return;
     }
     if (strcmp(mode, "surveillance") == 0)
@@ -110,12 +110,12 @@ void mvt_ir_setMode(const char *mode)
         cfg_mvtir_threshold = 2;
         strncpy(cfg_mvtir_mode, "surveillance", sizeof(cfg_mvtir_mode) - 1);
         cfg_mvtir_mode[sizeof(cfg_mvtir_mode) - 1] = '\0';
-        sendInfo("MvtIR", "mode", "*", "surveillance");
+        sendInfo("IRmvt", "mode", "*", "surveillance");
         return;
     }
 
     // si mode inconnu -> retourner erreur
-    sendError("MvtIR", "mode", "*", "unknown");
+    sendError("IRmvt", "mode", "*", "unknown");
 }
 
 // Process périodique (à appeler depuis loop())

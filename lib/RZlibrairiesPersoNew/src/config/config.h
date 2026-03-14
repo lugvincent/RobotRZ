@@ -152,38 +152,82 @@ extern int cfg_mtr_targetR;
 extern int cfg_mtr_targetA;
 
 /* ===================================================================== */
-/* ODOM — ODOMETRIE                                                       */
+/* ODOM — ODOMETRIE DIFFERENTIELLE (differential drive odometry)          */
+/*                                                                        */
+/* Principe : deux roues motrices avec encodeurs incrémentaux.            */
+/* Les ticks sont convertis en distances (m), puis la pose (x,y,theta)   */
+/* est mise à jour à chaque cycle.                                        */
+/*                                                                        */
+/* Paramètres physiques du robot (à mesurer sur le vrai robot) :         */
+/*   - diamètre de roue (wheel diameter)                                 */
+/*   - entraxe / écart entre les deux roues (wheelbase / track)          */
+/*   - résolution encodeur : ticks par tour (counts per revolution, CPR) */
+/*   - gains correctifs G/D pour compenser l'asymétrie mécanique         */
+/*                                                                        */
+/* Ces valeurs sont injectées au runtime via VPIV :                      */
+/*   $V:Odom:*:paraOdom:wheel_mm,track_mm,cpr,gainG,gainD,fCalc,fPos,fVel# */
 /* ===================================================================== */
 
-#define ODO_ENCODER_GA_PIN 2
-#define ODO_ENCODER_GB_PIN 19
-#define ODO_ENCODER_DA_PIN 18
-#define ODO_ENCODER_DB_PIN 3
+/* Broches (pins) encodeurs — connectées aux interruptions matérielles    */
+#define ODO_ENCODER_GA_PIN 2  /* encodeur gauche signal A (interrupt)   */
+#define ODO_ENCODER_GB_PIN 19 /* encodeur gauche signal B (interrupt)   */
+#define ODO_ENCODER_DA_PIN 18 /* encodeur droit  signal A (interrupt)   */
+#define ODO_ENCODER_DB_PIN 3  /* encodeur droit  signal B (interrupt)   */
 
-#define ODO_WHEEL_DIAMETER_M_DEFAULT 0.100
-#define ODO_TRACK_M_DEFAULT 0.300
-#define ODO_ENCODER_CPR_DEFAULT 256
+/* ---------------------------------------------------------------------- */
+/* Valeurs par défaut — À MESURER sur le robot réel et ajuster via test   */
+/* Utiliser $V:Odom:*:paraOdom:...# pour modifier sans recompiler         */
+/* ---------------------------------------------------------------------- */
+
+/* Géométrie du robot */
+#define ODO_WHEEL_DIAMETER_MM_DEFAULT 100 /* diamètre roue (mm) — valeur indicative     */
+#define ODO_TRACK_MM_DEFAULT 300          /* entraxe roues (mm) — valeur indicative     */
+#define ODO_ENCODER_CPR_DEFAULT 256       /* ticks/tour encodeur (counts per revolution)*/
+
+/* Gains correctifs (calibration asymétrie roues) — entiers ×1000        */
+/* 1000 = gain neutre (×1.0). Ajuster si le robot dérive en ligne droite  */
+#define ODO_LEFT_GAIN_X1000_DEFAULT 1000  /* gain roue gauche (×1000)  */
+#define ODO_RIGHT_GAIN_X1000_DEFAULT 1000 /* gain roue droite (×1000)  */
+
+/* Fréquences (en ms) — 3 timers indépendants                             */
+#define ODO_FREQ_CALC_MS_DEFAULT 50 /* période calcul odométrique (ms) = 20 Hz   */
+#define ODO_FREQ_POS_MS_DEFAULT 200 /* période envoi position    (ms) =  5 Hz   */
+#define ODO_FREQ_VEL_MS_DEFAULT 40  /* période envoi vitesse     (ms) = 25 Hz   */
+
+/* ---------------------------------------------------------------------- */
+/* Variables globales — déclarées dans config.cpp, utilisées partout      */
+/* ---------------------------------------------------------------------- */
 
 extern const char *odomNames[];
 
-extern bool cfg_odom_active;
-extern unsigned long cfg_odom_period_ms;
-extern unsigned long cfg_odom_report_period_ms;
-extern bool cfg_odom_pendingReport;
+/* Contrôle du module */
+extern bool cfg_odom_active;        /* module actif (true) ou en pause (false) */
+extern bool cfg_odom_pendingReport; /* true = envoyer rapport combiné dès que possible */
 
-extern double cfg_odo_wheel_diameter_m;
-extern double cfg_odo_track_m;
-extern int cfg_odo_encoder_cpr;
+/* Paramètres de fréquence (en ms) */
+extern unsigned long cfg_odom_period_ms;   /* période de calcul odométrique (ms)      */
+extern unsigned long cfg_odom_freq_pos_ms; /* période d'envoi automatique position    */
+extern unsigned long cfg_odom_freq_vel_ms; /* période d'envoi automatique vitesse     */
 
-extern double cfg_odo_coeff_gLong;
-extern double cfg_odo_coeff_dLong;
-extern double cfg_odo_coeff_gAngl;
-extern double cfg_odo_coeff_dAngl;
+/* Paramètres physiques du robot (modifiables via paraOdom)               */
+extern double cfg_odo_wheel_diameter_m; /* diamètre roue en mètres                 */
+extern double cfg_odo_track_m;          /* entraxe (wheelbase) en mètres            */
+extern int cfg_odo_encoder_cpr;         /* ticks par tour (counts per revolution)  */
+extern int cfg_odo_left_gain_x1000;     /* gain correctif roue gauche (×1000)      */
+extern int cfg_odo_right_gain_x1000;    /* gain correctif roue droite  (×1000)     */
 
-extern float cfg_odo_lastGyro_dps;
-extern unsigned long cfg_odo_lastGyro_ts_ms;
-extern float cfg_odo_lastCompass_deg;
-extern int cfg_odo_lastCompass_quality;
+/* Coefficients calculés automatiquement — NE PAS modifier directement    */
+/* (recalculés par odom_init() ou odom_setPhysical() via paraOdom)        */
+extern double cfg_odo_coeff_gLong; /* m/tick, roue gauche (left  longitudinal) */
+extern double cfg_odo_coeff_dLong; /* m/tick, roue droite (right longitudinal) */
+extern double cfg_odo_coeff_gAngl; /* rad/m,  contribution gauche (angular)    */
+extern double cfg_odo_coeff_dAngl; /* rad/m,  contribution droite (angular)    */
+
+/* Dernières données de fusion capteurs externes                           */
+extern float cfg_odo_lastGyro_dps;           /* vitesse angulaire gyro SE (deg/s)        */
+extern unsigned long cfg_odo_lastGyro_ts_ms; /* horodatage donnée gyro (ms)              */
+extern float cfg_odo_lastCompass_deg;        /* cap boussole SE (degrés)                 */
+extern int cfg_odo_lastCompass_quality;      /* qualité boussole (0–100)               */
 
 /* ===================================================================== */
 /* SRV — SERVOMOTEURS                                                     */

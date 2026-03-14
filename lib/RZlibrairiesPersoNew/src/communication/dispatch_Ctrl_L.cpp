@@ -21,7 +21,7 @@ namespace Ctrl_L
         {
             bool on = value && (strcmp(value, "1") == 0 || strcmp(value, "true") == 0);
             ctrl_L_setEnabled(on);
-            sendInfo("ctrl_L", "status", "*", on ? "OK" : "OFF");
+            sendInfo("Ctrl_L", "status", "*", on ? "OK" : "OFF");
             return true;
         }
 
@@ -29,7 +29,7 @@ namespace Ctrl_L
         if (strcmp(prop, "dist") == 0 && value)
         {
             ctrl_L_setTargetDistance(atoi(value));
-            sendInfo("ctrl_L", "dist", "*", "OK");
+            sendInfo("Ctrl_L", "dist", "*", "OK");
             return true;
         }
 
@@ -37,7 +37,7 @@ namespace Ctrl_L
         if (strcmp(prop, "vmax") == 0 && value)
         {
             ctrl_L_setMaxSpeed(atoi(value));
-            sendInfo("ctrl_L", "vmax", "*", "OK");
+            sendInfo("Ctrl_L", "vmax", "*", "OK");
             return true;
         }
 
@@ -45,7 +45,7 @@ namespace Ctrl_L
         if (strcmp(prop, "dead") == 0 && value)
         {
             ctrl_L_setDeadZone(atoi(value));
-            sendInfo("ctrl_L", "dead", "*", "OK");
+            sendInfo("Ctrl_L", "dead", "*", "OK");
             return true;
         }
 
@@ -53,7 +53,7 @@ namespace Ctrl_L
         if (strcmp(prop, "status") == 0)
         {
             const char *status = ctrl_L_getStatus(); // On récupère la valeur retournée
-            sendInfo("ctrl_L", "status", "*", status);
+            sendInfo("Ctrl_L", "status", "*", status);
             return true;
         }
 

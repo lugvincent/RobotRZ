@@ -254,33 +254,59 @@ void mtr_clearOverride()
     sendInfo("Mtr", "override", "*", "cleared");
 }
 
-/* Facteur de réduction globale des vitesses.
- * Appliqué à L et R lors de chaque sendToHardware().
- *   1.0 = vitesse normale
- *   0.5 = moitié de la vitesse demandée
- *   0.0 = arrêt (moteurs à 0 sans modifier les consignes cibles) */
-void mtr_scaleTargets(float s)
+/* mtr_scaleTargets — applique le facteur de réduction des vitesses.
+ *
+ * Paramètres :
+ *   s      (float) : facteur 0.0..1.0 — utilisé UNIQUEMENT pour le calcul interne.
+ *                    Jamais publié dans le VPIV (règle pas-de-float).
+ *   s_int  (int)   : valeur ×1000 telle que reçue depuis le VPIV (0..1000).
+ *                    Publiée telle quelle dans l'ACK VPIV.
+ *                    Exemples : s=0.5→s_int=500, s=0.75→s_int=750, s=1.0→s_int=1000.
+ *
+ * Effet de bord :
+ *   - mtr_globalScale mis à jour → appliqué dans sendToHardware() à chaque envoi.
+ *   - ACK $I:Mtr:scale:*:<s_int># publié (entier ×1000, pas de float). */
+void mtr_scaleTargets(float s, int s_int)
 {
-    mtr_globalScale = clampInt((int)(s * 1000), 0, 1000) / 1000.0f; // clamp 0.0..1.0
+    // Clamp float interne (défense en profondeur — dispatcher a déjà clampé)
+    mtr_globalScale = clampInt((int)(s * 1000), 0, 1000) / 1000.0f;
 
+    // ACK VPIV en entier ×1000, conforme règle pas-de-float-dans-VPIV
+    // Ex : s=0.75 → s_int=750 → "$I:Mtr:scale:*:750#"
     char buf[16];
-    dtostrf(mtr_globalScale, 4, 2, buf);
+    snprintf(buf, sizeof(buf), "%d", s_int);
     sendInfo("Mtr", "scale", "*", buf);
 }
 
-/* Réglage du coefficient de rotation.
- * Valeurs typiques : 0.5 (rotation douce) à 1.0 (rotation franche).
- * Effet immédiat sur les prochains appels de setTargetsSigned(). */
-void mtr_setKturn(float k)
+/* mtr_setKturn — règle le coefficient de rotation du calcul différentiel.
+ *
+ * Paramètres :
+ *   k      (float) : coefficient 0.0..2.0 — stocké dans cfg_mtr_kturn, utilisé
+ *                    dans computeDiffDrive(). Jamais publié dans le VPIV.
+ *   k_int  (int)   : valeur ×1000 telle que reçue depuis le VPIV (0..2000).
+ *                    Publiée telle quelle dans l'ACK VPIV.
+ *
+ * Effet de bord :
+ *   - cfg_mtr_kturn mis à jour → effet immédiat sur le prochain
+ *     appel de mtr_setTargetsSigned() via computeDiffDrive().
+ *   - ACK $I:Mtr:kturn:*:<k_int># publié (entier ×1000, pas de float).
+ *
+ * Valeurs VPIV typiques :
+ *   500=rotation douce  800=standard confort  1000=standard  1500=rotation franche */
+void mtr_setKturn(float k, int k_int)
 {
+    // Clamp float interne (défense en profondeur — dispatcher a déjà clampé)
     if (k < 0.0f)
         k = 0.0f;
     if (k > 2.0f)
-        k = 2.0f; // protection contre des valeurs absurdes
-    cfg_mtr_kturn = k;
+        k = 2.0f;
 
+    cfg_mtr_kturn = k; // utilisé par computeDiffDrive()
+
+    // ACK VPIV en entier ×1000, conforme règle pas-de-float-dans-VPIV
+    // Ex : k=0.8 → k_int=800 → "$I:Mtr:kturn:*:800#"
     char buf[16];
-    dtostrf(k, 4, 2, buf);
+    snprintf(buf, sizeof(buf), "%d", k_int);
     sendInfo("Mtr", "kturn", "*", buf);
 }
 

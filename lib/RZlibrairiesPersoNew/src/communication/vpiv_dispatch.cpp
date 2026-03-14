@@ -11,8 +11,8 @@
 #include "vpiv_dispatch.h"
 #include "vpiv_utils.h"
 
-#include "system/urg.h"  // urg_clear(), urg_isActive()
-#include "communication/communication.h"// sendInfo(), sendError()
+#include "system/urg.h"                  // urg_clear(), urg_isActive()
+#include "communication/communication.h" // sendInfo(), sendError()
 #include <string.h>
 #include <ctype.h>
 
@@ -29,7 +29,7 @@ struct DispatchEntry
 // ⚠️ L’ordre n’a pas d’impact, mais chaque module doit être listé.
 static DispatchEntry ACTION_TABLE[] = {
     {"Lrub", Lrub::dispatch},
-    {"lring", Lring::dispatch},
+    {"Lring", Lring::dispatch},
 
     {"Srv", Srv::dispatch},
     {"Mtr", Mtr::dispatch},
@@ -73,9 +73,9 @@ bool dispatchVPIV(const char *var,
         // Autoriser SCFG clear
         if (strcmp(var, "CfgS") == 0 && // Module CfgS uniquement
             strcmp(prop, "emg") == 0 && // Propriété "emg"
-            value && // Vérifie que value n'est pas NULL
+            value &&                    // Vérifie que value n'est pas NULL
             strcmp(value, "clear") == 0 // Valeur doit être "clear"
-            )           
+        )
         {
             return CfgS::dispatch(prop, inst, value);
         }

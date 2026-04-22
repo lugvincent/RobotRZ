@@ -39,7 +39,7 @@
 // PRÉCAUTIONS
 // -----------
 //   - Ne jamais appeler delay() dans loop()
-//   - LOOP_MAX_MS = 80ms : si dépassé → urgence URG_LOOP_TOO_SLOW
+//   - LOOP_MAX_MS = 80ms : si dépassé → urgence URG_LOOP_TOO_SLOW_A
 //   - mtr_processPeriodic() DOIT être dans loop() :
 //     le keepalive 100ms vers l'UNO évite son timeout safety (1000ms)
 // =====================================================================
@@ -134,13 +134,13 @@ void loop()
 
     // -----------------------------------------------------------------
     // 8. Watchdog — durée de loop
-    //    Si la loop dépasse LOOP_MAX_MS → urgence URG_LOOP_TOO_SLOW
+    //    Si la loop dépasse LOOP_MAX_MS → urgence URG_LOOP_TOO_SLOW_A
     // -----------------------------------------------------------------
     unsigned long dt = millis() - loopStartTime;
     if (dt > LOOP_MAX_MS)
     {
         char buf[16];
         snprintf(buf, sizeof(buf), "%lu", dt);
-        urg_handle(URG_LOOP_TOO_SLOW); // déclenche urgence + arrêt moteurs
+        urg_handle(URG_LOOP_TOO_SLOW_A); // déclenche urgence + arrêt moteurs
     }
 }

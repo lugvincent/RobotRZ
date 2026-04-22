@@ -21,11 +21,11 @@ namespace Ctrl_L
         {
             bool on = value && (strcmp(value, "1") == 0 || strcmp(value, "true") == 0);
             ctrl_L_setEnabled(on);
-            sendInfo("Ctrl_L", "status", "*", on ? "OK" : "OFF");
+            sendInfo("Ctrl_L", "act", "*", "OK");
             return true;
         }
 
-        // dist : distance cible (cm)
+        // dist : distance cible (mm)
         if (strcmp(prop, "dist") == 0 && value)
         {
             ctrl_L_setTargetDistance(atoi(value));
@@ -52,8 +52,8 @@ namespace Ctrl_L
         // status : état actuel (OK/FceKO/VtKO)
         if (strcmp(prop, "status") == 0)
         {
-            const char *status = ctrl_L_getStatus(); // On récupère la valeur retournée
-            sendInfo("Ctrl_L", "status", "*", status);
+            const char *status = ctrl_L_getStatus();   // On récupère la valeur retournée
+            sendInfo("Ctrl_L", "status", "*", status); // state
             return true;
         }
 

@@ -44,6 +44,7 @@
 #   Écrit   : fifo/fifo_termux_in     (state-manager, managers capteurs)
 #   Écrit   : fifo/fifo_tasker_in     (Tasker bridge)
 #   Écrit   : fifo/fifo_appli_in      (rz_appli_manager.sh — CAT=A)
+#   Écrit   : fifo/fifo_voice_in    (rz_voice_manager.sh — TTS, vol, output)
 #   Lit     : config/global.json      (typePtge, pour retour vocal)
 #   Appelle : scripts/core/safety_stop.sh  (Point C urgence)
 #   Appelle : scripts/sensors/cam/rz_camera_manager.sh
@@ -83,6 +84,7 @@ LOG_DIR="$BASE_DIR/logs"
 FIFO_TASKER="$FIFO_DIR/fifo_tasker_in"
 FIFO_TERMUX="$FIFO_DIR/fifo_termux_in"
 FIFO_APPLI="$FIFO_DIR/fifo_appli_in"      # ← Ajout : CAT=A Applications
+FIFO_VOICE="$FIFO_DIR/fifo_voice_in"   # module Voice (TTS, vol, output)
 FIFO_RETURN="$FIFO_DIR/fifo_return"
 LOG_FILE="$LOG_DIR/vpiv_parser.log"
 
@@ -123,6 +125,7 @@ init_fifo() {
     [ -p "$FIFO_TASKER"  ] || mkfifo "$FIFO_TASKER"
     [ -p "$FIFO_TERMUX"  ] || mkfifo "$FIFO_TERMUX"
     [ -p "$FIFO_APPLI"   ] || mkfifo "$FIFO_APPLI"
+    [ -p "$FIFO_VOICE"  ] || mkfifo "$FIFO_VOICE"
     [ -p "$FIFO_RETURN"  ] || mkfifo "$FIFO_RETURN"
     log "FIFOs initialisés"
 }
@@ -207,9 +210,11 @@ process_command() {
                 # Transmission directe à rz_appli_manager.sh (délégation complète)
                 log "CAT=A Appli → fifo_appli_in : $msg"
                 write_fifo "$FIFO_APPLI" "$msg"
-            elif [[ "$MODULE" == "Voice" && "$PROP" == "tts" ]]; then
-                # TTS direct depuis SP
-                termux-tts-speak "$(echo "$VAL" | tr -d '"')"
+            elif [[ "$MODULE" == "Voice" ]]; then
+                # Route toutes les trames Voice vers rz_voice_manager.sh
+                # (TTS, vol, output) — supprime le conflit fifo_termux_in/stt_manager
+                log "CAT=A Voice → fifo_voice_in : $msg"
+                write_fifo "$FIFO_VOICE" "$msg"
             else
                 # Autres CAT=A non-Appli → Tasker
                 write_fifo "$FIFO_TASKER" "$msg"
@@ -245,6 +250,12 @@ process_command() {
                          "$PROP" "$VAL"
                     ;;
 
+                # Voice (vol, output) → manager Voice dédié
+                "Voice")
+                    write_fifo "$FIFO_VOICE" "$msg"
+                    ;;
+
+                
                 # Tous les autres modules → fifo_termux_in (managers capteurs)
                 *)
                     write_fifo "$FIFO_TERMUX" "$msg"
@@ -263,6 +274,10 @@ process_command() {
                 write_fifo "$FIFO_TERMUX" "\$I:Urg:${PROP}:SE:${VAL}#"
             else
                 write_fifo "$FIFO_TERMUX" "$msg"
+            fi
+            # Propagation urgences vers Voice (TTS urgence interruptif)
+            if [[ "$CAT" == "E" && "$MODULE" == "Urg" ]]; then
+                write_fifo "$FIFO_VOICE" "$msg"
             fi
             ;;
 

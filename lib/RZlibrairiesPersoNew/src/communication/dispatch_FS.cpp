@@ -87,10 +87,8 @@ namespace FS
         if (strcmp(prop, "tare") == 0)
         {
             fs_doTare();
-            sendInfo("FS", "tare", "*", "OK");
             return true;
         }
-
         // ----------------------------------------------------------------
         // cal — facteur de calibration
         //   Entier x1000 (ex : 950 pour un facteur réel de 0.950)
@@ -105,7 +103,6 @@ namespace FS
                 return false;
             }
             fs_doCal(cal);
-            sendInfo("FS", "cal", "*", "OK");
             return true;
         }
 
@@ -117,7 +114,6 @@ namespace FS
         {
             bool on = (strcmp(value, "1") == 0 || strcmp(value, "true") == 0);
             fs_setActive(on);
-            sendInfo("FS", "act", "*", on ? "1" : "0");
             return true;
         }
 
@@ -128,7 +124,6 @@ namespace FS
         {
             unsigned long ms = (unsigned long)atoi(value);
             fs_setFreq(ms);
-            sendInfo("FS", "freq", "*", "OK");
             return true;
         }
 
@@ -140,7 +135,6 @@ namespace FS
         {
             int th = atoi(value);
             fs_setThreshold(th);
-            sendInfo("FS", "thd", "*", "OK");
             return true;
         }
 

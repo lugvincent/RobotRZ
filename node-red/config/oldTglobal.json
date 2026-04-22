@@ -1,0 +1,660 @@
+{
+    "DemoVar": {
+        "nomVarG": "DemoVar",
+        "abbrVarG": "DVar",
+        "instances": [
+            "*",
+            "inst1",
+            "inst2"
+        ],
+        "descriptionVarG": "Variable de démo avec différents types de propriétés",
+        "dateUpdateVarG": "2025-09-23T15:00:00.000Z",
+        "proprietes": [
+            {
+                "nomP": "nom",
+                "abbrP": "nbrev",
+                "typeP": "string",
+                "schema": null,
+                "valeurs": {
+                    "*": "zen3",
+                    "inst1": "Alicex",
+                    "inst2": "Bob"
+                }
+            },
+            {
+                "nomP": "age",
+                "abbrP": "ag",
+                "typeP": "number",
+                "schema": null,
+                "valeurs": {
+                    "*": "10",
+                    "inst1": 30,
+                    "inst2": "26"
+                }
+            },
+            {
+                "nomP": "actif",
+                "abbrP": "act",
+                "typeP": "boolean",
+                "schema": null,
+                "valeurs": {
+                    "*": true,
+                    "inst1": "false",
+                    "inst2": "false"
+                }
+            },
+            {
+                "nomP": "newProp",
+                "abbrP": "New",
+                "typeP": "string",
+                "schema": null,
+                "valeurs": {
+                    "*": "za",
+                    "inst1": "zaza",
+                    "inst2": "zozoz"
+                },
+                "_locked": false
+            },
+            {
+                "nomP": "propObjetTest",
+                "abbrP": "pot",
+                "typeP": "object",
+                "schema": [
+                    {
+                        "nomSsP": "sspro1",
+                        "typeSsP": "string"
+                    },
+                    {
+                        "nomSsP": "sspro2test",
+                        "typeSsP": "boolean"
+                    }
+                ],
+                "_locked": true,
+                "valeurs": {
+                    "*": {
+                        "sspro1": "zazaz",
+                        "sspro2test": true
+                    },
+                    "inst1": {
+                        "sspro1": "ssqdd",
+                        "sspro2test": true
+                    },
+                    "inst2": {
+                        "sspro1": "qsdqsd",
+                        "sspro2test": null
+                    }
+                }
+            }
+        ]
+    },
+    "ledring": {
+        "nomVarG": "ledring",
+        "abbrVarG": "Lring",
+        "instances": [
+            "rg0",
+            "rg1",
+            "rg2",
+            "rg3",
+            "rg4",
+            "rg5",
+            "rg6",
+            "rg7",
+            "rg8",
+            "rg9",
+            "rg10",
+            "rg11"
+        ],
+        "descriptionVarG": "Lring - Cercle de 12 leds type  WS2811 1903 programmable via 1 pin . Numérotation dans le sens horaire, 0 en haut. Utilisé pour les expressions faciales,..Indic pour les messages mqtt, abrev des instances et proprietes dans node-red et arduino.",
+        "dateUpdateVarG": "2025-12-15T13:12:27.521Z",
+        "proprietes": [
+            {
+                "nomP": "couleurRGB",
+                "abbrP": "RGB",
+                "typeP": "string",
+                "valeurs": {
+                    "*": "255,255,255",
+                    "rg0": "255,255,255",
+                    "rg1": "255,255,255",
+                    "rg2": "255,255,255",
+                    "rg3": "255,255,255",
+                    "rg4": "255,255,255",
+                    "rg5": "255,255,255",
+                    "rg6": "255,255,255",
+                    "rg7": "255,255,255",
+                    "rg8": "255,255,255",
+                    "rg9": "255,255,255",
+                    "rg10": "255,255,255",
+                    "rg11": "255,255,255"
+                }
+            },
+            {
+                "nomP": "pulsation lumineuse",
+                "abbrP": "pulse",
+                "typeP": "string",
+                "valeurs": {
+                    "rg0": "",
+                    "rg1": "",
+                    "rg2": "",
+                    "rg3": "",
+                    "rg4": "",
+                    "rg5": "",
+                    "rg6": "",
+                    "rg7": "",
+                    "rg8": "",
+                    "rg9": "",
+                    "rg10": "",
+                    "rg11": ""
+                }
+            },
+            {
+                "nomP": "intensite_lumineuse",
+                "abbrP": "int",
+                "typeP": "integer",
+                "valeurs": {
+                    "rg0": "",
+                    "rg1": "",
+                    "rg2": "",
+                    "rg3": "",
+                    "rg4": "",
+                    "rg5": "",
+                    "rg6": "",
+                    "rg7": "",
+                    "rg8": "",
+                    "rg9": "",
+                    "rg10": "",
+                    "rg11": ""
+                }
+            },
+            {
+                "nomP": "activation",
+                "abbrP": "act",
+                "typeP": "string",
+                "valeurs": {
+                    "rg0": "",
+                    "rg1": "",
+                    "rg2": "",
+                    "rg3": "",
+                    "rg4": "",
+                    "rg5": "",
+                    "rg6": "",
+                    "rg7": "",
+                    "rg8": "",
+                    "rg9": "",
+                    "rg10": "",
+                    "rg11": ""
+                }
+            },
+            {
+                "nomP": "Expr_faciale_sourire",
+                "abbrP": "l_rir",
+                "typeP": "integer",
+                "valeurs": {
+                    "rg0": "",
+                    "rg1": "",
+                    "rg2": "",
+                    "rg3": "",
+                    "rg4": "",
+                    "rg5": "",
+                    "rg6": "",
+                    "rg7": "",
+                    "rg8": "",
+                    "rg9": "",
+                    "rg10": "",
+                    "rg11": ""
+                }
+            }
+        ]
+    },
+    "ledrub": {
+        "nomVarG": "ledrub",
+        "abbrVarG": "lrub",
+        "instances": [
+            "\"ar_gd0\"",
+            "\"ar_gd1\"",
+            "\"ar_gd2\"",
+            "\"ar_gd3\"",
+            "\"ar_gd4\"",
+            "\"ar_gd5\"",
+            "\"ar_gd6\"",
+            "\"av_dg7\"",
+            "\"av_dg8\"",
+            "\"av_dg9\"",
+            "\"av_dg10\"",
+            "\"av_dg11\"",
+            "\"cg12\"",
+            "\"cd13\"",
+            "\"cci14\""
+        ],
+        "descriptionVarG": "Ruban de led de type programmable\n *   - \"col\" : couleur, valeur = \"R,G,B\"  (ex: \"255,0,0\")\n *   - \"int\" : intensité 0..255\n *   - \"act\" : activation 1/0 or true/false\n *   - \"f\"   : mode fuite 1/0",
+        "dateUpdateVarG": "2025-11-27T09:07:19.153Z",
+        "proprietes": [
+            {
+                "nomP": "Couleur RGB",
+                "abbrP": "col",
+                "typeP": "string",
+                "valeurs": {
+                    "*": "000,000,000",
+                    "\"ar_gd0\"": null,
+                    "\"ar_gd1\"": null,
+                    "\"ar_gd2\"": null,
+                    "\"ar_gd3\"": null,
+                    "\"ar_gd4\"": null,
+                    "\"ar_gd5\"": null,
+                    "\"ar_gd6\"": null,
+                    "\"av_dg7\"": null,
+                    "\"av_dg8\"": null,
+                    "\"av_dg9\"": null,
+                    "\"av_dg10\"": null,
+                    "\"av_dg11\"": null,
+                    "\"cg12\"": null,
+                    "\"cd13\"": null,
+                    "\"cci14\"": null
+                }
+            },
+            {
+                "nomP": "Intensite_lumineuse",
+                "abbrP": "int",
+                "typeP": "integer",
+                "valeurs": {
+                    "*": "100",
+                    "\"ar_gd0\"": null,
+                    "\"ar_gd1\"": null,
+                    "\"ar_gd2\"": null,
+                    "\"ar_gd3\"": null,
+                    "\"ar_gd4\"": null,
+                    "\"ar_gd5\"": null,
+                    "\"ar_gd6\"": null,
+                    "\"av_dg7\"": null,
+                    "\"av_dg8\"": null,
+                    "\"av_dg9\"": null,
+                    "\"av_dg10\"": null,
+                    "\"av_dg11\"": null,
+                    "\"cg12\"": null,
+                    "\"cd13\"": null,
+                    "\"cci14\"": null
+                }
+            },
+            {
+                "nomP": "activation",
+                "abbrP": "act",
+                "typeP": "string",
+                "valeurs": {
+                    "*": "false",
+                    "\"ar_gd0\"": null,
+                    "\"ar_gd1\"": null,
+                    "\"ar_gd2\"": null,
+                    "\"ar_gd3\"": null,
+                    "\"ar_gd4\"": null,
+                    "\"ar_gd5\"": null,
+                    "\"ar_gd6\"": null,
+                    "\"av_dg7\"": null,
+                    "\"av_dg8\"": null,
+                    "\"av_dg9\"": null,
+                    "\"av_dg10\"": null,
+                    "\"av_dg11\"": null,
+                    "\"cg12\"": null,
+                    "\"cd13\"": null,
+                    "\"cci14\"": null
+                }
+            },
+            {
+                "nomP": "mode_fuite",
+                "abbrP": "f",
+                "typeP": "string",
+                "valeurs": {
+                    "*": "false",
+                    "\"ar_gd0\"": null,
+                    "\"ar_gd1\"": null,
+                    "\"ar_gd2\"": null,
+                    "\"ar_gd3\"": null,
+                    "\"ar_gd4\"": null,
+                    "\"ar_gd5\"": null,
+                    "\"ar_gd6\"": null,
+                    "\"av_dg7\"": null,
+                    "\"av_dg8\"": null,
+                    "\"av_dg9\"": null,
+                    "\"av_dg10\"": null,
+                    "\"av_dg11\"": null,
+                    "\"cg12\"": null,
+                    "\"cd13\"": null,
+                    "\"cci14\"": null
+                }
+            }
+        ]
+    },
+    "moteurs": {
+        "nomVarG": "moteurs",
+        "abbrVarG": "mtr",
+        "instances": [
+            "*"
+        ],
+        "descriptionVarG": "\"Contrôle des moteurs principaux. Propriétés: accélération, vitesse, direction, activation et commande groupée triplet.\",",
+        "dateUpdateVarG": "2025-11-27T14:45:22.430Z",
+        "proprietes": [
+            {
+                "nomP": "acceleration",
+                "abbrP": "acc",
+                "typeP": "integer",
+                "valeurs": {
+                    "*": "1"
+                }
+            },
+            {
+                "nomP": "vitesse",
+                "abbrP": "spd",
+                "typeP": "integer",
+                "valeurs": {
+                    "*": "0"
+                }
+            },
+            {
+                "nomP": "direction",
+                "abbrP": "dir",
+                "typeP": "integer",
+                "valeurs": {
+                    "*": "0"
+                }
+            },
+            {
+                "nomP": "activation",
+                "abbrP": "act",
+                "typeP": "string",
+                "valeurs": {
+                    "*": "false"
+                }
+            }
+        ]
+    },
+    "microphones": {
+        "nomVarG": "microphones",
+        "abbrVarG": "mic",
+        "instances": [
+            "micAV",
+            "micG",
+            "micD"
+        ],
+        "descriptionVarG": "Système de 3 microphones directionnels. Contrôle individuel ou global des seuils, modes de fonctionnement, fréquence d'échantillonnage et fenêtres temporelles. Modes disponibles: idle, monitor, orient, surveillance.",
+        "dateUpdateVarG": "2025-11-27T15:43:04.426Z",
+        "proprietes": [
+            {
+                "nomP": "lecture",
+                "abbrP": "read",
+                "typeP": "string"
+            },
+            {
+                "nomP": "seuil_detection",
+                "abbrP": "thd",
+                "typeP": "integer"
+            },
+            {
+                "nomP": "frequence_echantillonage",
+                "abbrP": "freq",
+                "typeP": "integer"
+            },
+            {
+                "nomP": "fenetre_temps",
+                "abbrP": "win",
+                "typeP": "integer"
+            },
+            {
+                "nomP": "activation",
+                "abbrP": "act",
+                "typeP": "string"
+            },
+            {
+                "nomP": "mode_fonctionnement",
+                "abbrP": "mode",
+                "typeP": "string"
+            }
+        ]
+    },
+    "detectMvt_IR": {
+        "nomVarG": "detectMvt_IR",
+        "abbrVarG": "mvtIR",
+        "instances": [
+            "*"
+        ],
+        "descriptionVarG": "Capteur de mouvement infrarouge. Instance unique uniquement. Propriétés: lecture instantanée, activation/désactivation, fréquence de surveillance, seuil de détection et modes de fonctionnement.",
+        "dateUpdateVarG": "2025-11-28T14:10:24.599Z",
+        "proprietes": [
+            {
+                "nomP": "lecture_instantanee",
+                "abbrP": "read",
+                "typeP": "string"
+            },
+            {
+                "nomP": "activation",
+                "abbrP": "act",
+                "typeP": "string"
+            },
+            {
+                "nomP": "frequence_surveillance",
+                "abbrP": "freq",
+                "typeP": "integer"
+            },
+            {
+                "nomP": "seuil_detection",
+                "abbrP": "thd",
+                "typeP": "integer"
+            },
+            {
+                "nomP": "mode_fonctionnement",
+                "abbrP": "mode",
+                "typeP": "string"
+            }
+        ]
+    },
+    "capteur_US": {
+        "nomVarG": "capteur_US",
+        "abbrVarG": "us",
+        "instances": [
+            "*"
+        ],
+        "descriptionVarG": "Système de capteurs à ultrasons pour détection d'obstacles. Gestion individuelle ou globale des seuils, modes de fonctionnement et paramètres de détection.\"",
+        "dateUpdateVarG": "2025-11-28T14:59:17.021Z",
+        "proprietes": [
+            {
+                "nom": "defautProp",
+                "abbr": "def",
+                "type": "string",
+                "schema": null,
+                "valeurs": {
+                    "*": ""
+                }
+            },
+            {
+                "nomP": "position",
+                "abbrP": "pos",
+                "typeP": "string",
+                "valeurs": {
+                    "*": ""
+                }
+            },
+            {
+                "nomP": "reinitialisation_pose",
+                "abbrP": "reset",
+                "typeP": "string",
+                "valeurs": {
+                    "*": ""
+                }
+            },
+            {
+                "nomP": "activer",
+                "abbrP": "act",
+                "typeP": "string",
+                "valeurs": {
+                    "*": ""
+                }
+            },
+            {
+                "nomP": "frequence",
+                "abbrP": "freq",
+                "typeP": "integer",
+                "valeurs": {
+                    "*": ""
+                }
+            },
+            {
+                "nomP": "report",
+                "abbrP": "report",
+                "typeP": "string",
+                "valeurs": {
+                    "*": ""
+                }
+            },
+            {
+                "nomP": "coefficient_calibration",
+                "abbrP": "coeff",
+                "typeP": "string",
+                "valeurs": {
+                    "*": ""
+                }
+            },
+            {
+                "nomP": "donnees gyroscope",
+                "abbrP": "gyro",
+                "typeP": "string",
+                "valeurs": {
+                    "*": ""
+                }
+            },
+            {
+                "nomP": "donnees_boussole",
+                "abbrP": "compass",
+                "typeP": "string",
+                "valeurs": {
+                    "*": ""
+                }
+            },
+            {
+                "nomP": "mode_fonctionnement",
+                "abbrP": "mode",
+                "typeP": "string",
+                "valeurs": {
+                    "*": ""
+                }
+            }
+        ]
+    },
+    "servomoteurs": {
+        "nomVarG": "servomoteurs",
+        "abbrVarG": "srv",
+        "instances": [
+            "TGD",
+            "THB",
+            "BASE"
+        ],
+        "descriptionVarG": "Système de servomoteurs pour contrôle de mouvement. Chaque servo peut être positionné à un angle spécifique et activé/désactivé individuellement.",
+        "dateUpdateVarG": "2025-11-28T15:39:56.021Z",
+        "proprietes": [
+            {
+                "nomP": "position_angle",
+                "abbrP": "pos",
+                "typeP": "integer"
+            },
+            {
+                "nomP": "activation",
+                "abbrP": "act",
+                "typeP": "string"
+            },
+            {
+                "nomP": "vitesse_mouvement",
+                "abbrP": "spd",
+                "typeP": "integer"
+            }
+        ]
+    },
+    "configuration": {
+        "nomVarG": "configuration",
+        "abbrVarG": "CfgS",
+        "instances": [
+            "*"
+        ],
+        "descriptionVarG": "Module de contrôle et configuration du système robotique. Gère les modes opérationnels, les reset, les urgences et le statut global. Instance unique",
+        "dateUpdateVarG": "2025-12-15T13:11:34.453Z",
+        "proprietes": [
+            {
+                "nomP": "mode_op",
+                "abbrP": "mode",
+                "typeP": "string",
+                "useValueList": true,
+                "valueList": [
+                    {
+                        "value": "ARRET",
+                        "label": ""
+                    },
+                    {
+                        "value": "VEILLE",
+                        "label": ""
+                    },
+                    {
+                        "value": "SURVEILLANCE",
+                        "label": ""
+                    },
+                    {
+                        "value": "AUTONOME",
+                        "label": ""
+                    }
+                ],
+                "valeurs": {
+                    "*": "ARRET"
+                }
+            },
+            {
+                "nomP": "re-initialisation",
+                "abbrP": "reset",
+                "typeP": "string",
+                "valeurs": {
+                    "*": ""
+                }
+            },
+            {
+                "nomP": "gestion_urgence",
+                "abbrP": "urg",
+                "typeP": "string",
+                "valeurs": {
+                    "*": ""
+                }
+            },
+            {
+                "nomP": "statut_systeme",
+                "abbrP": "status",
+                "typeP": "string",
+                "valeurs": {
+                    "*": ""
+                }
+            }
+        ]
+    },
+    "Speak_to_text": {
+        "nomVarG": "Speak_to_text",
+        "abbrVarG": "STT",
+        "instances": [
+            "*"
+        ],
+        "descriptionVarG": "Exemple de variable complexe nouvelle formule !",
+        "dateUpdateVarG": "2026-01-01T19:02:10.100Z",
+        "proprietes": []
+    },
+    "Application": {
+        "nomVarG": "Application",
+        "abbrVarG": "Appli",
+        "instances": [
+            "Zoom",
+            "Serial"
+        ],
+        "descriptionVarG": "Commande Ouverture d'Appli Android destiné à Tasker",
+        "dateUpdateVarG": "2026-01-02T18:13:30.326Z",
+        "proprietes": [
+            {
+                "nom": "defautProp",
+                "abbr": "def",
+                "type": "string",
+                "schema": null,
+                "valeurs": {
+                    "*": ""
+                }
+            }
+        ]
+    }
+}

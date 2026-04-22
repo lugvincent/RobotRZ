@@ -5,7 +5,7 @@
  *  - "expr" : expression interne (TOUJOURS globale)
  *  - "rgb"  : R,G,B (tous ou indices)
  *  - "clr"  : effacer (tous ou indices)
- *  - "int"  : intensité (tous ou indices)
+ *  - "lumin"  : intensité (tous ou indices)
  *  - "act"  : activation (tous ou indices)
  *  - "mode" : mode expr/extern
  *  - "init" : réinitialisation complète
@@ -68,7 +68,6 @@ namespace Lring
         {
             lring_setExternMode(false);
             lring_applyExpression(value, 0);
-            sendInfo("Lring", "expr", "*", value); // Toujours global
             return true;
         }
 
@@ -119,8 +118,8 @@ namespace Lring
             return true;
         }
 
-        // ----- int : intensité (par instance ou global) -----
-        if (strcmp(prop, "int") == 0)
+        // ----- lumin : intensité (par instance ou global) -----
+        if (strcmp(prop, "lumin") == 0)
         {
             int intensity = value ? atoi(value) : cfg_lring_brightness;
             if (n == 0) // Tous
@@ -133,7 +132,7 @@ namespace Lring
                 // TODO: Implémenter setPixelBrightness si nécessaire
                 lringhw_setBrightness(intensity);
             }
-            sendInfo("Lring", "int", inst, value);
+            sendInfo("Lring", "lumin", inst, value);
             return true;
         }
 

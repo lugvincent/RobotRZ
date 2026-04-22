@@ -33,5 +33,5 @@ void RZ_initAll()
     mvtsafe_init(); // si tu veux une init dédiée
 
     // Message d'information
-    sendInfo("System", "boot", "*", "OK");
+    sendInfo("CfgS", "boot", "*", "1");
 }

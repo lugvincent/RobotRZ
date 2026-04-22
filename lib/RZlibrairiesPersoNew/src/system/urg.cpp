@@ -24,7 +24,7 @@
  *   URG_SENSOR_FAIL      : défaut capteur critique
  *   URG_BUFFER_OVERFLOW  : débordement buffer de communication
  *   URG_PARSING_ERROR    : erreur de parsing de trame VPIV
- *   URG_LOOP_TOO_SLOW    : boucle principale trop lente (>LOOP_MAX_MS)
+ *   URG_LOOP_TOO_SLOW_A    : boucle principale trop lente (>LOOP_MAX_MS)
  *
  * PROPRIÉTÉS VPIV PUBLIÉES (direction A->SP)
  * ------------------------------------------
@@ -67,19 +67,31 @@ static const char *urg_reason_str(uint8_t code)
     switch (code)
     {
     case URG_LOW_BAT:
-        return "low_bat";
+        return "URG_LOW_BAT";
+
     case URG_MOTOR_STALL:
-        return "motor_stall";
+        return "URG_MOTOR_STALL";
+
     case URG_SENSOR_FAIL:
-        return "sensor_fail";
+        return "URG_SENSOR_FAIL";
+
     case URG_BUFFER_OVERFLOW:
-        return "buffer_overflow";
+        return "URG_BUFFER_OVERFLOW";
+
     case URG_PARSING_ERROR:
-        return "parsing_error";
-    case URG_LOOP_TOO_SLOW:
-        return "loop_too_slow";
+        return "URG_PARSING_ERROR";
+
+    case URG_LOOP_TOO_SLOW_A:
+        return "URG_LOOP_TOO_SLOW_A";
+
+    case URG_US_DANGER:
+        return "URG_US_DANGER";
+
+    case URG_MVT_DANGER:
+        return "URG_MVT_DANGER";
+
     default:
-        return "unknown";
+        return "URG_UNKNOWN";
     }
 }
 

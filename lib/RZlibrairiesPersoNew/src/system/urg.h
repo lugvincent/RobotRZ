@@ -3,49 +3,50 @@
  * ROLE    : Gestion centralisée des urgences (URG)
  * Chemin  : src/system/urg.h
  ************************************************************/
-
 #ifndef SYSTEM_URG_H
 #define SYSTEM_URG_H
 
 #include <Arduino.h>
-#include <stdint.h> // uint8_t explicite
+#include <stdint.h>
+
 /************************************************************
- *  ENUM interne des causes d'urgence disponibles spécifiques
- * à l'arduino et à usage interne *
+ * ENUM interne des causes d'urgence
+ * Aligné avec nomenclature globale URG_*
  ************************************************************/
 enum UrgReason : uint8_t
 {
     URG_NONE = 0,
+
     URG_LOW_BAT,
     URG_MOTOR_STALL,
     URG_SENSOR_FAIL,
     URG_BUFFER_OVERFLOW,
     URG_PARSING_ERROR,
-    URG_LOOP_TOO_SLOW
+
+    // Différenciation A vs SE
+    URG_LOOP_TOO_SLOW_A,
+
+    // Nouveaux cas critiques Arduino
+    URG_US_DANGER,
+    URG_MVT_DANGER,
+
+    // fallback
+    URG_UNKNOWN
 };
 
 /************************************************************
- * API PUBLIQUE — à utiliser dans tout le firmware
+ * API PUBLIQUE
  ************************************************************/
 
-// Initialise le module URG
+/// @brief
 void urg_init();
-
-// Déclenche une urgence
 void urg_handle(uint8_t code);
-
-// Efface / réarme le système d’urgence
 void urg_clear();
-
-// État de l’urgence
 bool urg_isActive();
 
-// Envoi d’une notification VPIV
-
 /************************************************************
- * HOOK MOTEURS — fourni par moteur (mtr_hardware.cpp)
- * Cette fonction est appelée lors d’une urgence.
+ * HOOK MOTEURS
  ************************************************************/
 extern void urg_stopAllMotors();
 
-#endif // SYSTEM_URG_H
+#endif

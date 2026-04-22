@@ -26,14 +26,9 @@
 #
 # FLUX TTS
 # --------
-# SP → MQTT → rz_vpiv_parser.sh → fifo_termux_in → (ici) → termux-tts-speak
-# Trames interceptées :
-#   $A:Voice:tts:*:"message"#  → TTS direct
-#   $I:COM:info:SE:"message"#  → TTS si typePtge != 0
-#   $I:COM:error:SE:"message"# → TTS "Erreur : message" si typePtge != 0
-#   $E:Urg:source:SE:URG_*#    → TTS urgence prioritaire (coupe le discours)
-# Note : le TTS urgence est aussi géré par rz_vpiv_parser.sh.
-#        Ce script assure le fallback local si le parser est absent.
+# Désormais délégué à rz_voice_manager.sh via fifo_voice_in.
+# SP → MQTT → rz_vpiv_parser.sh → fifo_voice_in → rz_voice_manager.sh
+# rz_stt_manager.sh ne lit plus fifo_termux_in pour le TTS.
 #
 # INTERACTIONS
 # ------------
@@ -55,8 +50,8 @@
 #   rz_stt_manager.py, lib_pocketsphinx/model-fr/, lib_pocketsphinx/fr.dict
 #
 # AUTEUR  : Vincent Philippe
-# VERSION : 2.0  (remplace l'ancienne boucle Bash, superviseur Python)
-# DATE    : 2026-03-05
+#   VERSION : 2.1  (délégation TTS à rz_voice_manager.sh, suppression run_tts_listener)
+# DATE    : 2026-04-22
 # =============================================================================
 
 # =============================================================================
@@ -179,64 +174,7 @@ run_python_daemon() {
 # Tourne en arrière-plan pendant que le Python gère la reconnaissance.
 # =============================================================================
 
-run_tts_listener() {
-    log_stt "Boucle TTS locale démarrée"
 
-    # PID TTS courant (pour interruption en cas d'urgence)
-    local tts_pid=""
-
-    while true; do
-        # Lecture bloquante sur FIFO
-        if read -r trame < "$FIFO_IN" 2>/dev/null; then
-
-            # --- TTS direct : $A:Voice:tts:*:"message"# ---
-            if [[ "$trame" =~ ^\$A:Voice:tts:[^:]+:(.*)#$ ]]; then
-                local msg="${BASH_REMATCH[1]}"
-                msg=$(echo "$msg" | tr -d '"')
-                # Interrompre TTS en cours si présent
-                [ -n "$tts_pid" ] && kill "$tts_pid" 2>/dev/null
-                termux-tts-speak "$msg" &
-                tts_pid=$!
-
-            # --- TTS urgence prioritaire : $E:Urg:source:SE:URG_*# ---
-            elif [[ "$trame" =~ ^\$E:Urg:source:SE:(URG_.*)#$ ]]; then
-                local urg_code="${BASH_REMATCH[1]}"
-                # Interruption immédiate du TTS en cours
-                [ -n "$tts_pid" ] && kill "$tts_pid" 2>/dev/null
-                case "$urg_code" in
-                    "URG_LOW_BAT")    termux-tts-speak "Batterie critique." & tts_pid=$! ;;
-                    "URG_CPU_CHARGE") termux-tts-speak "Surcharge processeur." & tts_pid=$! ;;
-                    "URG_OVERHEAT")   termux-tts-speak "Surchauffe détectée." & tts_pid=$! ;;
-                    *)                termux-tts-speak "Alerte sécurité." & tts_pid=$! ;;
-                esac
-
-            # --- TTS info/erreur COM (si pilotage vocal actif) ---
-            elif [[ "$trame" =~ ^\$I:COM:(info|error):SE:(.*)#$ ]]; then
-                local com_type="${BASH_REMATCH[1]}"
-                local com_msg="${BASH_REMATCH[2]}"
-                com_msg=$(echo "$com_msg" | tr -d '"')
-                local ptge
-                ptge=$(get_ptge_mode)
-                if [ "$ptge" -ne 0 ]; then
-                    [ -n "$tts_pid" ] && kill "$tts_pid" 2>/dev/null
-                    if [ "$com_type" == "error" ]; then
-                        termux-tts-speak "Erreur : $com_msg" & tts_pid=$!
-                    else
-                        termux-tts-speak "$com_msg" & tts_pid=$!
-                    fi
-                fi
-
-            else
-                # Trame non-TTS : la remettre dans le FIFO pour les autres
-                # lecteurs (state-manager, etc.)
-                # Note : on ne peut pas écrire dans un FIFO qu'on lit.
-                # Ces trames doivent être routées par rz_vpiv_parser.sh,
-                # pas interceptées ici. Log pour debug uniquement.
-                : # trame non-TTS ignorée par ce listener
-            fi
-        fi
-    done
-}
 
 # =============================================================================
 # MAIN
@@ -268,16 +206,10 @@ main() {
         log_stt "WARN : $FIFO_IN absent — TTS listener désactivé"
     fi
 
-    # Lancement TTS listener en arrière-plan
-    run_tts_listener &
-    local tts_listener_pid=$!
-    log_stt "TTS listener lancé (PID=$tts_listener_pid)"
-
     # Lancement superviseur Python (bloquant jusqu'à MAX_RESTARTS)
     run_python_daemon
 
     # Nettoyage
-    kill "$tts_listener_pid" 2>/dev/null
     rm -f "$PID_FILE"
     log_stt "Module STT arrêté."
 }

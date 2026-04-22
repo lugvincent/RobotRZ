@@ -39,6 +39,7 @@
 #   [x] Mic   : modeMicro, paraMicro (seuils, balayage orientation)
 #   [x] Appli : états initiaux, tâches Tasker, packages Android
 #   [x] STT   : modeSTT, keyphrase, threshold, lib_path
+#   [x] Voice : vol (volume multimédia global), output (sortie audio), ttsRate
 #   [x] Mtr   : speed_cruise, scales, kturn
 #
 # CATALOGUE STT (table_d_catalogue.csv)
@@ -332,6 +333,22 @@ stt_lang="fr"
 stt_lib_path="lib_pocketsphinx"
 
 # ---------------------------------------------------------------------------
+# SECTION VOICE — Propriétés SP → SE  (Table A : module Voice)
+# ---------------------------------------------------------------------------
+# vol    : volume multimédia global SE en % (canal music Android)
+#          ⚠ INDÉPENDANT de modeSTT — actif même si STT est coupé.
+#          Contrôle toute la sortie audio : TTS, musique, baffe jack/BT.
+#          Normalisé 0-100 → plage Android native par rz_voice_manager.sh.
+# output : sortie audio active (détectée automatiquement par Android)
+#          internal = haut-parleur SE | jack = sortie casque | bt = Bluetooth
+#          La commutation BT forcée est en V2 (Tasker requis).
+# ttsRate: vitesse de synthèse TTS (1.0 = normale, >1 = plus rapide)
+
+voice_vol=80            # % volume initial (0-100)
+voice_output="internal" # sortie par défaut : internal | jack | bt
+voice_ttsRate=1.0       # vitesse de synthèse TTS (1.0 = normale, >1 = plus rapide)
+
+# ---------------------------------------------------------------------------
 # SECTION MTR — Paramètres de référence moteur  (Table A : module Mtr)
 # ---------------------------------------------------------------------------
 # Lu directement depuis courant_init.json par rz_stt_handler.sh pour les
@@ -462,6 +479,11 @@ cat > "$OUTPUT_JSON" <<EOF
     "lang":      "$stt_lang",
     "lib_path":  "$stt_lib_path"
   },
+    "voice": {
+    "vol":     $voice_vol,
+    "output":  "$voice_output",
+    "ttsRate": $voice_ttsRate
+    },
   "mtr": {
     "speed_cruise":  $mtr_speed_cruise,
     "inputScale":    $mtr_inputScale,
@@ -752,5 +774,6 @@ log "  → config/sys_runtime.json"
 log "  → config/sensors/cam_config.json"
 log "  → config/sensors/mic_config.json"
 log "  → config/sensors/stt_config.json"
+log "  → config/sensors/voice_config.json"
 log "  → config/appli_config.json"
 log "=========================================="

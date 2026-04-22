@@ -23,7 +23,7 @@ void mvt_ir_setFreqMs(unsigned long ms);
 void mvt_ir_setThreshold(int n);
 
 // Réglage rapide du mode ("idle","monitor","surveillance")
-void mvt_ir_setMode(const char* mode);
+void mvt_ir_setMode(const char *mode);
 
 // Process périodique à appeler depuis loop()
 void mvt_ir_processPeriodic();

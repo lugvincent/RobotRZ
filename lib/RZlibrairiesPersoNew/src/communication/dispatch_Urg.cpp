@@ -54,7 +54,7 @@ namespace Urg
         if (!prop)
             return false;
 
-        // clear → efface l'urgence active
+        //  clear → efface l'urgence active
         // urg_clear() publie lui-même $I:Urg:etat:*:cleared#
         if (strcmp(prop, "clear") == 0)
         {

@@ -181,7 +181,7 @@ uint16_t cfg_us_danger_thresholds[US_NUM_SENSORS] = {
 uint16_t cfg_us_alert_multiplier[US_NUM_SENSORS] = {1, 1, 1, 1, 1, 1, 1, 1, 1};
 
 // ======================================================================
-// URGENCE ( les indices ne doivent être utilisé qu'en interne pour URG - NewV)
+// URGENCE (les indices ne doivent être utilisé qu'en interne pour URG - NewV)
 // ======================================================================
 
 bool cfg_urg_active = false;
@@ -196,7 +196,7 @@ const char *cfg_urg_messages[] = {
     "SENSOR_FAIL",
     "BUFFER_OVERFLOW",
     "PARSING_ERROR",
-    "URG_LOOP_TOO_SLOW"};
+    "URG_LOOP_TOO_SLOW_A"};
 
 // ======================================================================
 // INITIALISATION CENTRALE

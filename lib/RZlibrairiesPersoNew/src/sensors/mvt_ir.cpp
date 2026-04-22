@@ -8,7 +8,8 @@
  *   - alert si nombre de détections successives > seuil (thd)
  *   - act           -> activer/désactiver
  *   - freq          -> période
- *   - mode          -> idle / monitor / surveillance
+ *   - mode          -> idle (inactif)/ monitor / surveillance
+ *                      preset de configuration (n'écrase pas modifications ultérieures)
  ************************************************************/
 
 #include "mvt_ir.h"
@@ -21,7 +22,7 @@
 // Compteur interne (ne va pas dans config)
 static int mvtir_counter = 0;
 
-// Envoi VPIV : value immédiate
+// Envoi VPIV : valeur capteur (instantané ou périodique)
 static void _send_value_vpiv(int v)
 {
     char buf[8];
@@ -47,6 +48,11 @@ void mvt_ir_init()
 void mvt_ir_readInstant()
 {
     int v = mvt_ir_hw_readRaw();
+
+    // 1. ACK read
+    sendInfo("IRmvt", "read", "*", "OK");
+
+    // 2. valeur réelle
     _send_value_vpiv(v);
 }
 
@@ -69,7 +75,7 @@ void mvt_ir_setFreqMs(unsigned long ms)
     sendInfo("IRmvt", "freq", "*", buf);
 }
 
-// Seuil
+// Seuil : nombre de détections successives pour déclencher l'alerte
 void mvt_ir_setThreshold(int n)
 {
     if (n < 1)
@@ -80,7 +86,10 @@ void mvt_ir_setThreshold(int n)
     sendInfo("IRmvt", "thd", "*", buf);
 }
 
-// Mode : met en place valeurs par défaut associées
+// Mode : met en place provisoirement des valeurs spécifiques
+// pour les modes "prédéfinis" (monitor, surveillance) afin de faciliter
+// la configuration rapide. Ces valeurs ne sont pas figées,
+// elles peuvent être modifiées ensuite via les fonctions de réglage individuelles (freq, thd).
 void mvt_ir_setMode(const char *mode)
 {
     if (!mode)
@@ -88,6 +97,7 @@ void mvt_ir_setMode(const char *mode)
     if (strcmp(mode, "idle") == 0)
     {
         cfg_mvtir_active = false;
+        cfg_mvtir_freq_ms = 0;
         strncpy(cfg_mvtir_mode, "idle", sizeof(cfg_mvtir_mode) - 1);
         cfg_mvtir_mode[sizeof(cfg_mvtir_mode) - 1] = '\0';
         sendInfo("IRmvt", "mode", "*", "idle");
@@ -122,19 +132,30 @@ void mvt_ir_setMode(const char *mode)
 void mvt_ir_processPeriodic()
 {
     static unsigned long lastT = 0;
+
     if (!cfg_mvtir_active)
         return;
 
+    if (cfg_mvtir_freq_ms == 0)
+        return;
+
     unsigned long now = millis();
+
     if (now - lastT < cfg_mvtir_freq_ms)
         return;
+
     lastT = now;
 
     int v = mvt_ir_hw_readRaw();
 
+    // ✅ AJOUT IMPORTANT → publication valeur
+    _send_value_vpiv(v);
+
+    // gestion détection
     if (v == 1)
     {
         mvtir_counter++;
+
         if (mvtir_counter >= cfg_mvtir_threshold)
         {
             _send_alert_vpiv();

@@ -11,7 +11,7 @@
  *
  * RÉSUMÉ DU FONCTIONNEMENT
  * ------------------------
- *   Le robot suit l'utilisateur en maintenant une distance cible :
+ *   Le robot suit l'utilisateur en maintenant une distance cible mm :
  *     - DISTANCE  → régulée par les capteurs US arrière
  *       Si l'utilisateur s'éloigne : robot accélère
  *       Si l'utilisateur se rapproche : robot ralentit ou recule

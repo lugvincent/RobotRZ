@@ -32,7 +32,8 @@
 #   URG_PARSING_ERROR     Erreur de parsing
 #   URG_CPU_CHARGE        Charge CPU excessive
 #   URG_APPLI_FAIL        Échec application
-#   URG_LOOP_TOO_SLOW     Boucle trop lente
+#   URG_LOOP_TOO_SLOW_SE     Boucle trop lente coté SE
+#   URG_LOOP_TOO_SLOW_A     Boucle trop lente coté A
 #   URG_UNKNOWN           Urgence inconnue (fallback)
 #
 # PRÉCAUTIONS
@@ -63,7 +64,7 @@ readonly -a URG_CODES_VALIDES=(
     "URG_PARSING_ERROR"
     "URG_CPU_CHARGE"
     "URG_APPLI_FAIL"
-    "URG_LOOP_TOO_SLOW"
+    "URG_LOOP_TOO_SLOW_SE"
     "URG_UNKNOWN"
 )
 

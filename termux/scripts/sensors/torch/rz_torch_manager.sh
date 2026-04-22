@@ -134,7 +134,7 @@ set_torch() {
     # -----------------------------------------------------------------------
     # MODE CAMÉRA ACTIVE : commande via API HTTP IP Webcam
     # -----------------------------------------------------------------------
-    if [ "$cam_active" == "On" ]; then
+    if [ "$cam_active" == 1 ]; then
         log_torch "Mode Caméra actif : commande via API HTTP."
 
         ip_local=$(ifconfig wlan0 2>/dev/null | awk '/inet /{print $2}')

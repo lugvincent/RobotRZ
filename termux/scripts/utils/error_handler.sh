@@ -22,7 +22,7 @@ declare -A URG_TYPES=(
   ["URG_CPU_CHARGE"]="Charge CPU excessive"
   ["URG_APPLI_FAIL"]="Échec application"
   ["URG_ATTEND-RETOUR"]="Timeout réponse"
-  ["URG_LOOP_TOO_SLOW"]="Boucle trop lente"
+  ["URG_LOOP_TOO_SLOW_SE"]="Boucle trop lente"
   ["URG_UNKNOWN"]="Urgence inconnue"
 )
 

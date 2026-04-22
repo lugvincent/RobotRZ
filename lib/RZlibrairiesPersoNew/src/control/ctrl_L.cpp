@@ -12,8 +12,8 @@
  *
  * PRINCIPE GÉNÉRAL
  * ----------------
- *   DISTANCE (vitesse longitudinale) — régulée par les capteurs US arrière :
- *     dist_mesurée = moyenne glissante des 4 capteurs US arrière (mm)
+ *   DISTANCE (vitesse longitudinale) — régulée par les capteurs US avant :
+ *     dist_mesurée = moyenne glissante des 4 capteurs US avant (mm)
  *     delta        = dist_mesurée - dist_cible
  *
  *     Si abs(delta) <= dead_zone → pas de correction (zone morte)
@@ -54,7 +54,7 @@
  *
  * PROPRIÉTÉS VPIV PUBLIÉES (A->SP)
  * ----------------------------------
- *   status  (I) : état du contrôle — "OK", "OFF", "FceKO", "VtKO"
+ *   status  (I) : état du contrôle(<> de activ) — "OK", "OFF", "FceKO", "VtKO"
  *                 Envoyé uniquement si l'état change (anti-spam)
  *
  * ARTICULATION
@@ -105,10 +105,10 @@ static uint32_t last_update_ms = 0;
 static const uint16_t PERIOD_MS = 200; // période de contrôle : 200 ms = 5 Hz
 
 /* ----------------------------------------------------------------
- * Capteurs US arrière utilisés pour mesurer la distance utilisateur
+ * Capteurs US avant utilisés pour mesurer la distance utilisateur
  * Indices dans le tableau us_peekCurrValue() — à adapter selon câblage
  * ---------------------------------------------------------------- */
-static const uint8_t us_idx[4] = {5, 4, 3, 8};
+static const uint8_t us_idx[4] = {3, 4, 5, 8};
 
 /* ----------------------------------------------------------------
  * Buffer de moyenne glissante pour la distance US

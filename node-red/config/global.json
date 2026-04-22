@@ -1,0 +1,888 @@
+{
+    "enrichedVars": {
+        "CfgS": {
+            "nomVarG": "CfgS",
+            "nomCompletVar": "Configuration Système Global",
+            "instances": [
+                "*"
+            ],
+            "descriptionVarG": "Gestion du modeRZ (0-5) et du type de pilotage. [Hébergé sur : SP/SE/A]",
+            "dateUpdateVarG": "2026-03-18T16:00:00.000Z",
+            "proprietes": [
+                {
+                    "nomP": "modeRZ",
+                    "nomCompletP": "Mode de fonctionnement",
+                    "typeP": "enum",
+                    "nature": "Config",
+                    "descriptionP": "0:ARRET, 1:VEILLE, 2:FIXE, 3:DEPLACEMENT, 4:AUTONOME, 5:ERREUR",
+                    "valeurs": {
+                        "*": 1
+                    }
+                },
+                {
+                    "nomP": "typePtge",
+                    "nomCompletP": "Type de Pilotage",
+                    "typeP": "enum",
+                    "nature": "Config",
+                    "descriptionP": "0:OFF, 1:Ecran, 2:Joystick, 3:Laisse, 4:Laisse+Vocal",
+                    "valeurs": {
+                        "*": 0
+                    }
+                },
+                {
+                    "nomP": "reset",
+                    "nomCompletP": "Reset Logiciel",
+                    "typeP": "event",
+                    "nature": "Event",
+                    "valeurs": {
+                        "*": 0
+                    }
+                },
+                {
+                    "nomP": "emg",
+                    "nomCompletP": "Urgence Logicielle",
+                    "typeP": "enum",
+                    "nature": "Event",
+                    "valeurs": {
+                        "*": 0
+                    }
+                }
+            ]
+        },
+        "Urg": {
+            "nomVarG": "Urg",
+            "nomCompletVar": "Superviseur Urgence",
+            "instances": [
+                "*"
+            ],
+            "descriptionVarG": "Gestion des arrêts d'urgence et des niveaux d'alerte (warn/danger). [Hébergé sur : E (SE ou A)]",
+            "proprietes": [
+                {
+                    "nomP": "statut",
+                    "nomCompletP": "État Urgence",
+                    "typeP": "enum",
+                    "nature": "Status",
+                    "valeurs": {
+                        "*": "cleared"
+                    }
+                },
+                {
+                    "nomP": "niveau",
+                    "nomCompletP": "Niveau Alerte",
+                    "typeP": "enum",
+                    "nature": "Status",
+                    "valeurs": {
+                        "*": "none"
+                    }
+                },
+                {
+                    "nomP": "source",
+                    "nomCompletP": "Origine Alerte",
+                    "typeP": "string",
+                    "nature": "Status",
+                    "valeurs": {
+                        "*": "_"
+                    }
+                },
+                {
+                    "nomP": "clear",
+                    "nomCompletP": "Acquitter Urgence",
+                    "typeP": "event",
+                    "nature": "Event",
+                    "valeurs": {
+                        "*": 0
+                    }
+                }
+            ]
+        },
+        "Mtr": {
+            "nomVarG": "Mtr",
+            "nomCompletVar": "Moteurs Propulsion",
+            "instances": [
+                "*"
+            ],
+            "descriptionVarG": "Commande différentielle, échelles de vitesse et confort de rotation. [Hébergé sur : A]",
+            "proprietes": [
+                {
+                    "nomP": "cmd",
+                    "nomCompletP": "Consigne (VitL,VitR,Acc)",
+                    "typeP": "string",
+                    "nature": "Commande",
+                    "valeurs": {
+                        "*": "0,0,0"
+                    }
+                },
+                {
+                    "nomP": "scale",
+                    "nomCompletP": "Echelle Vitesse (x1000)",
+                    "typeP": "number",
+                    "nature": "Config",
+                    "valeurs": {
+                        "*": 1000
+                    }
+                },
+                {
+                    "nomP": "kturn",
+                    "nomCompletP": "Coeff Rotation (x1000)",
+                    "typeP": "number",
+                    "nature": "Config",
+                    "valeurs": {
+                        "*": 800
+                    }
+                },
+                {
+                    "nomP": "act",
+                    "nomCompletP": "Activation Mtr",
+                    "typeP": "boolean",
+                    "nature": "Config",
+                    "valeurs": {
+                        "*": 1
+                    }
+                }
+            ]
+        },
+        "US": {
+            "nomVarG": "US",
+            "nomCompletVar": "Ultra-Sons (9 capteurs)",
+            "instances": [
+                "*"
+            ],
+            "descriptionVarG": "Télémétrie pour évitement. Delta gère le seuil de publication. [Hébergé sur : A]",
+            "proprietes": [
+                {
+                    "nomP": "dist",
+                    "nomCompletP": "Distances (CSV)",
+                    "typeP": "string",
+                    "nature": "Flux",
+                    "valeurs": {
+                        "*": "0,0,0,0,0,0,0,0,0"
+                    }
+                },
+                {
+                    "nomP": "thd",
+                    "nomCompletP": "Seuil Alerte (cm)",
+                    "typeP": "number",
+                    "nature": "Config",
+                    "valeurs": {
+                        "*": 20
+                    }
+                },
+                {
+                    "nomP": "freq",
+                    "nomCompletP": "Fréquence Mesure (ms)",
+                    "typeP": "number",
+                    "nature": "Config",
+                    "valeurs": {
+                        "*": 100
+                    }
+                },
+                {
+                    "nomP": "delta",
+                    "nomCompletP": "Seuil Publication (cm)",
+                    "typeP": "number",
+                    "nature": "Config",
+                    "valeurs": {
+                        "*": 5
+                    }
+                },
+                {
+                    "nomP": "act",
+                    "nomCompletP": "Activation US",
+                    "typeP": "boolean",
+                    "nature": "Config",
+                    "valeurs": {
+                        "*": 1
+                    }
+                }
+            ]
+        },
+        "Odom": {
+            "nomVarG": "Odom",
+            "nomCompletVar": "Odométrie",
+            "instances": [
+                "*"
+            ],
+            "descriptionVarG": "Calcul de position relative (x,y,th) et vitesse. [Hébergé sur : A]",
+            "proprietes": [
+                {
+                    "nomP": "pos",
+                    "nomCompletP": "Position (mm/mrad)",
+                    "typeP": "string",
+                    "nature": "Flux",
+                    "valeurs": {
+                        "*": "0,0,0"
+                    }
+                },
+                {
+                    "nomP": "vel",
+                    "nomCompletP": "Vitesse (mm/s)",
+                    "typeP": "string",
+                    "nature": "Flux",
+                    "valeurs": {
+                        "*": "0,0"
+                    }
+                },
+                {
+                    "nomP": "reset",
+                    "nomCompletP": "Reset Odom",
+                    "typeP": "event",
+                    "nature": "Event",
+                    "valeurs": {
+                        "*": 0
+                    }
+                },
+                {
+                    "nomP": "paraOdom",
+                    "nomCompletP": "Paramètres Physiques",
+                    "typeP": "string",
+                    "nature": "Config",
+                    "valeurs": {
+                        "*": "65,200,256,1000"
+                    }
+                },
+                {
+                    "nomP": "act",
+                    "nomCompletP": "Activation Odom",
+                    "typeP": "boolean",
+                    "nature": "Config",
+                    "valeurs": {
+                        "*": 1
+                    }
+                }
+            ]
+        },
+        "SecMvt": {
+            "nomVarG": "SecMvt",
+            "nomCompletVar": "Sécurité Mouvement",
+            "instances": [
+                "*"
+            ],
+            "descriptionVarG": "Réaction automatique (soft/hard) selon seuils US. [Hébergé sur : A]",
+            "proprietes": [
+                {
+                    "nomP": "thd",
+                    "nomCompletP": "Seuils (warn,danger)",
+                    "typeP": "string",
+                    "nature": "Config",
+                    "valeurs": {
+                        "*": "40,20"
+                    }
+                },
+                {
+                    "nomP": "mode",
+                    "nomCompletP": "Mode Réaction",
+                    "typeP": "enum",
+                    "nature": "Config",
+                    "valeurs": {
+                        "*": "soft"
+                    }
+                },
+                {
+                    "nomP": "scale",
+                    "nomCompletP": "Vitesse Max Sécu",
+                    "typeP": "number",
+                    "nature": "Config",
+                    "valeurs": {
+                        "*": 500
+                    }
+                },
+                {
+                    "nomP": "act",
+                    "nomCompletP": "Activation Sécu",
+                    "typeP": "boolean",
+                    "nature": "Config",
+                    "valeurs": {
+                        "*": 1
+                    }
+                }
+            ]
+        },
+        "Lring": {
+            "nomVarG": "Lring",
+            "nomCompletVar": "Anneau LEDs",
+            "instances": [
+                "rg0",
+                "rg1"
+            ],
+            "descriptionVarG": "Expressions faciales et couleurs par instance. [Hébergé sur : A]",
+            "proprietes": [
+                {
+                    "nomP": "rgb",
+                    "nomCompletP": "Couleur RGB",
+                    "typeP": "string",
+                    "nature": "Commande",
+                    "valeurs": {
+                        "*": "0,0,0"
+                    }
+                },
+                {
+                    "nomP": "expr",
+                    "nomCompletP": "Expression Tasker",
+                    "typeP": "enum",
+                    "nature": "Commande",
+                    "valeurs": {
+                        "*": "neutral"
+                    }
+                },
+                {
+                    "nomP": "lumin",
+                    "nomCompletP": "Intensité (0-255)",
+                    "typeP": "number",
+                    "nature": "Config",
+                    "valeurs": {
+                        "*": 128
+                    }
+                },
+                {
+                    "nomP": "timeout",
+                    "nomCompletP": "Délai extinction (ms)",
+                    "typeP": "number",
+                    "nature": "Config",
+                    "valeurs": {
+                        "*": 5000
+                    }
+                },
+                {
+                    "nomP": "act",
+                    "nomCompletP": "Activation Anneau",
+                    "typeP": "boolean",
+                    "nature": "Config",
+                    "valeurs": {
+                        "*": 1
+                    }
+                }
+            ]
+        },
+        "Lrub": {
+            "nomVarG": "Lrub",
+            "nomCompletVar": "Ruban LEDs",
+            "instances": [
+                "*"
+            ],
+            "descriptionVarG": "Éclairage d'ambiance et état système. [Hébergé sur : A]",
+            "proprietes": [
+                {
+                    "nomP": "rgb",
+                    "nomCompletP": "Couleur RGB",
+                    "typeP": "string",
+                    "nature": "Commande",
+                    "valeurs": {
+                        "*": "0,0,0"
+                    }
+                },
+                {
+                    "nomP": "init",
+                    "nomCompletP": "Initialisation",
+                    "typeP": "event",
+                    "nature": "Event",
+                    "valeurs": {
+                        "*": 1
+                    }
+                },
+                {
+                    "nomP": "lumin",
+                    "nomCompletP": "Luminosité",
+                    "typeP": "number",
+                    "nature": "Config",
+                    "valeurs": {
+                        "*": 128
+                    }
+                },
+                {
+                    "nomP": "timeout",
+                    "nomCompletP": "Extinction auto",
+                    "typeP": "number",
+                    "nature": "Config",
+                    "valeurs": {
+                        "*": 0
+                    }
+                }
+            ]
+        },
+        "Ctrl_L": {
+            "nomVarG": "Ctrl_L",
+            "nomCompletVar": "Contrôle Laisse",
+            "instances": [
+                "*"
+            ],
+            "descriptionVarG": "Gestion de la tension et distance de la laisse. [Hébergé sur : A]",
+            "proprietes": [
+                {
+                    "nomP": "act",
+                    "nomCompletP": "Activation Laisse",
+                    "typeP": "boolean",
+                    "nature": "Config",
+                    "valeurs": {
+                        "*": 0
+                    }
+                },
+                {
+                    "nomP": "force",
+                    "nomCompletP": "Tension mesurée",
+                    "typeP": "number",
+                    "nature": "Flux",
+                    "valeurs": {
+                        "*": 0
+                    }
+                },
+                {
+                    "nomP": "dist",
+                    "nomCompletP": "Distance Laisse",
+                    "typeP": "number",
+                    "nature": "Flux",
+                    "valeurs": {
+                        "*": 0
+                    }
+                }
+            ]
+        },
+        "FS": {
+            "nomVarG": "FS",
+            "nomCompletVar": "Capteur de Force",
+            "instances": [
+                "*"
+            ],
+            "descriptionVarG": "Détection de pression/poids. [Hébergé sur : A]",
+            "proprietes": [
+                {
+                    "nomP": "val",
+                    "nomCompletP": "Valeur Force",
+                    "typeP": "number",
+                    "nature": "Flux",
+                    "valeurs": {
+                        "*": 0
+                    }
+                },
+                {
+                    "nomP": "thd",
+                    "nomCompletP": "Seuil Détection",
+                    "typeP": "number",
+                    "nature": "Config",
+                    "valeurs": {
+                        "*": 100
+                    }
+                },
+                {
+                    "nomP": "act",
+                    "nomCompletP": "Activation FS",
+                    "typeP": "boolean",
+                    "nature": "Config",
+                    "valeurs": {
+                        "*": 1
+                    }
+                }
+            ]
+        },
+        "IRmvt": {
+            "nomVarG": "IRmvt",
+            "nomCompletVar": "Détecteur IR",
+            "instances": [
+                "*"
+            ],
+            "descriptionVarG": "Détection de mouvement infrarouge. [Hébergé sur : A]",
+            "proprietes": [
+                {
+                    "nomP": "val",
+                    "nomCompletP": "Mouvement Détecté",
+                    "typeP": "boolean",
+                    "nature": "Status",
+                    "valeurs": {
+                        "*": 0
+                    }
+                },
+                {
+                    "nomP": "act",
+                    "nomCompletP": "Activation IR",
+                    "typeP": "boolean",
+                    "nature": "Config",
+                    "valeurs": {
+                        "*": 1
+                    }
+                }
+            ]
+        },
+        "Srv": {
+            "nomVarG": "Srv",
+            "nomCompletVar": "Servomoteurs",
+            "instances": [
+                "*"
+            ],
+            "descriptionVarG": "Orientation caméra ou tête. [Hébergé sur : A]",
+            "proprietes": [
+                {
+                    "nomP": "ang",
+                    "nomCompletP": "Angle (degrés)",
+                    "typeP": "number",
+                    "nature": "Commande",
+                    "valeurs": {
+                        "*": 90
+                    }
+                },
+                {
+                    "nomP": "act",
+                    "nomCompletP": "Activation Servo",
+                    "typeP": "boolean",
+                    "nature": "Config",
+                    "valeurs": {
+                        "*": 1
+                    }
+                }
+            ]
+        },
+        "Sys": {
+            "nomVarG": "Sys",
+            "nomCompletVar": "Monitoring SE",
+            "instances": [
+                "*"
+            ],
+            "descriptionVarG": "Ressources système (Batt, Temp, RAM, CPU). [Hébergé sur : SE]",
+            "proprietes": [
+                {
+                    "nomP": "batt",
+                    "nomCompletP": "Batterie SE (%)",
+                    "typeP": "number",
+                    "nature": "Flux",
+                    "valeurs": {
+                        "*": 100
+                    }
+                },
+                {
+                    "nomP": "temp",
+                    "nomCompletP": "Température CPU",
+                    "typeP": "number",
+                    "nature": "Flux",
+                    "valeurs": {
+                        "*": 35
+                    }
+                },
+                {
+                    "nomP": "cpu",
+                    "nomCompletP": "Charge CPU (%)",
+                    "typeP": "number",
+                    "nature": "Flux",
+                    "valeurs": {
+                        "*": 10
+                    }
+                },
+                {
+                    "nomP": "freqCont",
+                    "nomCompletP": "Intervalle (sec)",
+                    "typeP": "number",
+                    "nature": "Config",
+                    "valeurs": {
+                        "*": 10
+                    }
+                }
+            ]
+        },
+        "STT": {
+            "nomVarG": "STT",
+            "nomCompletVar": "Module Vocal",
+            "instances": [
+                "*"
+            ],
+            "descriptionVarG": "Reconnaissance vocale. Intentions et contextes. [Hébergé sur : SE]",
+            "proprietes": [
+                {
+                    "nomP": "intent",
+                    "nomCompletP": "Intention",
+                    "typeP": "event",
+                    "nature": "Event",
+                    "valeurs": {
+                        "*": "_"
+                    }
+                },
+                {
+                    "nomP": "context",
+                    "nomCompletP": "Contexte Vocal",
+                    "typeP": "enum",
+                    "nature": "Status",
+                    "valeurs": {
+                        "*": "Cmde"
+                    }
+                },
+                {
+                    "nomP": "state",
+                    "nomCompletP": "Microphone Actif",
+                    "typeP": "boolean",
+                    "nature": "Status",
+                    "valeurs": {
+                        "*": 0
+                    }
+                }
+            ]
+        },
+        "Gyro": {
+            "nomVarG": "Gyro",
+            "nomCompletVar": "Gyroscope SE",
+            "instances": [
+                "*"
+            ],
+            "descriptionVarG": "Inclinaison rad/s x 100. [Hébergé sur : SE]",
+            "proprietes": [
+                {
+                    "nomP": "val",
+                    "nomCompletP": "Valeurs (x,y,z)",
+                    "typeP": "string",
+                    "nature": "Flux",
+                    "valeurs": {
+                        "*": "0,0,0"
+                    }
+                },
+                {
+                    "nomP": "mode",
+                    "nomCompletP": "Mode Gyro",
+                    "typeP": "enum",
+                    "nature": "Config",
+                    "valeurs": {
+                        "*": "OFF"
+                    }
+                },
+                {
+                    "nomP": "freqCont",
+                    "nomCompletP": "Fréquence (Hz)",
+                    "typeP": "number",
+                    "nature": "Config",
+                    "valeurs": {
+                        "*": 10
+                    }
+                }
+            ]
+        },
+        "Mag": {
+            "nomVarG": "Mag",
+            "nomCompletVar": "Magnétomètre SE",
+            "instances": [
+                "*"
+            ],
+            "descriptionVarG": "Champ magnétique uT x 100. [Hébergé sur : SE]",
+            "proprietes": [
+                {
+                    "nomP": "val",
+                    "nomCompletP": "Valeurs (x,y,z)",
+                    "typeP": "string",
+                    "nature": "Flux",
+                    "valeurs": {
+                        "*": "0,0,0"
+                    }
+                },
+                {
+                    "nomP": "mode",
+                    "nomCompletP": "Mode Mag",
+                    "typeP": "enum",
+                    "nature": "Config",
+                    "valeurs": {
+                        "*": "OFF"
+                    }
+                }
+            ]
+        },
+        "CamSE": {
+            "nomVarG": "CamSE",
+            "nomCompletVar": "Caméra Smartphone",
+            "instances": [
+                "*"
+            ],
+            "descriptionVarG": "Gestion du flux vidéo et snapshots. [Hébergé sur : SE]",
+            "proprietes": [
+                {
+                    "nomP": "modeCam",
+                    "nomCompletP": "Mode Caméra",
+                    "typeP": "enum",
+                    "nature": "Config",
+                    "descriptionP": "OFF, Stream, Detection",
+                    "valeurs": {
+                        "*": "OFF"
+                    }
+                },
+                {
+                    "nomP": "snap",
+                    "nomCompletP": "Capture Image",
+                    "typeP": "event",
+                    "nature": "Event",
+                    "valeurs": {
+                        "*": 0
+                    }
+                },
+                {
+                    "nomP": "error",
+                    "nomCompletP": "Erreur Caméra",
+                    "typeP": "string",
+                    "nature": "Status",
+                    "valeurs": {
+                        "*": "none"
+                    }
+                }
+            ]
+        },
+        "MicroSE": {
+            "nomVarG": "MicroSE",
+            "nomCompletVar": "Microphone Ambiance",
+            "instances": [
+                "*"
+            ],
+            "descriptionVarG": "Niveau sonore RMS x 10 et direction. [Hébergé sur : SE]",
+            "proprietes": [
+                {
+                    "nomP": "rms",
+                    "nomCompletP": "Niveau RMS",
+                    "typeP": "number",
+                    "nature": "Flux",
+                    "valeurs": {
+                        "*": 0
+                    }
+                },
+                {
+                    "nomP": "dir",
+                    "nomCompletP": "Direction (deg x 10)",
+                    "typeP": "number",
+                    "nature": "Flux",
+                    "valeurs": {
+                        "*": 0
+                    }
+                },
+                {
+                    "nomP": "modeMicro",
+                    "nomCompletP": "Mode Micro",
+                    "typeP": "enum",
+                    "nature": "Config",
+                    "valeurs": {
+                        "*": "OFF"
+                    }
+                }
+            ]
+        },
+        "Voice": {
+            "nomVarG": "Voice",
+            "nomCompletVar": "Synthèse Vocale",
+            "instances": [
+                "*"
+            ],
+            "descriptionVarG": "Sortie TTS via Tasker. [Hébergé sur : SE]",
+            "proprietes": [
+                {
+                    "nomP": "tts",
+                    "nomCompletP": "Phrase",
+                    "typeP": "string",
+                    "nature": "Commande",
+                    "valeurs": {
+                        "*": ""
+                    }
+                },
+                {
+                    "nomP": "vol",
+                    "nomCompletP": "Volume (%)",
+                    "typeP": "number",
+                    "nature": "Config",
+                    "valeurs": {
+                        "*": 80
+                    }
+                }
+            ]
+        },
+        "Appli": {
+            "nomVarG": "Appli",
+            "nomCompletVar": "Gestionnaire Apps",
+            "instances": [
+                "*"
+            ],
+            "descriptionVarG": "Lancement d'applications Android par nom. [Hébergé sur : SE]",
+            "proprietes": [
+                {
+                    "nomP": "launch",
+                    "nomCompletP": "Lancer App",
+                    "typeP": "string",
+                    "nature": "Commande",
+                    "valeurs": {
+                        "*": ""
+                    }
+                },
+                {
+                    "nomP": "close",
+                    "nomCompletP": "Fermer App",
+                    "typeP": "string",
+                    "nature": "Commande",
+                    "valeurs": {
+                        "*": ""
+                    }
+                }
+            ]
+        },
+        "TorchSE": {
+            "nomVarG": "TorchSE",
+            "nomCompletVar": "Torche Smartphone",
+            "instances": [
+                "*"
+            ],
+            "descriptionVarG": "Contrôle du flash LED Android. [Hébergé sur : SE]",
+            "proprietes": [
+                {
+                    "nomP": "act",
+                    "nomCompletP": "Flash ON/OFF",
+                    "typeP": "boolean",
+                    "nature": "Config",
+                    "valeurs": {
+                        "*": 0
+                    }
+                },
+                {
+                    "nomP": "level",
+                    "nomCompletP": "Intensité Flash",
+                    "typeP": "number",
+                    "nature": "Config",
+                    "valeurs": {
+                        "*": 50
+                    }
+                }
+            ]
+        },
+        "COM": {
+            "nomVarG": "COM",
+            "nomCompletVar": "Communication Hub",
+            "instances": [
+                "*"
+            ],
+            "descriptionVarG": "Variables de debug et monitoring réseau. [Hébergé sur : SE/SP]",
+            "proprietes": [
+                {
+                    "nomP": "info",
+                    "nomCompletP": "Debug Info",
+                    "typeP": "string",
+                    "nature": "Status",
+                    "valeurs": {
+                        "*": "_"
+                    }
+                },
+                {
+                    "nomP": "ping",
+                    "nomCompletP": "Latence MQTT",
+                    "typeP": "number",
+                    "nature": "Flux",
+                    "valeurs": {
+                        "*": 0
+                    }
+                }
+            ]
+        }
+    },
+    "ipListe": [
+        {
+            "id": "SmartP_IP_Direct",
+            "ip": "192.168.48.xx",
+            "description": "Adresse IP : 192.168.48.xx - Cas : SmartP_IP_Direct - Smartphone (partage de connexion)",
+            "etat": "indéfini"
+        },
+        {
+            "id": "RPI_IP_Wifi",
+            "ip": "192.168.1.40",
+            "description": "Adresse IP : 192.168.1.40 - Cas : RPI_IP_Wifi - Serveur RPI sur réseau local",
+            "etat": "non défini"
+        },
+        {
+            "id": "SmartPiloteViaBox",
+            "ip": "192.168.1.13",
+            "description": "Adresse IP : 192.168.1.13 - Cas : SmartPiloteViaBox - Le smartphone pilote utilise une adresse fourni par la box",
+            "etat": "indéfini"
+        }
+    ]
+}

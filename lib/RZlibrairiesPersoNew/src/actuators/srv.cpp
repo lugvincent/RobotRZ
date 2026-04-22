@@ -27,25 +27,36 @@
 
 /************************************************************
  * Initialisation du module (doit être appelé depuis setup())
+ *  Charge les valeurs déjà définies dans config.cpp :
+ *  cfg_srv_angles[] = {SERVO_TGD_ZERO, SERVO_THB_ZERO, SERVO_BASE_ZERO}
+ *   cfg_srv_speed[]  = {0, 0, 0}
+ *  cfg_srv_active[] = {true, true, true}
+ *   Envoi VPIV initial COMPLET (angle + speed + act)
+ * → Synchronise logiciel + matériel
  ************************************************************/
 void srv_init()
 {
-    // Charge les valeurs déjà définies dans config.cpp :
-    //   cfg_srv_angles[] = {SERVO_TGD_ZERO, SERVO_THB_ZERO, SERVO_BASE_ZERO}
-    //   cfg_srv_speed[]  = {0, 0, 0}
-    //   cfg_srv_active[] = {true, true, true}
-
     srv_hw_init();
 
-    // Envoi VPIV initial pour que Node-RED sache la position et l’état
     for (int i = 0; i < SERVO_COUNT; i++)
     {
-        char buf[8];
+        // ✅ 1. Appliquer physiquement la position
+        srv_hw_setTarget(i, cfg_srv_angles[i]);
+
+        char buf[16];
+
+        // ✅ 2. Publier angle
         snprintf(buf, sizeof(buf), "%d", cfg_srv_angles[i]);
         sendInfo("Srv", "angle", srvNames[i], buf);
+
+        // ✅ 3. Publier speed
+        snprintf(buf, sizeof(buf), "%d", cfg_srv_speed[i]);
+        sendInfo("Srv", "speed", srvNames[i], buf);
+
+        // ✅ 4. Publier activation
+        sendInfo("Srv", "act", srvNames[i], cfg_srv_active[i] ? "1" : "0");
     }
 }
-
 /************************************************************
  * Changer un angle (valide automatiquement cfg_* et hardware)
  ************************************************************/

@@ -53,7 +53,11 @@ namespace Srv
         // ------------ angle ------------
         if (strcmp(prop, "angle") == 0)
         {
+            if (!value)
+                return false; // ✅ protection
+
             int a = atoi(value);
+
             if (applyAll)
             {
                 for (int i = 0; i < SERVO_COUNT; i++)
@@ -69,6 +73,8 @@ namespace Srv
         // ------------ speed ------------
         if (strcmp(prop, "speed") == 0)
         {
+            if (!value)
+                return false; // ✅ protection
             int s = atoi(value);
             if (applyAll)
             {
@@ -85,6 +91,8 @@ namespace Srv
         // ------------ act (activation servo) ------------
         if (strcmp(prop, "act") == 0)
         {
+            if (!value)
+                return false; // ✅ protection
             bool on = (strcmp(value, "1") == 0 || strcmp(value, "true") == 0);
             if (applyAll)
             {
@@ -92,6 +100,9 @@ namespace Srv
                     srv_setActive(i, on);
             }
             else if (idx >= 0)
+                if (!value)
+                    return false; // ✅ protection
+
             {
                 srv_setActive(idx, on);
             }

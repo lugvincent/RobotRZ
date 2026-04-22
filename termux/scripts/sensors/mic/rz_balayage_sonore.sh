@@ -178,9 +178,11 @@ main() {
     log_bal "Balayage terminé : $nb_mesures mesures. Max RMS=$max_rms à ${max_angle}°."
 
     # Envoi résultat uniquement si au moins un niveau significatif détecté
-    if (( max_rms > 0 )); then
-        send_vpiv "\$F:MicroSE:direction:*:${max_angle}#"
-        log_bal "direction envoyée : ${max_angle}°"
+if (( max_rms > 0 )); then
+    # Conversion en degrés * 10 pour conformité Table A
+    local max_angle_vpiv=$(( max_angle * 10 ))
+    send_vpiv "\$F:MicroSE:direction:*:${max_angle_vpiv}#"
+    log_bal "direction envoyée : ${max_angle_vpiv} (soit ${max_angle}°)"
     else
         log_bal "Aucune source sonore détectée. direction non envoyée."
     fi

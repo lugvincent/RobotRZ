@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # =============================================================================
 # NOM DU FICHIER : rz_build_system.py
-# CHEMIN         : ~/scripts_RZ_SE/termux/scripts/sensors/stt/rz_build_system.py
+# CHEMIN         : ~/robotRZ-smartSE/termux/scripts/sensors/stt/rz_build_system.py
 #
 # OBJECTIF
 # --------

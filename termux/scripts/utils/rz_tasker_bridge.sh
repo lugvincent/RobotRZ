@@ -14,7 +14,7 @@ TASKER_DIR="$HOME/.termux/tasker"
 mkdir -p "$TASKER_DIR"
 
 log_tasker() {
-    echo "[$(date '+%H:%M:%S')] [TASKER] Appel de $TASK_NAME avec $PARAM_1" >> ~/scripts_RZ_SE/termux/logs/tasker_bridge.log
+    echo "[$(date '+%H:%M:%S')] [TASKER] Appel de $TASK_NAME avec $PARAM_1" >> ~/robotRZ-smartSE/termux/logs/tasker_bridge.log
 }
 
 if [ -z "$TASK_NAME" ]; then

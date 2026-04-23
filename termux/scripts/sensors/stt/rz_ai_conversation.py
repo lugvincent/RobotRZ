@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # =============================================================================
 # NOM DU FICHIER : rz_ai_conversation.py
-# CHEMIN         : ~/scripts_RZ_SE/termux/scripts/sensors/stt/rz_ai_conversation.py
+# CHEMIN         : ~/robotRZ-smartSE/termux/scripts/sensors/stt/rz_ai_conversation.py
 #
 # OBJECTIF
 # --------
@@ -67,7 +67,7 @@ import subprocess
 # CONFIGURATION DES CHEMINS
 # =============================================================================
 
-BASE_DIR    = "/data/data/com.termux/files/home/scripts_RZ_SE/termux"
+BASE_DIR    = "/data/data/com.termux/files/home/robotRZ-smartSE/termux"
 CONFIG_KEYS = f"{BASE_DIR}/config/keys.json"
 LOG_FILE    = f"{BASE_DIR}/logs/ai_conversation.log"
 

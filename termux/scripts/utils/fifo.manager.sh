@@ -1,7 +1,7 @@
 #!/bin/bash
 # =============================================================================
 # SCRIPT  : fifo_manager.sh
-# CHEMIN  : ~/scripts_RZ_SE/termux/scripts/utils/fifo_manager.sh
+# CHEMIN  : ~/robotRZ-smartSE/termux/scripts/utils/fifo_manager.sh
 #
 # OBJECTIF
 # --------
@@ -50,7 +50,7 @@
 
 if [ -d "/data/data/com.termux/files" ]; then
     # Chemin smartphone (Termux)
-    BASE_DIR="/data/data/com.termux/files/home/scripts_RZ_SE/termux"
+    BASE_DIR="/data/data/com.termux/files/home/robotRZ-smartSE/termux"
 else
     # Chemin PC — calculé depuis l'emplacement du script
     # Le script est dans termux/scripts/utils/ → remonter de 3 niveaux

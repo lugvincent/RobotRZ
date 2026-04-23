@@ -1,7 +1,7 @@
 #!/bin/bash
 # =============================================================================
 # SCRIPT  : rz_appli_manager.sh
-# CHEMIN  : ~/scripts_RZ_SE/termux/scripts/appli/rz_appli_manager.sh
+# CHEMIN  : ~/robotRZ-smartSE/termux/scripts/appli/rz_appli_manager.sh
 #
 # OBJECTIF
 # --------
@@ -91,7 +91,7 @@
 # =============================================================================
 
 if [ -d "/data/data/com.termux/files" ]; then
-    BASE_DIR="/data/data/com.termux/files/home/scripts_RZ_SE/termux"
+    BASE_DIR="/data/data/com.termux/files/home/robotRZ-smartSE/termux"
 else
     BASE_DIR="$(cd "$(dirname "$0")/../.." && pwd)"
 fi

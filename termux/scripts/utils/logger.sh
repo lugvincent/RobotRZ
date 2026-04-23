@@ -7,7 +7,7 @@
 # =============================================================================
 
 # Chemins
-LOG_DIR="/data/data/com.termux/files/home/scripts_RZ_SE/termux/logs"
+LOG_DIR="/data/data/com.termux/files/home/robotRZ-smartSE/termux/logs"
 
 # Niveaux de log
 LOG_LEVEL=3  # 1:ERREUR, 2:AVERT, 3:INFO, 4:DEBUG

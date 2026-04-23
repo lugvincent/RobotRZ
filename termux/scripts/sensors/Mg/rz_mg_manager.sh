@@ -1,7 +1,7 @@
 #!/bin/bash
 # =============================================================================
 # SCRIPT  : rz_mg_manager.sh
-# CHEMIN  : ~/scripts_RZ_SE/termux/scripts/sensors/Mg/rz_mg_manager.sh
+# CHEMIN  : ~/robotRZ-smartSE/termux/scripts/sensors/Mg/rz_mg_manager.sh
 #
 # OBJECTIF
 # --------
@@ -87,7 +87,7 @@
 
 # Détection dynamique : smartphone Termux ou PC de développement
 if [ -d "/data/data/com.termux/files" ]; then
-    BASE_DIR="/data/data/com.termux/files/home/scripts_RZ_SE/termux"
+    BASE_DIR="/data/data/com.termux/files/home/robotRZ-smartSE/termux"
 else
     BASE_DIR="$(cd "$(dirname "$0")/../../.." && pwd)"
 fi

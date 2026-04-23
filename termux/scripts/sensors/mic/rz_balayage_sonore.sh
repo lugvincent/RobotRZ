@@ -1,7 +1,7 @@
 #!/bin/bash
 # =============================================================================
 # SCRIPT  : rz_balayage_sonore.sh
-# CHEMIN  : ~/scripts_RZ_SE/termux/scripts/sensors/mic/rz_balayage_sonore.sh
+# CHEMIN  : ~/robotRZ-smartSE/termux/scripts/sensors/mic/rz_balayage_sonore.sh
 #
 # OBJECTIF
 # --------

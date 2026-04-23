@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # =============================================================================
 # NOM DU FICHIER : rz_stt_manager.py
-# CHEMIN         : ~/scripts_RZ_SE/termux/scripts/sensors/stt/rz_stt_manager.py
+# CHEMIN         : ~/robotRZ-smartSE/termux/scripts/sensors/stt/rz_stt_manager.py
 #
 # OBJECTIF
 # --------
@@ -73,7 +73,7 @@ import sys
 # CONFIGURATION DES CHEMINS
 # =============================================================================
 
-BASE_DIR = "/data/data/com.termux/files/home/scripts_RZ_SE/termux"
+BASE_DIR = "/data/data/com.termux/files/home/robotRZ-smartSE/termux"
 STT_DIR  = os.path.join(BASE_DIR, "scripts/sensors/stt")
 
 # Fichiers de configuration

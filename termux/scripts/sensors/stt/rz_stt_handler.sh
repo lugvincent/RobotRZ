@@ -1,7 +1,7 @@
 #!/bin/bash
 # =============================================================================
 # SCRIPT: rz_stt_handler.sh
-# CHEMIN: /data/data/com.termux/files/home/scripts_RZ_SE/termux/scripts/sensors/stt/rz_stt_handler.sh
+# CHEMIN: /data/data/com.termux/files/home/robotRZ-smartSE/termux/scripts/sensors/stt/rz_stt_handler.sh
 # DESCRIPTION:
 #      Cœur décisionnel du traitement vocal.
 #      1. Analyse l'Intent reconnu localement via le catalogue JSON.
@@ -14,7 +14,7 @@
 # =============================================================================
 
 # --- 1. DÉFINITION DES CHEMINS ---
-BASE_DIR="/data/data/com.termux/files/home/scripts_RZ_SE/termux"
+BASE_DIR="/data/data/com.termux/files/home/robotRZ-smartSE/termux"
 CONFIG_GLOBAL="$BASE_DIR/config/global.json"
 CATALOGUE="$BASE_DIR/config/sensors/stt_catalog.json"
 LOG_FILE="$BASE_DIR/logs/stt_handler.log"

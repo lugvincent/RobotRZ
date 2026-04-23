@@ -1,7 +1,7 @@
 #!/bin/bash
 # =============================================================================
 # SCRIPT  : urgence.sh
-# CHEMIN  : ~/scripts_RZ_SE/termux/scripts/sensors/sys/lib/urgence.sh
+# CHEMIN  : ~/robotRZ-smartSE/termux/scripts/sensors/sys/lib/urgence.sh
 #
 # OBJECTIF
 # --------

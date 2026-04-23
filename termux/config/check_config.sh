@@ -1,7 +1,7 @@
 #!/bin/bash
 # =============================================================================
 # SCRIPT  : check_config.sh
-# CHEMIN  : ~/scripts_RZ_SE/termux/config/check_config.sh
+# CHEMIN  : ~/robotRZ-smartSE/termux/config/check_config.sh
 #
 # OBJECTIF
 # --------
@@ -92,7 +92,7 @@
 # =============================================================================
 
 if [ -d "/data/data/com.termux/files" ]; then
-    BASE_DIR="/data/data/com.termux/files/home/scripts_RZ_SE/termux"
+    BASE_DIR="/data/data/com.termux/files/home/robotRZ-smartSE/termux"
 else
     BASE_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 fi

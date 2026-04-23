@@ -34,7 +34,7 @@ logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(levelname)s - %(message)s',
     handlers=[
-        logging.FileHandler("/data/data/com.termux/files/home/scripts_RZ_SE/termux/logs/mqtt_bridge.log"),
+        logging.FileHandler("/data/data/com.termux/files/home/robotRZ-smartSE/termux/logs/mqtt_bridge.log"),
         logging.StreamHandler()
     ]
 )

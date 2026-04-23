@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # =============================================================================
 # NOM DU FICHIER : rz_build_dict.py
-# CHEMIN         : ~/scripts_RZ_SE/termux/scripts/sensors/stt/rz_build_dict.py
+# CHEMIN         : ~/robotRZ-smartSE/termux/scripts/sensors/stt/rz_build_dict.py
 #
 # OBJECTIF
 # --------
@@ -58,7 +58,7 @@ import os
 # CONFIGURATION DES CHEMINS
 # =============================================================================
 
-STT_DIR    = "/data/data/com.termux/files/home/scripts_RZ_SE/termux/scripts/sensors/stt"
+STT_DIR    = "/data/data/com.termux/files/home/robotRZ-smartSE/termux/scripts/sensors/stt"
 LIB_PATH   = os.path.join(STT_DIR, "lib_pocketsphinx")
 WORDS_FILE = os.path.join(STT_DIR,  "rz_words.txt")
 REF_DICT   = os.path.join(LIB_PATH, "lexique_referent.dict")

@@ -18,7 +18,7 @@
 # DATE: 2026-03-12
 # =============================================================================
 # --- CONFIGURATION DES CHEMINS ---
-BASE_DIR="/data/data/com.termux/files/home/scripts_RZ_SE/termux"
+BASE_DIR="/data/data/com.termux/files/home/robotRZ-smartSE/termux"
 GLOBAL_CONFIG="$BASE_DIR/config/global.json"
 LOG_FILE="$BASE_DIR/logs/state_manager.log"
 FIFO_IN="$BASE_DIR/fifo/fifo_termux_in"

@@ -1,7 +1,7 @@
 #!/bin/bash
 # =============================================================================
 # SCRIPT  : alerts_sys.sh
-# CHEMIN  : ~/scripts_RZ_SE/termux/scripts/sensors/sys/lib/alerts_sys.sh
+# CHEMIN  : ~/robotRZ-smartSE/termux/scripts/sensors/sys/lib/alerts_sys.sh
 #
 # OBJECTIF
 # --------

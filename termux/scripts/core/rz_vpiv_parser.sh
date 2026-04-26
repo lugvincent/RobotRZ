@@ -91,6 +91,14 @@ LOG_FILE="$LOG_DIR/vpiv_parser.log"
 MQTT_BROKER="robotz-vincent.duckdns.org"
 MQTT_TOPIC="SE/commande"
 
+# Lecture credentials MQTT depuis keys.json
+KEYS_FILE="$BASE_DIR/config/keys.json"
+MQTT_USER=$(jq -r '.MQTT_USER // empty' "$KEYS_FILE" 2>/dev/null)
+MQTT_PASS=$(jq -r '.MQTT_PASS // empty' "$KEYS_FILE" 2>/dev/null)
+MQTT_HOST=$(jq -r '.MQTT_HOST // empty' "$KEYS_FILE" 2>/dev/null)
+# Fallback si keys.json absent
+MQTT_BROKER="${MQTT_HOST:-robotz-vincent.duckdns.org}"
+
 # =============================================================================
 # UTILITAIRES
 # =============================================================================
@@ -286,7 +294,9 @@ process_command() {
         # ---------------------------------------------------------------------
         *)
             log "WARN : CAT inconnue '$CAT' — trame ignorée : $msg"
-            mosquitto_pub -h "$MQTT_BROKER" -t "SE/statut" \
+            mosquitto_pub -h "$MQTT_BROKER" -p 1883 \
+                -u "$MQTT_USER" -P "$MQTT_PASS" \
+                -t "SE/statut" \
                 -m "\$I:COM:warn:SE:\"VPIV: CAT inconnue '${CAT}'\"#" \
                 -q 0 >/dev/null 2>&1
             return
@@ -299,7 +309,9 @@ process_command() {
     # =========================================================================
     local short_msg
     short_msg=$(echo "$msg" | cut -d':' -f1-4)
-    mosquitto_pub -h "$MQTT_BROKER" -t "SE/statut" \
+    mosquitto_pub -h "$MQTT_BROKER" -p 1883 \
+        -u "$MQTT_USER" -P "$MQTT_PASS" \
+        -t "SE/statut" \
         -m "\$I:COM:info:SE:ACK_${short_msg}#" \
         -q 0 >/dev/null 2>&1
 }
@@ -331,13 +343,17 @@ main() {
     # Boucle de reconnexion : mosquitto_sub -C 1 lit un message puis sort,
     # ce qui permet de relancer proprement en cas de coupure réseau.
     while true; do
-        mosquitto_sub -h "$MQTT_BROKER" -p 1883 -t "$MQTT_TOPIC" -C 1 \
+        mosquitto_sub -h "$MQTT_BROKER" -p 1883 \
+            -u "$MQTT_USER" -P "$MQTT_PASS" \
+            -t "$MQTT_TOPIC" -C 1 \
         | while read -r msg; do
             if validate_vpiv "$msg"; then
                 process_command "$msg"
             else
                 log "Trame invalide : '$msg'"
-                mosquitto_pub -h "$MQTT_BROKER" -t "SE/statut" \
+                mosquitto_pub -h "$MQTT_BROKER" -p 1883 \
+                    -u "$MQTT_USER" -P "$MQTT_PASS" \
+                    -t "SE/statut" \
                     -m "\$E:COM:error:SE:Trame_Invalide#" \
                     -q 0 >/dev/null 2>&1
             fi

@@ -248,11 +248,21 @@ send_uptime() {
 
 get_cpu() {
     # Charge CPU en % (entier) via top
-    top -bn1 2>/dev/null \
-        | awk '/Cpu\(s\)|%Cpu/ {
+    # Compatible format Android Termux : "800%cpu 0%user ... 800%idle"
+    local idle
+    idle=$(top -bn1 2>/dev/null \
+        | awk '/%cpu|%CPU/ {
             for(i=1;i<=NF;i++)
-                if($i+0>0 && $(i+1)~/us/) { printf "%d",$i; exit }
-          }' 2>/dev/null || echo "0"
+                if($i~/idle/) {
+                    val=$(i-1)
+                    gsub(/%cpu|%idle/,"",val)
+                    printf "%d", 100-val
+                    exit
+                }
+          }' 2>/dev/null)
+    # Fallback si top ne retourne rien
+    [ -z "$idle" ] && idle=0
+    echo "$idle"
 }
 
 get_thermal() {

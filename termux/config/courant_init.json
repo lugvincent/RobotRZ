@@ -1,61 +1,115 @@
 {
-    "gyro": {
-        "modeGyro": "OFF"
-    },
-    "mg": {
-        "modeMG": "BRUT",
-        "frequence": 5,
-        "modeRZ": [
-            1,
-            2,
-            3
-        ]
-    },
-    "sys": {
-        "mode": "FLOW",
-        "frequence": 10,
-        "thresholds": {
-            "cpu": {
-                "alert": 85
-            },
-            "thermal": {
-                "alert": 80
-            }
-        },
-        "alerts": {
-            "cpu": true,
-            "thermal": true
-        }
-    },
-    "cam": {
-        "profiles": {
-            "normal": {
-                "res": "1920x1080",
-                "fps": 30
-            },
-            "optimized": {
-                "res": "1280x720",
-                "fps": 15
-            }
-        },
-        "status": {
-            "active": "Off",
-            "current_side": "rear"
-        }
-    },
-    "stt": {
-        "modeSTT": "KWS",
-        "threshold": 1e-20,
-        "keyphrase": "rz",
-        "lang": "fr",
-        "lib_path": "lib_pocketsphinx"
-    },
-    "mic": {
-        "sensibilite": 80,
-        "filtre_bruit": true,
-        "volume": 100
-    },
-    "global_overrides": {
-        "modeRZ": 1
+  "gyro": {
+    "modeGyro": "DATACont",
+    "angleVSEBase": 150,
+    "paraGyro": {
+      "freqCont": 20,
+      "freqMoy": 2,
+      "nbValPourMoy": 5,
+      "seuilMesure": {
+        "x": 10,
+        "y": 10,
+        "z": 5
+      },
+      "seuilAlerte": {
+        "x": 300,
+        "y": 300
+      }
     }
+  },
+  "mag": {
+    "modeMg": "DATAMgCont",
+    "paraMg": {
+      "freqCont": 5,
+      "freqMoy": 1,
+      "nbValPourMoy": 5,
+      "seuilMesure": {
+        "x": 50,
+        "y": 50,
+        "z": 50
+      }
+    }
+  },
+  "sys": {
+    "modeSys": "FLOW",
+    "paraSys": {
+      "freqCont": 10,
+      "freqMoy":  60,
+      "nbCycles": 3,
+      "thresholds": {
+        "cpu":     { "warn": 80,     "urg": 90     },
+        "thermal": { "warn": 70, "urg": 85 },
+        "storage": { "warn": 85, "urg": 95 },
+        "mem":     { "warn": 80,     "urg": 90     },
+        "batt":    { "warn": 30,    "urg": 15    }
+      }
+    }
+  },
+  "cam": {
+    "front": {
+      "mode": "off",
+      "res": "720p",
+      "fps": 15,
+      "quality": 80,
+      "urgDelay": 5,
+      "streamURL": ""
+    },
+    "rear": {
+      "mode": "off",
+      "res": "1080p",
+      "fps": 30,
+      "quality": 80,
+      "urgDelay": 5,
+      "streamURL": ""
+    },
+    "status": {
+      "current_side": "rear",
+      "last_ip": "0.0.0.0"
+    },
+    "profiles": {
+      "normal":    { "res": "720p",    "fps": 30,    "quality": 80    },
+      "optimized": { "res": "low", "fps": 10, "quality": 50 }
+    },
+    "locks": {
+      "zoom_active": false,
+      "security_app_active": false
+    }
+  },
+  "appli": {
+    "Baby":        { "state": "Off",        "tasker_task": "RZ_Baby",        "package": "",                    "last_change": "" },
+    "tasker":      { "state": "Off",      "tasker_task": "",                        "package": "net.dinglisch.android.taskerm",   "last_change": "" },
+    "zoom":        { "state": "Off",        "tasker_task": "RZ_Zoom",        "package": "us.zoom.videomeetings",     "last_change": "" },
+    "BabyMonitor": { "state": "Off", "tasker_task": "RZ_BabyMonitor", "package": "",                    "last_change": "" },
+    "NavGPS":      { "state": "Off",      "tasker_task": "RZ_NavGPS",      "package": "com.google.android.apps.maps",   "last_change": "" },
+    "bridge_timeout": 5,
+    "ExprTasker": { "expr_task": "RZ_Expression", "info_task": "RZ_Info" }
+  },
+  "mic": {
+    "modeMicro": "off",
+    "paraMicro": {
+      "freqCont": 300,
+      "winSize": 300,
+      "seuilDelta": 30,
+      "holdTime": 500,
+      "seuilFaible": 100,
+      "seuilMoyen": 400,
+      "seuilFort": 700,
+      "pasBalayage": 10,
+      "timeoutOrientation": 15
+    }
+  },
+  "stt": {
+    "modeSTT":   "KWS",
+    "threshold": 1e-20,
+    "keyphrase": "rz",
+    "lang":      "fr",
+    "lib_path":  "lib_pocketsphinx"
+  },
+  "mtr": {
+    "speed_cruise":  30,
+    "inputScale":    100,
+    "outputScale":   400,
+    "kturn":         8,
+    "active":        false
+  }
 }

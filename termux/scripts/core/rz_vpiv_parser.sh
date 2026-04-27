@@ -46,7 +46,7 @@
 #   Écrit   : fifo/fifo_appli_in      (rz_appli_manager.sh — CAT=A)
 #   Écrit   : fifo/fifo_voice_in    (rz_voice_manager.sh — TTS, vol, output)
 #   Lit     : config/global.json      (typePtge, pour retour vocal)
-#   Appelle : scripts/core/safety_stop.sh  (Point C urgence)
+#   Lit     : fifo/fifo_termux_in     (trames SE→SP : managers capteurs)#   Appelle : scripts/core/safety_stop.sh  (Point C urgence)
 #   Appelle : scripts/sensors/cam/rz_camera_manager.sh
 #
 # PRÉCAUTIONS
@@ -63,8 +63,8 @@
 #   safety_stop.sh, rz_camera_manager.sh
 #
 # AUTEUR  : Vincent Philippe
-# VERSION : 2.0  (ajout routage CAT=A → fifo_appli_in)
-# DATE    : 2026-03-05
+# VERSION : 2.1  (ajout boucle FIFO→MQTT SE→SP)
+# DATE    : 2026-04-27
 # =============================================================================
 
 # =============================================================================
@@ -340,6 +340,17 @@ main() {
 
     log "Écoute MQTT sur $MQTT_BROKER/$MQTT_TOPIC ..."
 
+    # Boucle lecture FIFO → publication MQTT SE/statut (SE→SP)
+( while true; do
+    if read -r trame < "$FIFO_TERMUX"; then
+        if [ -n "$trame" ]; then
+            mosquitto_pub -h "$MQTT_BROKER" -p 1883 -u "$MQTT_USER" -P "$MQTT_PASS" -t "SE/statut" -m "$trame" -q 0 >/dev/null 2>&1
+            log "FIFO→MQTT : $trame"
+        fi
+    fi
+done ) &
+FIFO_READER_PID=$!
+    
     # Boucle de reconnexion : mosquitto_sub -C 1 lit un message puis sort,
     # ce qui permet de relancer proprement en cas de coupure réseau.
     while true; do
@@ -364,6 +375,6 @@ main() {
 }
 
 # Nettoyage propre sur Ctrl+C ou kill
-trap 'log "Arrêt du parser VPIV."' EXIT
+trap 'log "Arrêt du parser VPIV." ; kill "$FIFO_READER_PID" 2>/dev/null' EXIT
 
 main

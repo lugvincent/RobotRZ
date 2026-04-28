@@ -1,0 +1,74 @@
+ID;Traitement;CAT;Destinataire;moteurActif;Alias;ID_fils;VAR;PROP;INSTANCE;VALEUR;Prepa_Encodage;Alias-TTS
+;;;;;;;;;;;; URGENCE — priorité absolue (toujours traité même modeRZ=0) ;;;;
+URGENCY_STOP;SIMPLE;V;A;0;stop,arrête tout,urgence,freine;;Mtr;cmd;*;0,0,0;;Je m'arrête.|Arrêt d'urgence.
+;;;;;;;;;;;; MOTEUR — déplacements simples ;;;;
+MTR_FORWARD;SIMPLE;V;A;1;avance,tout droit,vas-y,en avant;;Mtr;cmd;*;50,0,2;;Je fonce.|C'est parti.
+MTR_BACKWARD;SIMPLE;V;A;1;recule,en arrière,marche arrière;;Mtr;cmd;*;-50,0,2;;Je recule.
+MTR_STOP;SIMPLE;V;A;1;stop,arrête,freine,immobile;;Mtr;cmd;*;0,0,0;;Arrêt.
+MTR_SLOW;SIMPLE;V;A;1;lentement,doucement,ralentis;;Mtr;cmd;*;20,0,1;;Je ralentis.
+MTR_FAST;SIMPLE;V;A;1;vite,accélère,plus vite,rapide;;Mtr;cmd;*;80,0,3;;À toute vitesse !
+;;;;;;;;;;;; MOTEUR — déplacements dynamiques (PLAN) ;;;;
+MTR_TURN_RIGHT;PLAN;V;A;1;tourne à droite,tourne droite,virage droite;;Mtr;cmd;*;;NUM_DIR;Je tourne à droite.
+MTR_TURN_LEFT;PLAN;V;A;1;tourne à gauche,tourne gauche,virage gauche;;Mtr;cmd;*;;NUM_DIR;Je tourne à gauche.
+MTR_TURN_ANGLE;PLAN;V;A;1;tourne de,tourne à;;Mtr;cmd;*;;NUM_DIR;Je tourne.
+MTR_SPEED_SET;PLAN;V;A;1;vitesse,à la vitesse de;;Mtr;cmd;*;;NUM;Je règle ma vitesse.
+MTR_ADVANCE_DIST;PLAN;V;A;1;avance de,avance jusqu'à;;Mtr;cmd;*;;angle+speed;Je me déplace.
+;;;;;;;;;;;; CONFIGURATION — modes globaux (modeRZ) ;;;;
+CFG_VEILLE;SIMPLE;V;SE;0;mode veille,veille,repos,mise en veille;;CfgS;modeRZ;*;1;;Mode veille activé.
+CFG_FIXE;SIMPLE;V;SE;0;mode fixe,fixe,position fixe;;CfgS;modeRZ;*;2;;Mode fixe activé.
+CFG_DEPLACEMENT;SIMPLE;V;SE;0;mode déplacement,déplacement;;CfgS;modeRZ;*;3;;Prêt à me déplacer.
+CFG_AUTONOME;SIMPLE;V;SE;0;mode autonome,autonome,auto;;CfgS;modeRZ;*;4;;Mode autonome activé.
+;;;;;;;;;;;; CONFIGURATION — type de pilotage (typePtge) ;;;;
+CFG_PTGE_VOCAL;SIMPLE;V;SE;0;pilotage vocal,commande vocale;;CfgS;typePtge;*;1;;Pilotage vocal activé.
+CFG_PTGE_ECRAN;SIMPLE;V;SE;0;pilotage écran,écran;;CfgS;typePtge;*;0;;Pilotage écran activé.
+CFG_PTGE_LAISSE;SIMPLE;V;SE;0;mode laisse,laisse;;CfgS;typePtge;*;3;;Je suis en mode laisse.
+;;;;;;;;;;;; CAMÉRA ;;;;
+CAM_ON;SIMPLE;A;SE;0;démarre la caméra,allume la caméra,caméra on;;CamSE;active;rear;On;;Caméra démarrée.
+CAM_OFF;SIMPLE;A;SE;0;arrête la caméra,éteins la caméra,caméra off;;CamSE;active;*;Off;;Caméra arrêtée.
+CAM_FRONT;SIMPLE;A;SE;0;caméra avant,vue de face;;CamSE;mode;*;front;;Je bascule sur la caméra avant.
+CAM_REAR;SIMPLE;A;SE;0;caméra arrière,vue arrière;;CamSE;mode;*;rear;;Je bascule sur la caméra arrière.
+CAM_SNAP;SIMPLE;A;SE;0;prends une photo,snapshot,capture;;CamSE;(snap);*;1;;Photo prise.
+;;;;;;;;;;;; LEDS — anneau (LRing) ;;;;
+LRING_ON;SIMPLE;V;A;0;allume les leds,allume l'anneau;;LRing;act;*;1;;Leds allumées.
+LRING_OFF;SIMPLE;V;A;0;éteins les leds,éteins l'anneau;;LRing;act;*;0;;Leds éteintes.
+LRING_SMILE;SIMPLE;V;A;0;souris,fais un sourire,expression sourire;;LRing;expr;*;sourire;;Voilà mon plus beau sourire.
+LRING_SAD;SIMPLE;V;A;0;triste,sois triste,expression triste;;LRing;expr;*;triste;;Je suis triste.
+LRING_NEUTRAL;SIMPLE;V;A;0;neutre,expression neutre,visage neutre;;LRing;expr;*;neutre;;Expression neutre.
+LRING_SURPRISED;SIMPLE;V;A;0;étonné,surpris,expression étonnement;;LRing;expr;*;étonnement;;Oh !
+LRING_ANGRY;SIMPLE;V;A;0;en colère,fâché,expression colère;;LRing;expr;*;colère;;Grrr !
+LRING_BRIGHTNESS;PLAN;V;A;0;intensité,luminosité;;LRing;int;*;;NUM;Je règle la luminosité.
+;;;;;;;;;;;; SERVOS — orientation tête (TGD = gauche-droite, THB = haut-bas) ;;;;
+SRV_HEAD_UP;SIMPLE;V;A;0;lève la tête,regarde en haut,haut;;Srv;angle;THB;120;;Je lève la tête.
+SRV_HEAD_DOWN;SIMPLE;V;A;0;baisse la tête,regarde en bas,bas;;Srv;angle;THB;30;;Je baisse la tête.
+SRV_HEAD_RIGHT;SIMPLE;V;A;0;regarde à droite,tourne la tête à droite;;Srv;angle;TGD;60;;Je regarde à droite.
+SRV_HEAD_LEFT;SIMPLE;V;A;0;regarde à gauche,tourne la tête à gauche;;Srv;angle;TGD;0;;Je regarde à gauche.
+SRV_HEAD_CENTER;SIMPLE;V;A;0;regarde devant,tout droit,centre;;Srv;angle;TGD;30;;Je regarde devant moi.
+SRV_HEAD_GD_ANGLE;PLAN;V;A;0;tourne la tête de,oriente la tête de;;Srv;angle;TGD;;NUM_DIR;Je tourne la tête.
+SRV_HEAD_HB_ANGLE;PLAN;V;A;0;incline la tête de,relève la tête de;;Srv;angle;THB;;NUM_DIR;J'incline la tête.
+;;;;;;;;;;;; APPLICATIONS ;;;;
+APP_TASKER_ON;SIMPLE;A;SE;0;lance tasker,démarre tasker;;Appli;tasker;*;On;;Tasker démarré.
+APP_TASKER_OFF;SIMPLE;A;SE;0;arrête tasker,ferme tasker;;Appli;tasker;*;Off;;Tasker fermé.
+APP_ZOOM_ON;SIMPLE;A;SE;0;lance zoom,démarre zoom,réunion zoom;;Appli;zoom;*;On;;Je lance Zoom.
+APP_ZOOM_OFF;SIMPLE;A;SE;0;arrête zoom,ferme zoom;;Appli;zoom;*;Off;;Zoom fermé.
+APP_BABY_ON;SIMPLE;A;SE;0;lance baby,surveillance bébé;;Appli;Baby;*;On;;Surveillance bébé démarrée.
+APP_BABY_OFF;SIMPLE;A;SE;0;arrête baby,stop bébé;;Appli;Baby;*;Off;;Surveillance bébé arrêtée.
+APP_GPS_ON;SIMPLE;A;SE;0;lance la navigation,gps,navigation;;Appli;NavGPS;*;On;;Navigation démarrée.
+APP_GPS_OFF;SIMPLE;A;SE;0;arrête la navigation,stop gps;;Appli;NavGPS;*;Off;;Navigation arrêtée.
+;;;;;;;;;;;; EXPRESSIONS TASKER ;;;;
+EXPR_SMILE;SIMPLE;A;SE;0;fais un sourire,souris tasker;;Appli;ExprTasker;Expression;sourire;;Voilà !
+EXPR_NEUTRAL;SIMPLE;A;SE;0;retour neutre,expression normale;;Appli;ExprTasker;Off;*;;D'accord.
+;;;;;;;;;;;; MICRO (smartphone) ;;;;
+MIC_ON;SIMPLE;V;SE;0;active le micro,allume le micro;;MicroSE;modeMicro;*;intensite;;Micro activé.
+MIC_OFF;SIMPLE;V;SE;0;coupe le micro,désactive le micro;;MicroSE;modeMicro;*;off;;Micro coupé.
+MIC_ORIENT;SIMPLE;V;SE;0;écoute d'où vient le son,localise le son;;MicroSE;modeMicro;*;orientation;;J'écoute d'où tu viens.
+MIC_SURV;SIMPLE;V;SE;0;mode surveillance micro,surveillance sonore;;MicroSE;modeMicro;*;surveillance;;Surveillance sonore activée.
+;;;;;;;;;;;; SYSTÈME — état et info ;;;;
+SYS_STATUS;LOCAL;I;SE;0;quel est ton état,comment tu vas,état système;;COM;info;SE;status;;Je vais bien.|Je vérifie mon état.
+SYS_BATTERY;LOCAL;I;SE;0;batterie,niveau de batterie,autonomie;;COM;info;SE;battery;;Je vérifie ma batterie.
+SYS_RESET;SIMPLE;V;SE;0;réinitialise,reset;;CfgS;(reset);*;1;;Je me réinitialise.
+SYS_URG_CLEAR;SIMPLE;V;SE;0;efface l'urgence,annule l'alerte;;Urg;(clear);*;1;;Urgence effacée.
+;;;;;;;;;;;; MACROS — enchaînements de commandes ;;;;
+MACRO_PAUSE;COMPLEXE;V;A;0;pause,fais une pause;MTR_STOP,LRING_NEUTRAL;;;;;;;Pause.
+MACRO_HELLO;COMPLEXE;V;A;0;bonjour,salut,coucou;LRING_SMILE,EXPR_SMILE;;;;;;;Bonjour ! Je suis RZ.
+MACRO_SLEEP;COMPLEXE;V;SE;0;dors,va dormir,mode nuit;MTR_STOP,LRING_OFF,CFG_VEILLE;;;;;;;Bonne nuit.
+MACRO_WAKE;COMPLEXE;V;SE;0;réveille-toi,debout,active-toi;CFG_DEPLACEMENT,LRING_ON,LRING_SMILE;;;;;;;Me revoilà !

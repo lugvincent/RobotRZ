@@ -1,26 +1,32 @@
 {
-    "CfgS": {
-        "modeRZ": 1,
-        "typePtge": 0,
-        "reset": false
-    },
-    "Urg": {
-        "source": "URG_NONE",
-        "statut": "cleared",
-        "niveau": "warn"
-    },
-    "COM": {
-        "debug": "",
-        "error": "",
-        "info": "",
-        "warn": ""
-    },
-    "Sys": {
-        "cpu": 0,
-        "thermal": 0,
-        "storage": 0,
-        "mem": 0,
-        "batt": 0,
-        "last_update": ""
-    }
+  "CfgS": {
+    "modeRZ": 2,
+    "typePtge": 0,
+    "reset": false
+  },
+  "Urg": {
+    "source": "URG_NONE",
+    "statut": "cleared",
+    "niveau": "warn"
+  },
+  "COM": {
+    "debug": "",
+    "error": "",
+    "info": "",
+    "warn": ""
+  },
+  "Sys": {
+    "cpu_load": 0,
+    "temp": 0,
+    "storage": 60,
+    "mem": 56,
+    "batt": 93,
+    "uptime": 0,
+    "last_update": "2026-04-27 13:11:22",
+    "cpu": 0,
+    "thermal": 24
+  },
+  "STT": {
+    "context": "Inactif"
+  }
 }

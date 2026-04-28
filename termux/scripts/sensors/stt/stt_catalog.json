@@ -1,62 +1,1567 @@
-[
-    {
-        "id": "MTR_FORWARD",
-        "description": "Commande d'avancée",
-        "category": "MOTOR",
-        "context": [
-            "MOVE"
-        ],
-        "priority": "HIGH",
-        "cost": "LOW",
-        "scope": "SP",
-        "synonyms": [
-            "avance",
-            "tout droit",
-            "vas-y"
-        ],
-        "params": [
-            "speed"
-        ],
-        "param_alias": {
-            "speed": [
-                "vitesse",
-                "rapide",
-                "lent"
+{
+    "commandes": [
+        {
+            "id": "",
+            "traitement": "",
+            "cat": "",
+            "destinataire": "",
+            "moteurActif": 0,
+            "synonymes": [
+                ""
+            ],
+            "id_fils": [],
+            "vpiv_parts": {
+                "var": "",
+                "prop": "",
+                "inst": "",
+                "val": ""
+            },
+            "alias_tts": [
+                "URGENCE — priorité absolue (toujours traité même modeRZ=0)"
             ]
         },
-        "vpiv_type": "SIMPLE",
-        "vpiv": [
-            {
+        {
+            "id": "URGENCY_STOP",
+            "traitement": "SIMPLE",
+            "cat": "V",
+            "destinataire": "A",
+            "moteurActif": 0,
+            "synonymes": [
+                "stop",
+                "arrête tout",
+                "urgence",
+                "freine"
+            ],
+            "id_fils": [],
+            "vpiv_parts": {
                 "var": "Mtr",
-                "prop": "speed",
+                "prop": "cmd",
                 "inst": "*",
-                "val": "50"
-            }
-        ]
-    },
-    {
-        "id": "MTR_STOP",
-        "description": "Commande d'arrêt",
-        "category": "MOTOR",
-        "context": [
-            "ANY"
-        ],
-        "priority": "HIGH",
-        "cost": "LOW",
-        "scope": "SP",
-        "synonyms": [
-            "stop",
-            "arrête",
-            "freine"
-        ],
-        "vpiv_type": "SIMPLE",
-        "vpiv": [
-            {
+                "val": "0,0,0"
+            },
+            "alias_tts": [
+                "Je m'arrête.",
+                "Arrêt d'urgence."
+            ]
+        },
+        {
+            "id": "",
+            "traitement": "",
+            "cat": "",
+            "destinataire": "",
+            "moteurActif": 0,
+            "synonymes": [
+                ""
+            ],
+            "id_fils": [],
+            "vpiv_parts": {
+                "var": "",
+                "prop": "",
+                "inst": "",
+                "val": ""
+            },
+            "alias_tts": [
+                "MOTEUR — déplacements simples"
+            ]
+        },
+        {
+            "id": "MTR_FORWARD",
+            "traitement": "SIMPLE",
+            "cat": "V",
+            "destinataire": "A",
+            "moteurActif": 1,
+            "synonymes": [
+                "avance",
+                "tout droit",
+                "vas-y",
+                "en avant"
+            ],
+            "id_fils": [],
+            "vpiv_parts": {
                 "var": "Mtr",
-                "prop": "speed",
+                "prop": "cmd",
+                "inst": "*",
+                "val": "50,0,2"
+            },
+            "alias_tts": [
+                "Je fonce.",
+                "C'est parti."
+            ]
+        },
+        {
+            "id": "MTR_BACKWARD",
+            "traitement": "SIMPLE",
+            "cat": "V",
+            "destinataire": "A",
+            "moteurActif": 1,
+            "synonymes": [
+                "recule",
+                "en arrière",
+                "marche arrière"
+            ],
+            "id_fils": [],
+            "vpiv_parts": {
+                "var": "Mtr",
+                "prop": "cmd",
+                "inst": "*",
+                "val": "-50,0,2"
+            },
+            "alias_tts": [
+                "Je recule."
+            ]
+        },
+        {
+            "id": "MTR_STOP",
+            "traitement": "SIMPLE",
+            "cat": "V",
+            "destinataire": "A",
+            "moteurActif": 1,
+            "synonymes": [
+                "stop",
+                "arrête",
+                "freine",
+                "immobile"
+            ],
+            "id_fils": [],
+            "vpiv_parts": {
+                "var": "Mtr",
+                "prop": "cmd",
+                "inst": "*",
+                "val": "0,0,0"
+            },
+            "alias_tts": [
+                "Arrêt."
+            ]
+        },
+        {
+            "id": "MTR_SLOW",
+            "traitement": "SIMPLE",
+            "cat": "V",
+            "destinataire": "A",
+            "moteurActif": 1,
+            "synonymes": [
+                "lentement",
+                "doucement",
+                "ralentis"
+            ],
+            "id_fils": [],
+            "vpiv_parts": {
+                "var": "Mtr",
+                "prop": "cmd",
+                "inst": "*",
+                "val": "20,0,1"
+            },
+            "alias_tts": [
+                "Je ralentis."
+            ]
+        },
+        {
+            "id": "MTR_FAST",
+            "traitement": "SIMPLE",
+            "cat": "V",
+            "destinataire": "A",
+            "moteurActif": 1,
+            "synonymes": [
+                "vite",
+                "accélère",
+                "plus vite",
+                "rapide"
+            ],
+            "id_fils": [],
+            "vpiv_parts": {
+                "var": "Mtr",
+                "prop": "cmd",
+                "inst": "*",
+                "val": "80,0,3"
+            },
+            "alias_tts": [
+                "À toute vitesse !"
+            ]
+        },
+        {
+            "id": "",
+            "traitement": "",
+            "cat": "",
+            "destinataire": "",
+            "moteurActif": 0,
+            "synonymes": [
+                ""
+            ],
+            "id_fils": [],
+            "vpiv_parts": {
+                "var": "",
+                "prop": "",
+                "inst": "",
+                "val": ""
+            },
+            "alias_tts": [
+                "MOTEUR — déplacements dynamiques (PLAN)"
+            ]
+        },
+        {
+            "id": "MTR_TURN_RIGHT",
+            "traitement": "PLAN",
+            "cat": "V",
+            "destinataire": "A",
+            "moteurActif": 1,
+            "synonymes": [
+                "tourne à droite",
+                "tourne droite",
+                "virage droite"
+            ],
+            "id_fils": [],
+            "vpiv_parts": {
+                "var": "Mtr",
+                "prop": "cmd",
+                "inst": "*",
+                "val": ""
+            },
+            "alias_tts": [
+                "Je tourne à droite."
+            ]
+        },
+        {
+            "id": "MTR_TURN_LEFT",
+            "traitement": "PLAN",
+            "cat": "V",
+            "destinataire": "A",
+            "moteurActif": 1,
+            "synonymes": [
+                "tourne à gauche",
+                "tourne gauche",
+                "virage gauche"
+            ],
+            "id_fils": [],
+            "vpiv_parts": {
+                "var": "Mtr",
+                "prop": "cmd",
+                "inst": "*",
+                "val": ""
+            },
+            "alias_tts": [
+                "Je tourne à gauche."
+            ]
+        },
+        {
+            "id": "MTR_TURN_ANGLE",
+            "traitement": "PLAN",
+            "cat": "V",
+            "destinataire": "A",
+            "moteurActif": 1,
+            "synonymes": [
+                "tourne de",
+                "tourne à"
+            ],
+            "id_fils": [],
+            "vpiv_parts": {
+                "var": "Mtr",
+                "prop": "cmd",
+                "inst": "*",
+                "val": ""
+            },
+            "alias_tts": [
+                "Je tourne."
+            ]
+        },
+        {
+            "id": "MTR_SPEED_SET",
+            "traitement": "PLAN",
+            "cat": "V",
+            "destinataire": "A",
+            "moteurActif": 1,
+            "synonymes": [
+                "vitesse",
+                "à la vitesse de"
+            ],
+            "id_fils": [],
+            "vpiv_parts": {
+                "var": "Mtr",
+                "prop": "cmd",
+                "inst": "*",
+                "val": ""
+            },
+            "alias_tts": [
+                "Je règle ma vitesse."
+            ]
+        },
+        {
+            "id": "MTR_ADVANCE_DIST",
+            "traitement": "PLAN",
+            "cat": "V",
+            "destinataire": "A",
+            "moteurActif": 1,
+            "synonymes": [
+                "avance de",
+                "avance jusqu'à"
+            ],
+            "id_fils": [],
+            "vpiv_parts": {
+                "var": "Mtr",
+                "prop": "cmd",
+                "inst": "*",
+                "val": ""
+            },
+            "alias_tts": [
+                "Je me déplace."
+            ]
+        },
+        {
+            "id": "",
+            "traitement": "",
+            "cat": "",
+            "destinataire": "",
+            "moteurActif": 0,
+            "synonymes": [
+                ""
+            ],
+            "id_fils": [],
+            "vpiv_parts": {
+                "var": "",
+                "prop": "",
+                "inst": "",
+                "val": ""
+            },
+            "alias_tts": [
+                "CONFIGURATION — modes globaux (modeRZ)"
+            ]
+        },
+        {
+            "id": "CFG_VEILLE",
+            "traitement": "SIMPLE",
+            "cat": "V",
+            "destinataire": "SE",
+            "moteurActif": 0,
+            "synonymes": [
+                "mode veille",
+                "veille",
+                "repos",
+                "mise en veille"
+            ],
+            "id_fils": [],
+            "vpiv_parts": {
+                "var": "CfgS",
+                "prop": "modeRZ",
+                "inst": "*",
+                "val": "1"
+            },
+            "alias_tts": [
+                "Mode veille activé."
+            ]
+        },
+        {
+            "id": "CFG_FIXE",
+            "traitement": "SIMPLE",
+            "cat": "V",
+            "destinataire": "SE",
+            "moteurActif": 0,
+            "synonymes": [
+                "mode fixe",
+                "fixe",
+                "position fixe"
+            ],
+            "id_fils": [],
+            "vpiv_parts": {
+                "var": "CfgS",
+                "prop": "modeRZ",
+                "inst": "*",
+                "val": "2"
+            },
+            "alias_tts": [
+                "Mode fixe activé."
+            ]
+        },
+        {
+            "id": "CFG_DEPLACEMENT",
+            "traitement": "SIMPLE",
+            "cat": "V",
+            "destinataire": "SE",
+            "moteurActif": 0,
+            "synonymes": [
+                "mode déplacement",
+                "déplacement"
+            ],
+            "id_fils": [],
+            "vpiv_parts": {
+                "var": "CfgS",
+                "prop": "modeRZ",
+                "inst": "*",
+                "val": "3"
+            },
+            "alias_tts": [
+                "Prêt à me déplacer."
+            ]
+        },
+        {
+            "id": "CFG_AUTONOME",
+            "traitement": "SIMPLE",
+            "cat": "V",
+            "destinataire": "SE",
+            "moteurActif": 0,
+            "synonymes": [
+                "mode autonome",
+                "autonome",
+                "auto"
+            ],
+            "id_fils": [],
+            "vpiv_parts": {
+                "var": "CfgS",
+                "prop": "modeRZ",
+                "inst": "*",
+                "val": "4"
+            },
+            "alias_tts": [
+                "Mode autonome activé."
+            ]
+        },
+        {
+            "id": "",
+            "traitement": "",
+            "cat": "",
+            "destinataire": "",
+            "moteurActif": 0,
+            "synonymes": [
+                ""
+            ],
+            "id_fils": [],
+            "vpiv_parts": {
+                "var": "",
+                "prop": "",
+                "inst": "",
+                "val": ""
+            },
+            "alias_tts": [
+                "CONFIGURATION — type de pilotage (typePtge)"
+            ]
+        },
+        {
+            "id": "CFG_PTGE_VOCAL",
+            "traitement": "SIMPLE",
+            "cat": "V",
+            "destinataire": "SE",
+            "moteurActif": 0,
+            "synonymes": [
+                "pilotage vocal",
+                "commande vocale"
+            ],
+            "id_fils": [],
+            "vpiv_parts": {
+                "var": "CfgS",
+                "prop": "typePtge",
+                "inst": "*",
+                "val": "1"
+            },
+            "alias_tts": [
+                "Pilotage vocal activé."
+            ]
+        },
+        {
+            "id": "CFG_PTGE_ECRAN",
+            "traitement": "SIMPLE",
+            "cat": "V",
+            "destinataire": "SE",
+            "moteurActif": 0,
+            "synonymes": [
+                "pilotage écran",
+                "écran"
+            ],
+            "id_fils": [],
+            "vpiv_parts": {
+                "var": "CfgS",
+                "prop": "typePtge",
                 "inst": "*",
                 "val": "0"
-            }
-        ]
-    }
-]
+            },
+            "alias_tts": [
+                "Pilotage écran activé."
+            ]
+        },
+        {
+            "id": "CFG_PTGE_LAISSE",
+            "traitement": "SIMPLE",
+            "cat": "V",
+            "destinataire": "SE",
+            "moteurActif": 0,
+            "synonymes": [
+                "mode laisse",
+                "laisse"
+            ],
+            "id_fils": [],
+            "vpiv_parts": {
+                "var": "CfgS",
+                "prop": "typePtge",
+                "inst": "*",
+                "val": "3"
+            },
+            "alias_tts": [
+                "Je suis en mode laisse."
+            ]
+        },
+        {
+            "id": "",
+            "traitement": "",
+            "cat": "",
+            "destinataire": "",
+            "moteurActif": 0,
+            "synonymes": [
+                ""
+            ],
+            "id_fils": [],
+            "vpiv_parts": {
+                "var": "",
+                "prop": "",
+                "inst": "",
+                "val": ""
+            },
+            "alias_tts": [
+                "CAMÉRA"
+            ]
+        },
+        {
+            "id": "CAM_ON",
+            "traitement": "SIMPLE",
+            "cat": "A",
+            "destinataire": "SE",
+            "moteurActif": 0,
+            "synonymes": [
+                "démarre la caméra",
+                "allume la caméra",
+                "caméra on"
+            ],
+            "id_fils": [],
+            "vpiv_parts": {
+                "var": "CamSE",
+                "prop": "active",
+                "inst": "rear",
+                "val": "On"
+            },
+            "alias_tts": [
+                "Caméra démarrée."
+            ]
+        },
+        {
+            "id": "CAM_OFF",
+            "traitement": "SIMPLE",
+            "cat": "A",
+            "destinataire": "SE",
+            "moteurActif": 0,
+            "synonymes": [
+                "arrête la caméra",
+                "éteins la caméra",
+                "caméra off"
+            ],
+            "id_fils": [],
+            "vpiv_parts": {
+                "var": "CamSE",
+                "prop": "active",
+                "inst": "*",
+                "val": "Off"
+            },
+            "alias_tts": [
+                "Caméra arrêtée."
+            ]
+        },
+        {
+            "id": "CAM_FRONT",
+            "traitement": "SIMPLE",
+            "cat": "A",
+            "destinataire": "SE",
+            "moteurActif": 0,
+            "synonymes": [
+                "caméra avant",
+                "vue de face"
+            ],
+            "id_fils": [],
+            "vpiv_parts": {
+                "var": "CamSE",
+                "prop": "mode",
+                "inst": "*",
+                "val": "front"
+            },
+            "alias_tts": [
+                "Je bascule sur la caméra avant."
+            ]
+        },
+        {
+            "id": "CAM_REAR",
+            "traitement": "SIMPLE",
+            "cat": "A",
+            "destinataire": "SE",
+            "moteurActif": 0,
+            "synonymes": [
+                "caméra arrière",
+                "vue arrière"
+            ],
+            "id_fils": [],
+            "vpiv_parts": {
+                "var": "CamSE",
+                "prop": "mode",
+                "inst": "*",
+                "val": "rear"
+            },
+            "alias_tts": [
+                "Je bascule sur la caméra arrière."
+            ]
+        },
+        {
+            "id": "CAM_SNAP",
+            "traitement": "SIMPLE",
+            "cat": "A",
+            "destinataire": "SE",
+            "moteurActif": 0,
+            "synonymes": [
+                "prends une photo",
+                "snapshot",
+                "capture"
+            ],
+            "id_fils": [],
+            "vpiv_parts": {
+                "var": "CamSE",
+                "prop": "(snap)",
+                "inst": "*",
+                "val": "1"
+            },
+            "alias_tts": [
+                "Photo prise."
+            ]
+        },
+        {
+            "id": "",
+            "traitement": "",
+            "cat": "",
+            "destinataire": "",
+            "moteurActif": 0,
+            "synonymes": [
+                ""
+            ],
+            "id_fils": [],
+            "vpiv_parts": {
+                "var": "",
+                "prop": "",
+                "inst": "",
+                "val": ""
+            },
+            "alias_tts": [
+                "LEDS — anneau (LRing)"
+            ]
+        },
+        {
+            "id": "LRING_ON",
+            "traitement": "SIMPLE",
+            "cat": "V",
+            "destinataire": "A",
+            "moteurActif": 0,
+            "synonymes": [
+                "allume les leds",
+                "allume l'anneau"
+            ],
+            "id_fils": [],
+            "vpiv_parts": {
+                "var": "LRing",
+                "prop": "act",
+                "inst": "*",
+                "val": "1"
+            },
+            "alias_tts": [
+                "Leds allumées."
+            ]
+        },
+        {
+            "id": "LRING_OFF",
+            "traitement": "SIMPLE",
+            "cat": "V",
+            "destinataire": "A",
+            "moteurActif": 0,
+            "synonymes": [
+                "éteins les leds",
+                "éteins l'anneau"
+            ],
+            "id_fils": [],
+            "vpiv_parts": {
+                "var": "LRing",
+                "prop": "act",
+                "inst": "*",
+                "val": "0"
+            },
+            "alias_tts": [
+                "Leds éteintes."
+            ]
+        },
+        {
+            "id": "LRING_SMILE",
+            "traitement": "SIMPLE",
+            "cat": "V",
+            "destinataire": "A",
+            "moteurActif": 0,
+            "synonymes": [
+                "souris",
+                "fais un sourire",
+                "expression sourire"
+            ],
+            "id_fils": [],
+            "vpiv_parts": {
+                "var": "LRing",
+                "prop": "expr",
+                "inst": "*",
+                "val": "sourire"
+            },
+            "alias_tts": [
+                "Voilà mon plus beau sourire."
+            ]
+        },
+        {
+            "id": "LRING_SAD",
+            "traitement": "SIMPLE",
+            "cat": "V",
+            "destinataire": "A",
+            "moteurActif": 0,
+            "synonymes": [
+                "triste",
+                "sois triste",
+                "expression triste"
+            ],
+            "id_fils": [],
+            "vpiv_parts": {
+                "var": "LRing",
+                "prop": "expr",
+                "inst": "*",
+                "val": "triste"
+            },
+            "alias_tts": [
+                "Je suis triste."
+            ]
+        },
+        {
+            "id": "LRING_NEUTRAL",
+            "traitement": "SIMPLE",
+            "cat": "V",
+            "destinataire": "A",
+            "moteurActif": 0,
+            "synonymes": [
+                "neutre",
+                "expression neutre",
+                "visage neutre"
+            ],
+            "id_fils": [],
+            "vpiv_parts": {
+                "var": "LRing",
+                "prop": "expr",
+                "inst": "*",
+                "val": "neutre"
+            },
+            "alias_tts": [
+                "Expression neutre."
+            ]
+        },
+        {
+            "id": "LRING_SURPRISED",
+            "traitement": "SIMPLE",
+            "cat": "V",
+            "destinataire": "A",
+            "moteurActif": 0,
+            "synonymes": [
+                "étonné",
+                "surpris",
+                "expression étonnement"
+            ],
+            "id_fils": [],
+            "vpiv_parts": {
+                "var": "LRing",
+                "prop": "expr",
+                "inst": "*",
+                "val": "étonnement"
+            },
+            "alias_tts": [
+                "Oh !"
+            ]
+        },
+        {
+            "id": "LRING_ANGRY",
+            "traitement": "SIMPLE",
+            "cat": "V",
+            "destinataire": "A",
+            "moteurActif": 0,
+            "synonymes": [
+                "en colère",
+                "fâché",
+                "expression colère"
+            ],
+            "id_fils": [],
+            "vpiv_parts": {
+                "var": "LRing",
+                "prop": "expr",
+                "inst": "*",
+                "val": "colère"
+            },
+            "alias_tts": [
+                "Grrr !"
+            ]
+        },
+        {
+            "id": "LRING_BRIGHTNESS",
+            "traitement": "PLAN",
+            "cat": "V",
+            "destinataire": "A",
+            "moteurActif": 0,
+            "synonymes": [
+                "intensité",
+                "luminosité"
+            ],
+            "id_fils": [],
+            "vpiv_parts": {
+                "var": "LRing",
+                "prop": "int",
+                "inst": "*",
+                "val": ""
+            },
+            "alias_tts": [
+                "Je règle la luminosité."
+            ]
+        },
+        {
+            "id": "",
+            "traitement": "",
+            "cat": "",
+            "destinataire": "",
+            "moteurActif": 0,
+            "synonymes": [
+                ""
+            ],
+            "id_fils": [],
+            "vpiv_parts": {
+                "var": "",
+                "prop": "",
+                "inst": "",
+                "val": ""
+            },
+            "alias_tts": [
+                "SERVOS — orientation tête (TGD = gauche-droite, THB = haut-bas)"
+            ]
+        },
+        {
+            "id": "SRV_HEAD_UP",
+            "traitement": "SIMPLE",
+            "cat": "V",
+            "destinataire": "A",
+            "moteurActif": 0,
+            "synonymes": [
+                "lève la tête",
+                "regarde en haut",
+                "haut"
+            ],
+            "id_fils": [],
+            "vpiv_parts": {
+                "var": "Srv",
+                "prop": "angle",
+                "inst": "THB",
+                "val": "120"
+            },
+            "alias_tts": [
+                "Je lève la tête."
+            ]
+        },
+        {
+            "id": "SRV_HEAD_DOWN",
+            "traitement": "SIMPLE",
+            "cat": "V",
+            "destinataire": "A",
+            "moteurActif": 0,
+            "synonymes": [
+                "baisse la tête",
+                "regarde en bas",
+                "bas"
+            ],
+            "id_fils": [],
+            "vpiv_parts": {
+                "var": "Srv",
+                "prop": "angle",
+                "inst": "THB",
+                "val": "30"
+            },
+            "alias_tts": [
+                "Je baisse la tête."
+            ]
+        },
+        {
+            "id": "SRV_HEAD_RIGHT",
+            "traitement": "SIMPLE",
+            "cat": "V",
+            "destinataire": "A",
+            "moteurActif": 0,
+            "synonymes": [
+                "regarde à droite",
+                "tourne la tête à droite"
+            ],
+            "id_fils": [],
+            "vpiv_parts": {
+                "var": "Srv",
+                "prop": "angle",
+                "inst": "TGD",
+                "val": "60"
+            },
+            "alias_tts": [
+                "Je regarde à droite."
+            ]
+        },
+        {
+            "id": "SRV_HEAD_LEFT",
+            "traitement": "SIMPLE",
+            "cat": "V",
+            "destinataire": "A",
+            "moteurActif": 0,
+            "synonymes": [
+                "regarde à gauche",
+                "tourne la tête à gauche"
+            ],
+            "id_fils": [],
+            "vpiv_parts": {
+                "var": "Srv",
+                "prop": "angle",
+                "inst": "TGD",
+                "val": "0"
+            },
+            "alias_tts": [
+                "Je regarde à gauche."
+            ]
+        },
+        {
+            "id": "SRV_HEAD_CENTER",
+            "traitement": "SIMPLE",
+            "cat": "V",
+            "destinataire": "A",
+            "moteurActif": 0,
+            "synonymes": [
+                "regarde devant",
+                "tout droit",
+                "centre"
+            ],
+            "id_fils": [],
+            "vpiv_parts": {
+                "var": "Srv",
+                "prop": "angle",
+                "inst": "TGD",
+                "val": "30"
+            },
+            "alias_tts": [
+                "Je regarde devant moi."
+            ]
+        },
+        {
+            "id": "SRV_HEAD_GD_ANGLE",
+            "traitement": "PLAN",
+            "cat": "V",
+            "destinataire": "A",
+            "moteurActif": 0,
+            "synonymes": [
+                "tourne la tête de",
+                "oriente la tête de"
+            ],
+            "id_fils": [],
+            "vpiv_parts": {
+                "var": "Srv",
+                "prop": "angle",
+                "inst": "TGD",
+                "val": ""
+            },
+            "alias_tts": [
+                "Je tourne la tête."
+            ]
+        },
+        {
+            "id": "SRV_HEAD_HB_ANGLE",
+            "traitement": "PLAN",
+            "cat": "V",
+            "destinataire": "A",
+            "moteurActif": 0,
+            "synonymes": [
+                "incline la tête de",
+                "relève la tête de"
+            ],
+            "id_fils": [],
+            "vpiv_parts": {
+                "var": "Srv",
+                "prop": "angle",
+                "inst": "THB",
+                "val": ""
+            },
+            "alias_tts": [
+                "J'incline la tête."
+            ]
+        },
+        {
+            "id": "",
+            "traitement": "",
+            "cat": "",
+            "destinataire": "",
+            "moteurActif": 0,
+            "synonymes": [
+                ""
+            ],
+            "id_fils": [],
+            "vpiv_parts": {
+                "var": "",
+                "prop": "",
+                "inst": "",
+                "val": ""
+            },
+            "alias_tts": [
+                "APPLICATIONS"
+            ]
+        },
+        {
+            "id": "APP_TASKER_ON",
+            "traitement": "SIMPLE",
+            "cat": "A",
+            "destinataire": "SE",
+            "moteurActif": 0,
+            "synonymes": [
+                "lance tasker",
+                "démarre tasker"
+            ],
+            "id_fils": [],
+            "vpiv_parts": {
+                "var": "Appli",
+                "prop": "tasker",
+                "inst": "*",
+                "val": "On"
+            },
+            "alias_tts": [
+                "Tasker démarré."
+            ]
+        },
+        {
+            "id": "APP_TASKER_OFF",
+            "traitement": "SIMPLE",
+            "cat": "A",
+            "destinataire": "SE",
+            "moteurActif": 0,
+            "synonymes": [
+                "arrête tasker",
+                "ferme tasker"
+            ],
+            "id_fils": [],
+            "vpiv_parts": {
+                "var": "Appli",
+                "prop": "tasker",
+                "inst": "*",
+                "val": "Off"
+            },
+            "alias_tts": [
+                "Tasker fermé."
+            ]
+        },
+        {
+            "id": "APP_ZOOM_ON",
+            "traitement": "SIMPLE",
+            "cat": "A",
+            "destinataire": "SE",
+            "moteurActif": 0,
+            "synonymes": [
+                "lance zoom",
+                "démarre zoom",
+                "réunion zoom"
+            ],
+            "id_fils": [],
+            "vpiv_parts": {
+                "var": "Appli",
+                "prop": "zoom",
+                "inst": "*",
+                "val": "On"
+            },
+            "alias_tts": [
+                "Je lance Zoom."
+            ]
+        },
+        {
+            "id": "APP_ZOOM_OFF",
+            "traitement": "SIMPLE",
+            "cat": "A",
+            "destinataire": "SE",
+            "moteurActif": 0,
+            "synonymes": [
+                "arrête zoom",
+                "ferme zoom"
+            ],
+            "id_fils": [],
+            "vpiv_parts": {
+                "var": "Appli",
+                "prop": "zoom",
+                "inst": "*",
+                "val": "Off"
+            },
+            "alias_tts": [
+                "Zoom fermé."
+            ]
+        },
+        {
+            "id": "APP_BABY_ON",
+            "traitement": "SIMPLE",
+            "cat": "A",
+            "destinataire": "SE",
+            "moteurActif": 0,
+            "synonymes": [
+                "lance baby",
+                "surveillance bébé"
+            ],
+            "id_fils": [],
+            "vpiv_parts": {
+                "var": "Appli",
+                "prop": "Baby",
+                "inst": "*",
+                "val": "On"
+            },
+            "alias_tts": [
+                "Surveillance bébé démarrée."
+            ]
+        },
+        {
+            "id": "APP_BABY_OFF",
+            "traitement": "SIMPLE",
+            "cat": "A",
+            "destinataire": "SE",
+            "moteurActif": 0,
+            "synonymes": [
+                "arrête baby",
+                "stop bébé"
+            ],
+            "id_fils": [],
+            "vpiv_parts": {
+                "var": "Appli",
+                "prop": "Baby",
+                "inst": "*",
+                "val": "Off"
+            },
+            "alias_tts": [
+                "Surveillance bébé arrêtée."
+            ]
+        },
+        {
+            "id": "APP_GPS_ON",
+            "traitement": "SIMPLE",
+            "cat": "A",
+            "destinataire": "SE",
+            "moteurActif": 0,
+            "synonymes": [
+                "lance la navigation",
+                "gps",
+                "navigation"
+            ],
+            "id_fils": [],
+            "vpiv_parts": {
+                "var": "Appli",
+                "prop": "NavGPS",
+                "inst": "*",
+                "val": "On"
+            },
+            "alias_tts": [
+                "Navigation démarrée."
+            ]
+        },
+        {
+            "id": "APP_GPS_OFF",
+            "traitement": "SIMPLE",
+            "cat": "A",
+            "destinataire": "SE",
+            "moteurActif": 0,
+            "synonymes": [
+                "arrête la navigation",
+                "stop gps"
+            ],
+            "id_fils": [],
+            "vpiv_parts": {
+                "var": "Appli",
+                "prop": "NavGPS",
+                "inst": "*",
+                "val": "Off"
+            },
+            "alias_tts": [
+                "Navigation arrêtée."
+            ]
+        },
+        {
+            "id": "",
+            "traitement": "",
+            "cat": "",
+            "destinataire": "",
+            "moteurActif": 0,
+            "synonymes": [
+                ""
+            ],
+            "id_fils": [],
+            "vpiv_parts": {
+                "var": "",
+                "prop": "",
+                "inst": "",
+                "val": ""
+            },
+            "alias_tts": [
+                "EXPRESSIONS TASKER"
+            ]
+        },
+        {
+            "id": "EXPR_SMILE",
+            "traitement": "SIMPLE",
+            "cat": "A",
+            "destinataire": "SE",
+            "moteurActif": 0,
+            "synonymes": [
+                "fais un sourire",
+                "souris tasker"
+            ],
+            "id_fils": [],
+            "vpiv_parts": {
+                "var": "Appli",
+                "prop": "ExprTasker",
+                "inst": "Expression",
+                "val": "sourire"
+            },
+            "alias_tts": [
+                "Voilà !"
+            ]
+        },
+        {
+            "id": "EXPR_NEUTRAL",
+            "traitement": "SIMPLE",
+            "cat": "A",
+            "destinataire": "SE",
+            "moteurActif": 0,
+            "synonymes": [
+                "retour neutre",
+                "expression normale"
+            ],
+            "id_fils": [],
+            "vpiv_parts": {
+                "var": "Appli",
+                "prop": "ExprTasker",
+                "inst": "Off",
+                "val": "*"
+            },
+            "alias_tts": [
+                "D'accord."
+            ]
+        },
+        {
+            "id": "",
+            "traitement": "",
+            "cat": "",
+            "destinataire": "",
+            "moteurActif": 0,
+            "synonymes": [
+                ""
+            ],
+            "id_fils": [],
+            "vpiv_parts": {
+                "var": "",
+                "prop": "",
+                "inst": "",
+                "val": ""
+            },
+            "alias_tts": [
+                "MICRO (smartphone)"
+            ]
+        },
+        {
+            "id": "MIC_ON",
+            "traitement": "SIMPLE",
+            "cat": "V",
+            "destinataire": "SE",
+            "moteurActif": 0,
+            "synonymes": [
+                "active le micro",
+                "allume le micro"
+            ],
+            "id_fils": [],
+            "vpiv_parts": {
+                "var": "MicroSE",
+                "prop": "modeMicro",
+                "inst": "*",
+                "val": "intensite"
+            },
+            "alias_tts": [
+                "Micro activé."
+            ]
+        },
+        {
+            "id": "MIC_OFF",
+            "traitement": "SIMPLE",
+            "cat": "V",
+            "destinataire": "SE",
+            "moteurActif": 0,
+            "synonymes": [
+                "coupe le micro",
+                "désactive le micro"
+            ],
+            "id_fils": [],
+            "vpiv_parts": {
+                "var": "MicroSE",
+                "prop": "modeMicro",
+                "inst": "*",
+                "val": "off"
+            },
+            "alias_tts": [
+                "Micro coupé."
+            ]
+        },
+        {
+            "id": "MIC_ORIENT",
+            "traitement": "SIMPLE",
+            "cat": "V",
+            "destinataire": "SE",
+            "moteurActif": 0,
+            "synonymes": [
+                "écoute d'où vient le son",
+                "localise le son"
+            ],
+            "id_fils": [],
+            "vpiv_parts": {
+                "var": "MicroSE",
+                "prop": "modeMicro",
+                "inst": "*",
+                "val": "orientation"
+            },
+            "alias_tts": [
+                "J'écoute d'où tu viens."
+            ]
+        },
+        {
+            "id": "MIC_SURV",
+            "traitement": "SIMPLE",
+            "cat": "V",
+            "destinataire": "SE",
+            "moteurActif": 0,
+            "synonymes": [
+                "mode surveillance micro",
+                "surveillance sonore"
+            ],
+            "id_fils": [],
+            "vpiv_parts": {
+                "var": "MicroSE",
+                "prop": "modeMicro",
+                "inst": "*",
+                "val": "surveillance"
+            },
+            "alias_tts": [
+                "Surveillance sonore activée."
+            ]
+        },
+        {
+            "id": "",
+            "traitement": "",
+            "cat": "",
+            "destinataire": "",
+            "moteurActif": 0,
+            "synonymes": [
+                ""
+            ],
+            "id_fils": [],
+            "vpiv_parts": {
+                "var": "",
+                "prop": "",
+                "inst": "",
+                "val": ""
+            },
+            "alias_tts": [
+                "SYSTÈME — état et info"
+            ]
+        },
+        {
+            "id": "SYS_STATUS",
+            "traitement": "LOCAL",
+            "cat": "I",
+            "destinataire": "SE",
+            "moteurActif": 0,
+            "synonymes": [
+                "quel est ton état",
+                "comment tu vas",
+                "état système"
+            ],
+            "id_fils": [],
+            "vpiv_parts": {
+                "var": "COM",
+                "prop": "info",
+                "inst": "SE",
+                "val": "status"
+            },
+            "alias_tts": [
+                "Je vais bien.",
+                "Je vérifie mon état."
+            ]
+        },
+        {
+            "id": "SYS_BATTERY",
+            "traitement": "LOCAL",
+            "cat": "I",
+            "destinataire": "SE",
+            "moteurActif": 0,
+            "synonymes": [
+                "batterie",
+                "niveau de batterie",
+                "autonomie"
+            ],
+            "id_fils": [],
+            "vpiv_parts": {
+                "var": "COM",
+                "prop": "info",
+                "inst": "SE",
+                "val": "battery"
+            },
+            "alias_tts": [
+                "Je vérifie ma batterie."
+            ]
+        },
+        {
+            "id": "SYS_RESET",
+            "traitement": "SIMPLE",
+            "cat": "V",
+            "destinataire": "SE",
+            "moteurActif": 0,
+            "synonymes": [
+                "réinitialise",
+                "reset"
+            ],
+            "id_fils": [],
+            "vpiv_parts": {
+                "var": "CfgS",
+                "prop": "(reset)",
+                "inst": "*",
+                "val": "1"
+            },
+            "alias_tts": [
+                "Je me réinitialise."
+            ]
+        },
+        {
+            "id": "SYS_URG_CLEAR",
+            "traitement": "SIMPLE",
+            "cat": "V",
+            "destinataire": "SE",
+            "moteurActif": 0,
+            "synonymes": [
+                "efface l'urgence",
+                "annule l'alerte"
+            ],
+            "id_fils": [],
+            "vpiv_parts": {
+                "var": "Urg",
+                "prop": "(clear)",
+                "inst": "*",
+                "val": "1"
+            },
+            "alias_tts": [
+                "Urgence effacée."
+            ]
+        },
+        {
+            "id": "",
+            "traitement": "",
+            "cat": "",
+            "destinataire": "",
+            "moteurActif": 0,
+            "synonymes": [
+                ""
+            ],
+            "id_fils": [],
+            "vpiv_parts": {
+                "var": "",
+                "prop": "",
+                "inst": "",
+                "val": ""
+            },
+            "alias_tts": [
+                "MACROS — enchaînements de commandes"
+            ]
+        },
+        {
+            "id": "MACRO_PAUSE",
+            "traitement": "COMPLEXE",
+            "cat": "V",
+            "destinataire": "A",
+            "moteurActif": 0,
+            "synonymes": [
+                "pause",
+                "fais une pause"
+            ],
+            "id_fils": [
+                "MTR_STOP",
+                "LRING_NEUTRAL"
+            ],
+            "vpiv_parts": {
+                "var": "",
+                "prop": "",
+                "inst": "",
+                "val": ""
+            },
+            "alias_tts": []
+        },
+        {
+            "id": "MACRO_HELLO",
+            "traitement": "COMPLEXE",
+            "cat": "V",
+            "destinataire": "A",
+            "moteurActif": 0,
+            "synonymes": [
+                "bonjour",
+                "salut",
+                "coucou"
+            ],
+            "id_fils": [
+                "LRING_SMILE",
+                "EXPR_SMILE"
+            ],
+            "vpiv_parts": {
+                "var": "",
+                "prop": "",
+                "inst": "",
+                "val": ""
+            },
+            "alias_tts": []
+        },
+        {
+            "id": "MACRO_SLEEP",
+            "traitement": "COMPLEXE",
+            "cat": "V",
+            "destinataire": "SE",
+            "moteurActif": 0,
+            "synonymes": [
+                "dors",
+                "va dormir",
+                "mode nuit"
+            ],
+            "id_fils": [
+                "MTR_STOP",
+                "LRING_OFF",
+                "CFG_VEILLE"
+            ],
+            "vpiv_parts": {
+                "var": "",
+                "prop": "",
+                "inst": "",
+                "val": ""
+            },
+            "alias_tts": []
+        },
+        {
+            "id": "MACRO_WAKE",
+            "traitement": "COMPLEXE",
+            "cat": "V",
+            "destinataire": "SE",
+            "moteurActif": 0,
+            "synonymes": [
+                "réveille-toi",
+                "debout",
+                "active-toi"
+            ],
+            "id_fils": [
+                "CFG_DEPLACEMENT",
+                "LRING_ON",
+                "LRING_SMILE"
+            ],
+            "vpiv_parts": {
+                "var": "",
+                "prop": "",
+                "inst": "",
+                "val": ""
+            },
+            "alias_tts": []
+        }
+    ]
+}

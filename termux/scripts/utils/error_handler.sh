@@ -1,7 +1,7 @@
 #!/bin/bash
 # =============================================================================
 # SCRIPT  : error_handler.sh
-# CHEMIN  : ~/robotRZ-smartSE/termux/utils/error_handler.sh
+# CHEMIN  : ~/robotRZ-smartSE/termux/scripts/utils/error_handler.sh
 #
 # OBJECTIF
 # --------

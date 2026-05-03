@@ -1,0 +1,76 @@
+
+Rappel/Port - Port 1883  MQTT   - Port (80)22 SSH   - Port Node-red 1880  || - VNC 5900 ||- 5700? 80 ? - FTP DATA 20 - FTP Server 21
+______________________________________________
+Rappel / protocol TCP/UDP bidirectionnelle - TCP transfert UDP reception
+________________________________________________
+- ServeurRPI3  IP fix etho:  192.168.1.38 -> accueil serveur          - Pour wifi 192.168.1.37 (local fix)
+Installé : SSH, VNC, MQTT broker , Serveur Web, Node-red
+
+SSH port 22 rz -  Id: rzServeur  - Code habituel 
+
+Adresse public du serveur (connexion à distance via http)  -> http://92.139.73.217/
+Id rzServeur  Code habituel
+
+________________________________________________
+
+- AndroidXiaomiPhilippe (futur portable embarqué qd option distant ou user) -> wifiMaisonFix : 192.168.1.13
+VNC Id Smartphone code  ? imagine habituel vss ? ... no sabe
+SSH, MQTT client-publicher et realVNC (clientVNCcelui qui recup les infos) serveurVNC (admindroid, celui qui communique ses données)  Node-red
+SSH (local) Id: u0_a234 - code habituel
+________________________________________________
+
+- AndroidDoro (futur portable embarqué quand local ou user) -> wifiMaisonFix : 192.168.1.12
+SSH,  code provisoire : n suivi d'habituel? (nvelle version) - id actuel u0_a154
+
+____________________________________________________________________
+- RPI4 (ini RPI RZ) : ID rz code habituel sans ?  -  IP fix  Wifi : 192.168.1.30
+Installé :  Serveur Web local, VNC, SSH, MQTT Client, Node-red
+SSH id rz code habituel ss ? [serveur ssh-ed25519 clef :    255 SHA256:tg0rYbFwz08vl+ruQLGJe49+DMIRrLCZ/r5ui0ahbeo] 
+________________________________________________________________________
+-PC portable Acer Swift Philippe (VincentPhAcer) ->  IP fix  Wifi : 192.168.1.55
+Installé :  VNC (RealVncViewer), SSH (Putty)
+ditr
+___________________________________________________________________
+Clef du domaine duck :
+Duck DNS
+account 
+vincentphcom@gmail.com 
+type 
+free 
+token 
+99bab53c-1dc1-4b4a-b4b1-8ce4fe2e27ad 
+token generated 
+7 minutes ago 
+created date 
+16 Jan 2025, 23:43:00 
+
+echo url="https://www.duckdns.org/update?domains=monrobot&token=VOTRE_TOKEN&ip=" | curl -k -o ~/duckdns/duck.log -K -
+
+
+
+______________________________________________________________
+COMMANDES :
+
+ NODE-RED : entrer Node-Red sortir Ctrl+C
+
+
+SSH : Statut (dispo): sudo systemctl status ssh.
+      Activer : sudo systemctl start ssh.  ou sshd                      tuer : ctrl D
+
+
+MQTT : pour activer : mosquitto pour verifier service lancé : netstat -an | find str 1883
+
+
+
+
+       Le fichier de configuration du serveur se trouve dans le dossier d’installation :
+	sudo nano /etc/mosquitto/mosquitto.conf
+                  sudo nano /etc/mosquitto/conf.d/default.conf
+
+sudo systemctl stop mosquitto   #arrêter
+sudo systemctl start mosquitto  #démarrer
+sudo systemctl restart mosquitto #redémarrer
+sudo systemctl status mosquitto #connaitre le status
+
+LINUX
+Ouvrir le gestionnaire de fichier dans linux commande : sudo pcmanfm

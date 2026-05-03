@@ -1,0 +1,124 @@
+<template>
+    <div v-if="msg && msg.topic==='openEditor' && msg.editor==='base'"
+        style="border:1px solid #ddd;padding:15px;background:#fff;margin-top:12px;border-radius:6px;font-family:sans-serif;">
+        <h4 style="margin-bottom:15px;color:#2196F3;">{{originalName ? '✏️ Édition Propriété' : '➕ Nouvelle propriété'}}</h4>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+            <div>
+                <div style="margin-bottom:12px;">
+                    <label style="display:block;font-weight:600;margin-bottom:4px;color:#333;">ID (nomP)</label>
+                    <input v-model="local.nomP" placeholder="ex: mode_func" style="width:100%;padding:8px;border:1px solid #ccc;border-radius:4px;" />
+                </div>
+
+                <div style="margin-bottom:12px;">
+                    <label style="display:block;font-weight:600;margin-bottom:4px;color:#333;">Type de donnée</label>
+                    <select v-model="local.typeP" style="width:100%;padding:8px;border:1px solid #ccc;border-radius:4px;background:white;">
+                        <option value="string">Texte (string)</option>
+                        <option value="number">Nombre (number)</option>
+                        <option value="boolean">Booléen (boolean)</option>
+                        <option value="object">Objet complexe</option>
+                        <option value="array">Tableau</option>
+                    </select>
+                </div>
+            </div>
+
+            <div>
+                <div style="margin-bottom:12px;">
+                    <label style="display:block;font-weight:600;margin-bottom:4px;color:#333;">Description & Nature</label>
+                    <textarea v-model="local.descriptionP" rows="4" 
+                        placeholder="Détaillez le rôle, la nature et les valeurs possibles..."
+                        style="width:100%;padding:8px;border:1px solid #ccc;border-radius:4px;resize:vertical;font-family:inherit;"></textarea>
+                </div>
+            </div>
+        </div>
+
+        <div style="margin-top:15px;border:1px solid #e0e0e0;padding:12px;border-radius:4px;background:#fafafa;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+                <h5 style="margin:0;">🎭 Liste de choix (Options / Enum)</h5>
+                <button @click="addOption" style="background:#4CAF50;color:white;border:none;padding:6px 12px;border-radius:4px;cursor:pointer;font-size:12px;">
+                    ➕ Ajouter un choix
+                </button>
+            </div>
+            
+            <div v-if="local.optionsP && local.optionsP.length > 0">
+                <div v-for="(item, index) in local.optionsP" :key="index" style="display:flex;gap:8px;margin-bottom:8px;">
+                    <input v-model="item.value" placeholder="Valeur (ex: 1)" style="flex:1;padding:6px;border:1px solid #ddd;border-radius:3px;" />
+                    <input v-model="item.label" placeholder="Libellé (ex: Manuel)" style="flex:2;padding:6px;border:1px solid #ddd;border-radius:3px;" />
+                    <button @click="removeOption(index)" style="background:#ff4444;color:white;border:none;padding:4px 8px;border-radius:3px;cursor:pointer;">🗑</button>
+                </div>
+            </div>
+            <div v-else style="text-align:center;color:#999;font-size:13px;padding:10px;">
+                Aucune liste de choix définie (saisie libre).
+            </div>
+        </div>
+
+        <div style="margin-top:20px;display:flex;gap:10px;justify-content:flex-end;border-top:1px solid #eee;padding-top:15px;">
+             <button @click="onCancel" style="background:#f0f0f0;color:#333;border:1px solid #ccc;padding:10px 20px;border-radius:4px;cursor:pointer;">
+                Annuler
+            </button>
+            <button :disabled="!canSave" @click="onSave"
+                style="background:#2196F3;color:white;border:none;padding:10px 20px;border-radius:4px;cursor:pointer;font-weight:600;"
+                :style="{opacity: canSave ? 1 : 0.5}">
+                💾 Enregistrer la structure
+            </button>
+        </div>
+    </div>
+</template>
+
+<script>
+export default {
+    data() {
+        return {
+            local: { nomP: '', descriptionP: '', typeP: 'string', optionsP: [] },
+            originalName: null,
+            lockedWarning: false
+        };
+    },
+    computed: {
+        canSave() {
+            return this.local && this.local.nomP && this.local.descriptionP;
+        }
+    },
+    mounted() {
+        this.$watch('msg', (m) => {
+            if (m && m.topic === 'openEditor' && m.editor === 'base') {
+                this.originalName = m.originalName || null;
+                // On clone les données entrantes et on s'assure que optionsP existe
+                let p = m.prop || {};
+                this.local = {
+                    nomP: p.nomP || '',
+                    descriptionP: p.descriptionP || '',
+                    typeP: p.typeP || 'string',
+                    optionsP: Array.isArray(p.optionsP) ? JSON.parse(JSON.stringify(p.optionsP)) : []
+                };
+            }
+        }, { immediate: true });
+    },
+    methods: {
+        addOption() {
+            if (!this.local.optionsP) this.local.optionsP = [];
+            this.local.optionsP.push({ value: '', label: '' });
+        },
+        removeOption(index) {
+            this.local.optionsP.splice(index, 1);
+        },
+        onSave() {
+            // On prépare l'objet de sortie propre
+            const payload = {
+                nomP: this.local.nomP,
+                descriptionP: this.local.descriptionP,
+                typeP: this.local.typeP,
+                optionsP: this.local.optionsP
+            };
+            this.send({
+                topic: 'saveBase',
+                payload: payload,
+                originalName: this.originalName
+            });
+        },
+        onCancel() {
+            this.send({ topic: 'cancel' });
+        }
+    }
+}
+</script>

@@ -1,0 +1,16 @@
+UTILE
+
+****************
+Voir le contenu d'un fichier de façon imprimable ds SSHD  :
+********************
+cat /data/data/com.termux/files/home/node_red_data/context/global/global.json
+
+
+****************************
+Attention au dossier du vrai global.json:
+***************
+settings.js -> /data/data/com.termux/files/home/.node-red/settings.js
+Pour le stockage dans file -> dir: "/data/data/com.termux/files/home/.node-red", // Chemin corrigé Aout 2025
+différent de ....home/node_red_data  
+Dans les deux cas il ajoute automatiquement .../context/global       
+

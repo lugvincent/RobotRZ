@@ -1,0 +1,27 @@
+[
+    {
+        "id": "01e77fa6dfd28e78",
+        "type": "function",
+        "z": "61d8f8019f224437",
+        "name": "RecupVarSelected",
+        "func": "let varSelected = msg.payload?.row?.nomVarG || msg.payload?.nomVarG || null;\nif (\"newVarG\"==msg.topic){varSelected=\"new\"; msg.topic=\"newVarG\"};\nflow.set(\"varSelected\", varSelected);\nlet enrichedVars = global.get(\"enrichedVars\", \"file\") || {};\nlet listeVars = Object.keys(enrichedVars);\n\nmsg.payload = varSelected;\nmsg.info = `Vous êtes sur la variable : ${varSelected}`;\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 510,
+        "y": 780,
+        "wires": [
+            [
+                "2e07ed481887efda",
+                "92dd8dae04877424",
+                "60713f919559c618",
+                "d41690eedf5d284b",
+                "f0e1d30feeae35da",
+                "146ccaf8d971bb6f"
+            ]
+        ]
+    }
+]

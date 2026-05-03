@@ -1,0 +1,126 @@
+{
+  "enrichedVars": {
+    "TEMP": {
+      "nomVarG": "TEMP",
+      "abbrVarG": "TMP",
+      "instances": ["1"],
+      "descriptionVarG": "Température capteur unique",
+      "dateUpdateVarG": "2025-09-15T09:00:00.000Z",
+      "proprietes": [
+        {
+          "nom": "valeur",
+          "abbr": "val",
+          "type": "number",
+          "schema": null,
+          "valeurs": {
+            "*": 22.5
+          }
+        },
+        {
+          "nom": "unite",
+          "abbr": "u",
+          "type": "string",
+          "schema": null,
+          "valeurs": {
+            "*": "°C"
+          }
+        }
+      ]
+    },
+    "LED": {
+      "nomVarG": "LED",
+      "abbrVarG": "LED",
+      "instances": ["1", "8"],
+      "descriptionVarG": "Gestion LEDs",
+      "dateUpdateVarG": "2025-09-15T09:05:00.000Z",
+      "proprietes": [
+        {
+          "nom": "active",
+          "abbr": "act",
+          "type": "boolean",
+          "schema": null,
+          "valeurs": {
+            "*": false,
+            "8": true
+          }
+        },
+        {
+          "nom": "couleur",
+          "abbr": "clr",
+          "type": "string",
+          "schema": null,
+          "valeurs": {
+            "*": "red",
+            "1": "blue",
+            "8": "green"
+          }
+        },
+        {
+          "nom": "sequence",
+          "abbr": "seq",
+          "type": "array",
+          "schema": {
+            "items": "number"
+          },
+          "valeurs": {
+            "*": [1, 2, 3],
+            "8": [2, 2, 4]
+          }
+        },
+        {
+          "nom": "defCellule",
+          "abbr": "cell",
+          "type": "object",
+          "schema": {
+            "intensite": "integer",
+            "couleur": "string"
+          },
+          "valeurs": {
+            "*": {
+              "intensite": 50,
+              "couleur": "rgb(255,0,0)"
+            },
+            "8": {
+              "intensite": 80,
+              "couleur": "rgb(0,255,0)"
+            }
+          }
+        }
+      ]
+    },
+    "MOTOR": {
+      "nomVarG": "MOTOR",
+      "abbrVarG": "MTR",
+      "instances": ["A", "B", "C"],
+      "descriptionVarG": "Moteurs multiples",
+      "dateUpdateVarG": "2025-09-15T09:10:00.000Z",
+      "proprietes": [
+        {
+          "nom": "vitesse",
+          "abbr": "spd",
+          "type": "number",
+          "schema": null,
+          "valeurs": {
+            "*": 0,
+            "A": 100,
+            "B": 150,
+            "C": 120
+          }
+        },
+        {
+          "nom": "sens",
+          "abbr": "dir",
+          "type": "string",
+          "schema": {
+            "enum": ["avant", "arriere", "stop"]
+          },
+          "valeurs": {
+            "*": "stop",
+            "A": "avant",
+            "B": "arriere"
+          }
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,44 @@
+{
+    "enrichedVars": {
+        "LED": {
+            "nomVarG": "LED",
+            "abbrVarG": "LED",
+            "instances": [
+                "*",
+                "1",
+                "8"
+            ],
+            "descriptionVarG": "Gestion LEDs",
+            "dateUpdateVarG": "2025-09-14T15:43:01.207Z",
+            "proprietes": [
+                {
+                    "nom": "active",
+                    "abbr": "act",
+                    "type": "boolean",
+                    "schema": null,
+                    "valeurs": {
+                        "*": false,
+                        "1": false,
+                        "8": true
+                        
+                    }
+                },
+                {
+                    "nom": "couleur",
+                    "abbr": "clr",
+                    "type": "string",
+                    "schema": null,
+                    "valeurs": {
+                        "*": "red",
+                        "1": "blue",
+                        "8": "green"
+                        
+                    }
+
+                }
+            ]
+        }
+    },
+    "ipListe": [],
+    "reglesVars": []
+}

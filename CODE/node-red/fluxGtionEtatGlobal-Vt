@@ -1,0 +1,249 @@
+[
+    {
+        "id": "sf_dispatcher_etatglobal_v1",
+        "type": "subflow",
+        "name": "SF_Dispatcher_EtatGlobal",
+    "info": "SOUS-FLOW : SF_Dispatcher_EtatGlobal\n\nRÔLE :\nCentralise tous les événements entrants dans Gtion_EtatGlobal.\nIdentifie leur origine et normalise le message.\n\nENTRÉES ATTENDUES :\n- msg.topic / msg._evtSource\n\nSORTIE :\n- msg enrichi avec :\n  msg._evtType (SYSTEM, VAR, UI, VPIV)\n\nÉTAPES FUTURES :\n- typage strict des événements\n- filtrage précoce\n- debug optionnel",
+        "category": "Gtion_EtatGlobal",
+        "in": [
+            {
+                "x": 60,
+                "y": 160,
+                "wires": [
+                    {
+                        "id": "cmt_header_dispatcher"
+                    }
+                ]
+            }
+        ],
+        "out": [
+            {
+                "x": 940,
+                "y": 160,
+                "wires": [
+                    {
+                        "id": "fn_build_event",
+                        "port": 0
+                    }
+                ]
+            }
+        ],
+        "env": [],
+        "meta": {},
+        "color": "#E6E0F8"
+    },
+    {
+        "id": "cmt_header_dispatcher",
+        "type": "comment",
+        "z": "sf_dispatcher_etatglobal_v1",
+        "name": "SF_Dispatcher_EtatGlobal – V1\n\n🎯 RÔLE :\nNormaliser toutes les entrées (UI, VPIV, SYSTEM, INIT)\nvers un format unique msg.event utilisé par Gtion_EtatGlobal.\n\n📌 AUCUNE logique métier ici :\n- pas de règle\n- pas de correction\n- pas de validation\n\n📤 SORTIE :\nmsg.event = { source, intent, payload, priority }\n\n⚠️ Toute décision est interdite dans ce sous-flow.",
+        "info": "",
+        "x": 360,
+        "y": 40,
+        "wires": []
+    },
+    {
+        "id": "cmt_detect",
+        "type": "comment",
+        "z": "sf_dispatcher_etatglobal_v1",
+        "name": "Détection de la source et de l'intention",
+        "info": "",
+        "x": 360,
+        "y": 100,
+        "wires": []
+    },
+    {
+        "id": "fn_build_event",
+        "type": "function",
+        "z": "sf_dispatcher_etatglobal_v1",
+        "name": "Construire msg.event (normalisation)",
+        "func": "// ============================================\n// SF_Dispatcher_EtatGlobal – V1\n// Construction du message canonique msg.event\n// ============================================\n\n// Valeurs par défaut sécurisées\nlet source = \"UNKNOWN\";\nlet intent = \"UNKNOWN\";\nlet priority = \"NORMAL\";\nlet payload = {};\n\n// --- Détection de la source ---\nif (msg.source) {\n    source = msg.source;\n} else if (msg.topic === \"VPIV\") {\n    source = \"VPIV\";\n} else if (msg.ui_event) {\n    source = \"UI\";\n} else if (msg.system_event) {\n    source = \"SYSTEM\";\n} else if (msg.init_event) {\n    source = \"INIT\";\n}\n\n// --- Détection de l'intention ---\nif (msg.intent) {\n    intent = msg.intent;\n} else if (msg.payload && msg.payload.modeRZ !== undefined) {\n    intent = \"SET_MODE\";\n} else if (msg.payload && msg.payload.typePtge !== undefined) {\n    intent = \"SET_PILOTAGE\";\n} else if (msg.payload === true && msg.topic === \"RESET\") {\n    intent = \"RESET\";\n} else if (msg.payload === true && msg.topic === \"CLEAR\") {\n    intent = \"CLEAR\";\n}\n\n// --- Priorité ---\nif (msg.priority) {\n    priority = msg.priority;\n} else if (msg.urgent === true) {\n    priority = \"URGENT\";\n}\n\n// --- Payload ---\npayload = msg.payload || {};\n\n// --- Construction finale ---\nmsg.event = {\n    source,\n    intent,\n    payload,\n    priority\n};\n\n// Nettoyage (optionnel, mais recommandé)\ndelete msg.source;\ndelete msg.intent;\ndelete msg.priority;\ndelete msg.urgent;\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 520,
+        "y": 160,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "1f413bd66feb0f56",
+        "type": "subflow",
+        "name": "SF_Stabilisation",
+        "info": "SOUS-FLOW : SF_Stabilisation\n\nRÔLE :\nEmpêcher oscillations et boucles.\n\nTECHNIQUES :\n- mémorisation état précédent\n- seuils\n- temporisation",
+        "in": [
+            {
+                "x": 60,
+                "y": 40,
+                "wires": [
+                    {
+                        "id": "0131572984e9488c"
+                    }
+                ]
+            }
+        ],
+        "out": [
+            {
+                "x": 420,
+                "y": 40,
+                "wires": [
+                    {
+                        "id": "0131572984e9488c",
+                        "port": 0
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "id": "0131572984e9488c",
+        "type": "function",
+        "z": "1f413bd66feb0f56",
+        "name": "Stabilisation (STUB)",
+        "func": "// TODO : anti-boucle / anti-rebond\nreturn msg;",
+        "outputs": 1,
+        "x": 250,
+        "y": 40,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "842730004828a73f",
+        "type": "subflow",
+        "name": "SF_ReglesDynamiques",
+        "info": "SOUS-FLOW : SF_ReglesDynamiques\n\nRÔLE :\nAppliquer les règles créées via ui_admin.\n\nFORMAT :\nSI conditions sur variables\nALORS modification variables\n\nNOTE :\nNe doit PAS casser les invariants V1.",
+        "in": [
+            {
+                "x": 60,
+                "y": 40,
+                "wires": [
+                    {
+                        "id": "af8ba0b73cb4b98c"
+                    }
+                ]
+            }
+        ],
+        "out": [
+            {
+                "x": 420,
+                "y": 40,
+                "wires": [
+                    {
+                        "id": "af8ba0b73cb4b98c",
+                        "port": 0
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "id": "af8ba0b73cb4b98c",
+        "type": "function",
+        "z": "842730004828a73f",
+        "name": "Règles dynamiques (STUB)",
+        "func": "// TODO : moteur de règles dynamiques\nreturn msg;",
+        "outputs": 1,
+        "x": 250,
+        "y": 40,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "346fa1a4b3cc7546",
+        "type": "subflow",
+        "name": "SF_GestionUrgence",
+        "info": "SOUS-FLOW : SF_GestionUrgence\n\nRÔLE :\nGestion PRIORITAIRE des urgences système.\n\nRESPONSABILITÉS :\n- arrêt moteurs\n- verrouillage commandes\n- mise à jour état global\n\nENTRÉE :\n- msg.payload.cat === 'E'\n\nSORTIE :\n- msg traité urgence\n\nNOTE :\nCe sous-flow court-circuite tout le reste.",
+        "in": [
+            {
+                "x": 60,
+                "y": 40,
+                "wires": [
+                    {
+                        "id": "fc0cd6296dea5b24"
+                    }
+                ]
+            }
+        ],
+        "out": [
+            {
+                "x": 420,
+                "y": 40,
+                "wires": [
+                    {
+                        "id": "fc0cd6296dea5b24",
+                        "port": 0
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "id": "fc0cd6296dea5b24",
+        "type": "function",
+        "z": "346fa1a4b3cc7546",
+        "name": "Gestion Urgence (STUB)",
+        "func": "// PRIORITÉ ABSOLUE\nmsg._urgence = true;\n// TODO V1 : implémenter arrêt moteur + verrouillage\nreturn msg;",
+        "outputs": 1,
+        "x": 240,
+        "y": 40,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "228715cce848011f",
+        "type": "tab",
+        "label": "Gtion_EtatGlobal",
+        "disabled": false,
+        "info": "Type : comment\r\nTitre : Gtion_EtatGlobal – Cœur décisionnel et règles globales V1\r\n\r\nCe flow est le cœur décisionnel du système Node-RED (SP).\r\nIl ne dialogue jamais directement avec l’UI ni avec l’Arduino/SE,\r\nmais agit exclusivement via les variables globales et les messages VPIV.\r\n\r\nRôles principaux :\r\n- Appliquer les règles globales de cohérence et de sécurité\r\n- Arbitrer les priorités (Urgence > Initialisation > Modes > UI)\r\n- Garantir que toute commande envoyée vers Arduino ou SE\r\n  respecte l’état global courant du système\r\n- Centraliser les transitions de fonctionnement (Accueil ↔ Pilotage, etc.)\r\n\r\nCe flow est volontairement :\r\n- déterministe\r\n- lisible\r\n- extensible (V2 : autonomie, scénarios, IA légère)\r\n\r\nLe flow est structuré en 6 sections :\r\n1. Réception des événements (triggers)\r\n2. Gestion des urgences (priorité 0)\r\n3. Initialisation et connexions (priorité 1)\r\n4. Gestion des modes et transitions (priorité 2)\r\n5. Garde-fous fonctionnels (priorité 3)\r\n6. Synchronisation état → UI / VPIV\r\n\r\nToutes les règles s’appuient sur :\r\n- global.vars        : dictionnaire des variables\r\n- global.runtime     : état courant (session, mode, blocages)\r\n- global.lastState   : sauvegarde état avant transition\r\n\r\nAucune logique UI, aucun accès matériel direct ici."
+    },
+    {
+        "id": "0e8f2fc8f17b0394",
+        "type": "subflow:346fa1a4b3cc7546",
+        "z": "228715cce848011f",
+        "name": "",
+        "x": 520,
+        "y": 260,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "24dc9aadcbe01dba",
+        "type": "subflow:842730004828a73f",
+        "z": "228715cce848011f",
+        "name": "",
+        "x": 510,
+        "y": 460,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "9e84c465fe691f78",
+        "type": "subflow:1f413bd66feb0f56",
+        "z": "228715cce848011f",
+        "name": "",
+        "x": 520,
+        "y": 600,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "90056326435d731e",
+        "type": "subflow:sf_dispatcher_etatglobal_v1",
+        "z": "228715cce848011f",
+        "name": "",
+        "x": 620,
+        "y": 140,
+        "wires": [
+            []
+        ]
+    }
+]

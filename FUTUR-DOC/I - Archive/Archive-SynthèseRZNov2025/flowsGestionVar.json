@@ -1,0 +1,1740 @@
+[
+    {
+        "id": "61d8f8019f224437",
+        "type": "tab",
+        "label": "ui-VarG",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "845912dfc7f52350",
+        "type": "comment",
+        "z": "61d8f8019f224437",
+        "name": "IMP - Gestions des vars - Gestion enrichedVArs",
+        "info": "",
+        "x": 200,
+        "y": 20,
+        "wires": [],
+        "icon": "node-red/cog.svg"
+    },
+    {
+        "id": "ed8802fd3286c28f",
+        "type": "link in",
+        "z": "61d8f8019f224437",
+        "name": "gestion-VarG",
+        "links": [
+            "16644df1dfd047f1"
+        ],
+        "x": 145,
+        "y": 200,
+        "wires": [
+            [
+                "0978fb7503c67d99",
+                "4ef989cc05f4298f",
+                "4ca410851c12c5d5",
+                "8d555467d1468198",
+                "b6e0301c268b65ee"
+            ]
+        ]
+    },
+    {
+        "id": "b038870d9710cd7e",
+        "type": "ui-control",
+        "z": "61d8f8019f224437",
+        "name": "afficheUiVarG",
+        "ui": "930a8a5e70986346",
+        "events": "change",
+        "x": 1580,
+        "y": 100,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "7716c497edc36604",
+        "type": "ui-text",
+        "z": "61d8f8019f224437",
+        "group": "ac208ef77b5e8aea",
+        "order": 2,
+        "width": "3",
+        "height": "1",
+        "name": "Info-1",
+        "label": "Info : ",
+        "format": "{{msg.payload}}",
+        "layout": "row-left",
+        "style": false,
+        "font": "",
+        "fontSize": 16,
+        "color": "#717171",
+        "wrapText": true,
+        "className": "",
+        "x": 1570,
+        "y": 340,
+        "wires": []
+    },
+    {
+        "id": "0978fb7503c67d99",
+        "type": "change",
+        "z": "61d8f8019f224437",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "info",
+                "pt": "msg",
+                "to": "Les vars globales sont stockées dans enrichedVars dans un fichier et dans defaut (mémoire vive) après synchronisation",
+                "tot": "str"
+            },
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "introAdmin",
+                "tot": "str"
+            },
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "null",
+                "tot": "json"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 560,
+        "y": 200,
+        "wires": [
+            [
+                "0c3bd13bbe17df4b"
+            ]
+        ]
+    },
+    {
+        "id": "94830ea6ccd60644",
+        "type": "change",
+        "z": "61d8f8019f224437",
+        "name": "",
+        "rules": [
+            {
+                "t": "move",
+                "p": "info",
+                "pt": "msg",
+                "to": "payload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1330,
+        "y": 340,
+        "wires": [
+            [
+                "7716c497edc36604"
+            ]
+        ]
+    },
+    {
+        "id": "0c3bd13bbe17df4b",
+        "type": "link out",
+        "z": "61d8f8019f224437",
+        "name": "link out msg Info",
+        "mode": "link",
+        "links": [
+            "c0c9a5d567223063"
+        ],
+        "x": 1065,
+        "y": 200,
+        "wires": []
+    },
+    {
+        "id": "c0c9a5d567223063",
+        "type": "link in",
+        "z": "61d8f8019f224437",
+        "name": "link in msg Info",
+        "links": [
+            "0c3bd13bbe17df4b",
+            "40d3af83aa60d68f",
+            "d453c1dd477c2750"
+        ],
+        "x": 1165,
+        "y": 340,
+        "wires": [
+            [
+                "94830ea6ccd60644"
+            ]
+        ]
+    },
+    {
+        "id": "4ef989cc05f4298f",
+        "type": "ui-button",
+        "z": "61d8f8019f224437",
+        "group": "ac208ef77b5e8aea",
+        "name": "Retour",
+        "label": "Retour  ",
+        "order": 4,
+        "width": "1",
+        "height": "1",
+        "emulateClick": false,
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "className": "",
+        "icon": "",
+        "iconPosition": "left",
+        "payload": "{\"tab\":\"P_Admin\"}",
+        "payloadType": "json",
+        "topic": "topic",
+        "topicType": "msg",
+        "buttonColor": "grey",
+        "textColor": "",
+        "iconColor": "",
+        "enableClick": true,
+        "enablePointerdown": false,
+        "pointerdownPayload": "",
+        "pointerdownPayloadType": "str",
+        "enablePointerup": false,
+        "pointerupPayload": "",
+        "pointerupPayloadType": "str",
+        "x": 510,
+        "y": 100,
+        "wires": [
+            [
+                "b038870d9710cd7e"
+            ]
+        ]
+    },
+    {
+        "id": "f581b3778196453f",
+        "type": "comment",
+        "z": "61d8f8019f224437",
+        "name": "Retour ",
+        "info": "",
+        "x": 510,
+        "y": 60,
+        "wires": []
+    },
+    {
+        "id": "7a04fceb5191e187",
+        "type": "comment",
+        "z": "61d8f8019f224437",
+        "name": "Info",
+        "info": "",
+        "x": 510,
+        "y": 140,
+        "wires": []
+    },
+    {
+        "id": "4ee913e5f49f6880",
+        "type": "comment",
+        "z": "61d8f8019f224437",
+        "name": "charge var G defaut depuis enrichedVars",
+        "info": "",
+        "x": 620,
+        "y": 280,
+        "wires": []
+    },
+    {
+        "id": "0c1608198b049142",
+        "type": "comment",
+        "z": "61d8f8019f224437",
+        "name": "Gestion Memoire",
+        "info": "",
+        "x": 540,
+        "y": 320,
+        "wires": []
+    },
+    {
+        "id": "4ca410851c12c5d5",
+        "type": "ui-button",
+        "z": "61d8f8019f224437",
+        "group": "ac208ef77b5e8aea",
+        "name": "iniVarGlobalInMemory",
+        "label": "Actualiser",
+        "order": 3,
+        "width": "1",
+        "height": "1",
+        "emulateClick": false,
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "className": "",
+        "icon": "",
+        "iconPosition": "left",
+        "payload": "",
+        "payloadType": "str",
+        "topic": "iniVarGlobalInMemory",
+        "topicType": "msg",
+        "buttonColor": "",
+        "textColor": "",
+        "iconColor": "",
+        "enableClick": true,
+        "enablePointerdown": false,
+        "pointerdownPayload": "",
+        "pointerdownPayloadType": "str",
+        "enablePointerup": false,
+        "pointerupPayload": "",
+        "pointerupPayloadType": "str",
+        "x": 570,
+        "y": 360,
+        "wires": [
+            [
+                "cf50f648f97818e2"
+            ]
+        ]
+    },
+    {
+        "id": "40d3af83aa60d68f",
+        "type": "link out",
+        "z": "61d8f8019f224437",
+        "name": "link out 10",
+        "mode": "link",
+        "links": [
+            "c0c9a5d567223063"
+        ],
+        "x": 1015,
+        "y": 340,
+        "wires": []
+    },
+    {
+        "id": "9837eeae36ab98c7",
+        "type": "function",
+        "z": "61d8f8019f224437",
+        "name": "prepareTableauVars",
+        "func": "// function prepareTableauVars (corrigée pour nouvelle structure enrichedVars)\n\nlet enrichedVars = global.get(\"enrichedVars\", \"file\") || {};\nconsole.log(\"Données chargées depuis global.json :\", enrichedVars);\n\nlet tableauPourUI = [];\nflow.set(\"varSelected\", \"\");\n\n// On parcourt toutes les variables globales\nObject.entries(enrichedVars).forEach(([nomVarG, e]) => {\n    if (!nomVarG || !e || typeof e !== \"object\") return;  // Ignore les entrées invalides\n\n    let props = e.proprietes || [];   // ✅ nouvelle structure\n    let proprieteResume = props.length > 0\n        ? props.map(p => `${p.nomP} (${p.typeP})`).join(\", \")\n        : \"(Aucune propriété définie)\";\n\n    const instances = e.instances || [\"*\"];\n\n    tableauPourUI.push({\n        nomVarG,\n        abbrVarG: e.abbrVarG || \"\",\n        instances: instances.join(\", \"),\n        proprietes: proprieteResume,\n        description: e.descriptionVarG || \"\"\n    });\n});\n\nmsg.payload = tableauPourUI;\nreturn msg;\n\n",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1160,
+        "y": 440,
+        "wires": [
+            [
+                "8f78766bfeda5b43"
+            ]
+        ]
+    },
+    {
+        "id": "8f78766bfeda5b43",
+        "type": "ui-table",
+        "z": "61d8f8019f224437",
+        "group": "2413c080e8f28938",
+        "name": "Table enrichedVars",
+        "label": "",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "maxrows": "",
+        "autocols": true,
+        "showSearch": true,
+        "deselect": false,
+        "selectionType": "click",
+        "columns": [
+            {
+                "title": "Nom",
+                "key": "nomVarG",
+                "keyType": "key",
+                "type": "text",
+                "width": ""
+            },
+            {
+                "title": "Type",
+                "key": "typeVarG",
+                "keyType": "key",
+                "type": "text",
+                "width": ""
+            },
+            {
+                "title": "Instances",
+                "key": "instances",
+                "keyType": "key",
+                "type": "text",
+                "width": ""
+            },
+            {
+                "title": "Propriétés",
+                "key": "proprietes",
+                "keyType": "key",
+                "type": "text",
+                "width": ""
+            },
+            {
+                "title": "Description",
+                "key": "description",
+                "keyType": "key",
+                "type": "text",
+                "width": ""
+            },
+            {
+                "title": "Détails",
+                "key": "action",
+                "keyType": "key",
+                "type": "button",
+                "width": ""
+            }
+        ],
+        "mobileBreakpoint": "sm",
+        "mobileBreakpointType": "defaults",
+        "action": "replace",
+        "x": 1610,
+        "y": 440,
+        "wires": [
+            [
+                "01fdcb8301460e77"
+            ]
+        ]
+    },
+    {
+        "id": "8d555467d1468198",
+        "type": "ui-button",
+        "z": "61d8f8019f224437",
+        "group": "group-vars",
+        "name": "ajouterUneVarG",
+        "label": "➕ New varG ",
+        "order": 2,
+        "width": "1",
+        "height": "1",
+        "emulateClick": false,
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "className": "",
+        "icon": "",
+        "iconPosition": "left",
+        "payload": "",
+        "payloadType": "str",
+        "topic": "newVarG",
+        "topicType": "msg",
+        "buttonColor": "blue",
+        "textColor": "",
+        "iconColor": "",
+        "enableClick": true,
+        "enablePointerdown": false,
+        "pointerdownPayload": "",
+        "pointerdownPayloadType": "str",
+        "enablePointerup": false,
+        "pointerupPayload": "",
+        "pointerupPayloadType": "str",
+        "x": 540,
+        "y": 620,
+        "wires": [
+            [
+                "01fdcb8301460e77",
+                "cfbbfd49f307f390"
+            ]
+        ]
+    },
+    {
+        "id": "91b31ef2ab20d373",
+        "type": "ui-text",
+        "z": "61d8f8019f224437",
+        "group": "ac208ef77b5e8aea",
+        "order": 1,
+        "width": "5",
+        "height": "1",
+        "name": "TitreEntete",
+        "label": "Tableau des variables - Choisir une action, ou selectionner une variable",
+        "format": "{{msg.payload}}",
+        "layout": "row-left",
+        "style": true,
+        "font": "Arial Black,Arial Black,Gadget,sans-serif",
+        "fontSize": "18",
+        "color": "#0000ff",
+        "wrapText": true,
+        "className": "",
+        "x": 1570,
+        "y": 240,
+        "wires": []
+    },
+    {
+        "id": "b6e0301c268b65ee",
+        "type": "change",
+        "z": "61d8f8019f224437",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "\"\"",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 550,
+        "y": 240,
+        "wires": [
+            [
+                "91b31ef2ab20d373"
+            ]
+        ]
+    },
+    {
+        "id": "146ccaf8d971bb6f",
+        "type": "ui-text",
+        "z": "61d8f8019f224437",
+        "group": "group-vars",
+        "order": 1,
+        "width": "4",
+        "height": "1",
+        "name": "info2TitreVarModif",
+        "label": "🛠Variable slectionnée",
+        "format": "{{msg.info}}",
+        "layout": "row-left",
+        "style": true,
+        "font": "Arial Black,Arial Black,Gadget,sans-serif",
+        "fontSize": "18",
+        "color": "#0000ff",
+        "wrapText": true,
+        "className": "",
+        "x": 2210,
+        "y": 760,
+        "wires": []
+    },
+    {
+        "id": "cfbbfd49f307f390",
+        "type": "change",
+        "z": "61d8f8019f224437",
+        "name": "valVarSelectInfo",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "\"➕ Création d’une nouvelle variable.\"",
+                "tot": "str"
+            },
+            {
+                "t": "move",
+                "p": "info",
+                "pt": "msg",
+                "to": "payload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1980,
+        "y": 760,
+        "wires": [
+            [
+                "146ccaf8d971bb6f"
+            ]
+        ]
+    },
+    {
+        "id": "0ba77d252a5b9d1c",
+        "type": "ui-button",
+        "z": "61d8f8019f224437",
+        "d": true,
+        "group": "ac208ef77b5e8aea",
+        "name": "Aide",
+        "label": "Aide",
+        "order": 5,
+        "width": "1",
+        "height": "1",
+        "emulateClick": false,
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "className": "",
+        "icon": "",
+        "iconPosition": "left",
+        "payload": "{\"tab\":\"P_Admin\"}",
+        "payloadType": "json",
+        "topic": "topic",
+        "topicType": "msg",
+        "buttonColor": "grey",
+        "textColor": "",
+        "iconColor": "",
+        "enableClick": true,
+        "enablePointerdown": false,
+        "pointerdownPayload": "",
+        "pointerdownPayloadType": "str",
+        "enablePointerup": false,
+        "pointerupPayload": "",
+        "pointerupPayloadType": "str",
+        "x": 490,
+        "y": 2100,
+        "wires": [
+            [
+                "92a9c9557ce2f1e5"
+            ]
+        ]
+    },
+    {
+        "id": "92a9c9557ce2f1e5",
+        "type": "change",
+        "z": "61d8f8019f224437",
+        "d": true,
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "📘 Fiche synthèse — Flow ui-VarG  🎯 Objectif Ce flow gère les Variables Globales (VarG), leurs instances et leurs propriétés de manière structurée et persistante via global.enrichedVars. Il assure : - Création / édition / suppression des variables. - Gestion des propriétés par variable (ajout, édition, suppression). - Maintien de la cohérence entre instances et valeurs par propriété. - Persistance dans le fichier (enrichedVars stocké en file).  🏗️ Architecture fonctionnelle ## 1. Gestion des Variables Globales  Form_Var_Modif : saisie/édition des champs généraux : nomVarG, abbrVarG, instances, descriptionVarG, dateUpdateVarG. prepareFormVarSelected : prépare le formulaire selon la variable choisie. Infos générales enrichedVars :  -  1. crée ou modifie une variable,  -  2. gère renommage et mise à jour,  -  3. initialise les propriétés si besoin.  ## 2. Gestion des Propriétés Boutons d’action  🛠️ Éditer les propriétés → ouvre le tableau dynamique. ➕ Ajouter une propriété → ouvre formulaire vide. ❌ Supprimer une propriété → supprime la propriété choisie.  **- prepareTable :** - Construit la table dynamique (colonnes fixes + colonnes par instance + action ✏️). - Alimente templateTablePropriete.  **templateTablePropriete** : - Affiche la table des propriétés. - Envoie editProperty quand l’utilisateur clique ✏️.  **onTableEvent :** - Reçoit editProperty. - Prépare les données pour formEditProp.  **formEditProp :** - Formulaire pour éditer une propriété (nom, abbr, type, valeur défaut).  saveSchemaOrRow : - Ajoute ou met à jour une propriété. - Initialise les valeurs par défaut pour toutes les instances.  **deleteProperty :** - Supprime une propriété sélectionnée.  ## 3. Persistance et Synchronisation  - sauvVarsGlobalInFile : enregistre dans le fichier. - synchro : synchronise avec les autres flows. - link out : met à jour la table après chaque opération. - msg.info : feedback utilisateur (succès, erreur, avertissement).  ## 🔗 Schéma conceptuel (simplifié)  Variable Globale (VarG)  ├─ nomVarG  ├─ abbrVarG  ├─ instances = [\"1\", \"8\", ...]  ├─ descriptionVarG  ├─ dateUpdateVarG  └─ proprietes[]       ├─ nom       ├─ abbr       ├─ type       ├─ schema (optionnel)       └─ valeurs            ├─ \"*\"   → valeur par défaut            ├─ \"1\"   → valeur instance 1            ├─ \"8\"   → valeur instance 8            └─ ...🔹 Exemple : propriété valeur 1. Stockée dans global.json {   \"nom\": \"valeur\",   \"abbr\": \"val\",   \"type\": \"number\",   \"schema\": null,   \"valeurs\": {     \"*\": 0,     \"thermo1\": 22.5,     \"thermo2\": 23   } } 👉 Ici :     • schema est null car ce n’est pas un array ou object.     • La valeur par défaut est juste valeurs[\"*\"] = 0. 2. Préparée par prepareTable pour l’UI {   _propName: \"valeur\",    // référence interne   nom: \"valeur\",   abbr: \"val\",   type: \"number\",   defaut: \"0\",            // dérivé de valeurs[\"*\"]   inst_thermo1: \"22.5\",   // dérivé de valeurs[\"thermo1\"]   inst_thermo2: \"23\",     // dérivé de valeurs[\"thermo2\"]   edit: \"✏️\",             // bouton pour éditer la valeur   editSchema: \"🧩\"        // bouton pour éditer le schéma } 👉 Ici :     • defaut n’existe pas dans global.json → c’est juste un raccourci pour valeurs[\"*\"].     • edit et editSchema ne sont jamais stockés, ce sont uniquement des boutons UI. 3. Cas d’un objet complexe  - Stocké dans global.json : {   \"nom\": \"position\",   \"abbr\": \"pos\",   \"type\": \"object\",   \"schema\": {     \"x\": \"number\",     \"y\": \"number\"   },   \"valeurs\": {     \"*\": { \"x\": 0, \"y\": 0 },     \"thermo1\": { \"x\": 12, \"y\": 5 }   } }",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 670,
+        "y": 2100,
+        "wires": [
+            [
+                "3f38b58564bd660d"
+            ]
+        ]
+    },
+    {
+        "id": "3f38b58564bd660d",
+        "type": "ui-text",
+        "z": "61d8f8019f224437",
+        "d": true,
+        "group": "group-help",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "name": "Aide",
+        "label": "Aide",
+        "format": "{{msg.payload}}",
+        "layout": "row-left",
+        "style": false,
+        "font": "",
+        "fontSize": 16,
+        "color": "#717171",
+        "wrapText": true,
+        "className": "",
+        "x": 850,
+        "y": 2100,
+        "wires": [],
+        "info": "📘 Fiche synthèse — Flow ui-VarG\r\n\r\n🎯 Objectif\r\nCe flow gère les Variables Globales (VarG), leurs instances et leurs propriétés de manière structurée et persistante via global.enrichedVars.\r\nIl assure :\r\n- Création / édition / suppression des variables.\r\n- Gestion des propriétés par variable (ajout, édition, suppression).\r\n- Maintien de la cohérence entre instances et valeurs par propriété.\r\n- Persistance dans le fichier (enrichedVars stocké en file).\r\n\r\n🏗️ Architecture fonctionnelle\r\n## 1. Gestion des Variables Globales\r\n\r\nForm_Var_Modif : saisie/édition des champs généraux :\r\nnomVarG, abbrVarG, instances, descriptionVarG, dateUpdateVarG.\r\nprepareFormVarSelected : prépare le formulaire selon la variable choisie.\r\nInfos générales enrichedVars :\r\n -  1. crée ou modifie une variable,\r\n -  2. gère renommage et mise à jour,\r\n -  3. initialise les propriétés si besoin.\r\n\r\n## 2. Gestion des Propriétés\r\nBoutons d’action\r\n\r\n🛠️ Éditer les propriétés → ouvre le tableau dynamique.\r\n➕ Ajouter une propriété → ouvre formulaire vide.\r\n❌ Supprimer une propriété → supprime la propriété choisie.\r\n\r\n**- prepareTable :**\r\n- Construit la table dynamique (colonnes fixes + colonnes par instance + action ✏️).\r\n- Alimente templateTablePropriete.\r\n\r\n**templateTablePropriete** :\r\n- Affiche la table des propriétés.\r\n- Envoie editProperty quand l’utilisateur clique ✏️.\r\n\r\n**onTableEvent :**\r\n- Reçoit editProperty.\r\n- Prépare les données pour formEditProp.\r\n\r\n**formEditProp :**\r\n- Formulaire pour éditer une propriété (nom, abbr, type, valeur défaut).\r\n\r\nsaveSchemaOrRow :\r\n- Ajoute ou met à jour une propriété.\r\n- Initialise les valeurs par défaut pour toutes les instances.\r\n\r\n**deleteProperty :**\r\n- Supprime une propriété sélectionnée.\r\n\r\n## 3. Persistance et Synchronisation\r\n\r\n- sauvVarsGlobalInFile : enregistre dans le fichier.\r\n- synchro : synchronise avec les autres flows.\r\n- link out : met à jour la table après chaque opération.\r\n- msg.info : feedback utilisateur (succès, erreur, avertissement).\r\n\r\n## 🔗 Schéma conceptuel (simplifié)\r\n\r\nVariable Globale (VarG)\r\n ├─ nomVarG\r\n ├─ abbrVarG\r\n ├─ instances = [\"1\", \"8\", ...]\r\n ├─ descriptionVarG\r\n ├─ dateUpdateVarG\r\n └─ proprietes[]\r\n      ├─ nom\r\n      ├─ abbr\r\n      ├─ type\r\n      ├─ schema (optionnel)\r\n      └─ valeurs\r\n           ├─ \"*\"   → valeur par défaut\r\n           ├─ \"1\"   → valeur instance 1\r\n           ├─ \"8\"   → valeur instance 8\r\n           └─ ..."
+    },
+    {
+        "id": "f9efe2fa2b3012c0",
+        "type": "ui-form",
+        "z": "61d8f8019f224437",
+        "name": "Form_Var_Modif",
+        "group": "group-vars",
+        "label": "",
+        "order": 4,
+        "width": 0,
+        "height": 0,
+        "options": [
+            {
+                "label": "Nom",
+                "key": "nomVarG",
+                "type": "text",
+                "required": true,
+                "rows": null
+            },
+            {
+                "label": "Abréviation",
+                "key": "abbrVarG",
+                "type": "text",
+                "required": false,
+                "rows": null
+            },
+            {
+                "label": "Instances (csv), toujours une instance par défaut *",
+                "key": "instances",
+                "type": "text",
+                "required": false,
+                "rows": null
+            },
+            {
+                "label": "Description",
+                "key": "descriptionVarG",
+                "type": "multiline",
+                "required": false,
+                "rows": 2
+            },
+            {
+                "label": "Date MAJ",
+                "key": "dateUpdateVarG",
+                "type": "text",
+                "required": false,
+                "rows": null
+            }
+        ],
+        "formValue": {
+            "nomVarG": "",
+            "abbrVarG": "",
+            "instances": "",
+            "descriptionVarG": "",
+            "dateUpdateVarG": ""
+        },
+        "submit": "Enregistrer",
+        "cancel": "Annuler",
+        "resetOnSubmit": true,
+        "topic": "",
+        "topicType": "str",
+        "splitLayout": true,
+        "className": "",
+        "dropdownOptions": [],
+        "x": 1600,
+        "y": 620,
+        "wires": [
+            [
+                "d034466c31b47065",
+                "b24e91e13448bab3"
+            ]
+        ]
+    },
+    {
+        "id": "d034466c31b47065",
+        "type": "function",
+        "z": "61d8f8019f224437",
+        "name": "Infos générales enrichedVars",
+        "func": "// === Infos générales enrichedVars (fusion avec sauvVarSelected) ===\n\n// Gère création/modification d'une variable\n// - contrôle du nom\n// - initialisation instances (ajout '*' oblig.)\n// - initialise proprietes si vide\nlet enrichedVars = global.get(\"enrichedVars\", \"file\") || {};\nlet varSelected = flow.get(\"varSelected\") || null;\nlet formData = msg.payload;\n\nif (!formData || !formData.nomVarG) {\n    msg.info = \"❌ Formulaire incomplet ou variable non spécifiée.\";\n    return null;\n}\n\n// --- Normalisation du nom ---\nlet newName = formData.nomVarG.trim();\n\n// Vérification caractères autorisés\nif (!/^[A-Za-z0-9_]+$/.test(newName)) {\n    msg.info = `❌ Nom de variable invalide ('${newName}'). Utilise uniquement lettres, chiffres ou '_'`;\n    return null;\n}\n\nlet oldName = varSelected;\n\n// --- Cas création ---\nif (!enrichedVars[oldName]) {\n    if (enrichedVars[newName]) {\n        msg.info = `❌ Impossible de créer '${newName}', une variable existe déjà avec ce nom.`;\n        return null;\n    }\n\n    enrichedVars[newName] = {\n        nomVarG: newName,\n        abbrVarG: formData.abbrVarG || \"\",\n        instances: formData.instances\n            ? formData.instances.split(\",\").map(e => e.trim())\n            : [\"*\"],\n        descriptionVarG: formData.descriptionVarG || \"\",\n        dateUpdateVarG: new Date().toISOString(),\n        proprietes: [\n            {\n                nom: \"defautProp\",\n                abbr: \"def\",\n                type: \"string\",\n                schema: null,\n                valeurs: { \"*\": \"\" }\n            }\n        ]\n    };\n\n    flow.set(\"varSelected\", newName);\n    global.set(\"enrichedVars\", enrichedVars, \"file\");\n\n    msg.payload = newName;\n    msg.info = `✅ Nouvelle variable créée : ${newName}`;\n    return msg;\n}\n\n// --- Cas modification ---\nlet current = enrichedVars[oldName];\n\n// Si le nom change\nif (oldName !== newName) {\n    if (enrichedVars[newName]) {\n        msg.info = `⚠️ '${newName}' existe déjà, impossible de renommer '${oldName}'`;\n        return null;\n    }\n\n    enrichedVars[newName] = current;\n    delete enrichedVars[oldName];\n    flow.set(\"varSelected\", newName);\n}\n\n// --- Synchronisation des instances ---\nlet newInstances = formData.instances\n    ? formData.instances.split(\",\").map(e => e.trim())\n    : current.instances;\nlet oldInstances = current.instances || [];\n\n// Synchroniser les valeurs pour toutes les propriétés\n(current.proprietes || []).forEach(prop => {\n    prop.valeurs = prop.valeurs || {};\n\n    // Ajouter les nouvelles instances avec valeur par défaut\n    newInstances.forEach(inst => {\n        if (!(inst in prop.valeurs)) {\n            switch (prop.type) {\n                case \"boolean\": prop.valeurs[inst] = false; break;\n                case \"int\":\n                case \"number\": prop.valeurs[inst] = 0; break;\n                case \"array\": prop.valeurs[inst] = []; break;\n                case \"object\": prop.valeurs[inst] = {}; break;\n                case \"date\": prop.valeurs[inst] = new Date().toISOString().slice(0, 10); break;\n                default: prop.valeurs[inst] = \"\";\n            }\n        }\n    });\n\n    // Supprimer les valeurs des instances disparues\n    oldInstances.forEach(inst => {\n        if (!newInstances.includes(inst)) {\n            delete prop.valeurs[inst];\n        }\n    });\n});\n\n// --- Mise à jour des infos générales ---\nenrichedVars[newName || oldName] = {\n    ...enrichedVars[newName || oldName],\n    nomVarG: newName,\n    abbrVarG: formData.abbrVarG || enrichedVars[newName || oldName].abbrVarG,\n    instances: newInstances,\n    descriptionVarG: formData.descriptionVarG || enrichedVars[newName || oldName].descriptionVarG,\n    dateUpdateVarG: new Date().toISOString()\n};\n\nglobal.set(\"enrichedVars\", enrichedVars, \"file\");\n\nmsg.payload = newName || oldName;\nmsg.info = `✅ Variable ${oldName !== newName ? `renommée de '${oldName}' en '${newName}' et ` : \"\"}mise à jour.`;\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1680,
+        "y": 760,
+        "wires": [
+            [
+                "269a686602c4e0bc",
+                "cfbbfd49f307f390",
+                "80b5fac4ff99274d"
+            ]
+        ]
+    },
+    {
+        "id": "abdec634c11a54d9",
+        "type": "debug",
+        "z": "61d8f8019f224437",
+        "name": "debug 2 - recup var Selected",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 920,
+        "y": 660,
+        "wires": []
+    },
+    {
+        "id": "b24e91e13448bab3",
+        "type": "debug",
+        "z": "61d8f8019f224437",
+        "name": "debug 2 sortie form",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1550,
+        "y": 660,
+        "wires": []
+    },
+    {
+        "id": "269a686602c4e0bc",
+        "type": "debug",
+        "z": "61d8f8019f224437",
+        "name": "debug 3x",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1720,
+        "y": 800,
+        "wires": []
+    },
+    {
+        "id": "01fdcb8301460e77",
+        "type": "function",
+        "z": "61d8f8019f224437",
+        "name": "recupVarSelected",
+        "func": "// 🔹 recupVarSelected\n// - Détermine si on sélectionne une variable existante ou si on crée une nouvelle\n// - Met à jour flow.varSelected\n// - Fournit msg.info et msg.payload adaptés\n\nlet enrichedVars = global.get(\"enrichedVars\", \"file\") || {};\nlet listeVars = Object.keys(enrichedVars);\nlet varSelected = null;\n\n// 1) Cas bouton \"Ajouter une VarG\"\nif (msg.topic === \"newVarG\") {\n    varSelected = \"new\";\n}\n// 2) Cas sélection dans la table\nelse {\n    varSelected = msg.payload?.row?.nomVarG || msg.payload?.nomVarG || null;\n}\n\n// 3) Vérification : aucune sélection\nif (!varSelected) {\n    msg.info = (listeVars.length === 0)\n        ? \"⚠️ Aucune variable existante dans enrichedVars.\"\n        : \"⚠️ Aucune variable sélectionnée pour édition.\";\n    return msg;  // on sort proprement\n}\n\n// 4) Stockage de la sélection\nflow.set(\"varSelected\", varSelected);\n\n// 5) Message d’info\nmsg.info = (varSelected === \"new\")\n    ? \"➕ Création d’une nouvelle variable.\"\n    : `✅ Vous êtes sur la variable : ${varSelected}`;\n\n// 6) Retour\nmsg.payload = varSelected;\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1010,
+        "y": 620,
+        "wires": [
+            [
+                "cfbbfd49f307f390",
+                "abdec634c11a54d9",
+                "7e31978adc02acad"
+            ]
+        ]
+    },
+    {
+        "id": "7e31978adc02acad",
+        "type": "function",
+        "z": "61d8f8019f224437",
+        "name": "prepareFormVarSelected",
+        "func": "// 🔹 prepareFormVarSelected\n// - Prépare le formulaire Form_Var_Modif selon varSelected\n// - Gère : création nouvelle variable, édition variable existante, cas vide\n\nlet enrichedVars = global.get(\"enrichedVars\", \"file\") || {};\nlet varSelected = flow.get(\"varSelected\") || null;\n\n// 1) Cas création d’une nouvelle variable\nif (varSelected === \"new\") {\n    msg.payload = {\n        nomVarG: \"\",\n        abbrVarG: \"\",\n        instances: \"*\",  // instance par défaut obligatoire\n        descriptionVarG: \"- Objectif(s): - Origine: - Autres : \",\n        dateUpdateVarG: new Date().toISOString()\n    };\n    msg.topic = \"newVarG\";\n    msg.info = \"➕ Création d’une nouvelle variable.\";\n    return msg;\n}\n\n// 2) Cas édition d’une variable existante\nif (varSelected && enrichedVars[varSelected]) {\n    const selected = enrichedVars[varSelected];\n    msg.payload = {\n        nomVarG: selected.nomVarG || varSelected,\n        abbrVarG: selected.abbrVarG || \"\",\n        instances: selected.instances ? selected.instances.join(\", \") : \"*\",\n        descriptionVarG: selected.descriptionVarG || \"\",\n        dateUpdateVarG: selected.dateUpdateVarG || new Date().toISOString()\n    };\n    msg.info = `✏️ Édition de la variable '${varSelected}'.`;\n    return msg;\n}\n\n// 3) Cas aucun varSelected valide\nif (Object.keys(enrichedVars).length === 0) {\n    msg.info = \"⚠️ Aucune variable définie. Utilisez 'Ajouter une VarG' pour commencer.\";\n} else {\n    msg.info = \"⚠️ Aucune variable sélectionnée pour édition.\";\n}\n\n// Payload neutre pour éviter un crash du formulaire\nmsg.payload = {\n    nomVarG: \"\",\n    abbrVarG: \"\",\n    instances: \"\",\n    descriptionVarG: \"\",\n    dateUpdateVarG: new Date().toISOString()\n};\nreturn msg;\n\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1310,
+        "y": 620,
+        "wires": [
+            [
+                "f9efe2fa2b3012c0",
+                "1e471b6a13189efb"
+            ]
+        ]
+    },
+    {
+        "id": "80b5fac4ff99274d",
+        "type": "change",
+        "z": "61d8f8019f224437",
+        "name": "",
+        "rules": [
+            {
+                "t": "move",
+                "p": "info",
+                "pt": "msg",
+                "to": "payload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 2010,
+        "y": 840,
+        "wires": [
+            [
+                "ui_info"
+            ]
+        ]
+    },
+    {
+        "id": "1eb1afa02080e2bb",
+        "type": "ui-button",
+        "z": "61d8f8019f224437",
+        "group": "grp1",
+        "name": "Charger ",
+        "label": "Charger",
+        "order": 1,
+        "width": "1",
+        "height": "1",
+        "emulateClick": false,
+        "className": "",
+        "icon": "",
+        "iconPosition": "left",
+        "payload": "go",
+        "payloadType": "str",
+        "topic": "initialisePropriete",
+        "topicType": "str",
+        "buttonColor": "",
+        "textColor": "",
+        "iconColor": "",
+        "enableClick": true,
+        "enablePointerdown": false,
+        "pointerdownPayload": "",
+        "pointerdownPayloadType": "str",
+        "enablePointerup": false,
+        "pointerupPayload": "",
+        "pointerupPayloadType": "str",
+        "x": 520,
+        "y": 820,
+        "wires": [
+            [
+                "0131cdd9645b24e3",
+                "49722f61726b07fa"
+            ]
+        ]
+    },
+    {
+        "id": "ui_info",
+        "type": "ui-text",
+        "z": "61d8f8019f224437",
+        "group": "grp1",
+        "order": 2,
+        "width": "4",
+        "height": 1,
+        "name": "Info message",
+        "label": "🛠Propriété  - ",
+        "format": "{{msg.payload}}",
+        "layout": "row-left",
+        "style": true,
+        "font": "Arial Black,Arial Black,Gadget,sans-serif",
+        "fontSize": "14",
+        "color": "#0000ff",
+        "wrapText": false,
+        "className": "",
+        "x": 2220,
+        "y": 840,
+        "wires": []
+    },
+    {
+        "id": "0131cdd9645b24e3",
+        "type": "debug",
+        "z": "61d8f8019f224437",
+        "name": "debug 4 charger",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 520,
+        "y": 860,
+        "wires": []
+    },
+    {
+        "id": "8118921fca6d040c",
+        "type": "debug",
+        "z": "61d8f8019f224437",
+        "name": "debug 5 sortie prepareTableauProrprietes",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 860,
+        "y": 780,
+        "wires": []
+    },
+    {
+        "id": "66b83f7c03f2ac61",
+        "type": "debug",
+        "z": "61d8f8019f224437",
+        "name": "debug 6 sortie Tableau Proprietes (template vue3)",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1710,
+        "y": 880,
+        "wires": []
+    },
+    {
+        "id": "5faf1530ad1663b8",
+        "type": "debug",
+        "z": "61d8f8019f224437",
+        "name": "debug 7 sortie fonction routeAction",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 900,
+        "y": 1060,
+        "wires": []
+    },
+    {
+        "id": "e943020838536645",
+        "type": "debug",
+        "z": "61d8f8019f224437",
+        "name": "debug 10 sortie résultat actions",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 2110,
+        "y": 1120,
+        "wires": []
+    },
+    {
+        "id": "49722f61726b07fa",
+        "type": "function",
+        "z": "61d8f8019f224437",
+        "name": "prepareTableauProprietes",
+        "func": "// Prépare l'affichage du tableau des propriétés\nlet varSelected = flow.get('varSelected') || null;\nlet enrichedVars = global.get('enrichedVars','file') || {};\nlet variable = enrichedVars[varSelected] || {};\nlet propSelected = flow.get('propSelected') || null;\nlet infoAction = flow.get('infoAction') || null;\n// Debug pour voir la valeur réelle\nnode.warn(\"Valeur réelle de varSelected: \" + JSON.stringify(varSelected));\nnode.warn(\"Type de varSelected: \" + typeof varSelected);\n\nif(msg.topic==\"initialisePropriete\"){\n  flow.set(\"propSelected\",null);\n   };\n\nif(msg.topic==\"refresh\"){flow.set(\"propSelected\",null)};\nlet proprietes = (variable.proprietes || []).map(p => ({\n  nomP: p.nomP,\n  abbrP: p.abbrP,\n  typeP: p.typeP,\n  schema: p.schema || null,\n  valeurs: p.valeurs || {},\n  defaut: (p.valeurs && p.valeurs['*']!==undefined) ? p.valeurs['*'] : null,\n  _locked: p._locked || false\n}));\n\n// Ajouter une ligne pour nouvelle propriété\nproprietes.push({nomP:'NouvelleP',abbrP:'New',typeP:null,schema:null,valeurs:{'*':null},_isNew:true});\n\nmsg.payload = {\n  proprietes: proprietes,\n  propSelected: propSelected,\n  instances: (variable.instances || []).filter(i => i !== '*'),\n  variable: {nomVarG: variable.nomVarG||''}\n};\n//msg.info avec une conditionnelle\nmsg.info = 'Variable:' + varSelected + ' - ' \n            + infoAction + \n           (propSelected ? propSelected : \"choisir une propriété\");\nreturn msg; ",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 850,
+        "y": 840,
+        "wires": [
+            [
+                "e596927a7fede76c",
+                "80b5fac4ff99274d",
+                "8118921fca6d040c"
+            ]
+        ]
+    },
+    {
+        "id": "e596927a7fede76c",
+        "type": "ui-template",
+        "z": "61d8f8019f224437",
+        "group": "grp1",
+        "page": "",
+        "ui": "",
+        "name": "tableauProprietes (template dashboard2 , vue3)",
+        "order": 3,
+        "width": 12,
+        "height": "auto",
+        "format": "<template>\n  <div>\n    <h3>{{ msg.payload.variable.nomVarG || '' }}</h3>\n    <table style=\"width:100%;border-collapse:collapse;border:1px solid #cccccc;\">\n      <thead>\n        <tr style=\"background:#f8f9fa;\">\n          <th style=\"border:1px solid #cccccc;padding:8px;\">Nom</th>\n          <th style=\"border:1px solid #cccccc;padding:8px;\">Action</th>\n          <th style=\"border:1px solid #cccccc;padding:8px;\">Type</th>\n          <th style=\"border:1px solid #cccccc;padding:8px;\">Défaut (*)</th>\n          <th v-for=\"inst in msg.payload.instances\" :key=\"inst\" style=\"border:1px solid #cccccc;padding:8px;\">{{inst}}\n          </th>\n        </tr>\n      </thead>\n      <tbody>\n        <tr v-for=\"(p,idx) in msg.payload.proprietes\" :key=\"idx\" :style=\"p._isNew ? 'background:#fff8e1':''\">\n          <td style=\"border:1px solid #dddddd;padding:6px 8px;\">{{p.nomP}}</td>\n          <td style=\"border:1px solid #dddddd;padding:6px 8px;\">\n            <button v-if=\"p._isNew\" @click=\"openBase(p)\">➕ Définir</button>\n            <template v-else>\n              <button @click=\"openValues(p)\">✏️</button>\n              <button @click=\"askDelete(p)\">🗑️</button>\n            </template>\n          </td>\n          <td style=\"border:1px solid #dddddd;padding:6px 8px;\">{{p.typeP || '-'}}</td>\n          <td style=\"border:1px solid #dddddd;padding:6px 8px;\">{{ formatVal(p.defaut) }}</td>\n          <td v-for=\"inst in msg.payload.instances\" :key=\"inst\" style=\"border:1px solid #dddddd;padding:6px 8px;\">{{\n            formatVal(p.valeurs && p.valeurs[inst]) }}</td>\n        </tr>\n      </tbody>\n    </table>\n    <div style=\"margin-top:8px;color:#333;font-size:0.95em\">{{ msg.info }}</div>\n  </div>\n</template>\n<script>\nexport default {\n  methods: {\n    formatVal(v){ return v===null||v===undefined?'null':(typeof v==='object'?JSON.stringify(v):v); },\n    openBase(prop){ this.send({action:'base',prop}); },\n    openValues(prop){ this.send({action:'valeurs',prop}); },\n    askDelete(prop){ if(confirm('Supprimer '+prop.nomP+' ?')) this.send({action:'delete',prop}); }\n  }\n}\n</script>",
+        "storeOutMessages": true,
+        "passthru": true,
+        "resendOnRefresh": true,
+        "templateScope": "local",
+        "className": "",
+        "x": 1700,
+        "y": 900,
+        "wires": [
+            [
+                "b8fb7d87bbabeb65",
+                "66b83f7c03f2ac61"
+            ]
+        ]
+    },
+    {
+        "id": "b8fb7d87bbabeb65",
+        "type": "function",
+        "z": "61d8f8019f224437",
+        "name": "routerAction",
+        "func": "// Route actions du tableau\nlet action = msg.action;\nlet prop = msg.prop || {};\nlet varSelected = flow.get('varSelected');\nlet enriched = global.get('enrichedVars','file')||{};\nlet variable = enriched[varSelected]||{};\nlet instances = (variable.instances||[]).filter(i=>i!=='*');\n\nif(action) flow.set('propSelected', prop && prop.nomP ? prop.nomP : null);\n\nif(action==='base'){ return [{topic:'openEditor',editor:'base',prop,instances,originalName:prop._isNew?null:prop.nomP},null,null]; }\nelse if(action==='valeurs'){ return [null,{topic:'openEditor',editor:'valeurs',prop,instances,originalName:prop.nomP},null]; }\nelse if(action==='delete'){ return [null,null,{topic:'delete',prop}]; }\nreturn null;",
+        "outputs": 3,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 890,
+        "y": 1000,
+        "wires": [
+            [
+                "9d9f91b2cadac4f9",
+                "5faf1530ad1663b8"
+            ],
+            [
+                "425b87a8187e90a6",
+                "5faf1530ad1663b8"
+            ],
+            [
+                "d1d9f4f9935d39f3",
+                "5faf1530ad1663b8"
+            ]
+        ]
+    },
+    {
+        "id": "9d9f91b2cadac4f9",
+        "type": "ui-template",
+        "z": "61d8f8019f224437",
+        "group": "grp1",
+        "page": "",
+        "ui": "",
+        "name": "Éditeur Base (avec Schéma provisoire)",
+        "order": 11,
+        "width": 12,
+        "height": "auto",
+        "format": "<template>\n    <div v-if=\"msg && msg.topic==='openEditor' && msg.editor==='base'\"\n        style=\"border:1px solid #ddd;padding:15px;background:#fff;margin-top:12px;border-radius:6px;\">\n        <h4 style=\"margin-bottom:15px;\">{{originalName?'✏️ Édition':'➕ Nouvelle propriété'}}</h4>\n\n        <!-- Formulaire principal sur 2 colonnes -->\n        <div style=\"display:grid;grid-template-columns:1fr 1fr;gap:15px;\">\n            <!-- Colonne gauche -->\n            <div>\n                <div style=\"margin-bottom:12px;\">\n                    <label style=\"display:block;font-weight:600;margin-bottom:4px;color:#333;\">Nom</label>\n                    <input v-model=\"local.nomP\" style=\"width:100%;padding:8px;border:1px solid #ccc;border-radius:4px;font-size:14px;\" />\n                </div>\n\n                <div style=\"margin-bottom:12px;\">\n                    <label style=\"display:block;font-weight:600;margin-bottom:4px;color:#333;\">Type</label>\n                    <select v-model=\"local.typeP\" style=\"width:100%;padding:8px;border:1px solid #ccc;border-radius:4px;font-size:14px;background:white;\">\n            <option>string</option>\n            <option>integer</option>\n            <option>number</option>\n            <option>boolean</option>\n            <option>array</option>\n            <option>object</option>\n          </select>\n                </div>\n            </div>\n\n            <!-- Colonne droite -->\n            <div>\n                <div style=\"margin-bottom:12px;\">\n                    <label style=\"display:block;font-weight:600;margin-bottom:4px;color:#333;\">Abréviation</label>\n                    <input v-model=\"local.abbrP\" style=\"width:100%;padding:8px;border:1px solid #ccc;border-radius:4px;font-size:14px;\" />\n                </div>\n\n                <!-- Champ valeur par défaut optionnel -->\n                <div style=\"margin-bottom:12px;\" v-if=\"local.defaut !== undefined\">\n                    <label style=\"display:block;font-weight:600;margin-bottom:4px;color:#333;\">Valeur par défaut</label>\n                    <input v-model=\"local.defaut\" style=\"width:100%;padding:8px;border:1px solid #ccc;border-radius:4px;font-size:14px;\" />\n                </div>\n            </div>\n        </div>\n\n        <!-- Éditeur de schéma amélioré -->\n        <div v-if=\"showSchemaEditor\"\n            style=\"margin-top:20px;border:1px solid #e0e0e0;padding:12px;border-radius:4px;background:#fafafa;\">\n            <h5 style=\"margin-bottom:10px;\">📑 Schéma (sous-propriétés)</h5>\n            <div style=\"display:grid;grid-template-columns:1fr 1fr;gap:10px;\">\n                <div v-for=\"(sp,i) in local.schemaArr\" :key=\"i\"\n                    style=\"border:1px solid #e8e8e8;padding:10px;border-radius:4px;background:white;\">\n                    <div style=\"margin-bottom:8px;\">\n                        <label style=\"display:block;font-size:0.85em;font-weight:600;margin-bottom:2px;color:#666;\">Nom</label>\n                        <input v-model=\"sp.nomSsP\" style=\"width:100%;padding:6px;border:1px solid #ddd;border-radius:3px;font-size:13px;\" />\n                    </div>\n                    <div style=\"margin-bottom:8px;\">\n                        <label style=\"display:block;font-size:0.85em;font-weight:600;margin-bottom:2px;color:#666;\">Type</label>\n                        <select v-model=\"sp.typeSsP\" style=\"width:100%;padding:6px;border:1px solid #ddd;border-radius:3px;font-size:13px;background:white;\">\n              <option>string</option>\n              <option>number</option>\n              <option>boolean</option>\n            </select>\n                    </div>\n                    <button @click=\"removeSchema(i)\" style=\"background:#ff4444;color:white;border:none;padding:4px 8px;border-radius:3px;cursor:pointer;font-size:12px;width:100%;\">\n            🗑 Supprimer\n          </button>\n                </div>\n            </div>\n            <button @click=\"addSchema\" style=\"margin-top:10px;background:#4CAF50;color:white;border:none;padding:8px 12px;border-radius:4px;cursor:pointer;\">\n        ➕ Ajouter sous-propriété\n      </button>\n        </div>\n\n        <!-- Boutons d'action -->\n        <div style=\"margin-top:20px;display:flex;gap:10px;\">\n            <button :disabled=\"!canSave\" @click=\"onSave\"\n              style=\"background:#2196F3;color:white;border:none;padding:10px 20px;border-radius:4px;cursor:pointer;font-weight:600;\">\n        💾 Enregistrer\n      </button>\n            <button @click=\"onCancel\"\n              style=\"background:#f0f0f0;color:#333;border:1px solid #ccc;padding:10px 20px;border-radius:4px;cursor:pointer;\">\n        ↩ Annuler\n      </button>\n        </div>\n\n        <div v-if=\"lockedWarning\"\n            style=\"margin-top:12px;padding:8px;background:#ffeaa7;border:1px solid #fdcb6e;border-radius:4px;color:#b33;\">\n            ⚠️ Propriété verrouillée\n        </div>\n    </div>\n</template>\n\n<script>\n    export default {\n  data(){ return { local:null, schemaArr:[], originalName:null, lockedWarning:false }; },\n  computed:{\n    showSchemaEditor(){ return this.local&&(this.local.typeP==='object'||this.local.typeP==='array'); },\n    canSave(){\n      if(!this.local||!this.local.nomP||!this.local.abbrP||!this.local.typeP) return false;\n      if(this.showSchemaEditor) return this.local.schemaArr&&this.local.schemaArr.length>0&&this.local.schemaArr.every(s=>s.nomSsP);\n      return true;\n    }\n  },\n  mounted(){\n    this.$watch('msg',(m)=>{\n      if(!m) return;\n      if(m.topic==='openEditor'&&m.editor==='base'){\n        this.originalName = m.originalName||null;\n        let p = m.prop||{};\n        this.local = JSON.parse(JSON.stringify(p||{nomP:'',abbrP:'',typeP:null,schema:[]}));\n        this.local.schemaArr = Array.isArray(this.local.schema)?JSON.parse(JSON.stringify(this.local.schema)):[];\n        this.lockedWarning = !!(p && p._locked);\n      }\n    },{immediate:true});\n  },\n  methods:{\n    addSchema() {\n      if(!this.local.schemaArr) this.local.schemaArr = [];\n      let newName = 'newSSP';\n      if(this.local.schemaArr.some(s => s.nomSsP === newName)){\n        newName += '_1';\n      }\n      this.local.schemaArr.push({ nomSsP: newName, typeSsP: 'string' });\n    },\n    removeSchema(i){ this.local.schemaArr.splice(i,1); },\n    onSave(){\n      let propOut={nomP:this.local.nomP,abbrP:this.local.abbrP,typeP:this.local.typeP};\n      if(this.showSchemaEditor){ propOut.schema=this.local.schemaArr; this.send({topic:'saveBaseWithSchema',prop:propOut,originalName:this.originalName}); }\n      else{ this.send({topic:'saveBase',prop:propOut,originalName:this.originalName}); }\n    },\n    onCancel(){ this.send({topic:'cancel'}); }\n  }\n}\n</script>",
+        "storeOutMessages": true,
+        "passthru": true,
+        "resendOnRefresh": true,
+        "templateScope": "local",
+        "className": "",
+        "x": 1670,
+        "y": 1000,
+        "wires": [
+            [
+                "d1d9f4f9935d39f3",
+                "415b9e04ef24fbfc"
+            ]
+        ]
+    },
+    {
+        "id": "425b87a8187e90a6",
+        "type": "ui-template",
+        "z": "61d8f8019f224437",
+        "group": "grp1",
+        "page": "",
+        "ui": "",
+        "name": "Éditeur Valeurs (instances)",
+        "order": 10,
+        "width": 12,
+        "height": "auto",
+        "format": "<template>\n  <div v-if=\"msg && msg.topic==='openEditor' && msg.editor==='valeurs'\"\n    style=\"border:1px solid #ddd;padding:15px;background:#fff;margin-top:12px;border-radius:6px;\">\n    <h4 style=\"margin-bottom:15px;\">💾 Valeurs pour : {{origName}}</h4>\n\n    <!-- Valeur par défaut (*) -->\n    <div style=\"margin-bottom:20px;border:1px solid #e0e0e0;padding:12px;border-radius:4px;background:#f8f9fa;\">\n      <h5 style=\"margin-bottom:10px;\">⭐ Valeur par défaut (*)</h5>\n      <div v-if=\"isComplex\" style=\"display:grid;grid-template-columns:1fr 1fr;gap:10px;\">\n        <div v-for=\"(ssp,i) in schema\" :key=\"i\" style=\"margin-bottom:8px;\">\n          <label style=\"display:block;font-weight:600;margin-bottom:4px;color:#333;font-size:0.9em;\">{{ssp.nomSsP}} ({{ssp.typeSsP}})</label>\n          <input v-if=\"ssp.typeSsP!=='boolean'\"\n                 v-model=\"local.valeurs['*'][ssp.nomSsP]\"\n                 style=\"width:100%;padding:6px;border:1px solid #ccc;border-radius:3px;font-size:13px;\" />\n          <input v-else type=\"checkbox\"\n                 v-model=\"local.valeurs['*'][ssp.nomSsP]\"\n                 style=\"transform:scale(1.2);margin-left:5px;\" />\n        </div>\n      </div>\n      <div v-else>\n        <input v-model=\"local.valeurs['*']\"\n               style=\"width:100%;padding:8px;border:1px solid #ccc;border-radius:4px;font-size:14px;\" />\n      </div>\n    </div>\n\n    <!-- Valeurs par instance -->\n    <div v-for=\"inst in instances\" :key=\"inst\"\n      style=\"margin-bottom:15px;border:1px solid #e8e8e8;padding:12px;border-radius:4px;background:white;\">\n      <strong style=\"display:block;margin-bottom:10px;padding-bottom:5px;border-bottom:1px solid #eee;color:#2c3e50;\">{{inst}}</strong>\n      <div v-if=\"isComplex\" style=\"display:grid;grid-template-columns:1fr 1fr;gap:10px;\">\n        <div v-for=\"(ssp,i) in schema\" :key=\"i\" style=\"margin-bottom:8px;\">\n          <label style=\"display:block;font-weight:600;margin-bottom:4px;color:#333;font-size:0.9em;\">{{ssp.nomSsP}} ({{ssp.typeSsP}})</label>\n          <input v-if=\"ssp.typeSsP!=='boolean'\"\n                 v-model=\"local.valeurs[inst][ssp.nomSsP]\"\n                 style=\"width:100%;padding:6px;border:1px solid #ccc;border-radius:3px;font-size:13px;\" />\n          <input v-else type=\"checkbox\"\n                 v-model=\"local.valeurs[inst][ssp.nomSsP]\"\n                 style=\"transform:scale(1.2);margin-left:5px;\" />\n        </div>\n      </div>\n      <div v-else>\n        <input v-model=\"local.valeurs[inst]\"\n               style=\"width:100%;padding:8px;border:1px solid #ccc;border-radius:4px;font-size:14px;\" />\n      </div>\n    </div>\n\n    <!-- Boutons d'action -->\n    <div style=\"margin-top:20px;display:flex;gap:10px;\">\n      <button @click=\"onSave\"\n              style=\"background:#2196F3;color:white;border:none;padding:10px 20px;border-radius:4px;cursor:pointer;font-weight:600;\">\n        💾 Enregistrer\n      </button>\n      <button @click=\"onCancel\"\n              style=\"background:#f0f0f0;color:#333;border:1px solid #ccc;padding:10px 20px;border-radius:4px;cursor:pointer;\">\n        ↩ Annuler\n      </button>\n    </div>\n  </div>\n</template>\n\n<script>\n  export default {\n  data(){ return { local:{valeurs:{}}, schema:[], isComplex:false, instances:[], origName:null }; },\n  mounted(){ \n    this.$watch('msg',(m)=>{ \n      if(!m) return; \n      if(m.topic==='openEditor'&&m.editor==='valeurs'){\n        this.origName = m.originalName||(m.prop&&m.prop.nomP)||'';\n        this.schema = (m.prop && m.prop.schema)?JSON.parse(JSON.stringify(m.prop.schema)):[];\n        this.isComplex=(m.prop&&(m.prop.typeP==='object'||m.prop.typeP==='array'))||false;\n        this.instances = (m.instances||[]);\n        this.local={valeurs:{}};\n        if(this.isComplex&&this.schema.length){\n          let def={}; this.schema.forEach(s=>def[s.nomSsP]=(m.prop&&m.prop.valeurs&&m.prop.valeurs['*']&&m.prop.valeurs['*'][s.nomSsP]!==undefined)?m.prop.valeurs['*'][s.nomSsP]:null);\n          this.local.valeurs['*']=JSON.parse(JSON.stringify(def));\n          this.instances.forEach(i=>{ let instVal={}; this.schema.forEach(s=>instVal[s.nomSsP]=(m.prop&&m.prop.valeurs&&m.prop.valeurs[i]&&m.prop.valeurs[i][s.nomSsP]!==undefined)?m.prop.valeurs[i][s.nomSsP]:null); this.local.valeurs[i]=instVal; });\n        } else {\n          this.local.valeurs['*']=(m.prop&&m.prop.valeurs&&m.prop.valeurs['*']!==undefined)?m.prop.valeurs['*']:null;\n          this.instances.forEach(i=>{ this.local.valeurs[i]=(m.prop&&m.prop.valeurs&&m.prop.valeurs[i]!==undefined)?m.prop.valeurs[i]:null; });\n        }\n      } \n    },{immediate:true}); \n  },\n  methods:{\n    onSave(){ this.send({topic:'saveValues',prop:{nomP:this.origName,valeurs:this.local.valeurs}}); },\n    onCancel(){ this.send({topic:'cancel'}); }\n  }\n}\n</script>",
+        "storeOutMessages": true,
+        "passthru": true,
+        "templateScope": "local",
+        "className": "",
+        "x": 1640,
+        "y": 1100,
+        "wires": [
+            [
+                "d1d9f4f9935d39f3",
+                "f2cfa8bfc84d7f88"
+            ]
+        ]
+    },
+    {
+        "id": "d1d9f4f9935d39f3",
+        "type": "function",
+        "z": "61d8f8019f224437",
+        "name": "SauvResultatActions (save / delete handlers)",
+        "func": "// gestionnaire pour saveBase, saveBaseWithSchema, saveValues, deleteProperty\nlet enriched = global.get('enrichedVars','file')||{};\nlet varSelected = flow.get('varSelected');\nif(!varSelected) return null;\nlet variable = enriched[varSelected]||{};\nlet infoAction = flow.get('infoAction')||\"attente choix d'une action\";\nlet pName = msg.prop.nomP || [];\n\nswitch(msg.topic){\n  case 'saveBase': {\n    flow.set(\"infoAction\", \"Modification de la propriété : \");\n    let p = msg.prop;\n    let idx = (variable.proprietes||[]).findIndex(pr=>pr.nomP===msg.originalName);\n    if(idx>=0) variable.proprietes[idx]={...variable.proprietes[idx],...p};\n    else (variable.proprietes=variable.proprietes||[]).push(p);\n    break;\n  }\n  case 'saveBaseWithSchema': {\n    flow.set(\"infoAction\", \"Modification de la propriété et des sous propriétés de : \");\n    let p = msg.prop; p.schema = p.schema||[]; p._locked=true;\n    let idx = (variable.proprietes||[]).findIndex(pr=>pr.nomP===msg.originalName);\n    if(idx>=0) variable.proprietes[idx]={...variable.proprietes[idx],...p};\n    else (variable.proprietes=variable.proprietes||[]).push(p);\n    break;\n  }\n  case 'saveValues': {\n    flow.set('infoAction', 'Modification des valeurs de :' );\n    pName = msg.prop.nomP; //modifie def ds  le debut fonction\n    let pIdx = (variable.proprietes||[]).findIndex(pr=>pr.nomP===pName);\n    if(pIdx>=0){\n      variable.proprietes[pIdx].valeurs=msg.prop.valeurs;\n    }\n    break;\n  }\n  case 'delete': {\n    flow.set('infoAction','Suppression de la propriété : ');\n    let pName = msg.prop.nomP;\n    variable.proprietes=(variable.proprietes||[]).filter(pr=>pr.nomP!==pName);\n    break;\n  }\n}\nglobal.set('enrichedVars',enriched,'file');\n\nmsg.topic = 'refresh';\nmsg.view = 'tableau';\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 2130,
+        "y": 1080,
+        "wires": [
+            [
+                "49722f61726b07fa",
+                "e943020838536645"
+            ]
+        ]
+    },
+    {
+        "id": "cc25deadd43a12eb",
+        "type": "function",
+        "z": "61d8f8019f224437",
+        "name": "supprimerVarG",
+        "func": "/* Le nœud ui-notification envoie un message avec msg.payload contenant :\n   - \"confirm_clicked\" si l'utilisateur clique sur \"✅ Supprimer\".\n   - \"dismiss_clicked\" si l'utilisateur clique sur \"❌ Annuler\".\n*/\nif (msg.payload === \"confirm_clicked\") {\n    const varToDelete = flow.get(\"pendingDeletion\");\n\n    if (!varToDelete) {\n        msg.info = \"⚠️ Aucune variable en attente de suppression.\";\n        return msg;\n    }\n\n    // Suppression\n    let enrichedVars = global.get(\"enrichedVars\", \"file\") || {};\n    delete enrichedVars[varToDelete];\n    delete enrichedVars[\"\"];\n    global.set(\"enrichedVars\", enrichedVars, \"file\");\n    global.set(varToDelete, undefined, \"default\");\n    flow.set(\"varSelected\", \"none\");\n    flow.set(\"pendingDeletion\", null);\n\n    msg.payload = \"none\";\n    msg.info = `✅ Variable \"${varToDelete}\" supprimée.`;\n    msg.notification = {\n        type: \"success\",\n        title: \"✅ Supprimée\",\n        text: `Variable \"${varToDelete}\" supprimée avec succès.`,\n        duration: 3000\n    };\n\n} else if (msg.payload === \"dismiss_clicked\") {\n    flow.set(\"pendingDeletion\", null);\n    msg.info = \"❌ Suppression annulée.\";\n    msg.notification = {\n        type: \"info\",\n        title: \"❌ Annulée\",\n        text: \"Suppression annulée.\",\n        duration: 3000\n    };\n}\n\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1240,
+        "y": 500,
+        "wires": [
+            [
+                "d453c1dd477c2750"
+            ]
+        ]
+    },
+    {
+        "id": "4c5cbf808cc52f33",
+        "type": "ui-button",
+        "z": "61d8f8019f224437",
+        "group": "group-vars",
+        "name": "supprimerVarG",
+        "label": "❌ Supprimer Var",
+        "order": 3,
+        "width": "1",
+        "height": "1",
+        "emulateClick": false,
+        "tooltip": "Cliquez pour supprimer la variable sélectionnée",
+        "color": "",
+        "bgcolor": "",
+        "className": "",
+        "icon": "",
+        "iconPosition": "left",
+        "payload": "supprimer",
+        "payloadType": "str",
+        "topic": "demande-confirmation",
+        "topicType": "msg",
+        "buttonColor": "",
+        "textColor": "red",
+        "iconColor": "",
+        "enableClick": true,
+        "enablePointerdown": false,
+        "pointerdownPayload": "",
+        "pointerdownPayloadType": "str",
+        "enablePointerup": false,
+        "pointerupPayload": "",
+        "pointerupPayloadType": "str",
+        "x": 540,
+        "y": 500,
+        "wires": [
+            [
+                "0c7e6d1aba789f1f"
+            ]
+        ]
+    },
+    {
+        "id": "0c7e6d1aba789f1f",
+        "type": "function",
+        "z": "61d8f8019f224437",
+        "name": "prepaBoiteDialogue",
+        "func": "// open-dialog -> Preparation d'une Boite de Dialogue Suppression\n// les actions dans ui-notification doivent être configuré selon un schéma précis\nconst varSelected = flow.get(\"varSelected\") || null;\n\nif (!varSelected || varSelected === \"none\" || varSelected === \"new\") {\n    msg.payload = {\n        type: \"warning\", \n        title: \"Aucune variable\",\n        text: \"Veuillez sélectionner une variable à supprimer.\",\n        duration: 3000\n    };\n    return msg;\n}\n\nflow.set(\"pendingDeletion\", varSelected);\n// gestion dynamique du ui-notification, les mots clefs de ui-update sont spécifique au noeud\nmsg.payload = {\n    type: \"warning\",\n    title: \"Confirmation suppression\",\n    text: `Voulez-vous vraiment supprimer la variable \"<strong>${varSelected}</strong>\" ?`,\n    displayTime: 0, // Ne pas fermer automatiquement\n    ui_update: {\n        allowConfirm: true,\n        allowDismiss: true,\n        confirmText: \"✅ Supprimer\",\n        dismissText: \"❌ Annuler\"\n    }\n};\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 770,
+        "y": 500,
+        "wires": [
+            [
+                "8c3dea1a408b7e8e"
+            ]
+        ]
+    },
+    {
+        "id": "d453c1dd477c2750",
+        "type": "link out",
+        "z": "61d8f8019f224437",
+        "name": "link out 2",
+        "mode": "link",
+        "links": [
+            "c0c9a5d567223063"
+        ],
+        "x": 1385,
+        "y": 500,
+        "wires": []
+    },
+    {
+        "id": "8c3dea1a408b7e8e",
+        "type": "ui-notification",
+        "z": "61d8f8019f224437",
+        "ui": "930a8a5e70986346",
+        "position": "bottom center",
+        "colorDefault": true,
+        "color": "#000000",
+        "displayTime": "3",
+        "showCountdown": true,
+        "outputs": 1,
+        "allowDismiss": true,
+        "dismissText": "❌ Annuler",
+        "allowConfirm": true,
+        "confirmText": "✅ Supprimer",
+        "raw": true,
+        "className": "",
+        "name": "notificationSuppression",
+        "x": 1010,
+        "y": 500,
+        "wires": [
+            [
+                "cc25deadd43a12eb"
+            ]
+        ]
+    },
+    {
+        "id": "ca7b67289a57be2f",
+        "type": "comment",
+        "z": "61d8f8019f224437",
+        "name": "IMP exemple de notification",
+        "info": "",
+        "x": 580,
+        "y": 460,
+        "wires": []
+    },
+    {
+        "id": "1b37e4c24fbc147c",
+        "type": "function",
+        "z": "61d8f8019f224437",
+        "d": true,
+        "name": "castValue",
+        "func": "function castValue(value, type) {\n    try {\n        switch (type) {\n            case 'int':\n                const intValue = parseInt(value, 10);\n                return isNaN(intValue) ? 0 : intValue; // Valeur par défaut 0 si invalide\n            case 'number':\n                return Number(value);\n            case 'boolean':\n                return Boolean(value);\n            case 'object':\n                return typeof value === 'string' ? JSON.parse(value) : value;\n            case 'array':\n                return Array.isArray(value) ? value : [value];\n            default: // string, etc.\n                return String(value);\n        }\n    } catch (e) {\n        node.error(`Erreur de typage : impossible de convertir ${value} en ${type}`, msg);\n        return null; // ou une valeur par défaut\n    }\n}\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 240,
+        "y": 2020,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "fc39e87ed11a9113",
+        "type": "function",
+        "z": "61d8f8019f224437",
+        "d": true,
+        "name": "chargerEnrichedVarsToMemory",
+        "func": "// Fonction : loadEnrichedVarsToMemory\n// Charge enrichedVars en mémoire avec les valeurs ET les types\nfunction loadEnrichedVarsToMemory(enrichedVars) {\n    let globalMemory = {};\n    for (const [varName, varData] of Object.entries(enrichedVars)) {\n        globalMemory[varName] = { _types: {} };\n        // Stocker les types\n        for (const prop of varData.proprietes) {\n            globalMemory[varName]._types[prop.nomP] = prop.typeP;\n        }\n        // Stocker les valeurs\n        for (const instance of varData.instances) {\n            globalMemory[varName][instance] = {};\n            for (const prop of varData.proprietes) {\n                globalMemory[varName][instance][prop.nomP] = prop.valeurs[instance];\n            }\n        }\n    }\n    return globalMemory;\n}\n\n// Exemple d'utilisation au démarrage\nconst enrichedVars = global.get('enrichedVars');\nconst globalMemory = loadEnrichedVarsToMemory(enrichedVars);\nglobal.set('enrichedVarsMemory', globalMemory);\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 170,
+        "y": 2100,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "3d7dab18fae83831",
+        "type": "function",
+        "z": "61d8f8019f224437",
+        "d": true,
+        "name": "actualiserGlobalVar",
+        "func": "/* actualiserGlobalVar contient deux fonctions \nqui permettent de vérifier le type d'une variable (castValue)\n et de l'actualiser (setGlobalVar) */\n\n// vérifier le typage\nfunction castValue(value, type) {\n    try {\n        switch (type) {\n            case 'int':\n                const intValue = parseInt(value, 10);\n                return isNaN(intValue) ? 0 : intValue; // Valeur par défaut 0 si invalide\n            case 'number':\n                return Number(value);\n            case 'boolean':\n                return Boolean(value);\n            case 'object':\n                return typeof value === 'string' ? JSON.parse(value) : value;\n            case 'array':\n                return Array.isArray(value) ? value : [value];\n            default: // string, etc.\n                return String(value);\n        }\n    } catch (e) {\n        node.error(`Erreur de typage : impossible de convertir ${value} en ${type}`, msg);\n        return null; // ou une valeur par défaut\n    }\n}\n\n\n// Fonction : setGlobalVar\n// Met à jour une variable globale en vérifiant le type\nfunction setGlobalVar(globalVarName, instance, propName, value) {\n    const globalMemory = global.get('enrichedVarsMemory') || {};\n    if (!globalMemory[globalVarName] || !globalMemory[globalVarName]._types[propName]) {\n        node.error(`Variable ou propriété introuvable : ${globalVarName}.${propName}`, msg);\n        return false;\n    }\n\n    // Récupérer le type attendu\n    const expectedType = globalMemory[globalVarName]._types[propName];\n    // Caster la valeur\n    const castedValue = castValue(value, expectedType);\n    if (castedValue === null) return false;\n\n    // Mettre à jour la valeur\n    if (!globalMemory[globalVarName][instance]) {\n        globalMemory[globalVarName][instance] = {};\n    }\n    globalMemory[globalVarName][instance][propName] = castedValue;\n    global.set('enrichedVarsMemory', globalMemory);\n    return true;\n}\n\n// Exemple d'utilisation dans un flow\nsetGlobalVar('DemoVar', 'inst1', 'distance', \"120\"); // Cast en number\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 250,
+        "y": 2140,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "9e76e8077a8dd143",
+        "type": "function",
+        "z": "61d8f8019f224437",
+        "d": true,
+        "name": "genererFlowVars",
+        "func": "// Fonction : generateFlowVars (comme précédemment)\nfunction generateFlowVars(globalVarName, instance) {\n    const globalMemory = global.get('enrichedVarsMemory') || {};\n    const flowVars = {};\n    const globalVar = globalMemory[globalVarName]?.[instance];\n    if (!globalVar) return flowVars;\n\n    for (const [propName, propValue] of Object.entries(globalVar)) {\n        if (propName === '_types') continue; // Ignorer les types\n        if (typeof propValue === 'object' && propValue !== null && !Array.isArray(propValue)) {\n            for (const [subPropName, subPropValue] of Object.entries(propValue)) {\n                flowVars[`${globalVarName}_${propName}_${subPropName}`] = subPropValue;\n            }\n        } else {\n            flowVars[`${globalVarName}_${propName}`] = propValue;\n        }\n    }\n    return flowVars;\n}\n\n// Exemple d'utilisation\nconst flowVars = generateFlowVars('SensorConfig', 'capteur1');\nmsg.flowVars = flowVars;\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 210,
+        "y": 2060,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "751656a5542b0650",
+        "type": "comment",
+        "z": "61d8f8019f224437",
+        "name": "Utiliser les variables globales",
+        "info": "Chargement initial -> Stocker valeurs + types dans global.memory (loadEnrichedVarsToMemory).\nModification fréquente -> Utiliser setGlobalVar pour valider et caster les valeurs.\nAccès aux valeurs -> Utiliser getGlobalVar pour récupérer une valeur.\nVariables de flux -> Générer avec generateFlowVars pour un accès local optimisé.",
+        "x": 240,
+        "y": 1980,
+        "wires": []
+    },
+    {
+        "id": "d19a3ec9c0fb6e10",
+        "type": "function",
+        "z": "61d8f8019f224437",
+        "d": true,
+        "name": "chargeEnrichedVarsToMemory",
+        "func": "// 🔄 Fonctions utilitaires existantes\nconst storeDefault = \"default\";\nconst storeFile = \"file\";\n\n// 🔄 Valeur par défaut selon le type\nfunction defaultForType(type) {\n    switch (type) {\n        case \"boolean\": return false;\n        case \"int\": case \"number\": return 0;\n        case \"array\": return [];\n        case \"object\": return {};\n        case \"date\": return new Date().toISOString().slice(0, 10);\n        default: return \"\";\n    }\n}\n\n// 🔄 Conversion string → typé\nfunction convertFromString(value, type) {\n    if (value === null || value === undefined) return defaultForType(type);\n    try {\n        switch (type) {\n            case \"int\": return parseInt(value, 10);\n            case \"number\": return parseFloat(value);\n            case \"boolean\": return (value === true || value === \"true\");\n            case \"string\": return String(value);\n            case \"array\": return Array.isArray(value) ? value : JSON.parse(value);\n            case \"object\": return typeof value === \"object\" ? value : JSON.parse(value);\n            case \"date\": return new Date(value);\n            default: return value;\n        }\n    } catch (err) {\n        node.error(`Erreur de conversion (${type}): ${err.message} (valeur: ${value})`, msg);\n        return defaultForType(type);\n    }\n}\n\n// 🔄 Conversion typé → string/JSON\nfunction convertToString(value, type) {\n    if (value === null || value === undefined) return \"\";\n    try {\n        switch (type) {\n            case \"array\":\n            case \"object\":\n                return JSON.stringify(value);\n            default:\n                return String(value);\n        }\n    } catch (err) {\n        node.error(`Erreur de sérialisation (${type}): ${err.message}`, msg);\n        return String(value);\n    }\n}\n\n// 🔄 Fonction principale : chargeEnrichedVarsToMemory\nfunction chargeEnrichedVarsToMemory() {\n    // Supprimer enrichedVars du stockage par défaut\n    global.set(\"enrichedVars\", undefined, storeDefault);\n\n    // Charger enrichedVars depuis le fichier\n    let enrichedVars = global.get(\"enrichedVars\", storeFile) || {};\n    if (Object.keys(enrichedVars).length === 0) {\n        node.error(\"⚠️ Aucune donnée enrichedVars trouvée dans le stockage fichier.\", msg);\n        node.status({ fill: \"red\", shape: \"ring\", text: \"Échec : données manquantes\" });\n        return false;\n    }\n\n    // Initialiser la structure en mémoire globale\n    let globalMemory = {};\n\n    // Parcourir chaque variable globale\n    for (const [varName, varData] of Object.entries(enrichedVars)) {\n        // Initialiser la structure pour cette variable\n        globalMemory[varName] = {\n            _types: {},               // Stockage des types\n            _instances: varData.instances || [\"*\"]  // Liste des instances\n        };\n\n        // Stocker les types de chaque propriété\n        for (const prop of varData.proprietes || []) {\n            globalMemory[varName]._types[prop.nomP] = prop.typeP;\n        }\n\n        // Stocker les valeurs par instance\n        for (const instance of varData.instances || [\"*\"]) {\n            globalMemory[varName][instance] = {};\n            for (const prop of varData.proprietes || []) {\n                // Récupérer la valeur ou une valeur par défaut\n                let value = prop.valeurs?.[instance];\n                if (value === undefined || value === null) {\n                    value = defaultForType(prop.typeP);\n                } else {\n                    // Convertir la valeur selon son type\n                    value = convertFromString(value, prop.typeP);\n                }\n                globalMemory[varName][instance][prop.nomP] = value;\n            }\n        }\n    }\n\n    // Sauvegarder en mémoire globale\n    global.set(\"enrichedVarsMemory\", globalMemory, storeDefault);\n    node.status({ fill: \"green\", shape: \"dot\", text: \"✅ enrichedVars chargé en mémoire\" });\n    node.send({ payload: \"Chargement terminé\" });\n    return true;\n}\n\n// 🔄 Appel de la fonction (déclenché par le nœud)\nchargeEnrichedVarsToMemory();\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 230,
+        "y": 2180,
+        "wires": [
+            []
+        ],
+        "info": "// Les variables sont stockées dans deux types de stockage : \"default\" et \"file\".\r\n// Ce nœud synchronise les variables globales avec enrichedVars.\r\n// Il met à jour enrichedVars avec les variables globales actuelles\r\n// et s'assure que chaque variable suit la nouvelle structure définie.\r\n\r\n// Les variables sont structurées avec des propriétés comme nomVarG, instances, propriétés, etc.\r\n// La fonction gère également la restauration des variables globales manquantes depuis enrichedVars.\r\n// Elle prend en compte les instances et les sous-variables pour une synchronisation cohérente."
+    },
+    {
+        "id": "cf50f648f97818e2",
+        "type": "function",
+        "z": "61d8f8019f224437",
+        "name": "chargeEnrichedVarsToMemory",
+        "func": "// 🔄 Fonctions utilitaires existantes\nconst storeDefault = \"default\";\nconst storeFile = \"file\";\n\n// 🔄 Valeur par défaut selon le type\nfunction defaultForType(type) {\n    switch (type) {\n        case \"boolean\": return false;\n        case \"int\": case \"number\": return 0;\n        case \"array\": return [];\n        case \"object\": return {};\n        case \"date\": return new Date().toISOString().slice(0, 10);\n        default: return \"\";\n    }\n}\n\n// 🔄 Conversion string → typé (avec gestion des valeurs par défaut)\nfunction convertFromString(value, type, defaultVal) {\n    if (value === null || value === undefined) {\n        return defaultVal !== undefined ? convertFromString(defaultVal, type) : defaultForType(type);\n    }\n    try {\n        switch (type) {\n            case \"int\": return parseInt(value, 10);\n            case \"number\": return parseFloat(value);\n            case \"boolean\": return (value === true || value === \"true\");\n            case \"string\": return String(value);\n            case \"array\": return Array.isArray(value) ? value : JSON.parse(value);\n            case \"object\": return typeof value === \"object\" ? value : JSON.parse(value);\n            case \"date\": return new Date(value);\n            default: return value;\n        }\n    } catch (err) {\n        node.error(`Erreur de conversion (${type}): ${err.message} (valeur: ${value})`, msg);\n        return defaultForType(type);\n    }\n}\n\n// 🔄 Fonction principale : chargeEnrichedVarsToMemory\nfunction chargeEnrichedVarsToMemory() {\n    // Supprimer enrichedVars du stockage par défaut\n    global.set(\"enrichedVars\", undefined, storeDefault);\n\n    // Charger enrichedVars depuis le fichier\n    let enrichedVars = global.get(\"enrichedVars\", storeFile) || {};\n    if (Object.keys(enrichedVars).length === 0) {\n        node.error(\"⚠️ Aucune donnée enrichedVars trouvée dans le stockage fichier.\", msg);\n        node.status({ fill: \"red\", shape: \"ring\", text: \"Échec : données manquantes\" });\n        return false;\n    }\n\n    // Parcourir chaque variable dans enrichedVars\n    Object.entries(enrichedVars).forEach(([key, e]) => {\n        const instances = e.instances || [\"*\"];\n        const props = e.proprietes || [];\n        let variable = {};\n\n        // Parcourir les instances\n        instances.forEach(instance => {\n            variable[instance] = {};\n            props.forEach(prop => {\n                const name = prop.nomP;\n                const type = prop.typeP;\n                const rawValue = prop.valeurs?.[instance];\n                const defaultVal = prop.valeurs?.[\"*\"];\n                variable[instance][name] = convertFromString(rawValue, type, defaultVal);\n            });\n        });\n\n        // Ajouter les métadonnées (abréviations, etc.)\n        if (e.abbrVarG) variable._abbrVarG = e.abbrVarG;\n        if (e.indexInstances) variable._indexInstances = e.indexInstances;\n\n        // Stocker dans les variables globales\n        if (instances.length === 1 && instances[0] === \"*\") {\n            global.set(key, variable[\"*\"], storeDefault);\n        } else {\n            global.set(key, variable, storeDefault);\n        }\n    });\n\n    node.status({ fill: \"green\", shape: \"dot\", text: \"✅ enrichedVars chargé en mémoire\" });\n    node.send({ payload: \"Chargement terminé\" });\n    return true;\n}\n\n// 🔄 Appel de la fonction\nchargeEnrichedVarsToMemory();\nmsg.info = \"✅ Initialisation enrichie depuis enrichedVars (file) terminée.\";\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 830,
+        "y": 360,
+        "wires": [
+            [
+                "40d3af83aa60d68f",
+                "9837eeae36ab98c7"
+            ]
+        ],
+        "info": "// Les variables sont stockées dans deux types de stockage : \"default\" et \"file\".\r\n// Ce nœud synchronise les variables globales avec enrichedVars.\r\n// Il met à jour enrichedVars avec les variables globales actuelles\r\n// et s'assure que chaque variable suit la nouvelle structure définie.\r\n\r\n// Les variables sont structurées avec des propriétés comme nomVarG, instances, propriétés, etc.\r\n// La fonction gère également la restauration des variables globales manquantes depuis enrichedVars.\r\n// Elle prend en compte les instances et les sous-variables pour une synchronisation cohérente."
+    },
+    {
+        "id": "fe94ed20a6d9578f",
+        "type": "ui-template",
+        "z": "61d8f8019f224437",
+        "d": true,
+        "group": "grp1",
+        "page": "",
+        "ui": "",
+        "name": "Tableau Propriétés (Vue3)",
+        "order": 5,
+        "width": 12,
+        "height": "auto",
+        "format": "<template>\n  <div>\n    <h3>{{ msg.payload.variable.nomVarG || '' }}</h3>\n    <table style=\"width:100%;border-collapse:collapse;\">\n      <thead>\n        <tr style=\"background:#f8f9fa;border:1px solid #ccc\">\n          <th>Nom</th>\n          <th>Action</th>\n          <th>Type</th>\n          <th>Défaut (*)</th>\n          <th v-for=\"inst in msg.payload.instances\" :key=\"inst\">{{inst}}</th>\n        </tr>\n      </thead>\n      <tbody>\n        <tr v-for=\"(p,idx) in msg.payload.proprietes\" :key=\"idx\" :style=\"p._isNew ? 'background:#fff8e1':''\">\n          <td>{{p.nomP}}</td>\n          <td>\n            <button v-if=\"p._isNew\" @click=\"openBase(p)\">➕ Définir</button>\n            <template v-else>\n              <button @click=\"openValues(p)\">💾 Valeurs</button>\n              <button @click=\"askDelete(p)\">🗑</button>\n            </template>\n          </td>\n          <td>{{p.typeP || '-'}}</td>\n          <td>{{ formatVal(p.defaut) }}</td>\n          <td v-for=\"inst in msg.payload.instances\" :key=\"inst\">{{ formatVal(p.valeurs && p.valeurs[inst]) }}</td>\n        </tr>\n      </tbody>\n    </table>\n    <div style=\"margin-top:8px;color:#333;font-size:0.95em\">{{ msg.info }}</div>\n  </div>\n</template>\n<script>\nexport default {\n  methods: {\n    formatVal(v){ return v===null||v===undefined?'null':(typeof v==='object'?JSON.stringify(v):v); },\n    openBase(prop){ this.send({action:'base',prop}); },\n    openValues(prop){ this.send({action:'valeurs',prop}); },\n    askDelete(prop){ if(confirm('Supprimer '+prop.nomP+' ?')) this.send({action:'delete',prop}); }\n  }\n}\n</script>",
+        "storeOutMessages": true,
+        "passthru": true,
+        "resendOnRefresh": true,
+        "templateScope": "local",
+        "className": "",
+        "x": 210,
+        "y": 2240,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "1d70bd771e013ef4",
+        "type": "ui-template",
+        "z": "61d8f8019f224437",
+        "d": true,
+        "group": "grp1",
+        "page": "",
+        "ui": "",
+        "name": "Éditeur Base (avec Schéma provisoire)",
+        "order": 7,
+        "width": 12,
+        "height": "auto",
+        "format": "<template>\n  <div v-if=\"msg && msg.topic==='openEditor' && msg.editor==='base'\" style=\"border:1px solid #ddd;padding:10px;background:#fff;margin-top:12px\">\n    <h4>{{originalName?'✏️ Édition':'➕ Nouvelle propriété'}}</h4>\n    <table style=\"width:100%;border-collapse:collapse;\">\n      <tr><td>Nom</td><td><input v-model=\"local.nomP\" /></td></tr>\n      <tr><td>Abréviation</td><td><input v-model=\"local.abbrP\" /></td></tr>\n      <tr><td>Type</td><td><select v-model=\"local.typeP\"><option>string</option><option>number</option><option>boolean</option><option>array</option><option>object</option></select></td></tr>\n    </table>\n\n    <div v-if=\"showSchemaEditor\" style=\"margin-top:10px;border:1px solid #ccc;padding:8px\">\n      <h5>📑 Schéma (sous-propriétés)</h5>\n      <table style=\"width:100%;border-collapse:collapse;\">\n        <thead><tr><th>Nom</th><th>Type</th><th>Action</th></tr></thead>\n        <tbody>\n          <tr v-for=\"(sp,i) in local.schemaArr\" :key=\"i\">\n            <td><input v-model=\"sp.nomSsP\" /></td>\n            <td><select v-model=\"sp.typeSsP\"><option>string</option><option>number</option><option>boolean</option></select></td>\n            <td><button @click=\"removeSchema(i)\">🗑</button></td>\n          </tr>\n        </tbody>\n      </table>\n      <button @click=\"addSchema\">➕ Ajouter sous-propriété</button>\n    </div>\n\n    <div style=\"margin-top:10px\">\n      <button :disabled=\"!canSave\" @click=\"onSave\">💾 Enregistrer</button>\n      <button @click=\"onCancel\">↩ Annuler</button>\n    </div>\n\n    <div v-if=\"lockedWarning\" style=\"margin-top:8px;color:#b33\">⚠️ Propriété verrouillée</div>\n  </div>\n</template>\n<script>\nexport default {\n  data(){ return { local:null, schemaArr:[], originalName:null, lockedWarning:false }; },\n  computed:{\n    showSchemaEditor(){ return this.local&&(this.local.typeP==='object'||this.local.typeP==='array'); },\n    canSave(){\n      if(!this.local||!this.local.nomP||!this.local.abbrP||!this.local.typeP) return false;\n      if(this.showSchemaEditor) return this.local.schemaArr&&this.local.schemaArr.length>0&&this.local.schemaArr.every(s=>s.nomSsP);\n      return true;\n    }\n  },\n  mounted(){\n    this.$watch('msg',(m)=>{\n      if(!m) return;\n      if(m.topic==='openEditor'&&m.editor==='base'){\n        this.originalName = m.originalName||null;\n        let p = m.prop||{};\n        this.local = JSON.parse(JSON.stringify(p||{nomP:'',abbrP:'',typeP:null,schema:[]}));\n        this.local.schemaArr = Array.isArray(this.local.schema)?JSON.parse(JSON.stringify(this.local.schema)):[];\n        this.lockedWarning = !!(p && p._locked);\n      }\n    },{immediate:true});\n  },\n  methods:{\n    //addSchema(){ this.local.schemaArr.push({nomSsP:'',typeSsP:'string'}); },\n    addSchema() {\n    if(!this.local.schemaArr) this.local.schemaArr = [];\n    let newName = 'newSSP';\n    if(this.local.schemaArr.some(s => s.nomSsP === newName)){\n    newName += '_1';\n    }\n    this.local.schemaArr.push({ nomSsP: newName, typeSsP: 'string' });\n    },\n    removeSchema(i){ this.local.schemaArr.splice(i,1); },\n    onSave(){\n      let propOut={nomP:this.local.nomP,abbrP:this.local.abbrP,typeP:this.local.typeP};\n      if(this.showSchemaEditor){ propOut.schema=this.local.schemaArr; this.send({topic:'saveBaseWithSchema',prop:propOut,originalName:this.originalName}); }\n      else{ this.send({topic:'saveBase',prop:propOut,originalName:this.originalName}); }\n    },\n    onCancel(){ this.send({topic:'cancel'}); }\n  }\n}\n</script>",
+        "storeOutMessages": true,
+        "passthru": true,
+        "resendOnRefresh": true,
+        "templateScope": "local",
+        "className": "",
+        "x": 570,
+        "y": 2160,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "2bc501a251136fea",
+        "type": "ui-template",
+        "z": "61d8f8019f224437",
+        "d": true,
+        "group": "grp1",
+        "page": "",
+        "ui": "",
+        "name": "Éditeur Valeurs (instances)",
+        "order": 9,
+        "width": 12,
+        "height": "auto",
+        "format": "<template>\n  <div v-if=\"msg && msg.topic==='openEditor' && msg.editor==='valeurs'\" style=\"border:1px solid #ddd;padding:10px;background:#fff;margin-top:12px\">\n    <h4>💾 Valeurs pour : {{origName}}</h4>\n    <div v-if=\"isComplex\" v-for=\"(ssp,i) in schema\" :key=\"i\" style=\"margin-bottom:6px\">\n      <label>{{ssp.nomSsP}} ({{ssp.typeSsP}})</label>\n      <input v-if=\"ssp.typeSsP!=='boolean'\" v-model=\"local.valeurs['*'][ssp.nomSsP]\" style=\"width:100%\" />\n      <input v-else type=\"checkbox\" v-model=\"local.valeurs['*'][ssp.nomSsP]\" />\n    </div>\n    <div v-else><input v-model=\"local.valeurs['*']\" style=\"width:100%\" /></div>\n    <div v-for=\"inst in instances\" :key=\"inst\" style=\"margin-top:8px;border:1px solid #eee;padding:6px\">\n      <strong>{{inst}}</strong>\n      <div v-if=\"isComplex\" v-for=\"(ssp,i) in schema\" :key=\"i\" style=\"margin-bottom:6px\">\n        <label>{{ssp.nomSsP}} ({{ssp.typeSsP}})</label>\n        <input v-if=\"ssp.typeSsP!=='boolean'\" v-model=\"local.valeurs[inst][ssp.nomSsP]\" style=\"width:100%\" />\n        <input v-else type=\"checkbox\" v-model=\"local.valeurs[inst][ssp.nomSsP]\" />\n      </div>\n      <div v-else><input v-model=\"local.valeurs[inst]\" style=\"width:100%\" /></div>\n    </div>\n    <button @click=\"onSave\">💾 Enregistrer</button>\n    <button @click=\"onCancel\">↩ Annuler</button>\n  </div>\n</template>\n<script>\nexport default {\n  data(){ return { local:{valeurs:{}}, schema:[], isComplex:false, instances:[], origName:null }; },\n  mounted(){ this.$watch('msg',(m)=>{ if(!m) return; if(m.topic==='openEditor'&&m.editor==='valeurs'){\n    this.origName = m.originalName||(m.prop&&m.prop.nomP)||'';\n    this.schema = (m.prop && m.prop.schema)?JSON.parse(JSON.stringify(m.prop.schema)):[];\n    this.isComplex=(m.prop&&(m.prop.typeP==='object'||m.prop.typeP==='array'))||false;\n    this.instances = (m.instances||[]);\n    this.local={valeurs:{}};\n    if(this.isComplex&&this.schema.length){\n      let def={}; this.schema.forEach(s=>def[s.nomSsP]=(m.prop&&m.prop.valeurs&&m.prop.valeurs['*']&&m.prop.valeurs['*'][s.nomSsP]!==undefined)?m.prop.valeurs['*'][s.nomSsP]:null);\n      this.local.valeurs['*']=JSON.parse(JSON.stringify(def));\n      this.instances.forEach(i=>{ let instVal={}; this.schema.forEach(s=>instVal[s.nomSsP]=(m.prop&&m.prop.valeurs&&m.prop.valeurs[i]&&m.prop.valeurs[i][s.nomSsP]!==undefined)?m.prop.valeurs[i][s.nomSsP]:null); this.local.valeurs[i]=instVal; });\n    } else {\n      this.local.valeurs['*']=(m.prop&&m.prop.valeurs&&m.prop.valeurs['*']!==undefined)?m.prop.valeurs['*']:null;\n      this.instances.forEach(i=>{ this.local.valeurs[i]=(m.prop&&m.prop.valeurs&&m.prop.valeurs[i]!==undefined)?m.prop.valeurs[i]:null; });\n    }\n  } },{immediate:true}); },\n  methods:{\n    onSave(){ this.send({topic:'saveValues',prop:{nomP:this.origName,valeurs:this.local.valeurs}}); },\n    onCancel(){ this.send({topic:'cancel'}); }\n  }\n}\n</script>",
+        "storeOutMessages": true,
+        "passthru": true,
+        "templateScope": "local",
+        "className": "",
+        "x": 540,
+        "y": 2220,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "415b9e04ef24fbfc",
+        "type": "debug",
+        "z": "61d8f8019f224437",
+        "name": "debug 8 Base et schema",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1650,
+        "y": 1040,
+        "wires": []
+    },
+    {
+        "id": "f2cfa8bfc84d7f88",
+        "type": "debug",
+        "z": "61d8f8019f224437",
+        "name": "debug 9 valeurs instances",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1630,
+        "y": 1140,
+        "wires": []
+    },
+    {
+        "id": "0a3ad51db53e55b5",
+        "type": "ui-template",
+        "z": "61d8f8019f224437",
+        "d": true,
+        "group": "grp1",
+        "page": "",
+        "ui": "",
+        "name": "tableauProprietes (template dashboard2 , vue3)",
+        "order": 4,
+        "width": 12,
+        "height": "auto",
+        "format": "<template>\n  <div>\n    <h3>{{ msg.payload.variable.nomVarG || '' }}</h3>\n    <table style=\"width:100%;border-collapse:collapse;border:1px solid #cccccc;\">\n      <thead>\n        <tr style=\"background:#f8f9fa;\">\n          <th style=\"border:1px solid #cccccc;padding:8px;\">Nom</th>\n          <th style=\"border:1px solid #cccccc;padding:8px;\">Action</th>\n          <th style=\"border:1px solid #cccccc;padding:8px;\">Type</th>\n          <th style=\"border:1px solid #cccccc;padding:8px;\">Défaut (*)</th>\n          <th v-for=\"inst in msg.payload.instances\" :key=\"inst\" style=\"border:1px solid #cccccc;padding:8px;\">{{inst}}\n          </th>\n        </tr>\n      </thead>\n      <tbody>\n        <tr v-for=\"(p,idx) in msg.payload.proprietes\" :key=\"idx\" :style=\"p._isNew ? 'background:#fff8e1':''\">\n          <td style=\"border:1px solid #dddddd;padding:6px 8px;\">{{p.nomP}}</td>\n          <td style=\"border:1px solid #dddddd;padding:6px 8px;\">\n            <button v-if=\"p._isNew\" @click=\"openBase(p)\">➕ Définir</button>\n            <template v-else>\n              <button @click=\"openValues(p)\">✏️</button>\n              <button @click=\"askDelete(p)\">🗑️</button>\n            </template>\n          </td>\n          <td style=\"border:1px solid #dddddd;padding:6px 8px;\">{{p.typeP || '-'}}</td>\n          <td style=\"border:1px solid #dddddd;padding:6px 8px;\">{{ formatVal(p.defaut) }}</td>\n          <td v-for=\"inst in msg.payload.instances\" :key=\"inst\" style=\"border:1px solid #dddddd;padding:6px 8px;\">{{\n            formatVal(p.valeurs && p.valeurs[inst]) }}</td>\n        </tr>\n      </tbody>\n    </table>\n    <div style=\"margin-top:8px;color:#333;font-size:0.95em\">{{ msg.info }}</div>\n  </div>\n</template>\n<script>\nexport default {\n  methods: {\n    formatVal(v){ return v===null||v===undefined?'null':(typeof v==='object'?JSON.stringify(v):v); },\n    openBase(prop){ this.send({action:'base',prop}); },\n    openValues(prop){ this.send({action:'valeurs',prop}); },\n    askDelete(prop){ if(confirm('Supprimer '+prop.nomP+' ?')) this.send({action:'delete',prop}); }\n  }\n}\n</script>",
+        "storeOutMessages": true,
+        "passthru": true,
+        "resendOnRefresh": true,
+        "templateScope": "local",
+        "className": "",
+        "x": 1100,
+        "y": 1300,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "6377b4891a613c87",
+        "type": "ui-template",
+        "z": "61d8f8019f224437",
+        "d": true,
+        "group": "grp1",
+        "page": "",
+        "ui": "",
+        "name": "Éditeur Valeurs (instances)",
+        "order": 8,
+        "width": 12,
+        "height": "auto",
+        "format": "<template>\n  <div v-if=\"msg && msg.topic==='openEditor' && msg.editor==='valeurs'\"\n    style=\"border:1px solid #ddd;padding:15px;background:#fff;margin-top:12px;border-radius:6px;\">\n    <h4 style=\"margin-bottom:15px;\">💾 Valeurs pour : {{origName}}</h4>\n\n    <!-- Valeur par défaut (*) -->\n    <div style=\"margin-bottom:20px;border:1px solid #e0e0e0;padding:12px;border-radius:4px;background:#f8f9fa;\">\n      <h5 style=\"margin-bottom:10px;\">⭐ Valeur par défaut (*)</h5>\n      <div v-if=\"isComplex\" style=\"display:grid;grid-template-columns:1fr 1fr;gap:10px;\">\n        <div v-for=\"(ssp,i) in schema\" :key=\"i\" style=\"margin-bottom:8px;\">\n          <label style=\"display:block;font-weight:600;margin-bottom:4px;color:#333;font-size:0.9em;\">{{ssp.nomSsP}} ({{ssp.typeSsP}})</label>\n          <input v-if=\"ssp.typeSsP!=='boolean'\"\n                 v-model=\"local.valeurs['*'][ssp.nomSsP]\"\n                 style=\"width:100%;padding:6px;border:1px solid #ccc;border-radius:3px;font-size:13px;\" />\n          <input v-else type=\"checkbox\"\n                 v-model=\"local.valeurs['*'][ssp.nomSsP]\"\n                 style=\"transform:scale(1.2);margin-left:5px;\" />\n        </div>\n      </div>\n      <div v-else>\n        <input v-model=\"local.valeurs['*']\"\n               style=\"width:100%;padding:8px;border:1px solid #ccc;border-radius:4px;font-size:14px;\" />\n      </div>\n    </div>\n\n    <!-- Valeurs par instance -->\n    <div v-for=\"inst in instances\" :key=\"inst\"\n      style=\"margin-bottom:15px;border:1px solid #e8e8e8;padding:12px;border-radius:4px;background:white;\">\n      <strong style=\"display:block;margin-bottom:10px;padding-bottom:5px;border-bottom:1px solid #eee;color:#2c3e50;\">{{inst}}</strong>\n      <div v-if=\"isComplex\" style=\"display:grid;grid-template-columns:1fr 1fr;gap:10px;\">\n        <div v-for=\"(ssp,i) in schema\" :key=\"i\" style=\"margin-bottom:8px;\">\n          <label style=\"display:block;font-weight:600;margin-bottom:4px;color:#333;font-size:0.9em;\">{{ssp.nomSsP}} ({{ssp.typeSsP}})</label>\n          <input v-if=\"ssp.typeSsP!=='boolean'\"\n                 v-model=\"local.valeurs[inst][ssp.nomSsP]\"\n                 style=\"width:100%;padding:6px;border:1px solid #ccc;border-radius:3px;font-size:13px;\" />\n          <input v-else type=\"checkbox\"\n                 v-model=\"local.valeurs[inst][ssp.nomSsP]\"\n                 style=\"transform:scale(1.2);margin-left:5px;\" />\n        </div>\n      </div>\n      <div v-else>\n        <input v-model=\"local.valeurs[inst]\"\n               style=\"width:100%;padding:8px;border:1px solid #ccc;border-radius:4px;font-size:14px;\" />\n      </div>\n    </div>\n\n    <!-- Boutons d'action -->\n    <div style=\"margin-top:20px;display:flex;gap:10px;\">\n      <button @click=\"onSave\"\n              style=\"background:#2196F3;color:white;border:none;padding:10px 20px;border-radius:4px;cursor:pointer;font-weight:600;\">\n        💾 Enregistrer\n      </button>\n      <button @click=\"onCancel\"\n              style=\"background:#f0f0f0;color:#333;border:1px solid #ccc;padding:10px 20px;border-radius:4px;cursor:pointer;\">\n        ↩ Annuler\n      </button>\n    </div>\n  </div>\n</template>\n\n<script>\n  export default {\n  data(){ return { local:{valeurs:{}}, schema:[], isComplex:false, instances:[], origName:null }; },\n  mounted(){ \n    this.$watch('msg',(m)=>{ \n      if(!m) return; \n      if(m.topic==='openEditor'&&m.editor==='valeurs'){\n        this.origName = m.originalName||(m.prop&&m.prop.nomP)||'';\n        this.schema = (m.prop && m.prop.schema)?JSON.parse(JSON.stringify(m.prop.schema)):[];\n        this.isComplex=(m.prop&&(m.prop.typeP==='object'||m.prop.typeP==='array'))||false;\n        this.instances = (m.instances||[]);\n        this.local={valeurs:{}};\n        if(this.isComplex&&this.schema.length){\n          let def={}; this.schema.forEach(s=>def[s.nomSsP]=(m.prop&&m.prop.valeurs&&m.prop.valeurs['*']&&m.prop.valeurs['*'][s.nomSsP]!==undefined)?m.prop.valeurs['*'][s.nomSsP]:null);\n          this.local.valeurs['*']=JSON.parse(JSON.stringify(def));\n          this.instances.forEach(i=>{ let instVal={}; this.schema.forEach(s=>instVal[s.nomSsP]=(m.prop&&m.prop.valeurs&&m.prop.valeurs[i]&&m.prop.valeurs[i][s.nomSsP]!==undefined)?m.prop.valeurs[i][s.nomSsP]:null); this.local.valeurs[i]=instVal; });\n        } else {\n          this.local.valeurs['*']=(m.prop&&m.prop.valeurs&&m.prop.valeurs['*']!==undefined)?m.prop.valeurs['*']:null;\n          this.instances.forEach(i=>{ this.local.valeurs[i]=(m.prop&&m.prop.valeurs&&m.prop.valeurs[i]!==undefined)?m.prop.valeurs[i]:null; });\n        }\n      } \n    },{immediate:true}); \n  },\n  methods:{\n    onSave(){ this.send({topic:'saveValues',prop:{nomP:this.origName,valeurs:this.local.valeurs}}); },\n    onCancel(){ this.send({topic:'cancel'}); }\n  }\n}\n</script>",
+        "storeOutMessages": true,
+        "passthru": true,
+        "templateScope": "local",
+        "className": "",
+        "x": 1460,
+        "y": 1360,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "24513b704fe3bc98",
+        "type": "ui-template",
+        "z": "61d8f8019f224437",
+        "d": true,
+        "group": "grp1",
+        "page": "",
+        "ui": "",
+        "name": "Éditeur Base (avec Schéma provisoire)",
+        "order": 6,
+        "width": 12,
+        "height": "auto",
+        "format": "<template>\n  <div v-if=\"msg && msg.topic==='openEditor' && msg.editor==='base'\"\n    style=\"border:1px solid #ddd;padding:15px;background:#fff;margin-top:12px;border-radius:6px;\">\n    <h4 style=\"margin-bottom:15px;\">{{originalName?'✏️ Édition':'➕ Nouvelle propriété'}}</h4>\n\n    <!-- Formulaire principal sur 2 colonnes -->\n    <div style=\"display:grid;grid-template-columns:1fr 1fr;gap:15px;\">\n      <!-- Colonne gauche -->\n      <div>\n        <div style=\"margin-bottom:12px;\">\n          <label style=\"display:block;font-weight:600;margin-bottom:4px;color:#333;\">Nom</label>\n          <input v-model=\"local.nomP\" style=\"width:100%;padding:8px;border:1px solid #ccc;border-radius:4px;font-size:14px;\" />\n        </div>\n\n        <div style=\"margin-bottom:12px;\">\n          <label style=\"display:block;font-weight:600;margin-bottom:4px;color:#333;\">Type</label>\n          <select v-model=\"local.typeP\" style=\"width:100%;padding:8px;border:1px solid #ccc;border-radius:4px;font-size:14px;background:white;\">\n            <option>string</option>\n            <option>number</option>\n            <option>boolean</option>\n            <option>array</option>\n            <option>object</option>\n          </select>\n        </div>\n      </div>\n\n      <!-- Colonne droite -->\n      <div>\n        <div style=\"margin-bottom:12px;\">\n          <label style=\"display:block;font-weight:600;margin-bottom:4px;color:#333;\">Abréviation</label>\n          <input v-model=\"local.abbrP\" style=\"width:100%;padding:8px;border:1px solid #ccc;border-radius:4px;font-size:14px;\" />\n        </div>\n\n        <!-- Champ valeur par défaut optionnel -->\n        <div style=\"margin-bottom:12px;\" v-if=\"local.defaut !== undefined\">\n          <label style=\"display:block;font-weight:600;margin-bottom:4px;color:#333;\">Valeur par défaut</label>\n          <input v-model=\"local.defaut\" style=\"width:100%;padding:8px;border:1px solid #ccc;border-radius:4px;font-size:14px;\" />\n        </div>\n      </div>\n    </div>\n\n    <!-- Éditeur de schéma amélioré -->\n    <div v-if=\"showSchemaEditor\"\n      style=\"margin-top:20px;border:1px solid #e0e0e0;padding:12px;border-radius:4px;background:#fafafa;\">\n      <h5 style=\"margin-bottom:10px;\">📑 Schéma (sous-propriétés)</h5>\n      <div style=\"display:grid;grid-template-columns:1fr 1fr;gap:10px;\">\n        <div v-for=\"(sp,i) in local.schemaArr\" :key=\"i\"\n          style=\"border:1px solid #e8e8e8;padding:10px;border-radius:4px;background:white;\">\n          <div style=\"margin-bottom:8px;\">\n            <label style=\"display:block;font-size:0.85em;font-weight:600;margin-bottom:2px;color:#666;\">Nom</label>\n            <input v-model=\"sp.nomSsP\" style=\"width:100%;padding:6px;border:1px solid #ddd;border-radius:3px;font-size:13px;\" />\n          </div>\n          <div style=\"margin-bottom:8px;\">\n            <label style=\"display:block;font-size:0.85em;font-weight:600;margin-bottom:2px;color:#666;\">Type</label>\n            <select v-model=\"sp.typeSsP\" style=\"width:100%;padding:6px;border:1px solid #ddd;border-radius:3px;font-size:13px;background:white;\">\n              <option>string</option>\n              <option>number</option>\n              <option>boolean</option>\n            </select>\n          </div>\n          <button @click=\"removeSchema(i)\" style=\"background:#ff4444;color:white;border:none;padding:4px 8px;border-radius:3px;cursor:pointer;font-size:12px;width:100%;\">\n            🗑 Supprimer\n          </button>\n        </div>\n      </div>\n      <button @click=\"addSchema\" style=\"margin-top:10px;background:#4CAF50;color:white;border:none;padding:8px 12px;border-radius:4px;cursor:pointer;\">\n        ➕ Ajouter sous-propriété\n      </button>\n    </div>\n\n    <!-- Boutons d'action -->\n    <div style=\"margin-top:20px;display:flex;gap:10px;\">\n      <button :disabled=\"!canSave\" @click=\"onSave\"\n              style=\"background:#2196F3;color:white;border:none;padding:10px 20px;border-radius:4px;cursor:pointer;font-weight:600;\">\n        💾 Enregistrer\n      </button>\n      <button @click=\"onCancel\"\n              style=\"background:#f0f0f0;color:#333;border:1px solid #ccc;padding:10px 20px;border-radius:4px;cursor:pointer;\">\n        ↩ Annuler\n      </button>\n    </div>\n\n    <div v-if=\"lockedWarning\"\n      style=\"margin-top:12px;padding:8px;background:#ffeaa7;border:1px solid #fdcb6e;border-radius:4px;color:#b33;\">\n      ⚠️ Propriété verrouillée\n    </div>\n  </div>\n</template>\n\n<script>\n  export default {\n  data(){ return { local:null, schemaArr:[], originalName:null, lockedWarning:false }; },\n  computed:{\n    showSchemaEditor(){ return this.local&&(this.local.typeP==='object'||this.local.typeP==='array'); },\n    canSave(){\n      if(!this.local||!this.local.nomP||!this.local.abbrP||!this.local.typeP) return false;\n      if(this.showSchemaEditor) return this.local.schemaArr&&this.local.schemaArr.length>0&&this.local.schemaArr.every(s=>s.nomSsP);\n      return true;\n    }\n  },\n  mounted(){\n    this.$watch('msg',(m)=>{\n      if(!m) return;\n      if(m.topic==='openEditor'&&m.editor==='base'){\n        this.originalName = m.originalName||null;\n        let p = m.prop||{};\n        this.local = JSON.parse(JSON.stringify(p||{nomP:'',abbrP:'',typeP:null,schema:[]}));\n        this.local.schemaArr = Array.isArray(this.local.schema)?JSON.parse(JSON.stringify(this.local.schema)):[];\n        this.lockedWarning = !!(p && p._locked);\n      }\n    },{immediate:true});\n  },\n  methods:{\n    addSchema() {\n      if(!this.local.schemaArr) this.local.schemaArr = [];\n      let newName = 'newSSP';\n      if(this.local.schemaArr.some(s => s.nomSsP === newName)){\n        newName += '_1';\n      }\n      this.local.schemaArr.push({ nomSsP: newName, typeSsP: 'string' });\n    },\n    removeSchema(i){ this.local.schemaArr.splice(i,1); },\n    onSave(){\n      let propOut={nomP:this.local.nomP,abbrP:this.local.abbrP,typeP:this.local.typeP};\n      if(this.showSchemaEditor){ propOut.schema=this.local.schemaArr; this.send({topic:'saveBaseWithSchema',prop:propOut,originalName:this.originalName}); }\n      else{ this.send({topic:'saveBase',prop:propOut,originalName:this.originalName}); }\n    },\n    onCancel(){ this.send({topic:'cancel'}); }\n  }\n}\n</script>",
+        "storeOutMessages": true,
+        "passthru": true,
+        "resendOnRefresh": true,
+        "templateScope": "local",
+        "className": "",
+        "x": 1490,
+        "y": 1260,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "1e471b6a13189efb",
+        "type": "debug",
+        "z": "61d8f8019f224437",
+        "name": "debug 1",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1480,
+        "y": 560,
+        "wires": []
+    },
+    {
+        "id": "f606a8fa7b60fad7",
+        "type": "comment",
+        "z": "61d8f8019f224437",
+        "name": "A faire ajouter ctrl qd 2 proprietes ont même nom",
+        "info": "",
+        "x": 2500,
+        "y": 1120,
+        "wires": []
+    },
+    {
+        "id": "930a8a5e70986346",
+        "type": "ui-base",
+        "name": "My Dashboard",
+        "path": "/dashboard",
+        "appIcon": "",
+        "includeClientData": true,
+        "acceptsClientConfig": [],
+        "showPathInSidebar": false,
+        "headerContent": "page",
+        "navigationStyle": "default",
+        "titleBarStyle": "default",
+        "showReconnectNotification": true,
+        "notificationDisplayTime": 1,
+        "showDisconnectNotification": true,
+        "allowInstall": true
+    },
+    {
+        "id": "ac208ef77b5e8aea",
+        "type": "ui-group",
+        "name": "Accueil-AdminVarG",
+        "page": "page-1",
+        "width": 6,
+        "height": 1,
+        "order": 1,
+        "showTitle": false,
+        "className": "",
+        "visible": "true",
+        "disabled": "false",
+        "groupType": "default"
+    },
+    {
+        "id": "2413c080e8f28938",
+        "type": "ui-group",
+        "name": "GrpeTableVar",
+        "page": "page-1",
+        "width": 6,
+        "height": 1,
+        "order": 2,
+        "showTitle": false,
+        "className": "/* Bordures fines pour toutes les tables */ .ui-table {     border: 1px solid #e0e0e0 !important;     border-collapse: collapse !important; }  .ui-table th {     border: 1px solid #d0d0d0 !important;     background-color: #f8f9fa !important;     padding: 8px 12px !important;     font-weight: 600 !important; }  .ui-table td {     border: 1px solid #e8e8e8 !important;     padding: 6px 12px !important; }",
+        "visible": "true",
+        "disabled": "false",
+        "groupType": "default"
+    },
+    {
+        "id": "group-vars",
+        "type": "ui-group",
+        "name": "Variable selectionnée",
+        "page": "page-1",
+        "width": 6,
+        "height": 4,
+        "order": 3,
+        "showTitle": false,
+        "className": "",
+        "visible": "true",
+        "disabled": "false",
+        "groupType": "default"
+    },
+    {
+        "id": "group-help",
+        "type": "ui-group",
+        "name": "Aide enrichedVars",
+        "page": "page-1",
+        "width": 6,
+        "height": "10",
+        "order": 5,
+        "showTitle": true,
+        "className": "",
+        "visible": "true",
+        "disabled": "false",
+        "groupType": "default"
+    },
+    {
+        "id": "grp1",
+        "type": "ui-group",
+        "name": "Grpe_Propriete",
+        "page": "page-1",
+        "width": 6,
+        "height": 1,
+        "order": 4,
+        "showTitle": false,
+        "className": "",
+        "visible": "true",
+        "disabled": "false",
+        "groupType": "default"
+    },
+    {
+        "id": "page-1",
+        "type": "ui-page",
+        "name": "P_admin-VarG",
+        "ui": "930a8a5e70986346",
+        "path": "/admin_varG",
+        "icon": "dashboard",
+        "layout": "notebook",
+        "theme": "1050ebb74976e9e1",
+        "breakpoints": [
+            {
+                "name": "Default",
+                "px": "0",
+                "cols": "3"
+            },
+            {
+                "name": "Tablet",
+                "px": "576",
+                "cols": "6"
+            },
+            {
+                "name": "Small Desktop",
+                "px": "768",
+                "cols": "9"
+            },
+            {
+                "name": "Desktop",
+                "px": "1024",
+                "cols": "12"
+            }
+        ],
+        "order": 4,
+        "className": "",
+        "visible": "true",
+        "disabled": "false"
+    },
+    {
+        "id": "1050ebb74976e9e1",
+        "type": "ui-theme",
+        "name": "Default Theme",
+        "colors": {
+            "surface": "#ffffff",
+            "primary": "#0094ce",
+            "bgPage": "#eeeeee",
+            "groupBg": "#ffffff",
+            "groupOutline": "#cccccc"
+        },
+        "sizes": {
+            "density": "default",
+            "pagePadding": "12px",
+            "groupGap": "4px",
+            "groupBorderRadius": "4px",
+            "widgetGap": "10px"
+        }
+    }
+]

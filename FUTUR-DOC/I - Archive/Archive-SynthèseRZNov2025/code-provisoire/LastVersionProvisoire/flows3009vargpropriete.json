@@ -1,0 +1,605 @@
+[
+    {
+        "id": "2523a1416dfd96b1",
+        "type": "link out",
+        "z": "61d8f8019f224437",
+        "d": true,
+        "name": "refresh link out",
+        "links": [],
+        "x": 1580,
+        "y": 2260,
+        "wires": []
+    },
+    {
+        "id": "8fa1bb5d95818af8",
+        "type": "ui-template",
+        "z": "61d8f8019f224437",
+        "d": true,
+        "group": "grp1",
+        "page": "",
+        "ui": "",
+        "name": "templateTbPropriete",
+        "order": 0,
+        "width": 0,
+        "height": 0,
+        "head": "",
+        "format": "<template>\n    <div class=\"var-editor\">\n        <!-- Titre -->\n        <h3 v-if=\"nomVarG\">Propriétés de : {{ nomVarG }}</h3>\n        <h3 v-else class=\"placeholder-title\">Sélectionnez une variable</h3>\n\n        <!-- Tableau des propriétés -->\n        <div class=\"table-container\" v-if=\"nomVarG\">\n            <table class=\"properties-table\">\n                <thead>\n                    <tr>\n                        <th class=\"fixed-column\">Nom propriété</th>\n                        <th class=\"abbr-column\">Abrév.</th>\n                        <th class=\"type-column\">Type</th>\n                        <th v-for=\"instance in instances\" :key=\"instance\" class=\"instance-column\">{{ instance }}</th>\n                        <th class=\"actions-column\">Actions</th>\n                    </tr>\n                </thead>\n                <tbody>\n                    <!-- Lignes des propriétés existantes -->\n                    <tr v-for=\"(prop, index) in proprietesByInstance.proprietes\" :key=\"'prop-' + index\">\n                        <td class=\"fixed-column\"><input v-model=\"prop.nom\" class=\"edit-input\" /></td>\n                        <td class=\"abbr-column\"><input v-model=\"proprietesByInstance.abbrProprietes[prop.nom]\" class=\"edit-input\" placeholder=\"abbr\" maxlength=\"5\" />\n                        </td>\n                        <td class=\"type-column\">\n                            <select v-model=\"prop.type\" class=\"type-select\" @change=\"onTypeChange(prop, $event)\">\n                <option value=\"string\">string</option>\n                <option value=\"int\">int</option>\n                <option value=\"number\">number</option>\n                <option value=\"boolean\">boolean</option>\n                <option value=\"array\">array</option>\n                <option value=\"object\">object</option>\n              </select>\n                        </td>\n                        <!-- Colonnes des instances -->\n                        <td v-for=\"instance in instances\" :key=\"'inst-' + instance + '-' + index\"\n                            class=\"instance-column\">\n                            <input\n                v-if=\"prop.type === 'boolean'\"\n                type=\"checkbox\"\n                v-model=\"proprietesByInstance.valeurs[instance][prop.nom]\"\n                class=\"checkbox-input\"\n              />\n                            <input\n                v-else-if=\"prop.type !== 'object' && prop.type !== 'array'\"\n                v-model=\"proprietesByInstance.valeurs[instance][prop.nom]\"\n                :type=\"getInputType(prop.type)\"\n                class=\"edit-input\"\n              />\n                            <div v-else>\n                                <button @click=\"openPropertyEditor(prop, instance)\" class=\"edit-btn\">Éditer {{ prop.type }}</button>\n                            </div>\n                        </td>\n                        <td class=\"actions-column\">\n                            <button v-if=\"prop.type === 'object'\" @click=\"openSchemaModal(prop)\" class=\"schema-btn\">⚙️ Éditer schéma</button>\n                            <button @click=\"deleteProperty(index)\" class=\"delete-btn\">🗑️</button>\n                        </td>\n                    </tr>\n                    <!-- Ligne d'ajout -->\n                    <tr v-if=\"nomVarG\" class=\"add-row\">\n                        <td class=\"fixed-column\"><input v-model=\"newProperty.nom\" placeholder=\"Nom\" class=\"edit-input\" />\n                        </td>\n                        <td class=\"abbr-column\"><input v-model=\"newProperty.abbr\" placeholder=\"Abrév.\" class=\"edit-input\" maxlength=\"5\" />\n                        </td>\n                        <td class=\"type-column\">\n                            <select v-model=\"newProperty.type\" class=\"type-select\">\n                <option value=\"\">-- type --</option>\n                <option value=\"string\">string</option>\n                <option value=\"int\">int</option>\n                <option value=\"number\">number</option>\n                <option value=\"boolean\">boolean</option>\n                <option value=\"array\">array</option>\n                <option value=\"object\">object</option>\n              </select>\n                        </td>\n                        <td v-for=\"instance in instances\" :key=\"'new-' + instance\" class=\"instance-column\">\n                            <input v-model=\"newProperty.initialValues[instance]\" placeholder=\"Valeur\" class=\"edit-input\" />\n                        </td>\n                        <td class=\"actions-column\"><button @click=\"addProperty\" class=\"add-btn\">➕ Ajouter</button></td>\n                    </tr>\n                </tbody>\n            </table>\n        </div>\n\n        <!-- Éditeur de propriété (object/array) -->\n        <div v-if=\"showPropertyEditor\" class=\"property-editor-modal\">\n            <h3>Éditer {{ editingProperty.nom }} ({{ editingInstance }})</h3>\n            <textarea\n        v-model=\"editingPropertyValue\"\n        @blur=\"saveEditedProperty\"\n        :placeholder=\"editingProperty.type === 'object' ? '{}' : '[]'\"\n        class=\"object-textarea\"\n      ></textarea>\n            <button @click=\"closePropertyEditor\" class=\"modal-cancel-btn\">Fermer</button>\n        </div>\n\n        <!-- Modale pour éditer le schéma -->\n        <div v-if=\"showSchemaModal\" class=\"inline-modal\">\n            <div class=\"modal-content\">\n                <h3>Éditer le schéma pour : {{ editingProperty.nom }}</h3>\n                <div class=\"schema-fields\">\n                    <div v-for=\"(field, key) in editingProperty.defaultVal\" :key=\"key\" class=\"schema-field\">\n                        <input v-model=\"key\" class=\"schema-input\" placeholder=\"Nom\" disabled />\n                        <select v-model=\"field.type\" class=\"schema-type\">\n              <option value=\"int\">int</option>\n              <option value=\"boolean\">boolean</option>\n              <option value=\"string\">string</option>\n              <option value=\"number\">number</option>\n            </select>\n                        <input v-model=\"field.default\" class=\"schema-input\" placeholder=\"Défaut\" />\n                        <button @click=\"removeSchemaField(key)\" class=\"remove-field-btn\">❌</button>\n                    </div>\n                </div>\n                <div class=\"new-schema-field\">\n                    <input v-model=\"newSchemaField.key\" placeholder=\"Nouveau champ\" class=\"schema-input\" />\n                    <select v-model=\"newSchemaField.type\" class=\"schema-type\">\n            <option value=\"int\">int</option>\n            <option value=\"boolean\">boolean</option>\n            <option value=\"string\">string</option>\n            <option value=\"number\">number</option>\n          </select>\n                    <input v-model=\"newSchemaField.default\" placeholder=\"Défaut\" class=\"schema-input\" />\n                    <button @click=\"addSchemaField\" class=\"add-field-btn\">➕ Ajouter</button>\n                </div>\n                <div class=\"modal-actions\">\n                    <button @click=\"saveSchema\" class=\"modal-save-btn\">Enregistrer</button>\n                    <button @click=\"cancelSchema\" class=\"modal-cancel-btn\">Annuler</button>\n                </div>\n            </div>\n        </div>\n\n        <!-- Gestion des instances -->\n        <div v-if=\"nomVarG\" class=\"instances-section\">\n            <fieldset class=\"instances-box\">\n                <legend>⚙️ Gestion des instances</legend>\n                <div class=\"instance-controls\">\n                    <input v-model=\"newInstanceName\" placeholder=\"Nouvelle instance\" class=\"instance-input\" />\n                    <button @click=\"addInstance\" class=\"add-instance-btn\">➕ Ajouter</button>\n                    <button v-if=\"instances.length > 0\" @click=\"confirmDeleteInstance\" class=\"delete-instance-btn\">🗑️ Supprimer dernière</button>\n                </div>\n            </fieldset>\n        </div>\n\n        <!-- Boutons Enregistrer/Annuler -->\n        <div v-if=\"nomVarG\" class=\"action-buttons\">\n            <button @click=\"saveAllChanges\" class=\"save-btn\">💾 Enregistrer</button>\n            <button @click=\"resetChanges\" class=\"cancel-btn\">🔁 Annuler</button>\n        </div>\n    </div>\n</template>\n\n<script>\n    export default {\n  data() {\n    return {\n      nomVarG: '',\n      instances: [],\n      proprietesByInstance: {\n        proprietes: [],\n        abbrProprietes: {},\n        valeurs: {}\n      },\n      newProperty: { nom: '', type: '', abbr: '', initialValues: {} },\n      newInstanceName: '',\n      showSchemaModal: false,\n      editingProperty: null,\n      newSchemaField: { key: '', type: 'int', default: '' },\n      showPropertyEditor: false,\n      editingInstance: null,\n      editingPropertyValue: ''\n    };\n  },\n  methods: {\n    // Retourne le type d'input en fonction du type de la propriété\n    getInputType(type) {\n      switch (type) {\n        case 'boolean': return 'checkbox';\n        case 'int': case 'number': return 'number';\n        default: return 'text';\n      }\n    },\n\n    // Gère le changement de type d'une propriété\n    onTypeChange(prop, event) {\n      const newType = event.target.value;\n      if (newType === 'object' && !prop.defaultVal) {\n        this.$set(prop, 'defaultVal', {});\n      } else if (newType === 'array' && !prop.defaultVal) {\n        this.$set(prop, 'defaultVal', []);\n      }\n    },\n\n    // Retourne une valeur par défaut selon le type\n    defaultForType(type) {\n      switch (type) {\n        case \"boolean\": return false;\n        case \"int\": case \"number\": return 0;\n        case \"array\": return [];\n        case \"object\": return {};\n        default: return \"\";\n      }\n    },\n\n    // Ajoute une nouvelle propriété\n    addProperty() {\n      if (!this.newProperty.nom || !this.newProperty.type) {\n        alert(\"Le nom et le type sont obligatoires\");\n        return;\n      }\n      const newProp = { nom: this.newProperty.nom, type: this.newProperty.type, abbr: this.newProperty.abbr };\n      if (newProp.type === 'object') {\n        this.$set(newProp, 'defaultVal', {});\n      } else if (newProp.type === 'array') {\n        this.$set(newProp, 'defaultVal', []);\n      } else {\n        this.$set(newProp, 'defaultVal', {\"type\": newProp.type, \"default\": this.defaultForType(newProp.type)});\n      }\n      this.proprietesByInstance.proprietes.push(newProp);\n      if (this.newProperty.abbr) {\n        this.$set(this.proprietesByInstance.abbrProprietes, newProp.nom, this.newProperty.abbr);\n      }\n      this.instances.forEach(instance => {\n        if (!this.proprietesByInstance.valeurs[instance]) {\n          this.$set(this.proprietesByInstance.valeurs, instance, {});\n        }\n        this.$set(this.proprietesByInstance.valeurs[instance], newProp.nom, this.defaultForType(newProp.type));\n      });\n      this.newProperty = { nom: '', type: '', abbr: '', initialValues: {} };\n    },\n\n    // Supprime une propriété\n    deleteProperty(index) {\n      if (!confirm(\"Supprimer cette propriété ?\")) return;\n      const propName = this.proprietesByInstance.proprietes[index].nom;\n      this.proprietesByInstance.proprietes.splice(index, 1);\n      this.instances.forEach(instance => {\n        if (this.proprietesByInstance.valeurs[instance] && this.proprietesByInstance.valeurs[instance][propName]) {\n          this.$delete(this.proprietesByInstance.valeurs[instance], propName);\n        }\n      });\n      if (this.proprietesByInstance.abbrProprietes[propName]) {\n        this.$delete(this.proprietesByInstance.abbrProprietes, propName);\n      }\n    },\n\n    // Ouvre l'éditeur de propriété pour les types object/array\n    openPropertyEditor(prop, instance) {\n      this.editingProperty = prop;\n      this.editingInstance = instance;\n      this.editingPropertyValue = JSON.stringify(this.proprietesByInstance.valeurs[instance][prop.nom], null, 2);\n      this.showPropertyEditor = true;\n    },\n\n    // Sauvegarde la propriété éditée\n    saveEditedProperty() {\n      try {\n        const parsedValue = JSON.parse(this.editingPropertyValue);\n        this.$set(this.proprietesByInstance.valeurs[this.editingInstance], this.editingProperty.nom, parsedValue);\n        this.closePropertyEditor();\n      } catch (e) {\n        alert(\"Format JSON invalide. Utilisez un format valide.\");\n      }\n    },\n\n    // Ferme l'éditeur de propriété\n    closePropertyEditor() {\n      this.showPropertyEditor = false;\n      this.editingProperty = null;\n      this.editingInstance = null;\n      this.editingPropertyValue = '';\n    },\n\n    // Ajoute une nouvelle instance\n    addInstance() {\n      if (!this.newInstanceName) return;\n      const instanceName = this.newInstanceName.trim();\n      if (!instanceName || this.instances.includes(instanceName)) return;\n      this.instances.push(instanceName);\n      this.$set(this.proprietesByInstance.valeurs, instanceName, {});\n      this.proprietesByInstance.proprietes.forEach(prop => {\n        this.$set(this.proprietesByInstance.valeurs[instanceName], prop.nom, this.defaultForType(prop.type));\n      });\n      this.newInstanceName = '';\n    },\n\n    // Confirme la suppression de la dernière instance\n    confirmDeleteInstance() {\n      if (this.instances.length === 0) return;\n      const lastInstance = this.instances[this.instances.length - 1];\n      if (confirm(`Supprimer l'instance \"${lastInstance}\" ?`)) {\n        this.instances.pop();\n        this.$delete(this.proprietesByInstance.valeurs, lastInstance);\n      }\n    },\n\n    // Ouvre la modale pour éditer le schéma\n    openSchemaModal(prop) {\n      this.editingProperty = this.proprietesByInstance.proprietes.find(p => p.nom === prop.nom);\n      if (!this.editingProperty.defaultVal) {\n        this.$set(this.editingProperty, 'defaultVal', {});\n      }\n      this.showSchemaModal = true;\n    },\n\n    // Ajoute un champ au schéma provisoire\n    addSchemaField() {\n      if (!this.newSchemaField.key) return;\n      this.$set(this.editingProperty.defaultVal, this.newSchemaField.key, {\n        type: this.newSchemaField.type,\n        default: this.newSchemaField.default\n      });\n      this.newSchemaField = { key: '', type: 'int', default: '' };\n    },\n\n    // Supprime un champ du schéma provisoire\n    removeSchemaField(key) {\n      this.$delete(this.editingProperty.defaultVal, key);\n    },\n\n    // Sauvegarde le schéma provisoire\n    saveSchema() {\n      this.showSchemaModal = false;\n    },\n\n    // Annule l'édition du schéma\n    cancelSchema() {\n      this.showSchemaModal = false;\n    },\n\n    // Sauvegarde toutes les modifications\n    saveAllChanges() {\n      const payload = {\n        nomVarG: this.nomVarG,\n        abbrVarG: this.proprietesByInstance.abbrVarG || \"\",\n        instances: this.instances,\n        proprietesByInstance: {\n          proprietes: this.proprietesByInstance.proprietes.map(p => ({\n            nom: p.nom,\n            abbr: p.abbr,\n            type: p.type,\n            defaultVal: p.defaultVal\n          })),\n          abbrProprietes: this.proprietesByInstance.abbrProprietes,\n          valeurs: {}\n        }\n      };\n      this.instances.forEach(instance => {\n        payload.proprietesByInstance.valeurs[instance] = {};\n        this.proprietesByInstance.proprietes.forEach(prop => {\n          const value = this.proprietesByInstance.valeurs[instance][prop.nom];\n          payload.proprietesByInstance.valeurs[instance][prop.nom] =\n            (prop.type === 'object' || prop.type === 'array') ? JSON.stringify(value) : value;\n        });\n      });\n      this.send({ topic: \"saveChanges\", payload: payload });\n    },\n\n    // Réinitialise les modifications\n    resetChanges() {\n      if (this.nomVarG) this.send({ topic: \"reloadVar\", payload: this.nomVarG });\n    }\n  },\n  watch: {\n    msg: {\n      immediate: true,\n      handler(newMsg) {\n        if (newMsg?.payload) {\n          const data = newMsg.payload;\n          console.log(\"Données reçues dans le template :\", data);\n          this.nomVarG = data.nomVarG || '';\n          this.instances = data.instances || [];\n          this.proprietesByInstance = {\n            proprietes: data.proprietesByInstance?.proprietes || [],\n            abbrProprietes: data.proprietesByInstance?.abbrProprietes || {},\n            valeurs: data.proprietesByInstance?.valeurs || {}\n          };\n          // Initialiser les valeurs pour chaque instance\n          this.instances.forEach(instance => {\n            if (!this.proprietesByInstance.valeurs[instance]) {\n              this.$set(this.proprietesByInstance.valeurs, instance, {});\n            }\n            this.proprietesByInstance.proprietes.forEach(prop => {\n              if (!this.proprietesByInstance.valeurs[instance][prop.nom]) {\n                this.$set(this.proprietesByInstance.valeurs[instance], prop.nom, this.defaultForType(prop.type));\n              }\n            });\n          });\n        }\n      }\n    }\n  }\n};\n</script>",
+        "storeOutMessages": true,
+        "passthru": true,
+        "resendOnRefresh": true,
+        "templateScope": "local",
+        "className": "",
+        "x": 820,
+        "y": 2020,
+        "wires": [
+            [
+                "9b430e4cf3f6709a"
+            ]
+        ]
+    },
+    {
+        "id": "8521ab04d063ef67",
+        "type": "function",
+        "z": "61d8f8019f224437",
+        "d": true,
+        "name": "saveProprieteEnrichedVars",
+        "func": "// Sauvegarde des modifications\nconst storeFile = \"file\";\nlet enrichedVars = global.get(\"enrichedVars\", storeFile) || {};\nlet formData = msg.payload || {};\n\nif (!formData || !formData.nomVarG) {\n    msg.info = \"❌ Données invalides.\";\n    return null;\n}\n\n// Vérification et renommage de \"valeurCourante\" si nécessaire\nif (formData.instances && formData.instances.length > 1 && formData.instances.includes(\"*\")) {\n    let index = 0;\n    let newInstanceName = `instance${index}`;\n    while (formData.instances.includes(newInstanceName)) {\n        index++;\n        newInstanceName = `instance${index}`;\n    }\n    // Renommer \"*\" en \"instanceX\"\n    let valeursCourantes = {};\n    formData.proprietesByInstance.proprietes.forEach(prop => {\n        if (prop.valeurs && prop.valeurs[\"*\"]) {\n            valeursCourantes[prop.nom] = prop.valeurs[\"*\"];\n        }\n    });\n    // Mettre à jour les instances\n    let newInstances = formData.instances.map(instance => instance === \"*\" ? newInstanceName : instance);\n    formData.instances = newInstances;\n    // Mettre à jour les valeurs des propriétés\n    formData.proprietesByInstance.proprietes.forEach(prop => {\n        if (prop.valeurs && prop.valeurs[\"*\"]) {\n            prop.valeurs[newInstanceName] = prop.valeurs[\"*\"];\n            delete prop.valeurs[\"*\"];\n        }\n    });\n}\n\nconst varName = formData.nomVarG;\nenrichedVars[varName] = formData;\nglobal.set(\"enrichedVars\", enrichedVars, storeFile);\nmsg.payload = enrichedVars[varName];\nmsg.info = `💾 Variable '${varName}' sauvegardée.`;\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1820,
+        "y": 2000,
+        "wires": [
+            [
+                "5e7cb47874ba3078"
+            ]
+        ]
+    },
+    {
+        "id": "5e7cb47874ba3078",
+        "type": "function",
+        "z": "61d8f8019f224437",
+        "d": true,
+        "name": "prepareTpeTbPropriete",
+        "func": "// PrepareTemplate → Prépare les données pour le template Vue.js\nlet enrichedVars = global.get(\"enrichedVars\", \"file\") || {};\nlet varName = flow.get(\"varSelected\") || msg.payload || null;\nlet variable = varName ? enrichedVars[varName] : null;\n\nif (!variable) {\n    msg.info = \"Variable non trouvée pour l'éditeur de propriétés.\";\n    msg.payload = null;\n    return msg;\n}\n\n// Fonction utilitaire pour convertir en tableau\nconst toArray = (v) => {\n    if (Array.isArray(v)) return v;\n    if (typeof v === \"string\" && v.trim()) {\n        return v.includes(\",\") ? v.split(\",\").map(x => x.trim()) : [v.trim()];\n    }\n    return [\"*\"];\n};\n\n// Fonction utilitaire pour désérialiser les valeurs\nconst deserializeValue = (value, type) => {\n    if (value === undefined || value === null) {\n        return defaultForType(type);\n    }\n    try {\n        switch (type) {\n            case \"object\":\n                return typeof value === \"object\" ? value : JSON.parse(value);\n            case \"array\":\n                return Array.isArray(value) ? value : JSON.parse(value);\n            case \"boolean\":\n                return value === true || value === \"true\";\n            case \"int\":\n            case \"number\":\n                return parseFloat(value) || 0;\n            default:\n                return value;\n        }\n    } catch (e) {\n        console.warn(`Désérialisation échouée pour le type ${type}:`, e);\n        return defaultForType(type);\n    }\n};\n\n// Fonction utilitaire pour obtenir une valeur par défaut selon le type\nconst defaultForType = (type) => {\n    switch (type) {\n        case \"boolean\":\n            return false;\n        case \"int\":\n        case \"number\":\n            return 0;\n        case \"array\":\n            return [];\n        case \"object\":\n            return {};\n        case \"date\":\n            return new Date().toISOString().slice(0, 10);\n        default:\n            return \"\";\n    }\n};\n\n// Instances → toujours un tableau\nlet instances = toArray(variable.instances || [\"*\"]);\n\n// Propriétés → nettoyage et validation\nlet propArr = [];\nif (variable.proprietesByInstance?.proprietes) {\n    propArr = variable.proprietesByInstance.proprietes\n        .filter(p => p && typeof p.nom === \"string\" && typeof p.type === \"string\")\n        .map(p => ({\n            nom: String(p.nom),\n            abbr: p.abbr || \"\",\n            type: String(p.type),\n            defaultVal: p.defaultVal || (p.type === \"object\" ? {} : p.type === \"array\" ? [] : { \"type\": p.type, \"default\": defaultForType(p.type) }),\n            valeurs: p.valeurs || {}\n        }));\n}\n\n// Abréviations des propriétés\nlet abbrMap = {};\nif (variable.proprietesByInstance?.abbrProprietes && typeof variable.proprietesByInstance.abbrProprietes === \"object\") {\n    abbrMap = JSON.parse(JSON.stringify(variable.proprietesByInstance.abbrProprietes));\n}\n\n// Valeurs → désérialisation des objets/tableaux\nlet valeurs = {};\ninstances.forEach(inst => {\n    valeurs[inst] = {};\n    propArr.forEach(p => {\n        const storedValue = p.valeurs[inst];\n        valeurs[inst][p.nom] = deserializeValue(storedValue, p.type);\n    });\n});\n\n// Payload pour le template\nmsg.payload = {\n    nomVarG: variable.nomVarG || varName,\n    abbrVarG: variable.abbrVarG || \"\",\n    instances,\n    proprietesByInstance: {\n        proprietes: propArr,\n        abbrProprietes: abbrMap,\n        valeurs\n    },\n    descriptionVarG: variable.descriptionVarG || \"\",\n    dateUpdateVarG: variable.dateUpdateVarG || new Date().toISOString()\n};\nmsg.info = \"✅ Données préparées pour le template.\";\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 450,
+        "y": 2020,
+        "wires": [
+            [
+                "8fa1bb5d95818af8"
+            ]
+        ]
+    },
+    {
+        "id": "04f5daf6ed8e5339",
+        "type": "function",
+        "z": "61d8f8019f224437",
+        "d": true,
+        "name": "sauvIntermediaire",
+        "func": "// Variable globale pour stocker le schéma provisoire\nlet schemaProvisoire = {};\n\n// Fonction pour ouvrir l'éditeur de schéma\nfunction openSchemaEditor(prop) {\n    // Sauvegarde du schéma actuel dans schemaProvisoire\n    schemaProvisoire = JSON.parse(JSON.stringify(prop.defaultVal || {}));\n    return schemaProvisoire;\n}\n\n// Fonction pour mettre à jour le schéma provisoire\nfunction updateSchemaProvisoire(key, type, defaultValue) {\n    schemaProvisoire[key] = { type, default: defaultValue };\n    return schemaProvisoire;\n}\n\n// Fonction pour sauvegarder le schéma provisoire dans la propriété\nfunction saveSchema(prop) {\n    if (!schemaProvisoire) {\n        console.error(\"Aucun schéma provisoire à sauvegarder.\");\n        return false;\n    }\n    prop.defaultVal = JSON.parse(JSON.stringify(schemaProvisoire));\n    schemaProvisoire = {}; // Réinitialisation du schéma provisoire\n    return true;\n}\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1310,
+        "y": 2220,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "bc82bd7f6ff2e648",
+        "type": "function",
+        "z": "61d8f8019f224437",
+        "d": true,
+        "name": "routerAction (set flow.propSelected + dispatch)",
+        "func": "// Route les actions venant du tableau\n// - met à jour flow.propSelected\n// - envoie seulement la propriété et les instances nécessaires aux éditeurs\n\nlet action = msg.action;\nlet prop = msg.prop || {};\nlet varSelected = flow.get('varSelected');\nlet enriched = global.get('enrichedVars','file') || {};\nlet variable = enriched[varSelected] || {};\nlet instances = (variable.instances || []).filter(i => i !== '*'); // instances visibles (sans '*')\n\nif (action) {\n    // set selected property for continuity\n    flow.set('propSelected', prop && prop.nomP ? prop.nomP : null);\n}\n\nif (action === 'base') {\n    // Forward to base editor (for define). include originalName if editing existing\n    let out = { topic: 'openEditor', editor: 'base', prop: prop, instances: instances, originalName: prop && prop._isNew ? null : (prop && prop.nomP ? prop.nomP : null) };\n    return [out, null, null];\n}\nelse if (action === 'valeurs') {\n    // forward minimal payload to values editor\n    let out = { topic: 'openEditor', editor: 'valeurs', prop: prop, instances: instances, originalName: prop && prop.nomP ? prop.nomP : null };\n    return [null, out, null];\n}\nelse if (action === 'delete') {\n    // forward to delete handler\n    let out = { topic: 'delete', prop: prop };\n    return [null, null, out];\n}\nreturn null;",
+        "outputs": 3,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1520,
+        "y": 2080,
+        "wires": [
+            [],
+            [],
+            []
+        ],
+        "info": "Router des actions provenant du template principal.\n- Met flow.propSelected = prop.nomP.\n- Envoie un message minimal (prop + instances) uniquement à l'éditeur correspondant (pas la variable globale entière) pour éviter les boucles."
+    },
+    {
+        "id": "8df7c44b50c88164",
+        "type": "function",
+        "z": "61d8f8019f224437",
+        "d": true,
+        "name": "deleteItem",
+        "func": "// Nœud deleteItem\nif (msg.topic !== \"deleteItem\") {\n    msg.error = \"Mauvais nœud pour cette action.\";\n    return null;\n}\n\nlet payload = msg.payload;\nlet enrichedVars = global.get(\"enrichedVars\", \"file\") || {};\nlet varName = payload.nomVarG;\n\nif (!varName || !enrichedVars[varName]) {\n    msg.error = \"Variable non trouvée.\";\n    return null;\n}\n\n// Supprimer une propriété\nif (payload.type === \"propriete\") {\n    let propIndex = enrichedVars[varName].proprietesByInstance.proprietes.findIndex(p => p.nom === payload.nom);\n    if (propIndex !== -1) {\n        enrichedVars[varName].proprietesByInstance.proprietes.splice(propIndex, 1);\n        // Supprimer les valeurs associées à cette propriété\n        enrichedVars[varName].instances.forEach(instance => {\n            delete enrichedVars[varName].proprietesByInstance.valeurs[instance][payload.nom];\n        });\n    }\n}\n// Supprimer une instance\nelse if (payload.type === \"instance\") {\n    let instanceIndex = enrichedVars[varName].instances.indexOf(payload.nom);\n    if (instanceIndex !== -1) {\n        enrichedVars[varName].instances.splice(instanceIndex, 1);\n        // Supprimer les valeurs associées à cette instance\n        delete enrichedVars[varName].proprietesByInstance.valeurs[payload.nom];\n    }\n}\n\n// Sauvegarder les modifications\nglobal.set(\"enrichedVars\", enrichedVars, \"file\");\n\nmsg.payload = enrichedVars[varName];\nmsg.topic = \"refreshData\";\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 670,
+        "y": 2180,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "1dbe1cac245065b0",
+        "type": "function",
+        "z": "61d8f8019f224437",
+        "d": true,
+        "name": "editBaseProp",
+        "func": "// Nœud editBase\nif (msg.topic !== \"editBase\") {\n    msg.error = \"Mauvais nœud pour cette action.\";\n    return null;\n}\n\nlet payload = msg.payload;\nlet enrichedVars = global.get(\"enrichedVars\", \"file\") || {};\nlet varName = payload.nomVarG;\n\nif (!varName || !enrichedVars[varName]) {\n    msg.error = \"Variable non trouvée.\";\n    return null;\n}\n\n// Mettre à jour les propriétés de base\nenrichedVars[varName].nomVarG = payload.nomVarG;\nenrichedVars[varName].abbrVarG = payload.abbrVarG;\nenrichedVars[varName].descriptionVarG = payload.descriptionVarG;\nenrichedVars[varName].instances = payload.instances;\n\n// Sauvegarder les modifications\nglobal.set(\"enrichedVars\", enrichedVars, \"file\");\n\nmsg.payload = enrichedVars[varName];\nmsg.topic = \"refreshData\";\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1000,
+        "y": 2200,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "3140802c2b09b22c",
+        "type": "function",
+        "z": "61d8f8019f224437",
+        "d": true,
+        "name": "editValuesProp",
+        "func": "// Nœud editValues\nif (msg.topic !== \"editValues\") {\n    msg.error = \"Mauvais nœud pour cette action.\";\n    return null;\n}\n\nlet payload = msg.payload;\nlet enrichedVars = global.get(\"enrichedVars\", \"file\") || {};\nlet varName = payload.nomVarG;\n\nif (!varName || !enrichedVars[varName]) {\n    msg.error = \"Variable non trouvée.\";\n    return null;\n}\n\n// Mettre à jour les valeurs des propriétés\npayload.proprietesByInstance.proprietes.forEach(prop => {\n    payload.instances.forEach(instance => {\n        if (payload.proprietesByInstance.valeurs[instance] && payload.proprietesByInstance.valeurs[instance][prop.nom] !== undefined) {\n            enrichedVars[varName].proprietesByInstance.valeurs[instance][prop.nom] = payload.proprietesByInstance.valeurs[instance][prop.nom];\n        }\n    });\n});\n\n// Sauvegarder les modifications\nglobal.set(\"enrichedVars\", enrichedVars, \"file\");\n\nmsg.payload = enrichedVars[varName];\nmsg.topic = \"refreshData\";\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 880,
+        "y": 2200,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "9b430e4cf3f6709a",
+        "type": "function",
+        "z": "61d8f8019f224437",
+        "d": true,
+        "name": "routerBoutonActionTblProp",
+        "func": "// Route les actions venant du tableau\n// - met à jour flow.propSelected\n// - envoie seulement la propriété et les instances nécessaires aux éditeurs\n\nlet action = msg.action;\nlet prop = msg.prop || {};\nlet varSelected = flow.get('varSelected');\nlet enriched = global.get('enrichedVars','file') || {};\nlet variable = enriched[varSelected] || {};\nlet instances = (variable.instances || []).filter(i => i !== '*'); // instances visibles (sans '*')\n\nif (action) {\n    // set selected property for continuity\n    flow.set('propSelected', prop && prop.nomP ? prop.nomP : null);\n}\n\nif (action === 'base') {\n    // Forward to base editor (for define). include originalName if editing existing\n    let out = { topic: 'openEditor', editor: 'base', prop: prop, instances: instances, originalName: prop && prop._isNew ? null : (prop && prop.nomP ? prop.nomP : null) };\n    return [out, null, null];\n}\nelse if (action === 'valeurs') {\n    // forward minimal payload to values editor\n    let out = { topic: 'openEditor', editor: 'valeurs', prop: prop, instances: instances, originalName: prop && prop.nomP ? prop.nomP : null };\n    return [null, out, null];\n}\nelse if (action === 'delete') {\n    // forward to delete handler\n    let out = { topic: 'delete', prop: prop };\n    return [null, null, out];\n}\nreturn null;",
+        "outputs": 3,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1100,
+        "y": 1960,
+        "wires": [
+            [
+                "04d0afefc2416430"
+            ],
+            [
+                "577703cecd5d3e04"
+            ],
+            []
+        ],
+        "info": "Router des actions provenant du template principal.\n- Met flow.propSelected = prop.nomP.\n- Envoie un message minimal (prop + instances) uniquement à l'éditeur correspondant (pas la variable globale entière) pour éviter les boucles."
+    },
+    {
+        "id": "04d0afefc2416430",
+        "type": "ui-template",
+        "z": "61d8f8019f224437",
+        "d": true,
+        "group": "grp1",
+        "page": "",
+        "ui": "",
+        "name": "templateEditBasePropEtSchema",
+        "order": 2,
+        "width": "6",
+        "height": "auto",
+        "format": "<template>\n  <div v-if=\"msg && msg.topic==='openEditor' && (msg.editor==='base')\" style=\"border:1px solid #ddd;padding:10px;background:#fff;margin-top:12px\">\n    <h4>✏️ Définir / Base {{ originalName ? '(édition)' : '(nouvelle propriété)' }}</h4>\n\n    <table style=\"width:100%;border-collapse:collapse;border:1px solid #ccc;\">\n      <tr><td style=\"border:1px solid #ccc;padding:6px;width:160px\">Nom</td><td style=\"border:1px solid #ccc;padding:6px\"><input v-model=\"local.nomP\" /></td></tr>\n      <tr><td style=\"border:1px solid #ccc;padding:6px\">Abréviation</td><td style=\"border:1px solid #ccc;padding:6px\"><input v-model=\"local.abbrP\" /></td></tr>\n      <tr><td style=\"border:1px solid #ccc;padding:6px\">Type</td><td style=\"border:1px solid #ccc;padding:6px\">\n        <select v-model=\"local.typeP\">\n          <option value=\"string\">string</option>\n          <option value=\"number\">number</option>\n          <option value=\"boolean\">boolean</option>\n          <option value=\"array\">array</option>\n          <option value=\"object\">object</option>\n        </select>\n      </td></tr>\n    </table>\n\n    <!-- Schéma inline : affiché si type object|array OR if incoming prop already has schema (editing existing object) -->\n    <div v-if=\"showSchemaEditor\" style=\"margin-top:10px;border:1px solid #ccc;padding:8px\">\n      <h5>📑 Schéma (sous-propriétés)</h5>\n      <table style=\"width:100%;border-collapse:collapse;border:1px solid #eee;margin-top:6px\">\n        <thead><tr><th style=\"border:1px solid #ccc;padding:6px\">nomSsP</th><th style=\"border:1px solid #ccc;padding:6px\">typeSsP</th><th style=\"border:1px solid #ccc;padding:6px\">Action</th></tr></thead>\n        <tbody>\n          <tr v-for=\"(sp,i) in local.schemaArr\" :key=\"i\">\n            <td style=\"border:1px solid #ccc;padding:6px\"><input v-model=\"sp.nomSsP\" /></td>\n            <td style=\"border:1px solid #ccc;padding:6px\">\n              <select v-model=\"sp.typeSsP\"><option>string</option><option>number</option><option>boolean</option></select>\n            </td>\n            <td style=\"border:1px solid #ccc;padding:6px;text-align:center\"><button @click=\"removeSchema(i)\">🗑</button></td>\n          </tr>\n        </tbody>\n      </table>\n      <div style=\"margin-top:8px\"><button @click=\"addSchema\">➕ Ajouter sous-propriété</button></div>\n    </div>\n\n    <div style=\"margin-top:10px\">\n      <button :disabled=\"!canSave\" @click=\"onSave\">💾 Enregistrer</button>\n      <button @click=\"onCancel\">↩ Annuler</button>\n    </div>\n\n    <div style=\"margin-top:8px;color:#b33\" v-if=\"lockedWarning\">⚠️ Cette propriété est verrouillée et ne peut pas être modifiée ici.</div>\n  </div>\n</template>\n\n<script>\nexport default {\n  data(){ return { local: null, schemaArr: [], originalName: null, lockedWarning:false }; },\n  computed: {\n    showSchemaEditor(){ return this.local && (this.local.typeP === 'object' || this.local.typeP === 'array'); },\n    canSave(){\n      if(!this.local || !this.local.nomP || !this.local.abbrP || !this.local.typeP) return false;\n      if(this.showSchemaEditor) return (this.local.schemaArr && this.local.schemaArr.length>0 && this.local.schemaArr.every(s=>s.nomSsP));\n      return true;\n    }\n  },\n  mounted(){\n    this.$watch('msg', (m)=>{\n      if(!m) return;\n      if(m.topic==='openEditor' && m.editor==='base'){\n        // init local copy once per opening (avoid resetting during edits)\n        this.originalName = m.originalName || null;\n        // if incoming prop exists (editing existing), clone it; otherwise create blank for new\n        let p = m.prop || {};\n        this.local = JSON.parse(JSON.stringify(p || { nomP:'', abbrP:'', typeP:null, schema:null }));\n        // transform schema into schemaArr for editing\n        this.local.schemaArr = Array.isArray(this.local.schema) ? JSON.parse(JSON.stringify(this.local.schema)) : [];\n        // locked: if prop exists and has _locked true, show warning and prevent changing of base (backend will also block)\n        this.lockedWarning = !!(p && p._locked);\n      }\n    }, { immediate:true });\n  },\n  methods: {\n    addSchema(){ if(!this.local.schemaArr) this.local.schemaArr = []; this.local.schemaArr.push({ nomSsP:'', typeSsP:'string' }); },\n    removeSchema(i){ this.local.schemaArr.splice(i,1); },\n    onSave(){\n      // prepare prop payload\n      let propOut = {\n        nomP: this.local.nomP,\n        abbrP: this.local.abbrP,\n        typeP: this.local.typeP\n      };\n      if(this.showSchemaEditor){\n        // attach schema\n        propOut.schema = this.local.schemaArr.map(s=>({ nomSsP: s.nomSsP, typeSsP: s.typeSsP }));\n        this.send({ topic:'saveBaseWithSchema', prop: propOut, originalName: this.originalName });\n      } else {\n        this.send({ topic:'saveBase', prop: propOut, originalName: this.originalName });\n      }\n    },\n    onCancel(){ this.send({ topic:'cancel' }); }\n  }\n}\n</script>\n\n<style>\n/* styles for inline editor */\n</style>\n",
+        "storeOutMessages": true,
+        "passthru": true,
+        "resendOnRefresh": true,
+        "templateScope": "local",
+        "className": "",
+        "x": 1400,
+        "y": 1940,
+        "wires": [
+            []
+        ],
+        "info": "Éditeur Base (inclut la partie Schéma lorsque type = object|array).\n- Utilise une copie locale (this.local) pour éviter la perte lors d'updates.\n- Envoie topic 'saveBase' pour types simples, 'saveBaseWithSchema' pour object/array (avec schema dans prop.schema)."
+    },
+    {
+        "id": "577703cecd5d3e04",
+        "type": "ui-template",
+        "z": "61d8f8019f224437",
+        "d": true,
+        "group": "grp1",
+        "page": "",
+        "ui": "",
+        "name": "Éditeur Valeurs (instances)",
+        "order": 3,
+        "width": "6",
+        "height": "auto",
+        "format": "<template>\n  <div v-if=\"msg && msg.topic==='openEditor' && msg.editor==='valeurs'\" style=\"border:1px solid #ddd;padding:10px;background:#fff;margin-top:12px\">\n    <h4>💾 Valeurs pour : {{origName}}</h4>\n    <p style=\"font-size:12px;color:#666\">La valeur '*' (défaut) est éditable ici et s'appliquera aux nouvelles instances.</p>\n\n    <div style=\"border:1px solid #ccc;padding:8px;margin-top:8px\">\n      <strong>Défaut (*)</strong>\n      <div v-if=\"isComplex\">\n        <div v-if=\"schema && schema.length\">\n          <div v-for=\"(ssp,i) in schema\" :key=\"i\" style=\"margin-bottom:6px\">\n            <label>{{ssp.nomSsP}} ({{ssp.typeSsP}})</label>\n            <input v-if=\"ssp.typeSsP!=='boolean'\" v-model=\"local.valeurs['*'][ssp.nomSsP]\" style=\"width:100%\" />\n            <input v-else type=\"checkbox\" v-model=\"local.valeurs['*'][ssp.nomSsP]\" />\n          </div>\n        </div>\n        <div v-else>\n          <textarea v-model=\"localStr['*']\" rows=\"4\" style=\"width:100%\"></textarea>\n        </div>\n      </div>\n      <div v-else>\n        <input v-model=\"local.valeurs['*']\" style=\"width:100%\" />\n      </div>\n    </div>\n\n    <div style=\"margin-top:8px\">\n      <strong>Instances</strong>\n      <div v-for=\"inst in instances\" :key=\"inst\" style=\"margin-top:8px;border:1px solid #eee;padding:6px\">\n        <div><strong>{{inst}}</strong></div>\n        <div v-if=\"isComplex\">\n          <div v-if=\"schema && schema.length\">\n            <div v-for=\"(ssp,i) in schema\" :key=\"i\" style=\"margin-bottom:6px\">\n              <label>{{ssp.nomSsP}} ({{ssp.typeSsP}})</label>\n              <input v-if=\"ssp.typeSsP!=='boolean'\" v-model=\"local.valeurs[inst][ssp.nomSsP]\" style=\"width:100%\" />\n              <input v-else type=\"checkbox\" v-model=\"local.valeurs[inst][ssp.nomSsP]\" />\n            </div>\n          </div>\n          <div v-else>\n            <textarea v-model=\"localStr[inst]\" rows=\"3\" style=\"width:100%\"></textarea>\n          </div>\n        </div>\n        <div v-else>\n          <input v-model=\"local.valeurs[inst]\" style=\"width:100%\" />\n        </div>\n      </div>\n    </div>\n\n    <div style=\"margin-top:10px\">\n      <button @click=\"onSave\">💾 Enregistrer</button>\n      <button @click=\"onCancel\">↩ Annuler</button>\n    </div>\n  </div>\n</template>\n\n<script>\nexport default {\n  data(){ return { local:{ valeurs:{} }, localStr:{}, schema:[], isComplex:false, instances:[], origName:null } },\n  mounted(){\n    this.$watch('msg',(m)=>{\n      if(!m) return;\n      if(m.topic==='openEditor' && m.editor==='valeurs'){\n        this.origName = (m.originalName) || (m.prop && m.prop.nomP) || '';\n        this.schema = (m.prop && m.prop.schema) ? JSON.parse(JSON.stringify(m.prop.schema)) : [];\n        this.isComplex = (m.prop && (m.prop.typeP === 'object' || m.prop.typeP === 'array')) || false;\n        this.instances = (m.instances || []);\n        this.local = { valeurs: {} };\n        this.localStr = {};\n\n        if(this.isComplex && this.schema && this.schema.length){\n          // build object defaults for '*'\n          let def = {};\n          this.schema.forEach(s => def[s.nomSsP] = (m.prop && m.prop.valeurs && m.prop.valeurs['*'] && m.prop.valeurs['*'][s.nomSsP] !== undefined) ? m.prop.valeurs['*'][s.nomSsP] : null);\n          this.local.valeurs['*'] = JSON.parse(JSON.stringify(def));\n          this.instances.forEach(inst => {\n            let instVal = {};\n            this.schema.forEach(s => instVal[s.nomSsP] = (m.prop && m.prop.valeurs && m.prop.valeurs[inst] && m.prop.valeurs[inst][s.nomSsP] !== undefined) ? m.prop.valeurs[inst][s.nomSsP] : null);\n            this.local.valeurs[inst] = instVal;\n          });\n        }\n        else if(this.isComplex){\n          // complex but no schema: use JSON textareas\n          this.localStr['*'] = (m.prop && m.prop.valeurs && m.prop.valeurs['*']) ? JSON.stringify(m.prop.valeurs['*'],null,2) : '';\n          this.instances.forEach(inst => this.localStr[inst] = (m.prop && m.prop.valeurs && m.prop.valeurs[inst]) ? JSON.stringify(m.prop.valeurs[inst],null,2) : '');\n        }\n        else {\n          // simple types\n          this.local.valeurs['*'] = (m.prop && m.prop.valeurs && m.prop.valeurs['*'] !== undefined) ? m.prop.valeurs['*'] : null;\n          this.instances.forEach(inst => this.local.valeurs[inst] = (m.prop && m.prop.valeurs && m.prop.valeurs[inst] !== undefined) ? m.prop.valeurs[inst] : null);\n        }\n      }\n    }, { immediate:true });\n  },\n  methods:{\n    onSave(){\n      let valeurs = {};\n      if(this.isComplex && this.schema && this.schema.length){\n        valeurs['*'] = this.local.valeurs['*'];\n        this.instances.forEach(i => valeurs[i] = this.local.valeurs[i]);\n      }\n      else if(this.isComplex){\n        try{ valeurs['*'] = this.localStr['*'] ? JSON.parse(this.localStr['*']) : null; } catch(e){ alert('Erreur JSON pour *: '+e.message); return }\n        for(let i of this.instances){ try{ valeurs[i] = this.localStr[i] ? JSON.parse(this.localStr[i]) : null } catch(e){ alert('Erreur JSON pour '+i+': '+e.message); return } }\n      }\n      else {\n        valeurs['*'] = this.local.valeurs['*'];\n        this.instances.forEach(i => valeurs[i] = this.local.valeurs[i]);\n      }\n\n      this.send({ topic:'saveValues', prop:{ nomP: this.origName, valeurs: valeurs }, originalName: this.origName });\n    },\n    onCancel(){ this.send({ topic:'cancel' }); }\n  }\n}\n</script>\n",
+        "storeOutMessages": true,
+        "passthru": true,
+        "resendOnRefresh": true,
+        "templateScope": "local",
+        "className": "",
+        "x": 1420,
+        "y": 1980,
+        "wires": [
+            []
+        ],
+        "info": "Éditeur valeurs (Vue3) :\n- affiche la valeur '*' (défaut) en premier puis toutes les instances.\n- si object+schema => génère un mini-formulaire par sous-propriété.\n- si array sans schema => textarea JSON pour robustesse."
+    },
+    {
+        "id": "prepareTableauProprietes",
+        "type": "function",
+        "z": "61d8f8019f224437",
+        "name": "prepareTableauProprietes",
+        "func": "// Prépare l'affichage du tableau des propriétés\n// Gère varSelected et propSelected pour la continuité de traitement\n\nlet varSelected = flow.get(\"varSelected\") || null;\nlet enrichedVars = global.get(\"enrichedVars\", \"file\") || {};\nlet variable = enrichedVars[varSelected] || {};\n\n// Si aucune variable sélectionnée → pas de propriétés\nif (!varSelected || !variable.proprietes) {\n    msg.payload = { proprietes: [] };\n    msg.info = \"⚠️ Aucune variable sélectionnée.\";\n    return msg;\n}\n\n// Récupère propSelected pour affichage conditionnel des éditeurs\nlet propSelected = flow.get(\"propSelected\") || null;\n\nmsg.payload = {\n    proprietes: variable.proprietes,\n    propSelected: propSelected\n};\nmsg.info = `📋 Tableau propriétés de ${varSelected}`;\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 450,
+        "y": 1840,
+        "wires": [
+            [
+                "ui_template_tableProprietes"
+            ]
+        ]
+    },
+    {
+        "id": "ui_template_tableProprietes",
+        "type": "ui_template",
+        "z": "61d8f8019f224437",
+        "group": "groupeTableau",
+        "name": "Tableau Propriétés",
+        "order": 1,
+        "width": "12",
+        "height": "auto",
+        "format": "<div>\n  <h4>Tableau des propriétés</h4>\n  <table class=\"table table-bordered table-sm\">\n    <thead>\n      <tr>\n        <th>Nom</th>\n        <th>Actions</th>\n        <th>Abrév.</th>\n        <th>Type</th>\n      </tr>\n    </thead>\n    <tbody>\n      <tr ng-repeat=\"prop in msg.payload.proprietes track by $index\">\n        <td>{{prop.nomP}}</td>\n        <td>\n          <button class=\"btn btn-xs btn-primary\" ng-click=\"send({topic:'editBase', payload:prop})\"><i class=\"fa fa-edit\"></i></button>\n          <button class=\"btn btn-xs btn-success\" ng-click=\"send({topic:'editValeurs', payload:prop})\"><i class=\"fa fa-list\"></i></button>\n          <button class=\"btn btn-xs btn-danger\" ng-click=\"send({topic:'deleteProp', payload:prop})\"><i class=\"fa fa-trash\"></i></button>\n        </td>\n        <td>{{prop.abbrP}}</td>\n        <td>{{prop.typeP}}</td>\n      </tr>\n      <!-- Ligne pour nouvelle propriété -->\n      <tr>\n        <td>NouvelleP</td>\n        <td>\n          <button class=\"btn btn-xs btn-warning\" ng-click=\"send({topic:'newProp'})\"><i class=\"fa fa-plus\"></i> Définir</button>\n        </td>\n        <td>New</td>\n        <td>null</td>\n      </tr>\n    </tbody>\n  </table>\n</div>",
+        "storeOutMessages": true,
+        "fwdInMessages": true,
+        "resendOnRefresh": true,
+        "templateScope": "local",
+        "className": "",
+        "x": 910,
+        "y": 1820,
+        "wires": [
+            [
+                "routerAction"
+            ]
+        ]
+    },
+    {
+        "id": "routerAction",
+        "type": "switch",
+        "z": "61d8f8019f224437",
+        "name": "Router Action UI",
+        "property": "topic",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "editBase",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "editValeurs",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "deleteProp",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "newProp",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 4,
+        "x": 1220,
+        "y": 1820,
+        "wires": [
+            [
+                "prepareEditeurBase"
+            ],
+            [
+                "prepareEditeurValeurs"
+            ],
+            [
+                "deleteProp"
+            ],
+            [
+                "prepareTableauProprietes"
+            ]
+        ]
+    },
+    {
+        "id": "prepareEditeurBase",
+        "type": "function",
+        "z": "61d8f8019f224437",
+        "name": "prepareEditeurBase",
+        "func": "// CHANGEMENT : gère schemaProvisoire si type=object/array\n\nlet prop = msg.payload || {};\nflow.set(\"propSelected\", prop);\n\n// Vérifie si un schema provisoire existe pour cette propriété\nlet schemaProvisoire = flow.get(\"schemaProvisoire\") || null;\nif ((prop.typeP === \"object\" || prop.typeP === \"array\") && schemaProvisoire) {\n    prop.schema = schemaProvisoire;\n}\n\nmsg.payload = prop;\nmsg.info = `📝 Edition base pour ${prop.nomP}`;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 1480,
+        "y": 1780,
+        "wires": [
+            [
+                "ui_template_editeurBase"
+            ]
+        ]
+    },
+    {
+        "id": "ui_template_editeurBase",
+        "type": "ui_template",
+        "z": "61d8f8019f224437",
+        "group": "groupeTableau",
+        "name": "Éditeur Base + Schéma",
+        "order": 2,
+        "width": "12",
+        "height": "auto",
+        "format": "<div class=\"card p-2\">\n  <h4>Édition Propriété : {{msg.payload.nomP}}</h4>\n  <div class=\"form-group\">\n    <label>Nom :</label>\n    <input class=\"form-control\" ng-model=\"msg.payload.nomP\">\n  </div>\n  <div class=\"form-group\">\n    <label>Abréviation :</label>\n    <input class=\"form-control\" ng-model=\"msg.payload.abbrP\">\n  </div>\n  <div class=\"form-group\">\n    <label>Type :</label>\n    <select class=\"form-control\" ng-model=\"msg.payload.typeP\">\n      <option value=\"string\">string</option>\n      <option value=\"number\">number</option>\n      <option value=\"boolean\">boolean</option>\n      <option value=\"object\">object</option>\n      <option value=\"array\">array</option>\n    </select>\n  </div>\n\n  <!-- Si object/array : schéma -->\n  <div ng-if=\"msg.payload.typeP==='object' || msg.payload.typeP==='array'\">\n    <h5>Schéma des sous-propriétés</h5>\n    <table class=\"table table-bordered table-sm\">\n      <tr ng-repeat=\"ssp in msg.payload.schema track by $index\">\n        <td><input class=\"form-control\" ng-model=\"ssp.nomSsP\" placeholder=\"Nom sous-prop\"></td>\n        <td>\n          <select class=\"form-control\" ng-model=\"ssp.typeSsP\">\n            <option value=\"string\">string</option>\n            <option value=\"number\">number</option>\n            <option value=\"boolean\">boolean</option>\n          </select>\n        </td>\n        <td>\n          <button class=\"btn btn-xs btn-danger\" ng-click=\"msg.payload.schema.splice($index,1)\"><i class=\"fa fa-trash\"></i></button>\n        </td>\n      </tr>\n    </table>\n    <button class=\"btn btn-xs btn-warning\" ng-click=\"msg.payload.schema.push({nomSsP:'', typeSsP:'string'})\">\n      <i class=\"fa fa-plus\"></i> Ajouter sous-propriété\n    </button>\n  </div>\n\n  <div class=\"mt-2\">\n    <button class=\"btn btn-primary\" ng-click=\"send({topic:'saveBase', payload:msg.payload})\"><i class=\"fa fa-save\"></i> Enregistrer</button>\n    <button class=\"btn btn-secondary\" ng-click=\"send({topic:'cancel'})\"><i class=\"fa fa-times\"></i> Annuler</button>\n  </div>\n</div>",
+        "storeOutMessages": true,
+        "fwdInMessages": true,
+        "resendOnRefresh": true,
+        "templateScope": "local",
+        "className": "",
+        "x": 1730,
+        "y": 1760,
+        "wires": [
+            [
+                "saveBase"
+            ]
+        ]
+    },
+    {
+        "id": "prepareEditeurValeurs",
+        "type": "function",
+        "z": "61d8f8019f224437",
+        "name": "prepareEditeurValeurs",
+        "func": "// Prépare l'éditeur de valeurs\n// - Adapte selon le type et le schéma si object/array\n\nlet prop = msg.payload || {};\nflow.set(\"propSelected\", prop);\n\nlet varSelected = flow.get(\"varSelected\");\nlet enrichedVars = global.get(\"enrichedVars\", \"file\") || {};\nlet variable = enrichedVars[varSelected] || {};\nlet instances = variable.instances || [\"*\"];\n\nlet valeurs = prop.valeurs || {};\nlet valeursInstances = [];\n\n// Cas object/array avec schéma → construire par sous-propriétés\nif ((prop.typeP === \"object\" || prop.typeP === \"array\") && prop.schema) {\n    try {\n        let schema = typeof prop.schema === \"string\" ? JSON.parse(prop.schema) : prop.schema;\n        instances.forEach(inst => {\n            let val = valeurs[inst] || {};\n            let sous = schema.map(ssp => {\n                return {\n                    nomSsP: ssp.nomSsP,\n                    typeSsP: ssp.typeSsP,\n                    valeur: val[ssp.nomSsP] || null\n                };\n            });\n            valeursInstances.push({ instance: inst, sousProps: sous, type: prop.typeP });\n        });\n    } catch(e) {\n        node.warn(\"Erreur parsing schema: \" + e);\n    }\n}\nelse {\n    // Cas simple (string, number, boolean)\n    instances.forEach(inst => {\n        valeursInstances.push({\n            instance: inst,\n            valeur: valeurs[inst] !== undefined ? valeurs[inst] : \"\",\n            type: prop.typeP\n        });\n    });\n}\n\nmsg.payload = {\n    nomPropriete: prop.nomP,\n    typePropriete: prop.typeP,\n    valeursInstances: valeursInstances,\n    schema: prop.schema || null\n};\nmsg.info = `📝 Edition valeurs pour ${prop.nomP}`;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 1500,
+        "y": 1820,
+        "wires": [
+            [
+                "ui_template_editeurValeurs"
+            ]
+        ]
+    },
+    {
+        "id": "ui_template_editeurValeurs",
+        "type": "ui_template",
+        "z": "61d8f8019f224437",
+        "group": "groupeTableau",
+        "name": "Éditeur Valeurs",
+        "order": 3,
+        "width": "12",
+        "height": "auto",
+        "format": "<div class=\"card p-2\">\n  <h4>Valeurs de {{msg.payload.nomPropriete}}</h4>\n\n  <div ng-repeat=\"inst in msg.payload.valeursInstances track by $index\">\n    <hr>\n    <h5>Instance : {{inst.instance}}</h5>\n\n    <!-- Cas simple -->\n    <div ng-if=\"!inst.sousProps\">\n      <div ng-switch=\"inst.type\">\n        <div ng-switch-when=\"boolean\">\n          <label><input type=\"checkbox\" ng-model=\"inst.valeur\" ng-true-value=\"true\" ng-false-value=\"false\"> {{inst.valeur}}</label>\n        </div>\n        <div ng-switch-when=\"string\">\n          <input class=\"form-control\" ng-model=\"inst.valeur\" placeholder=\"Texte\">\n        </div>\n        <div ng-switch-when=\"number\">\n          <input type=\"number\" class=\"form-control\" ng-model=\"inst.valeur\" placeholder=\"Nombre\">\n        </div>\n      </div>\n    </div>\n\n    <!-- Cas object/array avec schéma -->\n    <div ng-if=\"inst.sousProps\">\n      <table class=\"table table-bordered table-sm\">\n        <tr ng-repeat=\"ssp in inst.sousProps track by $index\">\n          <td>{{ssp.nomSsP}}</td>\n          <td ng-switch=\"ssp.typeSsP\">\n            <input ng-switch-when=\"string\" class=\"form-control\" ng-model=\"ssp.valeur\" placeholder=\"Texte\">\n            <input ng-switch-when=\"number\" type=\"number\" class=\"form-control\" ng-model=\"ssp.valeur\" placeholder=\"Nombre\">\n            <input ng-switch-when=\"boolean\" type=\"checkbox\" ng-model=\"ssp.valeur\" ng-true-value=\"true\" ng-false-value=\"false\">\n          </td>\n        </tr>\n      </table>\n    </div>\n  </div>\n\n  <div class=\"mt-2\">\n    <button class=\"btn btn-primary\" ng-click=\"send({topic:'saveValeurs', payload:msg.payload})\"><i class=\"fa fa-save\"></i> Enregistrer</button>\n    <button class=\"btn btn-secondary\" ng-click=\"send({topic:'cancel'})\"><i class=\"fa fa-times\"></i> Annuler</button>\n  </div>\n</div>",
+        "storeOutMessages": true,
+        "fwdInMessages": true,
+        "resendOnRefresh": true,
+        "templateScope": "local",
+        "className": "",
+        "x": 1740,
+        "y": 1840,
+        "wires": [
+            [
+                "saveValeurs"
+            ]
+        ]
+    },
+    {
+        "id": "saveBase",
+        "type": "function",
+        "z": "61d8f8019f224437",
+        "name": "saveBase",
+        "func": "// Sauvegarde la base + schéma (si défini)\n\nlet prop = msg.payload;\nlet varSelected = flow.get(\"varSelected\");\nlet enrichedVars = global.get(\"enrichedVars\",\"file\") || {};\nlet variable = enrichedVars[varSelected] || {};\n\nlet proprietes = variable.proprietes || [];\n\nlet index = proprietes.findIndex(p => p.nomP === prop.nomP);\nif (index >= 0) {\n    proprietes[index] = prop;\n} else {\n    proprietes.push(prop);\n}\n\nvariable.proprietes = proprietes;\nenrichedVars[varSelected] = variable;\nglobal.set(\"enrichedVars\", enrichedVars, \"file\");\n\n// Reset schemaProvisoire\nflow.set(\"schemaProvisoire\", null);\n\nmsg.topic = \"refreshTableauProprietes\";\nmsg.info = `✅ Propriété ${prop.nomP} sauvegardée.`;\nreturn msg;",
+        "outputs": 1,
+        "x": 1960,
+        "y": 1760,
+        "wires": [
+            [
+                "4891e46017901298"
+            ]
+        ]
+    },
+    {
+        "id": "saveValeurs",
+        "type": "function",
+        "z": "61d8f8019f224437",
+        "name": "saveValeurs",
+        "func": "// Sauvegarde des valeurs\nlet formData = msg.payload;\nlet varSelected = flow.get(\"varSelected\");\nlet propSelected = flow.get(\"propSelected\");\nlet enrichedVars = global.get(\"enrichedVars\",\"file\") || {};\n\nlet variable = enrichedVars[varSelected] || {};\nlet proprietes = variable.proprietes || [];\nlet index = proprietes.findIndex(p => p.nomP === propSelected.nomP);\n\nif (index >= 0) {\n    let valeurs = {};\n    formData.valeursInstances.forEach(vi => {\n        if (vi.sousProps) {\n            // Reconstruction objet\n            let obj = {};\n            vi.sousProps.forEach(ssp => { obj[ssp.nomSsP] = ssp.valeur; });\n            valeurs[vi.instance] = obj;\n        } else {\n            valeurs[vi.instance] = vi.valeur;\n        }\n    });\n    proprietes[index].valeurs = valeurs;\n    variable.proprietes = proprietes;\n    enrichedVars[varSelected] = variable;\n    global.set(\"enrichedVars\", enrichedVars, \"file\");\n\n    msg.topic = \"refreshTableauProprietes\";\n    msg.info = `✅ Valeurs de ${propSelected.nomP} sauvegardées.`;\n}\nelse {\n    msg.info = \"❌ Propriété non trouvée.\";\n}\nreturn msg;",
+        "outputs": 1,
+        "x": 1970,
+        "y": 1840,
+        "wires": [
+            [
+                "4891e46017901298"
+            ]
+        ]
+    },
+    {
+        "id": "deleteProp",
+        "type": "function",
+        "z": "61d8f8019f224437",
+        "name": "deleteProp",
+        "func": "// Suppression propriété\nlet prop = msg.payload;\nlet varSelected = flow.get(\"varSelected\");\nlet enrichedVars = global.get(\"enrichedVars\",\"file\") || {};\nlet variable = enrichedVars[varSelected] || {};\nlet proprietes = variable.proprietes || [];\n\nproprietes = proprietes.filter(p => p.nomP !== prop.nomP);\nvariable.proprietes = proprietes;\nenrichedVars[varSelected] = variable;\nglobal.set(\"enrichedVars\", enrichedVars, \"file\");\n\nmsg.topic = \"refreshTableauProprietes\";\nmsg.info = `🗑️ Propriété ${prop.nomP} supprimée.`;\nreturn msg;",
+        "outputs": 1,
+        "x": 1470,
+        "y": 1860,
+        "wires": [
+            [
+                "4891e46017901298"
+            ]
+        ]
+    },
+    {
+        "id": "2b072e191b8967f0",
+        "type": "link in",
+        "z": "61d8f8019f224437",
+        "name": "retour vers tableau",
+        "links": [
+            "4891e46017901298"
+        ],
+        "x": 195,
+        "y": 1840,
+        "wires": [
+            [
+                "prepareTableauProprietes"
+            ]
+        ]
+    },
+    {
+        "id": "4891e46017901298",
+        "type": "link out",
+        "z": "61d8f8019f224437",
+        "name": "retour vers tableau",
+        "mode": "link",
+        "links": [
+            "2b072e191b8967f0"
+        ],
+        "x": 2295,
+        "y": 1800,
+        "wires": []
+    },
+    {
+        "id": "grp1",
+        "type": "ui-group",
+        "name": "Grpe_Propriete",
+        "page": "page-1",
+        "width": 6,
+        "height": 1,
+        "order": 4,
+        "showTitle": false,
+        "className": "",
+        "visible": "true",
+        "disabled": "false",
+        "groupType": "default"
+    },
+    {
+        "id": "groupeTableau",
+        "type": "ui_group",
+        "name": "Tableau des propriétés",
+        "tab": "ongletPrincipale",
+        "order": 1,
+        "disp": true,
+        "width": "12",
+        "collapse": false
+    },
+    {
+        "id": "page-1",
+        "type": "ui-page",
+        "name": "P_admin-VarG",
+        "ui": "930a8a5e70986346",
+        "path": "/admin_varG",
+        "icon": "dashboard",
+        "layout": "notebook",
+        "theme": "1050ebb74976e9e1",
+        "breakpoints": [
+            {
+                "name": "Default",
+                "px": "0",
+                "cols": "3"
+            },
+            {
+                "name": "Tablet",
+                "px": "576",
+                "cols": "6"
+            },
+            {
+                "name": "Small Desktop",
+                "px": "768",
+                "cols": "9"
+            },
+            {
+                "name": "Desktop",
+                "px": "1024",
+                "cols": "12"
+            }
+        ],
+        "order": 4,
+        "className": "",
+        "visible": "true",
+        "disabled": "false"
+    },
+    {
+        "id": "ongletPrincipale",
+        "type": "ui_tab",
+        "name": "Tableau des propriétés",
+        "icon": "dashboard",
+        "order": 1,
+        "disabled": false,
+        "hidden": false
+    },
+    {
+        "id": "930a8a5e70986346",
+        "type": "ui-base",
+        "name": "My Dashboard",
+        "path": "/dashboard",
+        "appIcon": "",
+        "includeClientData": true,
+        "acceptsClientConfig": [],
+        "showPathInSidebar": false,
+        "headerContent": "page",
+        "navigationStyle": "default",
+        "titleBarStyle": "default",
+        "showReconnectNotification": true,
+        "notificationDisplayTime": 1,
+        "showDisconnectNotification": true,
+        "allowInstall": true
+    },
+    {
+        "id": "1050ebb74976e9e1",
+        "type": "ui-theme",
+        "name": "Default Theme",
+        "colors": {
+            "surface": "#ffffff",
+            "primary": "#0094ce",
+            "bgPage": "#eeeeee",
+            "groupBg": "#ffffff",
+            "groupOutline": "#cccccc"
+        },
+        "sizes": {
+            "density": "default",
+            "pagePadding": "12px",
+            "groupGap": "4px",
+            "groupBorderRadius": "4px",
+            "widgetGap": "10px"
+        }
+    }
+]

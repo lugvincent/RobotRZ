@@ -1,0 +1,115 @@
+<template>
+  <!-- Votre template ici -->
+</template>
+
+<script>
+import Vue from 'vue';
+
+export default {
+  data() {
+    return {
+      nomVarG: '',
+      typeVarG: '',
+      instances: [],
+      proprietesByInstance: {
+        proprietes: [],
+        abbrProprietes: {},
+        valeurs: {}
+      },
+      // ... autres propriétés
+    };
+  },
+  methods: {
+    getInputType(type) {
+      switch (type) {
+        case 'boolean': return 'checkbox';
+        case 'int': case 'number': return 'number';
+        default: return 'text';
+      }
+    },
+    onTypeChange(prop, event) {
+      const newType = event.target.value;
+      if (newType === 'object' && !prop.schema) {
+        Vue.set(prop, 'schema', {});
+      }
+    },
+    defaultForType(type) {
+      switch (type) {
+        case "boolean": return false;
+        case "int": case "number": return 0;
+        case "array": return [];
+        case "object": return {};
+        default: return "";
+      }
+    },
+    addProperty() {
+      if (!this.newProperty.nom || !this.newProperty.type) {
+        alert("Le nom et le type sont obligatoires");
+        return;
+      }
+      const newProp = { nom: this.newProperty.nom, type: this.newProperty.type };
+      if (newProp.type === 'object') {
+        Vue.set(newProp, 'schema', {});
+      }
+      this.proprietesByInstance.proprietes.push(newProp);
+      if (this.newProperty.abbr) {
+        Vue.set(this.proprietesByInstance.abbrProprietes, newProp.nom, this.newProperty.abbr);
+      }
+      this.instances.forEach(instance => {
+        if (!this.proprietesByInstance.valeurs[instance]) {
+          Vue.set(this.proprietesByInstance.valeurs, instance, {});
+        }
+        Vue.set(this.proprietesByInstance.valeurs[instance], newProp.nom, this.defaultForType(newProp.type));
+      });
+      this.newProperty = { nom: '', type: '', abbr: '', initialValues: {} };
+    },
+    deleteProperty(index) {
+      if (!confirm("Supprimer cette propriété ?")) return;
+      const propName = this.proprietesByInstance.proprietes[index].nom;
+      this.proprietesByInstance.proprietes.splice(index, 1);
+      this.instances.forEach(instance => {
+        Vue.delete(this.proprietesByInstance.valeurs[instance], propName);
+      });
+      Vue.delete(this.proprietesByInstance.abbrProprietes, propName);
+    },
+    // Autres méthodes...
+  },
+  watch: {
+    msg: {
+      immediate: true,
+      handler(newMsg) {
+        if (newMsg?.payload) {
+          const data = newMsg.payload;
+          console.log("Données reçues dans le template :", data);
+
+          this.nomVarG = data.nomVarG || '';
+          this.typeVarG = data.typeVarG || '';
+          this.instances = data.instances || [];
+
+          this.proprietesByInstance = {
+            proprietes: data.proprietesByInstance?.proprietes || [],
+            abbrProprietes: data.proprietesByInstance?.abbrProprietes || {},
+            valeurs: data.proprietesByInstance?.valeurs || {}
+          };
+
+          console.log("proprietesByInstance après initialisation :", this.proprietesByInstance);
+
+          // Initialiser les valeurs pour chaque instance
+          this.instances.forEach(instance => {
+            if (!this.proprietesByInstance.valeurs[instance]) {
+              Vue.set(this.proprietesByInstance.valeurs, instance, {});
+              console.log(`Instance ${instance} ajoutée.`);
+            }
+            this.proprietesByInstance.proprietes.forEach(prop => {
+              if (!this.proprietesByInstance.valeurs[instance][prop.nom]) {
+                Vue.set(this.proprietesByInstance.valeurs[instance], prop.nom, this.defaultForType(prop.type));
+                console.log(`Valeur par défaut pour ${prop.nom} dans ${instance} définie.`);
+              }
+            });
+          });
+        }
+      }
+    }
+  }
+};
+</script>

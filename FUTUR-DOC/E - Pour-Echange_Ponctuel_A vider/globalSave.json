@@ -1,0 +1,2506 @@
+{
+  "enrichedVars": {
+    "CfgS": {
+      "nomVarG": "CfgS",
+      "nomCpletVarG": "CfgS",
+      "instances": [
+        "*"
+      ],
+      "descriptionVarG": "",
+      "dateUpdateVarG": "2026-03-23T18:03:47.958193Z",
+      "proprietes": [
+        {
+          "nomP": "emg",
+          "nomCpletP": "Efface l'urgence active. Préférer Urg:clear.",
+          "typeP": "string",
+          "valeurs": {
+            "*": "clear"
+          },
+          "useValueList": true,
+          "valueList": [
+            {
+              "value": "clear",
+              "label": "clear"
+            }
+          ]
+        },
+        {
+          "nomP": "modeRZ",
+          "nomCpletP": "0=ARRET 1=VEILLE 2=FIXE 3=DEPLACEMENT 4=AUTONOME 5=ERREUR.\nMis à jour dans global.json .CfgS.modeRZ.\nDéclenche recalcul STT.context via calculate_stt_context().\nConditionne les autorisations vocales (filtrage modeRZ 0 et 5 dans stt_handler).",
+          "typeP": "string",
+          "valeurs": {
+            "*": "0"
+          },
+          "useValueList": true,
+          "valueList": [
+            {
+              "value": "0",
+              "label": "0"
+            },
+            {
+              "value": "1",
+              "label": "1"
+            },
+            {
+              "value": "2",
+              "label": "2"
+            },
+            {
+              "value": "3",
+              "label": "3"
+            },
+            {
+              "value": "4",
+              "label": "4"
+            },
+            {
+              "value": "5",
+              "label": "5"
+            }
+          ]
+        },
+        {
+          "nomP": "modeRZ",
+          "nomCpletP": "Mode global du robot. Côté Arduino : number interne mais les valeurs sont les mêmes que l'enum SE. Via SE→bridge→Arduino.",
+          "typeP": "string",
+          "valeurs": {
+            "*": "0=ARRET"
+          },
+          "useValueList": true,
+          "valueList": [
+            {
+              "value": "0=ARRET",
+              "label": "0=ARRET"
+            },
+            {
+              "value": "1=VEILLE",
+              "label": "1=VEILLE"
+            },
+            {
+              "value": "2=FIXE",
+              "label": "2=FIXE"
+            },
+            {
+              "value": "3=DEPLACEMENT",
+              "label": "3=DEPLACEMENT"
+            },
+            {
+              "value": "4=AUTONOME",
+              "label": "4=AUTONOME"
+            },
+            {
+              "value": "5=ERREUR",
+              "label": "5=ERREUR"
+            }
+          ]
+        },
+        {
+          "nomP": "reset",
+          "nomCpletP": "Réinitialisation complète. Refusé si urgence active.\n→ retour $I:COM:error:SE:\"urgence active, clear first\"#",
+          "typeP": "boolean",
+          "valeurs": {
+            "*": false
+          }
+        },
+        {
+          "nomP": "reset",
+          "nomCpletP": "Réinitialise Arduino via RZ_initAll(). Bloqué si urgence active.",
+          "typeP": "string",
+          "valeurs": {
+            "*": "true"
+          },
+          "useValueList": true,
+          "valueList": [
+            {
+              "value": "true",
+              "label": "true"
+            },
+            {
+              "value": "1",
+              "label": "1"
+            }
+          ]
+        },
+        {
+          "nomP": "typePtge",
+          "nomCpletP": "0=Ecran 1=Vocal 2=Manette 3=Laisse 4=Laisse+Vocal.\nConditionne : activation TTS (≠0), blocage cmdes motrices laisse (=3 ou 4),\ndéclenchement URG_SENSOR_FAIL caméra (=0 ou 2), contexte STT.",
+          "typeP": "string",
+          "valeurs": {
+            "*": "0"
+          },
+          "useValueList": true,
+          "valueList": [
+            {
+              "value": "0",
+              "label": "0"
+            },
+            {
+              "value": "1",
+              "label": "1"
+            },
+            {
+              "value": "2",
+              "label": "2"
+            },
+            {
+              "value": "3",
+              "label": "3"
+            },
+            {
+              "value": "4",
+              "label": "4"
+            }
+          ]
+        },
+        {
+          "nomP": "typePtge",
+          "nomCpletP": "Mode de pilotage. Active ctrl_L automatiquement si 3 ou 4.",
+          "typeP": "string",
+          "valeurs": {
+            "*": "0=ECRAN"
+          },
+          "useValueList": true,
+          "valueList": [
+            {
+              "value": "0=ECRAN",
+              "label": "0=ECRAN"
+            },
+            {
+              "value": "1=VOCALE",
+              "label": "1=VOCALE"
+            },
+            {
+              "value": "2=JOYSTICK",
+              "label": "2=JOYSTICK"
+            },
+            {
+              "value": "3=LAISSE",
+              "label": "3=LAISSE"
+            },
+            {
+              "value": "4=LAISSE+VOCALE",
+              "label": "4=LAISSE+VOCALE"
+            }
+          ]
+        },
+        {
+          "nomP": "typeReseau",
+          "nomCpletP": "4K=SIM dédiée SE. Wifi4KSP=Wi-Fi sur partage SP.\nWifiSPSsI=Wi-Fi SP sans Internet. WifiInternetBox=box Internet.\n⚠️ Paradoxe d'amorçage : valeur doit être dans courant_init.json\navant toute connexion MQTT. SP peut la mettre à jour ensuite.",
+          "typeP": "string",
+          "valeurs": {
+            "*": "4K"
+          },
+          "useValueList": true,
+          "valueList": [
+            {
+              "value": "4K",
+              "label": "4K"
+            },
+            {
+              "value": "Wifi4KSP",
+              "label": "Wifi4KSP"
+            },
+            {
+              "value": "WifiSPSsI",
+              "label": "WifiSPSsI"
+            },
+            {
+              "value": "WifiInternetBox",
+              "label": "WifiInternetBox"
+            }
+          ]
+        }
+      ]
+    },
+    "Urg": {
+      "nomVarG": "Urg",
+      "nomCpletVarG": "Urg",
+      "instances": [
+        "*"
+      ],
+      "descriptionVarG": "",
+      "dateUpdateVarG": "2026-03-23T18:03:47.958193Z",
+      "proprietes": [
+        {
+          "nomP": "clear",
+          "nomCpletP": "Efface l'état d'urgence (cleared). SE attend clear avant de reprendre.\nAprès clear, SP renvoie modeSys et/ou modeRZ pour relancer les managers.",
+          "typeP": "boolean",
+          "valeurs": {
+            "*": false
+          }
+        },
+        {
+          "nomP": "clear",
+          "nomCpletP": "Efface l'urgence active Arduino.",
+          "typeP": "string",
+          "valeurs": {
+            "*": "1"
+          },
+          "useValueList": true,
+          "valueList": [
+            {
+              "value": "1",
+              "label": "1"
+            }
+          ]
+        },
+        {
+          "nomP": "etat",
+          "nomCpletP": "Urgence active côté Arduino. Instance=A. Publié simultanément avec source.",
+          "typeP": "string",
+          "valeurs": {
+            "*": "active"
+          },
+          "useValueList": true,
+          "valueList": [
+            {
+              "value": "active",
+              "label": "active"
+            }
+          ]
+        },
+        {
+          "nomP": "etat",
+          "nomCpletP": "Urgence effacée côté Arduino.",
+          "typeP": "string",
+          "valeurs": {
+            "*": "cleared"
+          },
+          "useValueList": true,
+          "valueList": [
+            {
+              "value": "cleared",
+              "label": "cleared"
+            }
+          ]
+        },
+        {
+          "nomP": "niveau",
+          "nomCpletP": "danger → rz_vpiv_parser.sh lance safety_stop.sh (Point C).\nwarn → affichage SP, pas d'arrêt automatique.\nglobal.json : .Urg.niveau",
+          "typeP": "string",
+          "valeurs": {
+            "*": "warn"
+          },
+          "useValueList": true,
+          "valueList": [
+            {
+              "value": "warn",
+              "label": "warn"
+            },
+            {
+              "value": "danger",
+              "label": "danger"
+            }
+          ]
+        },
+        {
+          "nomP": "source",
+          "nomCpletP": "Cause de l'urgence détectée par Arduino. Instance=A. SP doit réagir automatiquement.",
+          "typeP": "string",
+          "valeurs": {
+            "*": "loop_slow"
+          },
+          "useValueList": true,
+          "valueList": [
+            {
+              "value": "loop_slow",
+              "label": "loop_slow"
+            },
+            {
+              "value": "us_danger",
+              "label": "us_danger"
+            },
+            {
+              "value": "mvt_danger",
+              "label": "mvt_danger"
+            },
+            {
+              "value": "...",
+              "label": "..."
+            }
+          ]
+        },
+        {
+          "nomP": "source",
+          "nomCpletP": "Émis par trigger_urgence() (urgence.sh) ou safety_stop.sh (URG_DANGER).\nCodes validés dans URG_CODES_VALIDES[] — fallback URG_UNKNOWN si inconnu.\nSP décide du niveau (warn/danger) et orchestre la réponse.\nglobal.json : .Urg.source",
+          "typeP": "string",
+          "valeurs": {
+            "*": "URG_NONE"
+          },
+          "useValueList": true,
+          "valueList": [
+            {
+              "value": "URG_NONE",
+              "label": "URG_NONE"
+            },
+            {
+              "value": "URG_LOW_BAT",
+              "label": "URG_LOW_BAT"
+            },
+            {
+              "value": "URG_CPU_CHARGE",
+              "label": "URG_CPU_CHARGE"
+            },
+            {
+              "value": "URG_OVERHEAT",
+              "label": "URG_OVERHEAT"
+            },
+            {
+              "value": "\nURG_MOTOR_STALL",
+              "label": "\nURG_MOTOR_STALL"
+            },
+            {
+              "value": "URG_SENSOR_FAIL",
+              "label": "URG_SENSOR_FAIL"
+            },
+            {
+              "value": "URG_BUFFER_OVERFLOW",
+              "label": "URG_BUFFER_OVERFLOW"
+            },
+            {
+              "value": "\nURG_PARSING_ERROR",
+              "label": "\nURG_PARSING_ERROR"
+            },
+            {
+              "value": "URG_LOOP_TOO_SLOW",
+              "label": "URG_LOOP_TOO_SLOW"
+            },
+            {
+              "value": "URG_APPLI_FAIL",
+              "label": "URG_APPLI_FAIL"
+            },
+            {
+              "value": "\nURG_DANGER",
+              "label": "\nURG_DANGER"
+            },
+            {
+              "value": "URG_UNKNOWN",
+              "label": "URG_UNKNOWN"
+            }
+          ]
+        },
+        {
+          "nomP": "statut",
+          "nomCpletP": "Reflète l'état courant urgence côté SE.\nglobal.json : .Urg.statut",
+          "typeP": "string",
+          "valeurs": {
+            "*": "cleared"
+          },
+          "useValueList": true,
+          "valueList": [
+            {
+              "value": "cleared",
+              "label": "cleared"
+            },
+            {
+              "value": "active",
+              "label": "active"
+            }
+          ]
+        }
+      ]
+    },
+    "COM": {
+      "nomVarG": "COM",
+      "nomCpletVarG": "COM",
+      "instances": [
+        "SE",
+        "A"
+      ],
+      "descriptionVarG": "",
+      "dateUpdateVarG": "2026-03-23T18:03:47.958193Z",
+      "proprietes": [
+        {
+          "nomP": "debug",
+          "nomCpletP": "global.json : .COM.debug\nRéservé au débogage — ne pas activer en production.",
+          "typeP": "string",
+          "valeurs": {
+            "*": ""
+          }
+        },
+        {
+          "nomP": "error",
+          "nomCpletP": "Erreur non critique — SP affiche, pas d'arrêt automatique.\nÉmis par tous les managers sur erreur récupérable.\nglobal.json : .COM.error\nTTS si typePtge ≠ 0 (retour vocal activé dans rz_vpiv_parser.sh).",
+          "typeP": "string",
+          "valeurs": {
+            "*": ""
+          }
+        },
+        {
+          "nomP": "info",
+          "nomCpletP": "Information de fonctionnement — ACK, notifications.\nTTS si typePtge ≠ 0.\nglobal.json : .COM.info",
+          "typeP": "string",
+          "valeurs": {
+            "*": ""
+          }
+        },
+        {
+          "nomP": "warn",
+          "nomCpletP": "Avertissement non bloquant.\nDéclenché par alerts_sys.sh quand seuil warn franchi 10s.\nglobal.json : .COM.warn",
+          "typeP": "string",
+          "valeurs": {
+            "*": ""
+          }
+        }
+      ]
+    },
+    "Sys": {
+      "nomVarG": "Sys",
+      "nomCpletVarG": "Sys",
+      "instances": [
+        "SE"
+      ],
+      "descriptionVarG": "",
+      "dateUpdateVarG": "2026-03-23T18:03:47.958193Z",
+      "proprietes": [
+        {
+          "nomP": "dataContBatt",
+          "nomCpletP": "Niveau batterie via termux-battery-status (pkg install termux-api requis).\n⚠️ SENS INVERSÉ : <warn(30%) → COM:warn | <urg(15%) → URG_LOW_BAT\nglobal.json .Sys.batt | codage : %",
+          "typeP": "number",
+          "valeurs": {
+            "*": 0
+          }
+        },
+        {
+          "nomP": "dataContCpu",
+          "nomCpletP": "Charge CPU via top. Publié à freqCont s (mode FLOW).\n>warn(80%) depuis 10s → $I:COM:warn | >urg(90%) depuis 10s → $E:Urg:source:SE:URG_CPU_CHARGE\nglobal.json .Sys.cpu — lu par rz_stt_handler.sh (filtre CPU>90%). | codage : %",
+          "typeP": "number",
+          "valeurs": {
+            "*": 0
+          }
+        },
+        {
+          "nomP": "dataContMem",
+          "nomCpletP": "RAM utilisée via /proc/meminfo — (MemTotal−MemAvailable)/MemTotal.\n>warn(80%) → COM:warn | >urg(90%) → URG_SENSOR_FAIL\nglobal.json .Sys.mem | codage : %",
+          "typeP": "number",
+          "valeurs": {
+            "*": 0
+          }
+        },
+        {
+          "nomP": "dataContStorage",
+          "nomCpletP": "% espace utilisé /sdcard via df.\n>warn(85%) → COM:warn | >urg(95%) → URG_SENSOR_FAIL\nglobal.json .Sys.storage | codage : %",
+          "typeP": "number",
+          "valeurs": {
+            "*": 0
+          }
+        },
+        {
+          "nomP": "dataContThermal",
+          "nomCpletP": "Température via termux-sensor puis fallback /sys/thermal_zone0.\n>warn(70°C) → COM:warn | >urg(85°C) → URG_OVERHEAT\nglobal.json .Sys.thermal | codage : °C",
+          "typeP": "number",
+          "valeurs": {
+            "*": 0
+          }
+        },
+        {
+          "nomP": "dataMoyBatt",
+          "nomCpletP": "Moyenne batt sur nbCycles (mode MOY). | codage : %",
+          "typeP": "number",
+          "valeurs": {
+            "*": 0
+          }
+        },
+        {
+          "nomP": "dataMoyCpu",
+          "nomCpletP": "Moyenne CPU sur nbCycles mesures. Publié à freqMoy s (mode MOY). | codage : %",
+          "typeP": "number",
+          "valeurs": {
+            "*": 0
+          }
+        },
+        {
+          "nomP": "dataMoyMem",
+          "nomCpletP": "Moyenne mem sur nbCycles (mode MOY). | codage : %",
+          "typeP": "number",
+          "valeurs": {
+            "*": 0
+          }
+        },
+        {
+          "nomP": "dataMoyStorage",
+          "nomCpletP": "Moyenne storage sur nbCycles (mode MOY). | codage : %",
+          "typeP": "number",
+          "valeurs": {
+            "*": 0
+          }
+        },
+        {
+          "nomP": "dataMoyThermal",
+          "nomCpletP": "Moyenne thermal sur nbCycles (mode MOY). | codage : °C",
+          "typeP": "number",
+          "valeurs": {
+            "*": 0
+          }
+        },
+        {
+          "nomP": "modeSys",
+          "nomCpletP": "OFF=aucune surveillance.\nFLOW=dataCont* publiés à freqCont secondes.\nMOY=dataMoy* (moyenne nbCycles) publiés à freqMoy secondes.\nALERTE=surveillance seuils uniquement, aucun flux.\n⚠️ Après urgence : SE arrête émissions et attend nouveau modeSys de SP.",
+          "typeP": "string",
+          "valeurs": {
+            "*": "OFF"
+          },
+          "useValueList": true,
+          "valueList": [
+            {
+              "value": "OFF",
+              "label": "OFF"
+            },
+            {
+              "value": "FLOW",
+              "label": "FLOW"
+            },
+            {
+              "value": "MOY",
+              "label": "MOY"
+            },
+            {
+              "value": "ALERTE",
+              "label": "ALERTE"
+            }
+          ]
+        },
+        {
+          "nomP": "paraSys",
+          "nomCpletP": "⚠️ freqCont/freqMoy en SECONDES (≠ Gyro/Mag en Hz, ≠ MicroSE en ms).\n⚠️ Batterie SENS INVERSÉ : urg < warn (15 < 30).\nAlertes déclenchées après 10s de dépassement continu (règle alerts_sys.sh). | codage : voir COMPLEXE",
+          "typeP": "object",
+          "valeurs": {
+            "*": {}
+          },
+          "schema": [
+            {
+              "nomSsP": "freqCont",
+              "typeSsP": "number"
+            },
+            {
+              "nomSsP": "freqMoy",
+              "typeSsP": "number"
+            },
+            {
+              "nomSsP": "nbCycles",
+              "typeSsP": "number"
+            },
+            {
+              "nomSsP": "thresholds.cpu.warn",
+              "typeSsP": "number"
+            },
+            {
+              "nomSsP": "thresholds.cpu.urg",
+              "typeSsP": "number"
+            },
+            {
+              "nomSsP": "thresholds.thermal.warn",
+              "typeSsP": "number"
+            },
+            {
+              "nomSsP": "thresholds.thermal.urg",
+              "typeSsP": "number"
+            },
+            {
+              "nomSsP": "thresholds.storage.warn",
+              "typeSsP": "number"
+            },
+            {
+              "nomSsP": "thresholds.storage.urg",
+              "typeSsP": "number"
+            },
+            {
+              "nomSsP": "thresholds.mem.warn",
+              "typeSsP": "number"
+            },
+            {
+              "nomSsP": "thresholds.mem.urg",
+              "typeSsP": "number"
+            },
+            {
+              "nomSsP": "thresholds.batt.warn",
+              "typeSsP": "number"
+            },
+            {
+              "nomSsP": "thresholds.batt.urg",
+              "typeSsP": "number"
+            }
+          ]
+        },
+        {
+          "nomP": "uptime",
+          "nomCpletP": "Publié UNE SEULE FOIS au démarrage via send_uptime().\nLu depuis /proc/uptime. Valeur ponctuelle (pas de flux). | codage : s",
+          "typeP": "number",
+          "valeurs": {
+            "*": 0
+          }
+        }
+      ]
+    },
+    "Gyro": {
+      "nomVarG": "Gyro",
+      "nomCpletVarG": "Gyro",
+      "instances": [
+        "*"
+      ],
+      "descriptionVarG": "",
+      "dateUpdateVarG": "2026-03-23T18:03:47.958193Z",
+      "proprietes": [
+        {
+          "nomP": "angleVSEBase",
+          "nomCpletP": "Angle combiné BASE+THB pour correction tangage (mode ALERTE).\n150 = 15,0°. Calculé lors de la calibration. Ne change pas au runtime. | codage : deg × 10",
+          "typeP": "number",
+          "valeurs": {
+            "*": 0
+          }
+        },
+        {
+          "nomP": "dataContGyro",
+          "nomCpletP": "Flux vitesses angulaires 3 axes. Diviser par 100 pour rad/s réels.\nFiltré par seuilMesure (valeurs sous seuil mises à 0).\nPublié à freqCont Hz (mode DATACont). | codage : rad/s × 100",
+          "typeP": "string",
+          "valeurs": {
+            "*": ""
+          }
+        },
+        {
+          "nomP": "dataMoyGyro",
+          "nomCpletP": "Moyenne glissante sur nbValPourMoy mesures.\nPublié à freqMoy Hz (mode DATAMoy). | codage : rad/s × 100",
+          "typeP": "string",
+          "valeurs": {
+            "*": ""
+          }
+        },
+        {
+          "nomP": "modeGyro",
+          "nomCpletP": "OFF=capteur inactif.\nDATACont=flux brut dataContGyro à freqCont Hz.\nDATAMoy=flux moyenné dataMoyGyro à freqMoy Hz.\nALERTE=surveillance seuilAlerte uniquement → statusGyro si changement.",
+          "typeP": "string",
+          "valeurs": {
+            "*": "OFF"
+          },
+          "useValueList": true,
+          "valueList": [
+            {
+              "value": "OFF",
+              "label": "OFF"
+            },
+            {
+              "value": "DATACont",
+              "label": "DATACont"
+            },
+            {
+              "value": "DATAMoy",
+              "label": "DATAMoy"
+            },
+            {
+              "value": "ALERTE",
+              "label": "ALERTE"
+            }
+          ]
+        },
+        {
+          "nomP": "paraGyro",
+          "nomCpletP": "⚠️ freqCont/freqMoy en Hz (≠ Sys en secondes, ≠ MicroSE en ms).\nseuilAlerte > seuilMesure recommandé (vérifié par check_config.sh). | codage : voir COMPLEXE",
+          "typeP": "object",
+          "valeurs": {
+            "*": {}
+          },
+          "schema": [
+            {
+              "nomSsP": "freqCont",
+              "typeSsP": "number"
+            },
+            {
+              "nomSsP": "freqMoy",
+              "typeSsP": "number"
+            },
+            {
+              "nomSsP": "nbValPourMoy",
+              "typeSsP": "number"
+            },
+            {
+              "nomSsP": "seuilMesure.x",
+              "typeSsP": "number"
+            },
+            {
+              "nomSsP": "seuilMesure.y",
+              "typeSsP": "number"
+            },
+            {
+              "nomSsP": "seuilMesure.z",
+              "typeSsP": "number"
+            },
+            {
+              "nomSsP": "seuilAlerte.x",
+              "typeSsP": "number"
+            },
+            {
+              "nomSsP": "seuilAlerte.y",
+              "typeSsP": "number"
+            }
+          ]
+        },
+        {
+          "nomP": "statusGyro",
+          "nomCpletP": "Publié UNIQUEMENT si changement d'état ou dépassement seuilAlerte.\nALERTE = axe x ou y dépasse seuilAlerte → risque chute détecté.\nERROR = capteur inaccessible (termux-sensor absent ou erreur critique).",
+          "typeP": "string",
+          "valeurs": {
+            "*": "OFF"
+          },
+          "useValueList": true,
+          "valueList": [
+            {
+              "value": "OFF",
+              "label": "OFF"
+            },
+            {
+              "value": "OK",
+              "label": "OK"
+            },
+            {
+              "value": "ALERTE",
+              "label": "ALERTE"
+            },
+            {
+              "value": "ERROR",
+              "label": "ERROR"
+            }
+          ]
+        }
+      ]
+    },
+    "Mag": {
+      "nomVarG": "Mag",
+      "nomCpletVarG": "Mag",
+      "instances": [
+        "*"
+      ],
+      "descriptionVarG": "",
+      "dateUpdateVarG": "2026-03-23T18:03:47.958193Z",
+      "proprietes": [
+        {
+          "nomP": "DataContGeo",
+          "nomCpletP": "Cap géographique continu. Mode DATAGeoCont.\n⚠️ Correction déclinaison magnétique non implémentée en v1. | codage : deg × 10",
+          "typeP": "number",
+          "valeurs": {
+            "*": 0
+          }
+        },
+        {
+          "nomP": "DataContMg",
+          "nomCpletP": "Cap magnétique continu. 1850 = 185,0°. Nord=0°.\nCalculé via atan2(y,x) sur les axes magnétomètre.\nMode DATAMgCont. | codage : deg × 10",
+          "typeP": "number",
+          "valeurs": {
+            "*": 0
+          }
+        },
+        {
+          "nomP": "DataMoyGeo",
+          "nomCpletP": "Moyenne cap géographique. Mode DATAGeoMoy. | codage : deg × 10",
+          "typeP": "number",
+          "valeurs": {
+            "*": 0
+          }
+        },
+        {
+          "nomP": "DataMoyMg",
+          "nomCpletP": "Moyenne cap magnétique sur nbValPourMoy mesures.\nMode DATAMgMoy. | codage : deg × 10",
+          "typeP": "number",
+          "valeurs": {
+            "*": 0
+          }
+        },
+        {
+          "nomP": "dataContBrut",
+          "nomCpletP": "Champ magnétique brut 3 axes. Diviser par 100 pour µT réels.\nPublié en mode DATABrutCont à freqCont Hz.\nFiltré par seuilMesure. | codage : µT × 100",
+          "typeP": "string",
+          "valeurs": {
+            "*": ""
+          }
+        },
+        {
+          "nomP": "modeMg",
+          "nomCpletP": "OFF=capteur inactif.\nDATABrutCont=champ magnétique brut [x,y,z] µT×100.\nDATAMgCont/Moy=cap magnétique continu/moyenné.\nDATAGeoCont/Moy=cap géographique continu/moyenné.\n⚠️ Pas de correction déclinaison magnétique en v1.",
+          "typeP": "string",
+          "valeurs": {
+            "*": "OFF"
+          },
+          "useValueList": true,
+          "valueList": [
+            {
+              "value": "OFF",
+              "label": "OFF"
+            },
+            {
+              "value": "DATABrutCont",
+              "label": "DATABrutCont"
+            },
+            {
+              "value": "DATAGeoCont",
+              "label": "DATAGeoCont"
+            },
+            {
+              "value": "DATAGeoMoy",
+              "label": "DATAGeoMoy"
+            },
+            {
+              "value": "DATAMgCont",
+              "label": "DATAMgCont"
+            },
+            {
+              "value": "DATAMgMoy",
+              "label": "DATAMgMoy"
+            }
+          ]
+        },
+        {
+          "nomP": "paraMg",
+          "nomCpletP": " | codage : voir COMPLEXE",
+          "typeP": "object",
+          "valeurs": {
+            "*": {}
+          },
+          "schema": [
+            {
+              "nomSsP": "freqCont",
+              "typeSsP": "number"
+            },
+            {
+              "nomSsP": "freqMoy",
+              "typeSsP": "number"
+            },
+            {
+              "nomSsP": "nbValPourMoy",
+              "typeSsP": "number"
+            },
+            {
+              "nomSsP": "seuilMesure.x",
+              "typeSsP": "number"
+            },
+            {
+              "nomSsP": "seuilMesure.y",
+              "typeSsP": "number"
+            },
+            {
+              "nomSsP": "seuilMesure.z",
+              "typeSsP": "number"
+            }
+          ]
+        }
+      ]
+    },
+    "CamSE": {
+      "nomVarG": "CamSE",
+      "nomCpletVarG": "CamSE",
+      "instances": [
+        "rear",
+        "front"
+      ],
+      "descriptionVarG": "",
+      "dateUpdateVarG": "2026-03-23T18:03:47.958193Z",
+      "proprietes": [
+        {
+          "nomP": "StreamURL",
+          "nomCpletP": "URL du flux ou du snapshot, publiée après démarrage réussi.\nIP récupérée dynamiquement via ifconfig wlan0 (fallback ip addr).\nMise à jour dans cam_config.json .status.last_ip.",
+          "typeP": "string",
+          "valeurs": {
+            "*": ""
+          }
+        },
+        {
+          "nomP": "error",
+          "nomCpletP": "Événement erreur caméra non récupérable.\nCAM_START_FAIL = IP Webcam ne répond pas sur 8080 après démarrage.\nCAM_IP_FAIL = IP wlan0 non lisible.\nCAM_CONFIG_FAIL = cam_config.json absent ou illisible.\nSi typePtge=0 ou 2 : déclenche URG_SENSOR_FAIL après urgDelay secondes.\n⚠️ Ancienne notation (error) remplacée par error + NATURE=Event.",
+          "typeP": "string",
+          "valeurs": {
+            "*": "CAM_START_FAIL"
+          },
+          "useValueList": true,
+          "valueList": [
+            {
+              "value": "CAM_START_FAIL",
+              "label": "CAM_START_FAIL"
+            },
+            {
+              "value": "CAM_IP_FAIL",
+              "label": "CAM_IP_FAIL"
+            },
+            {
+              "value": "CAM_CONFIG_FAIL",
+              "label": "CAM_CONFIG_FAIL"
+            }
+          ]
+        },
+        {
+          "nomP": "modeCam",
+          "nomCpletP": "Commande principale caméra.\noff → am force-stop IP Webcam.\nstream → démarrage flux vidéo continu (IP Webcam port 8080/video).\nsnapshot → démarrage mode photo (shot.jpg).\nProfil CPU adapté automatiquement : normal (<70%) ou optimized (>70%).",
+          "typeP": "string",
+          "valeurs": {
+            "*": "off"
+          },
+          "useValueList": true,
+          "valueList": [
+            {
+              "value": "off",
+              "label": "off"
+            },
+            {
+              "value": "stream",
+              "label": "stream"
+            },
+            {
+              "value": "snapshot",
+              "label": "snapshot"
+            }
+          ]
+        },
+        {
+          "nomP": "paraCam",
+          "nomCpletP": "Paramètres mémorisés dans cam_config.json par instance.\nLe profil CPU (normal/optimized) prend le dessus sur res/fps en cas de surcharge.\nMise à jour sélective : seuls les champs présents sont modifiés. | codage : voir COMPLEXE",
+          "typeP": "object",
+          "valeurs": {
+            "*": {}
+          },
+          "schema": [
+            {
+              "nomSsP": "res",
+              "typeSsP": "string"
+            },
+            {
+              "nomSsP": "fps",
+              "typeSsP": "number"
+            },
+            {
+              "nomSsP": "quality",
+              "typeSsP": "number"
+            },
+            {
+              "nomSsP": "urgDelay",
+              "typeSsP": "number"
+            }
+          ]
+        },
+        {
+          "nomP": "snap",
+          "nomCpletP": "Déclenche un snapshot immédiat via IP Webcam.\nL'URL de la photo est retournée via StreamURL.\n⚠️ Ancienne notation (snap) remplacée par snap + NATURE=Event.",
+          "typeP": "boolean",
+          "valeurs": {
+            "*": false
+          }
+        }
+      ]
+    },
+    "TorchSE": {
+      "nomVarG": "TorchSE",
+      "nomCpletVarG": "TorchSE",
+      "instances": [
+        "*"
+      ],
+      "descriptionVarG": "",
+      "dateUpdateVarG": "2026-03-23T18:03:47.958193Z",
+      "proprietes": [
+        {
+          "nomP": "active",
+          "nomCpletP": "Si caméra active → HTTP /enablels ou /disablels (API IP Webcam).\nSi caméra inactive → termux-torch on/off (natif Android).\nBascule automatique selon cam_config.json .status.active.\n⚠️ Incohérence code actuel : rz_torch_manager.sh envoie $I:Torch:..., le parser route TorchSE. Corriger VAR dans torch_manager.sh.",
+          "typeP": "string",
+          "valeurs": {
+            "*": "On"
+          },
+          "useValueList": true,
+          "valueList": [
+            {
+              "value": "On",
+              "label": "On"
+            },
+            {
+              "value": "Off",
+              "label": "Off"
+            }
+          ]
+        }
+      ]
+    },
+    "MicroSE": {
+      "nomVarG": "MicroSE",
+      "nomCpletVarG": "MicroSE",
+      "instances": [
+        "*"
+      ],
+      "descriptionVarG": "",
+      "dateUpdateVarG": "2026-03-23T18:03:47.958193Z",
+      "proprietes": [
+        {
+          "nomP": "alerte",
+          "nomCpletP": "Envoyé à chaque CHANGEMENT de niveau d'intensité (montée ET retour silence).\nSeuil franchi seulement si maintenu >= holdTime ms (anti-faux positifs).\n⚠️ Le code émet encore la notation alerte — à normaliser en alerte + NATURE=Event.",
+          "typeP": "string",
+          "valeurs": {
+            "*": "faible"
+          },
+          "useValueList": true,
+          "valueList": [
+            {
+              "value": "faible",
+              "label": "faible"
+            },
+            {
+              "value": "moyen",
+              "label": "moyen"
+            },
+            {
+              "value": "fort",
+              "label": "fort"
+            },
+            {
+              "value": "silence",
+              "label": "silence"
+            }
+          ]
+        },
+        {
+          "nomP": "dataContRMS",
+          "nomCpletP": "Niveau sonore RMS × 10 (entier). Diviser par 10 pour valeur réelle.\nEnregistrement winSize ms via termux-microphone-record.\nAnalyse RMS via ffmpeg/astats. Filtre delta : envoyé si |moy−dernière| > seuilDelta. | codage : RMS × 10",
+          "typeP": "number",
+          "valeurs": {
+            "*": 0
+          }
+        },
+        {
+          "nomP": "direction",
+          "nomCpletP": "Direction estimée de la source sonore dominante. 450 = 45,0°.\nCalculé par rz_balayage_sonore.sh : balayage servo TGD, angle à max RMS.\nPublié en modes orientation et surveillance. | codage : deg × 10",
+          "typeP": "number",
+          "valeurs": {
+            "*": 0
+          }
+        },
+        {
+          "nomP": "modeMicro",
+          "nomCpletP": "off=micro coupé, aucun flux.\nnormal=dataContRMS publié à chaque mesure.\nintensite=dataContRMS si delta>seuilDelta + alerte si seuil franchi holdTime ms.\norientation=balayage servo TGD → angle direction sonore.\nsurveillance=intensite + balayage auto si RMS>seuilMoyen.",
+          "typeP": "string",
+          "valeurs": {
+            "*": "off"
+          },
+          "useValueList": true,
+          "valueList": [
+            {
+              "value": "off",
+              "label": "off"
+            },
+            {
+              "value": "normal",
+              "label": "normal"
+            },
+            {
+              "value": "intensite",
+              "label": "intensite"
+            },
+            {
+              "value": "orientation",
+              "label": "orientation"
+            },
+            {
+              "value": "surveillance",
+              "label": "surveillance"
+            }
+          ]
+        },
+        {
+          "nomP": "paraMicro",
+          "nomCpletP": "⚠️ freqCont/winSize en MILLISECONDES (≠ Gyro/Mag en Hz, ≠ Sys en s).\nseuilFaible < seuilMoyen < seuilFort obligatoire (vérifié par check_config.sh).\nN fenêtre glissante = winSize/freqCont (min 2 → winSize >= 2×freqCont recommandé). | codage : voir COMPLEXE",
+          "typeP": "object",
+          "valeurs": {
+            "*": {}
+          },
+          "schema": [
+            {
+              "nomSsP": "freqCont",
+              "typeSsP": "number"
+            },
+            {
+              "nomSsP": "winSize",
+              "typeSsP": "number"
+            },
+            {
+              "nomSsP": "seuilDelta",
+              "typeSsP": "number"
+            },
+            {
+              "nomSsP": "holdTime",
+              "typeSsP": "number"
+            },
+            {
+              "nomSsP": "seuilFaible",
+              "typeSsP": "number"
+            },
+            {
+              "nomSsP": "seuilMoyen",
+              "typeSsP": "number"
+            },
+            {
+              "nomSsP": "seuilFort",
+              "typeSsP": "number"
+            },
+            {
+              "nomSsP": "pasBalayage",
+              "typeSsP": "number"
+            },
+            {
+              "nomSsP": "timeoutOrientation",
+              "typeSsP": "number"
+            }
+          ]
+        }
+      ]
+    },
+    "STT": {
+      "nomVarG": "STT",
+      "nomCpletVarG": "STT",
+      "instances": [
+        "*"
+      ],
+      "descriptionVarG": "",
+      "dateUpdateVarG": "2026-03-23T18:03:47.958193Z",
+      "proprietes": [
+        {
+          "nomP": "context",
+          "nomCpletP": "Calculé par calculate_stt_context() dans rz_state-manager.sh.\nInactif : modeRZ=0 ou 5, ou typePtge ≠ 1 et ≠ 4.\nCmde    : speed ≠ 0 (robot en mouvement) → PocketSphinx uniquement.\nConv    : modeRZ=1 (VEILLE) → Gemini prioritaire.\nMixte   : modeRZ=2/3/4 à l'arrêt → PocketSphinx puis Gemini si exit 1.\nglobal.json : .STT.context",
+          "typeP": "string",
+          "valeurs": {
+            "*": "Inactif"
+          },
+          "useValueList": true,
+          "valueList": [
+            {
+              "value": "Inactif",
+              "label": "Inactif"
+            },
+            {
+              "value": "Cmde",
+              "label": "Cmde"
+            },
+            {
+              "value": "Conv",
+              "label": "Conv"
+            },
+            {
+              "value": "Mixte",
+              "label": "Mixte"
+            }
+          ]
+        },
+        {
+          "nomP": "intent",
+          "nomCpletP": "Capsule d'intention vocale construite par rz_stt_handler.sh.\nInner VPIV encapsulé entre {} (sans $ ni #).\nSP reçoit, valide la commande, puis l'exécute ou la refuse.\nPermet un contrôle SP sur toutes les commandes vocales (validation sécurité).",
+          "typeP": "object",
+          "valeurs": {
+            "*": {}
+          },
+          "schema": [
+            {
+              "nomSsP": "CAT",
+              "typeSsP": "string"
+            },
+            {
+              "nomSsP": "VAR",
+              "typeSsP": "string"
+            },
+            {
+              "nomSsP": "PROP",
+              "typeSsP": "string"
+            },
+            {
+              "nomSsP": "INST",
+              "typeSsP": "string"
+            },
+            {
+              "nomSsP": "VAL",
+              "typeSsP": "string"
+            }
+          ]
+        },
+        {
+          "nomP": "modeSTT",
+          "nomCpletP": "KWS=Keyword Spotting PocketSphinx (wake word + catalogue 45 commandes).\nOFF=STT désactivé.\nRepli automatique vers Gemini si PocketSphinx exit 1 (non reconnu).",
+          "typeP": "string",
+          "valeurs": {
+            "*": "KWS"
+          },
+          "useValueList": true,
+          "valueList": [
+            {
+              "value": "KWS",
+              "label": "KWS"
+            },
+            {
+              "value": "OFF",
+              "label": "OFF"
+            }
+          ]
+        },
+        {
+          "nomP": "paraSTT",
+          "nomCpletP": "keyphrase doit être dans fr.dict (regénérable via rz_build_dict.py).\n⚠️ model-fr/ et lexique_referent.dict : fichiers lourds (~50–200 Mo),\nhors Git, à installer manuellement une seule fois. original_init.sh vérifie leur présence. | codage : voir COMPLEXE",
+          "typeP": "object",
+          "valeurs": {
+            "*": {}
+          },
+          "schema": [
+            {
+              "nomSsP": "keyphrase",
+              "typeSsP": "string"
+            },
+            {
+              "nomSsP": "lang",
+              "typeSsP": "string"
+            },
+            {
+              "nomSsP": "threshold",
+              "typeSsP": "number"
+            },
+            {
+              "nomSsP": "lib_path",
+              "typeSsP": "string"
+            }
+          ]
+        }
+      ]
+    },
+    "Voice": {
+      "nomVarG": "Voice",
+      "nomCpletVarG": "Voice",
+      "instances": [
+        "*"
+      ],
+      "descriptionVarG": "",
+      "dateUpdateVarG": "2026-03-23T18:03:47.958193Z",
+      "proprietes": [
+        {
+          "nomP": "tts",
+          "nomCpletP": "SP demande à SE de prononcer un texte via termux-tts-speak.\nGéré directement dans rz_vpiv_parser.sh (case A / MODULE=Voice).\nLes guillemets sont retirés avant envoi au moteur TTS.",
+          "typeP": "string",
+          "valeurs": {
+            "*": ""
+          }
+        }
+      ]
+    },
+    "Appli": {
+      "nomVarG": "Appli",
+      "nomCpletVarG": "Appli",
+      "instances": [
+        "*"
+      ],
+      "descriptionVarG": "",
+      "dateUpdateVarG": "2026-03-23T18:03:47.958193Z",
+      "proprietes": [
+        {
+          "nomP": "Baby",
+          "nomCpletP": "Démarre/arrête app Baby via Tasker (tâche RZ_Baby).\n⚠️ Tasker doit être actif (bloquant si Tasker OFF).",
+          "typeP": "string",
+          "valeurs": {
+            "*": "On"
+          },
+          "useValueList": true,
+          "valueList": [
+            {
+              "value": "On",
+              "label": "On"
+            },
+            {
+              "value": "Off",
+              "label": "Off"
+            }
+          ]
+        },
+        {
+          "nomP": "BabyMonitor",
+          "nomCpletP": "Via RZ_BabyMonitor (Tasker).\nwarn si cam active, modeMicro=off, ou modeRZ=3.\n⚠️ Tasker requis (bloquant si Tasker OFF).",
+          "typeP": "string",
+          "valeurs": {
+            "*": "On"
+          },
+          "useValueList": true,
+          "valueList": [
+            {
+              "value": "On",
+              "label": "On"
+            },
+            {
+              "value": "Off",
+              "label": "Off"
+            }
+          ]
+        },
+        {
+          "nomP": "ExprTasker",
+          "nomCpletP": "Expression → tâche RZ_Expression (expressions faciales robot).\nInfo → tâche RZ_Info (affichage message sur écran SE).\nOff → arrêt ExprTasker.\n⚠️ L'INSTANCE porte le type d'action (≠ autres Appli où INSTANCE=*).\nLa VALUE porte l'argument (nom expression ou texte).",
+          "typeP": "string",
+          "valeurs": {
+            "*": ""
+          }
+        },
+        {
+          "nomP": "NavGPS",
+          "nomCpletP": "Via RZ_NavGPS (Tasker) ou Maps am start (com.google.android.apps.maps).\nwarn si modeRZ=3 (robot en déplacement).",
+          "typeP": "string",
+          "valeurs": {
+            "*": "On"
+          },
+          "useValueList": true,
+          "valueList": [
+            {
+              "value": "On",
+              "label": "On"
+            },
+            {
+              "value": "Off",
+              "label": "Off"
+            }
+          ]
+        },
+        {
+          "nomP": "tasker",
+          "nomCpletP": "Démarre Tasker lui-même via am start (net.dinglisch.android.taskerm).\nPas de dépendance Tasker pour cette app (am start direct).",
+          "typeP": "string",
+          "valeurs": {
+            "*": "On"
+          },
+          "useValueList": true,
+          "valueList": [
+            {
+              "value": "On",
+              "label": "On"
+            },
+            {
+              "value": "Off",
+              "label": "Off"
+            }
+          ]
+        },
+        {
+          "nomP": "zoom",
+          "nomCpletP": "Via RZ_Zoom (Tasker) ou am start fallback (us.zoom.videomeetings).\nwarn si cam active ou modeRZ=3.\nbloquant si CPU > seuil urgence.",
+          "typeP": "string",
+          "valeurs": {
+            "*": "On"
+          },
+          "useValueList": true,
+          "valueList": [
+            {
+              "value": "On",
+              "label": "On"
+            },
+            {
+              "value": "Off",
+              "label": "Off"
+            }
+          ]
+        }
+      ]
+    },
+    "System": {
+      "nomVarG": "System",
+      "nomCpletVarG": "System",
+      "instances": [
+        "*"
+      ],
+      "descriptionVarG": "",
+      "dateUpdateVarG": "2026-03-23T18:03:47.958193Z",
+      "proprietes": [
+        {
+          "nomP": "boot",
+          "nomCpletP": "Publié par RZ_initAll() à la fin de l'initialisation Arduino. Indique à SP que le firmware est opérationnel.",
+          "typeP": "string",
+          "valeurs": {
+            "*": "OK"
+          },
+          "useValueList": true,
+          "valueList": [
+            {
+              "value": "OK",
+              "label": "OK"
+            }
+          ]
+        }
+      ]
+    },
+    "Mtr": {
+      "nomVarG": "Mtr",
+      "nomCpletVarG": "Mtr",
+      "instances": [
+        "*"
+      ],
+      "descriptionVarG": "",
+      "dateUpdateVarG": "2026-03-23T18:03:47.958193Z",
+      "proprietes": [
+        {
+          "nomP": "act",
+          "nomCpletP": "Active (1) ou désactive (0) l'envoi vers l'UNO.",
+          "typeP": "boolean",
+          "valeurs": {
+            "*": false
+          }
+        },
+        {
+          "nomP": "cmd",
+          "nomCpletP": "v∈[-100..100], omega∈[-100..100], a∈[0..4]. Bloqué si urgence active.",
+          "typeP": "string",
+          "valeurs": {
+            "*": ""
+          }
+        },
+        {
+          "nomP": "kturn",
+          "nomCpletP": "Coefficient rotation encodé ×1000. 500=doux, 800=confort, 1000=standard, 1500=franc. Converti en float interne. | codage : ×1000 (1000=standard)",
+          "typeP": "number",
+          "valeurs": {
+            "*": 0
+          }
+        },
+        {
+          "nomP": "override",
+          "nomCpletP": "Arrêt forcé (stop) ou lever override (clear).",
+          "typeP": "string",
+          "valeurs": {
+            "*": "stop"
+          },
+          "useValueList": true,
+          "valueList": [
+            {
+              "value": "stop",
+              "label": "stop"
+            },
+            {
+              "value": "clear",
+              "label": "clear"
+            }
+          ]
+        },
+        {
+          "nomP": "read",
+          "nomCpletP": "Demande l'état courant L,R,A.",
+          "typeP": "string",
+          "valeurs": {
+            "*": "1"
+          },
+          "useValueList": true,
+          "valueList": [
+            {
+              "value": "1",
+              "label": "1"
+            }
+          ]
+        },
+        {
+          "nomP": "scale",
+          "nomCpletP": "Facteur réduction vitesses encodé ×1000. 750=0.750, 1000=pleine vitesse. Converti en float interne par dispatch_Mtr.cpp. | codage : ×1000 (0=arrêt 1000=normal)",
+          "typeP": "number",
+          "valeurs": {
+            "*": 0
+          }
+        },
+        {
+          "nomP": "state",
+          "nomCpletP": "Consignes actuelles en réponse à read.",
+          "typeP": "string",
+          "valeurs": {
+            "*": ""
+          }
+        },
+        {
+          "nomP": "stop",
+          "nomCpletP": "Arrêt propre : v=0, omega=0.",
+          "typeP": "string",
+          "valeurs": {
+            "*": "1"
+          },
+          "useValueList": true,
+          "valueList": [
+            {
+              "value": "1",
+              "label": "1"
+            }
+          ]
+        },
+        {
+          "nomP": "targets",
+          "nomCpletP": "Consignes différentielles calculées envoyées à l'UNO.",
+          "typeP": "string",
+          "valeurs": {
+            "*": ""
+          }
+        }
+      ]
+    },
+    "Odom": {
+      "nomVarG": "Odom",
+      "nomCpletVarG": "Odom",
+      "instances": [
+        "*"
+      ],
+      "descriptionVarG": "",
+      "dateUpdateVarG": "2026-03-23T18:03:47.958193Z",
+      "proprietes": [
+        {
+          "nomP": "act",
+          "nomCpletP": "Active (1) ou met en pause (0) le calcul odométrique.",
+          "typeP": "boolean",
+          "valeurs": {
+            "*": false
+          }
+        },
+        {
+          "nomP": "compass",
+          "nomCpletP": "Cap boussole SE relayé par SP vers Arduino. deg=cap(0-360°,0=Nord), quality=fiabilité(0-100). Source=SE, acheminé via SP (Node-RED relaie Mag:DataContGeo). | codage : deg;0-100",
+          "typeP": "string",
+          "valeurs": {
+            "*": ""
+          }
+        },
+        {
+          "nomP": "freq",
+          "nomCpletP": "Période de calcul odométrique (ms). 50=20Hz recommandé. Aussi configurable via paraOdom. | codage : ms",
+          "typeP": "number",
+          "valeurs": {
+            "*": 0
+          }
+        },
+        {
+          "nomP": "freqPos",
+          "nomCpletP": "Période d'envoi automatique de la position (ms). 0=désactivé. 200ms=5Hz recommandé. Aussi configurable via paraOdom. | codage : ms",
+          "typeP": "number",
+          "valeurs": {
+            "*": 0
+          }
+        },
+        {
+          "nomP": "freqVel",
+          "nomCpletP": "Période d'envoi automatique de la vitesse (ms). 0=désactivé. 40ms=25Hz recommandé. Aussi configurable via paraOdom. | codage : ms",
+          "typeP": "number",
+          "valeurs": {
+            "*": 0
+          }
+        },
+        {
+          "nomP": "gyro",
+          "nomCpletP": "Données gyroscope SE relayées par SP vers Arduino. deg_s=vitesse angulaire axe Z(deg/s), ts_ms=horodatage(ms). Source=SE, acheminé via SP (Node-RED relaie Gyro:dataContGyro). | codage : deg/s;ms",
+          "typeP": "string",
+          "valeurs": {
+            "*": ""
+          }
+        },
+        {
+          "nomP": "mode",
+          "nomCpletP": "Preset. idle=arrêt calcul+report lent(1s). normal=reprend avec fréquences par défaut. surv=calcul et vel deux fois plus fréquents.",
+          "typeP": "string",
+          "valeurs": {
+            "*": "idle"
+          },
+          "useValueList": true,
+          "valueList": [
+            {
+              "value": "idle",
+              "label": "idle"
+            },
+            {
+              "value": "normal",
+              "label": "normal"
+            },
+            {
+              "value": "surv",
+              "label": "surv"
+            }
+          ]
+        },
+        {
+          "nomP": "paraOdom",
+          "nomCpletP": "Configuration physique complète. Les 3 premiers sont obligatoires. gainG/gainD×1000 (1000=neutre). fCalc=période calcul(ms), fPos=période envoi pos(ms), fVel=période envoi vel(ms). 0 pour un paramètre optionnel = garder valeur actuelle. Séquence recommandée : act:0 → paraOdom → reset:1 → act:1 | codage : mm;mm;ticks;×1000;×1000;ms;ms;ms",
+          "typeP": "string",
+          "valeurs": {
+            "*": ""
+          }
+        },
+        {
+          "nomP": "pos",
+          "nomCpletP": "Position du robot. Entiers ×1000. x_mm=x×1000(mm), y_mm=y×1000(mm), theta_mrad=theta×1000(mrad). Envoi périodique selon freqPos_ms. | codage : mm;mm;mrad",
+          "typeP": "string",
+          "valeurs": {
+            "*": ""
+          }
+        },
+        {
+          "nomP": "read",
+          "nomCpletP": "Lecture immédiate. pos=position, vel=vitesse, all=les deux. Réponse : $I:Odom:pos:*:...# ou $I:Odom:vel:*:...# ou $I:Odom:report:*:...#",
+          "typeP": "string",
+          "valeurs": {
+            "*": "pos"
+          },
+          "useValueList": true,
+          "valueList": [
+            {
+              "value": "pos",
+              "label": "pos"
+            },
+            {
+              "value": "vel",
+              "label": "vel"
+            },
+            {
+              "value": "all",
+              "label": "all"
+            }
+          ]
+        },
+        {
+          "nomP": "report",
+          "nomCpletP": "Rapport combiné one-shot (sur demande). Toutes valeurs en entiers ×1000. Déclenché par read:all, report, ou reset. | codage : mm;mm;mrad;mm/s;mrad/s",
+          "typeP": "string",
+          "valeurs": {
+            "*": ""
+          }
+        },
+        {
+          "nomP": "reset",
+          "nomCpletP": "Remet pose à zéro (x=0,y=0,theta=0). Déclenche un report one-shot.",
+          "typeP": "string",
+          "valeurs": {
+            "*": "1"
+          },
+          "useValueList": true,
+          "valueList": [
+            {
+              "value": "1",
+              "label": "1"
+            },
+            {
+              "value": "true",
+              "label": "true"
+            }
+          ]
+        },
+        {
+          "nomP": "vel",
+          "nomCpletP": "Vitesse robot. Entiers ×1000. v_mm_s=vitesse_linéaire×1000(mm/s), omega_mrad_s=vitesse_angulaire×1000(mrad/s). Envoi périodique selon freqVel_ms. | codage : mm/s;mrad/s",
+          "typeP": "string",
+          "valeurs": {
+            "*": ""
+          }
+        }
+      ]
+    },
+    "Mic": {
+      "nomVarG": "Mic",
+      "nomCpletVarG": "Mic",
+      "instances": [
+        "*"
+      ],
+      "descriptionVarG": "",
+      "dateUpdateVarG": "2026-03-23T18:03:47.958193Z",
+      "proprietes": [
+        {
+          "nomP": "bruitNiv1",
+          "nomCpletP": "Bruit soutenu > seuil1. Mode InfoNuisce requis. | codage : ADC",
+          "typeP": "number",
+          "valeurs": {
+            "*": 0
+          }
+        },
+        {
+          "nomP": "bruitNiv2",
+          "nomCpletP": "Bruit soutenu > seuil2. | codage : ADC",
+          "typeP": "number",
+          "valeurs": {
+            "*": 0
+          }
+        },
+        {
+          "nomP": "detectPresenceSon",
+          "nomCpletP": "Présence sonore détectée. Mode DetectPresence requis. | codage : ADC",
+          "typeP": "number",
+          "valeurs": {
+            "*": 0
+          }
+        },
+        {
+          "nomP": "micAngle",
+          "nomCpletP": "Angle d'arrivée du son. Mode ANGLE requis. | codage : deg",
+          "typeP": "number",
+          "valeurs": {
+            "*": 0
+          }
+        },
+        {
+          "nomP": "micMoy",
+          "nomCpletP": "Niveau sonore moyen. Mode MOY requis. | codage : ADC",
+          "typeP": "number",
+          "valeurs": {
+            "*": 0
+          }
+        },
+        {
+          "nomP": "micPIC",
+          "nomCpletP": "Niveau sonore pic. Mode PIC requis. | codage : ADC",
+          "typeP": "number",
+          "valeurs": {
+            "*": 0
+          }
+        },
+        {
+          "nomP": "modeMicsF",
+          "nomCpletP": "Mode flux microphone Arduino.",
+          "typeP": "string",
+          "valeurs": {
+            "*": "OFF"
+          },
+          "useValueList": true,
+          "valueList": [
+            {
+              "value": "OFF",
+              "label": "OFF"
+            },
+            {
+              "value": "MOY",
+              "label": "MOY"
+            },
+            {
+              "value": "ANGLE",
+              "label": "ANGLE"
+            },
+            {
+              "value": "PIC",
+              "label": "PIC"
+            }
+          ]
+        },
+        {
+          "nomP": "modeMicsI",
+          "nomCpletP": "Mode détection événements sonores Arduino.",
+          "typeP": "string",
+          "valeurs": {
+            "*": "OFF"
+          },
+          "useValueList": true,
+          "valueList": [
+            {
+              "value": "OFF",
+              "label": "OFF"
+            },
+            {
+              "value": "InfoNuisce",
+              "label": "InfoNuisce"
+            },
+            {
+              "value": "DetectPresence",
+              "label": "DetectPresence"
+            }
+          ]
+        },
+        {
+          "nomP": "paraMicsF",
+          "nomCpletP": "6 entiers CSV paramètres flux. | codage : ms/ms/ms/ms/ADC/deg",
+          "typeP": "string",
+          "valeurs": {
+            "*": ""
+          }
+        },
+        {
+          "nomP": "paraMicsI",
+          "nomCpletP": "7 entiers CSV paramètres détection. | codage : ADC×4/ms×3",
+          "typeP": "string",
+          "valeurs": {
+            "*": ""
+          }
+        }
+      ]
+    },
+    "US": {
+      "nomVarG": "US",
+      "nomCpletVarG": "US",
+      "instances": [
+        "*"
+      ],
+      "descriptionVarG": "",
+      "dateUpdateVarG": "2026-03-23T18:03:47.958193Z",
+      "proprietes": [
+        {
+          "nomP": "act",
+          "nomCpletP": "",
+          "typeP": "boolean",
+          "valeurs": {
+            "*": false
+          }
+        },
+        {
+          "nomP": "alert",
+          "nomCpletP": "Capteur sous seuil danger. Instance=index numérique. | codage : cm",
+          "typeP": "number",
+          "valeurs": {
+            "*": 0
+          }
+        },
+        {
+          "nomP": "delta",
+          "nomCpletP": " | codage : cm",
+          "typeP": "number",
+          "valeurs": {
+            "*": 0
+          }
+        },
+        {
+          "nomP": "freq",
+          "nomCpletP": " | codage : ms",
+          "typeP": "number",
+          "valeurs": {
+            "*": 0
+          }
+        },
+        {
+          "nomP": "mode",
+          "nomCpletP": "",
+          "typeP": "string",
+          "valeurs": {
+            "*": "idle"
+          },
+          "useValueList": true,
+          "valueList": [
+            {
+              "value": "idle",
+              "label": "idle"
+            },
+            {
+              "value": "normal",
+              "label": "normal"
+            },
+            {
+              "value": "surv",
+              "label": "surv"
+            }
+          ]
+        },
+        {
+          "nomP": "one",
+          "nomCpletP": "Valeur d'un capteur US spécifique en cm. | codage : cm",
+          "typeP": "number",
+          "valeurs": {
+            "*": 0
+          }
+        },
+        {
+          "nomP": "read",
+          "nomCpletP": "",
+          "typeP": "string",
+          "valeurs": {
+            "*": "1"
+          },
+          "useValueList": true,
+          "valueList": [
+            {
+              "value": "1",
+              "label": "1"
+            }
+          ]
+        },
+        {
+          "nomP": "sendall",
+          "nomCpletP": "1=publie toutes valeurs, 0=seulement si variation > delta.",
+          "typeP": "boolean",
+          "valeurs": {
+            "*": false
+          }
+        },
+        {
+          "nomP": "suspect_ms",
+          "nomCpletP": "Délai sans réponse pour marquer capteur suspect. | codage : ms",
+          "typeP": "number",
+          "valeurs": {
+            "*": 0
+          }
+        },
+        {
+          "nomP": "thd",
+          "nomCpletP": " | codage : cm",
+          "typeP": "number",
+          "valeurs": {
+            "*": 0
+          }
+        },
+        {
+          "nomP": "val",
+          "nomCpletP": "Toutes les valeurs US. | codage : cm",
+          "typeP": "string",
+          "valeurs": {
+            "*": ""
+          }
+        }
+      ]
+    },
+    "SecMvt": {
+      "nomVarG": "SecMvt",
+      "nomCpletVarG": "SecMvt",
+      "instances": [
+        "*"
+      ],
+      "descriptionVarG": "",
+      "dateUpdateVarG": "2026-03-23T18:03:47.958193Z",
+      "proprietes": [
+        {
+          "nomP": "act",
+          "nomCpletP": "",
+          "typeP": "boolean",
+          "valeurs": {
+            "*": false
+          }
+        },
+        {
+          "nomP": "alert",
+          "nomCpletP": "Alerte seuil danger en mode soft.",
+          "typeP": "string",
+          "valeurs": {
+            "*": "danger_soft"
+          },
+          "useValueList": true,
+          "valueList": [
+            {
+              "value": "danger_soft",
+              "label": "danger_soft"
+            }
+          ]
+        },
+        {
+          "nomP": "mode",
+          "nomCpletP": "soft=réduit vitesse, hard=arrêt complet.",
+          "typeP": "string",
+          "valeurs": {
+            "*": "soft"
+          },
+          "useValueList": true,
+          "valueList": [
+            {
+              "value": "soft",
+              "label": "soft"
+            },
+            {
+              "value": "hard",
+              "label": "hard"
+            },
+            {
+              "value": "idle",
+              "label": "idle"
+            }
+          ]
+        },
+        {
+          "nomP": "scale",
+          "nomCpletP": "Facteur vitesse max mode soft ×1000. Même convention que Mtr:scale. | codage : ×1000",
+          "typeP": "number",
+          "valeurs": {
+            "*": 0
+          }
+        },
+        {
+          "nomP": "status",
+          "nomCpletP": "Demande état courant.",
+          "typeP": "string",
+          "valeurs": {
+            "*": "1"
+          },
+          "useValueList": true,
+          "valueList": [
+            {
+              "value": "1",
+              "label": "1"
+            }
+          ]
+        },
+        {
+          "nomP": "thd",
+          "nomCpletP": "warn=ralentissement, danger=arrêt. | codage : cm",
+          "typeP": "string",
+          "valeurs": {
+            "*": ""
+          }
+        }
+      ]
+    },
+    "Srv": {
+      "nomVarG": "Srv",
+      "nomCpletVarG": "Srv",
+      "instances": [
+        "TGD",
+        "THB",
+        "BASE",
+        "*"
+      ],
+      "descriptionVarG": "",
+      "dateUpdateVarG": "2026-03-23T18:03:47.958193Z",
+      "proprietes": [
+        {
+          "nomP": "act",
+          "nomCpletP": "",
+          "typeP": "boolean",
+          "valeurs": {
+            "*": false
+          }
+        },
+        {
+          "nomP": "angle",
+          "nomCpletP": " | codage : deg",
+          "typeP": "number",
+          "valeurs": {
+            "*": 0
+          }
+        },
+        {
+          "nomP": "read",
+          "nomCpletP": "Demande lecture angle courant par instance.",
+          "typeP": "string",
+          "valeurs": {
+            "*": "1"
+          },
+          "useValueList": true,
+          "valueList": [
+            {
+              "value": "1",
+              "label": "1"
+            }
+          ]
+        },
+        {
+          "nomP": "speed",
+          "nomCpletP": "",
+          "typeP": "number",
+          "valeurs": {
+            "*": 0
+          }
+        }
+      ]
+    },
+    "IRmvt": {
+      "nomVarG": "IRmvt",
+      "nomCpletVarG": "IRmvt",
+      "instances": [
+        "*"
+      ],
+      "descriptionVarG": "",
+      "dateUpdateVarG": "2026-03-23T18:03:47.958193Z",
+      "proprietes": [
+        {
+          "nomP": "act",
+          "nomCpletP": "",
+          "typeP": "boolean",
+          "valeurs": {
+            "*": false
+          }
+        },
+        {
+          "nomP": "alert",
+          "nomCpletP": "Alerte mouvement détecté (dépassement seuil).",
+          "typeP": "boolean",
+          "valeurs": {
+            "*": false
+          }
+        },
+        {
+          "nomP": "freq",
+          "nomCpletP": " | codage : ms",
+          "typeP": "number",
+          "valeurs": {
+            "*": 0
+          }
+        },
+        {
+          "nomP": "mode",
+          "nomCpletP": "",
+          "typeP": "string",
+          "valeurs": {
+            "*": "idle"
+          },
+          "useValueList": true,
+          "valueList": [
+            {
+              "value": "idle",
+              "label": "idle"
+            },
+            {
+              "value": "monitor",
+              "label": "monitor"
+            },
+            {
+              "value": "surveillance",
+              "label": "surveillance"
+            }
+          ]
+        },
+        {
+          "nomP": "read",
+          "nomCpletP": "",
+          "typeP": "string",
+          "valeurs": {
+            "*": "1"
+          },
+          "useValueList": true,
+          "valueList": [
+            {
+              "value": "1",
+              "label": "1"
+            }
+          ]
+        },
+        {
+          "nomP": "thd",
+          "nomCpletP": "",
+          "typeP": "number",
+          "valeurs": {
+            "*": 0
+          }
+        },
+        {
+          "nomP": "value",
+          "nomCpletP": "Valeur capteur IR. Publié à cadence freq.",
+          "typeP": "number",
+          "valeurs": {
+            "*": 0
+          }
+        }
+      ]
+    },
+    "FS": {
+      "nomVarG": "FS",
+      "nomCpletVarG": "FS",
+      "instances": [
+        "*"
+      ],
+      "descriptionVarG": "",
+      "dateUpdateVarG": "2026-03-23T18:03:47.958193Z",
+      "proprietes": [
+        {
+          "nomP": "act",
+          "nomCpletP": "",
+          "typeP": "boolean",
+          "valeurs": {
+            "*": false
+          }
+        },
+        {
+          "nomP": "alerte",
+          "nomCpletP": "Valeur force au dépassement seuil. | codage : même unité force",
+          "typeP": "number",
+          "valeurs": {
+            "*": 0
+          }
+        },
+        {
+          "nomP": "cal",
+          "nomCpletP": "Facteur calibration ×1000 (950=0.950). 0 interdit. | codage : ×1000",
+          "typeP": "number",
+          "valeurs": {
+            "*": 0
+          }
+        },
+        {
+          "nomP": "force",
+          "nomCpletP": "Force normalisée. Périodique et réponse à read.",
+          "typeP": "number",
+          "valeurs": {
+            "*": 0
+          }
+        },
+        {
+          "nomP": "freq",
+          "nomCpletP": "Fréquence publication ms. 0=désactive. | codage : ms",
+          "typeP": "number",
+          "valeurs": {
+            "*": 0
+          }
+        },
+        {
+          "nomP": "raw",
+          "nomCpletP": "Valeur brute HX711.",
+          "typeP": "number",
+          "valeurs": {
+            "*": 0
+          }
+        },
+        {
+          "nomP": "read",
+          "nomCpletP": "Lecture immédiate force ou raw.",
+          "typeP": "string",
+          "valeurs": {
+            "*": "force"
+          },
+          "useValueList": true,
+          "valueList": [
+            {
+              "value": "force",
+              "label": "force"
+            },
+            {
+              "value": "raw",
+              "label": "raw"
+            }
+          ]
+        },
+        {
+          "nomP": "status",
+          "nomCpletP": "État du module FS.",
+          "typeP": "string",
+          "valeurs": {
+            "*": "alerte"
+          },
+          "useValueList": true,
+          "valueList": [
+            {
+              "value": "alerte",
+              "label": "alerte"
+            },
+            {
+              "value": "actif",
+              "label": "actif"
+            }
+          ]
+        },
+        {
+          "nomP": "tare",
+          "nomCpletP": "Remise à zéro capteur.",
+          "typeP": "string",
+          "valeurs": {
+            "*": "1"
+          },
+          "useValueList": true,
+          "valueList": [
+            {
+              "value": "1",
+              "label": "1"
+            }
+          ]
+        },
+        {
+          "nomP": "thd",
+          "nomCpletP": "Seuil déclenchement alerte. | codage : même unité force",
+          "typeP": "number",
+          "valeurs": {
+            "*": 0
+          }
+        }
+      ]
+    },
+    "Lring": {
+      "nomVarG": "Lring",
+      "nomCpletVarG": "Lring",
+      "instances": [
+        "*",
+        "0–11"
+      ],
+      "descriptionVarG": "",
+      "dateUpdateVarG": "2026-03-23T18:03:47.958193Z",
+      "proprietes": [
+        {
+          "nomP": "act",
+          "nomCpletP": "",
+          "typeP": "boolean",
+          "valeurs": {
+            "*": false
+          }
+        },
+        {
+          "nomP": "clr",
+          "nomCpletP": "Éteint l'anneau.",
+          "typeP": "string",
+          "valeurs": {
+            "*": "1"
+          },
+          "useValueList": true,
+          "valueList": [
+            {
+              "value": "1",
+              "label": "1"
+            }
+          ]
+        },
+        {
+          "nomP": "expr",
+          "nomCpletP": "Expression prédéfinie.",
+          "typeP": "string",
+          "valeurs": {
+            "*": ""
+          }
+        },
+        {
+          "nomP": "init",
+          "nomCpletP": "Réinitialise l'anneau LED.",
+          "typeP": "string",
+          "valeurs": {
+            "*": "1"
+          },
+          "useValueList": true,
+          "valueList": [
+            {
+              "value": "1",
+              "label": "1"
+            }
+          ]
+        },
+        {
+          "nomP": "int",
+          "nomCpletP": "Intensité globale. | codage : ADC",
+          "typeP": "number",
+          "valeurs": {
+            "*": 0
+          }
+        },
+        {
+          "nomP": "mode",
+          "nomCpletP": "'expr'=interne firmware, 'extern'=contrôle SP direct.",
+          "typeP": "string",
+          "valeurs": {
+            "*": "expr"
+          },
+          "useValueList": true,
+          "valueList": [
+            {
+              "value": "expr",
+              "label": "expr"
+            },
+            {
+              "value": "extern",
+              "label": "extern"
+            }
+          ]
+        },
+        {
+          "nomP": "rgb",
+          "nomCpletP": " | codage : ADC 0–255",
+          "typeP": "string",
+          "valeurs": {
+            "*": ""
+          }
+        },
+        {
+          "nomP": "urg",
+          "nomCpletP": "Notification visuelle urgence via lring_emergencyTrigger().",
+          "typeP": "string",
+          "valeurs": {
+            "*": ""
+          }
+        }
+      ]
+    },
+    "Lrub": {
+      "nomVarG": "Lrub",
+      "nomCpletVarG": "Lrub",
+      "instances": [
+        "*"
+      ],
+      "descriptionVarG": "",
+      "dateUpdateVarG": "2026-03-23T18:03:47.958193Z",
+      "proprietes": [
+        {
+          "nomP": "act",
+          "nomCpletP": "",
+          "typeP": "boolean",
+          "valeurs": {
+            "*": false
+          }
+        },
+        {
+          "nomP": "col",
+          "nomCpletP": " | codage : ADC 0–255",
+          "typeP": "string",
+          "valeurs": {
+            "*": ""
+          }
+        },
+        {
+          "nomP": "effetFuite",
+          "nomCpletP": "Effet visuel fuite alternance pairs/impairs.",
+          "typeP": "boolean",
+          "valeurs": {
+            "*": false
+          }
+        },
+        {
+          "nomP": "init",
+          "nomCpletP": "",
+          "typeP": "string",
+          "valeurs": {
+            "*": "1"
+          },
+          "useValueList": true,
+          "valueList": [
+            {
+              "value": "1",
+              "label": "1"
+            }
+          ]
+        },
+        {
+          "nomP": "lumin",
+          "nomCpletP": "Intensité ruban. | codage : ADC",
+          "typeP": "number",
+          "valeurs": {
+            "*": 0
+          }
+        },
+        {
+          "nomP": "timeout",
+          "nomCpletP": "Extinction auto. 0=annule timeout sans éteindre. | codage : ms",
+          "typeP": "number",
+          "valeurs": {
+            "*": 0
+          }
+        }
+      ]
+    },
+    "Ctrl_L": {
+      "nomVarG": "Ctrl_L",
+      "nomCpletVarG": "Ctrl_L",
+      "instances": [
+        "*"
+      ],
+      "descriptionVarG": "",
+      "dateUpdateVarG": "2026-03-23T18:03:47.958193Z",
+      "proprietes": [
+        {
+          "nomP": "act",
+          "nomCpletP": "Active/désactive contrôle laisse. Aussi activé par CfgS:typePtge=3|4.",
+          "typeP": "boolean",
+          "valeurs": {
+            "*": false
+          }
+        },
+        {
+          "nomP": "dead",
+          "nomCpletP": "Zone morte mm. Pas de correction si delta < dead. | codage : mm",
+          "typeP": "number",
+          "valeurs": {
+            "*": 0
+          }
+        },
+        {
+          "nomP": "dist",
+          "nomCpletP": "Distance cible mm. | codage : mm",
+          "typeP": "number",
+          "valeurs": {
+            "*": 0
+          }
+        },
+        {
+          "nomP": "status",
+          "nomCpletP": "Demande état courant.",
+          "typeP": "string",
+          "valeurs": {
+            "*": "1"
+          },
+          "useValueList": true,
+          "valueList": [
+            {
+              "value": "1",
+              "label": "1"
+            }
+          ]
+        },
+        {
+          "nomP": "vmax",
+          "nomCpletP": "Vitesse longitudinale max correction laisse.",
+          "typeP": "number",
+          "valeurs": {
+            "*": 0
+          }
+        }
+      ]
+    }
+  },
+  "ipListe": []
+}

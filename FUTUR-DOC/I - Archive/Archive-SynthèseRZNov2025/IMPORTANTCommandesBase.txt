@@ -1,0 +1,124 @@
+Actu octobre 2025
+Rappel/Port - Port 1883  MQTT   - Port (80)22 SSH   - Port Node-red 1880  || - VNC 5900 ||- 5700? 80 ? - FTP DATA 20 - FTP Server 21
+_Synthèse dans notion_____________________________________________
+Rappel / protocol TCP/UDP bidirectionnelle - TCP transfert UDP reception
+________________________________________________
+- ServeurRPI3  IP fix etho:  192.168.1.40 -> accueil serveur ethernet          - Pour wifi 192.168.1.37 (local fix)
+Installé : SSH, VNC, MQTT broker , Serveur Web, Node-red
+VNC s'ouvrait avec un bureau léger tightVNC, maintenant X11 (intérêt copier coller) on utilise realVNC avec l'adresse du serveur suivi de :1 -> 192.168.1.38:1 (sinon le bureau normal ?)
+ et le code est les 8 premiers caractères du  nouveau code de  l'utilisateur rzServeur.
+SSH utilise le nouveau code et id rzServeur
+IMP : comportement attendu ->  Utiliser l'IP locale (192.168.1.40) quand sur mon raiseau,
+ et le domaine DuckDNS quand je suis à l'extérieur (l'adresse externe ne fonctionne pas en local
+
+| Type                      | IP           | Utilisation                                                                                                                                        |
+| ------------------------- | ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Accès distant / Wi-Fi** | 198.168.1.40 | C’est l’adresse par laquelle tu peux te connecter depuis ton PC s’il est sur le même réseau ou via le routeur (NAT/port forwarding si nécessaire). |
+| **Adresse locale / LAN**  | 192.168.1.37 | Adresse directe sur ton réseau local, idéale pour VNC depuis un PC branché sur le même réseau.                                                     |
+
+Remarque fonctionnement serveur j'ai modifier le crontab -e
+ pour permettre un redémarrage automatique du serveur après 10 minutes, un nettoyage de la ram tout les jours à 4h
+
+J'aii ajouter deux scripts pour avoir des boutons sur le bureau pour arrêter et relancer le serveur.
+Ps : finalisation de la config du serveur avec ia baleine.
+
+Adresse public du serveur (connexion à distance via http)  -> http://92.139.73.217/
+Id rzServeur  Code habituel
+
+SSH port 22 rz -  Id: rzServeur  - Code nthLEga99?
+
+broker MQTT de RPI3 (local ok, et distant ?) : Id robot2 192.168.1.40 : 1883 code New
+
+________________________________________________
+
+- AndroidXiaomiPhilippe (futur portable embarqué qd option distant ou user) -> wifiMaisonFix : 192.168.1.13
+VNC Id Smartphone code  ? imagine habituel vss ? ... no sabe
+SSH, MQTT client-publicher et realVNC (clientVNCcelui qui recup les infos) serveurVNC (admindroid, celui qui communique ses données)  Node-red
+SSH (local) Id: u0_a234 - code habituel
+________________________________________________
+
+- AndroidDoro (futur portable embarqué quand local ou user) -> wifiMaisonFix : 192.168.1.12
+SSH,  code provisoire : n suivi d'habituel? (nvelle version) - id actuel u0_a154
+
+____________________________________________________________________
+- RPI4 (ini RPI RZ) : ID rz code habituel sans ?  -  IP fix  Wifi : 192.168.1.30
+Installé :  Serveur Web local, VNC, SSH, MQTT Client, Node-red
+SSH id rz code habituel ss ? [serveur ssh-ed25519 clef :    255 SHA256:tg0rYbFwz08vl+ruQLGJe49+DMIRrLCZ/r5ui0ahbeo] 
+________________________________________________________________________
+-PC portable Acer Swift Philippe (VincentPhAcer) ->  IP fix  Wifi : 192.168.1.55
+Installé :  VNC (RealVncViewer), SSH (Putty)
+ditr
+___________________________________________________________________
+Clef du domaine duck :
+Duck DNS
+account 
+vincentphcom@gmail.com 
+type no
+free 
+token 
+99bab53c-1dc1-4b4a-b4b1-8ce4fe2e27ad 
+token generated 
+7 minutes ago 
+created date 
+16 Jan 2025, 23:43:00 
+
+echo url="https://www.duckdns.org/update?domains=monrobot&token=VOTRE_TOKEN&ip=" | curl -k -o ~/duckdns/duck.log -K -
+
+______________________________________
+Dans doro mon fichier .env :
+
+# =========================================================
+# ~/.env  —  Configuration réseau et MQTT pour SE
+# =========================================================
+
+
+# --- Wi-Fi connus - maison et SP qd hors maison ---
+HOME_SSID="Livebox-72D0"
+HOME_PASSWORD="thLEga99"
+
+XIAOMI_SSID="PhVmz"
+XIAOMI_PASSWORD="99bab53c-1dc1-4b4a-b4b1-8ce4fe2e27ad"
+
+# --- DuckDNS ---
+DUCKDNS_TOKEN="99bab53c-1dc1-4b4a-b4b1-8ce4fe2e27ad"
+#DUCK_DOMAIN_SE="robotrz-se"
+#DUCK_DOMAIN_SP="robotrz-sp"
+DUCK_DOMAIN_RPI="robotz-vincent"
+#THIS_DUCK_DOMAIN="$DUCK_DOMAIN_SE"
+
+# --- Brokers MQTT ---
+# Adresses locales (Wi-Fi maison ou hotspot)
+MQTT_BROKER_HOME_LOCAL="192.168.1.40"
+MQTT_BROKER_SP_LOCAL="192.168.43.1"
+
+# Adresses distantes (via Internet / DuckDNS)
+#MQTT_BROKER_HOME_DDNS="robotrz-se.duckdns.org"
+#MQTT_BROKER_SP_DDNS="robotrz-sp.duckdns.org"
+MQTT_BROKER_RPI_DDNS="robotz-vincent.duckdns.org"
+
+# --- Identifiants MQTT ---
+MQTT_USER="RZ"
+MQTT_PASSWORD="nthLEga99?"
+
+______________________________________________________________
+COMMANDES :
+
+ NODE-RED : entrer Node-Red sortir Ctrl+C
+
+
+SSH : Statut (dispo): sudo systemctl status ssh.
+      Activer : sudo systemctl start ssh.  ou sshd                      tuer : ctrl D
+
+
+MQTT : pour activer : mosquitto pour verifier service lancé : netstat -an | find str 1883
+       Le fichier de configuration du serveur se trouve dans le dossier d’installation :
+	sudo nano /etc/mosquitto/mosquitto.conf
+                  sudo nano /etc/mosquitto/conf.d/default.conf
+
+sudo systemctl stop mosquitto   #arrêter
+sudo systemctl start mosquitto  #démarrer
+sudo systemctl restart mosquitto #redémarrer
+sudo systemctl status mosquitto #connaitre le status
+
+LINUX
+Ouvrir le gestionnaire de fichier dans linux commande : sudo pcmanfm

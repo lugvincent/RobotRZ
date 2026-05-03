@@ -1,0 +1,45 @@
+<template>
+  <div>
+    <h3>{{ msg.payload.variable.nomVarG || '' }}</h3>
+    <table style="width:100%;border-collapse:collapse;border:1px solid #cccccc;">
+      <thead>
+        <tr style="background:#f8f9fa;">
+          <th style="border:1px solid #cccccc;padding:8px;">Nom</th>
+          <th style="border:1px solid #cccccc;padding:8px;">Action</th>
+          <th style="border:1px solid #cccccc;padding:8px;">Type</th>
+          <th style="border:1px solid #cccccc;padding:8px;">Défaut (*)</th>
+          <th v-for="inst in msg.payload.instances" :key="inst" style="border:1px solid #cccccc;padding:8px;">{{inst}}
+          </th>
+         </tr>
+      </thead>
+      <tbody>
+        <tr v-for="(p,idx) in msg.payload.proprietes" :key="idx" :style="p._isNew ? 'background:#fff8e1':''">
+          <td style="border:1px solid #dddddd;padding:6px 8px;">{{p.nomP}}</td>
+          <td style="border:1px solid #dddddd;padding:6px 8px;">
+            <button v-if="p._isNew" @click="openBase(p)">➕ Définir</button>
+            <template v-else>
+              <button @click="openBase(p)">📝 Base</button>
+              <button @click="openValues(p)">✏️ Valeurs</button>
+              <button @click="askDelete(p)">🗑️</button>
+            </template>
+          </td>
+          <td style="border:1px solid #dddddd;padding:6px 8px;">{{p.typeP || '-'}}</td>
+          <td style="border:1px solid #dddddd;padding:6px 8px;">{{ formatVal(p.defaut) }}</td>
+          <td v-for="inst in msg.payload.instances" :key="inst" style="border:1px solid #dddddd;padding:6px 8px;">{{
+            formatVal(p.valeurs && p.valeurs[inst]) }}</td>
+        </tr>
+      </tbody>
+    </table>
+    <div style="margin-top:8px;color:#333;font-size:0.95em">{{ msg.info }}</div>
+  </div>
+</template>
+<script>
+  export default {
+  methods: {
+    formatVal(v){ return v===null||v===undefined?'null':(typeof v==='object'?JSON.stringify(v):v); },
+    openBase(prop){ this.send({action:'base',prop}); },
+    openValues(prop){ this.send({action:'valeurs',prop}); },
+    askDelete(prop){ if(confirm('Supprimer '+prop.nomP+' ?')) this.send({action:'delete',prop}); }
+  }
+}
+</script>

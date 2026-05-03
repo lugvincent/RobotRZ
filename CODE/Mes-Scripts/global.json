@@ -1,0 +1,281 @@
+//Commande pour permettre de copier coller un fichier depuis sshd du portable vers pc  exple le fichier global de json: 
+cat /data/data/com.termux/files/home/node_red_data/context/global/global.json
+{
+    "enrichedVars": {
+        "detectMouv": {
+            "nomVarG": "detectMouv",
+            "abbrVarG": "",
+            "typeVarG": "object",
+            "instances": [
+                "*"
+            ],
+            "descriptionVarG": "Auto-export",
+            "dateUpdateVarG": "2025-08-28T06:53:13.728Z",
+            "indexInstances": "0",
+            "proprietesByInstance": {
+                "proprietes": [
+                    {
+                        "nom": "*",
+                        "type": "object"
+                    }
+                ],
+                "valeurs": {
+                    "*": {
+                        "*": "{\"actif\":false}"
+                    }
+                },
+                "abbrProprietes": {}
+            }
+        },
+        "ModeF": {
+            "nomVarG": "ModeF",
+            "abbrVarG": "",
+            "typeVarG": "object",
+            "instances": [
+                "*"
+            ],
+            "descriptionVarG": "Auto-export",
+            "dateUpdateVarG": "2025-08-28T06:53:13.730Z",
+            "indexInstances": "0",
+            "proprietesByInstance": {
+                "proprietes": [
+                    {
+                        "nom": "*",
+                        "type": "object"
+                    }
+                ],
+                "valeurs": {
+                    "*": {
+                        "*": "{\"programme\":\"N0\"}"
+                    }
+                },
+                "abbrProprietes": {}
+            }
+        },
+        "leds_Ruban": {
+            "nomVarG": "leds_Ruban",
+            "abbrVarG": "L_R",
+            "typeVarG": "object",
+            "instances": [
+                "ARG0",
+                "ARG1",
+                "ARG2",
+                "ARC3",
+                "ARD4",
+                "ARD5",
+                "ARD6",
+                "AVD7",
+                "AVD8",
+                "AVC9",
+                "AVG10",
+                "AVG11",
+                "TRG12",
+                "TRD13",
+                "VOY14",
+                "_abbrVarG",
+                "_indexInstances"
+            ],
+            "descriptionVarG": "Auto-export",
+            "dateUpdateVarG": "2025-08-28T06:53:13.732Z",
+            "indexInstances": "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16",
+            "proprietesByInstance": {
+                "proprietes": [],
+                "valeurs": {
+                    "ARG0": {},
+                    "ARG1": {},
+                    "ARG2": {},
+                    "ARC3": {},
+                    "ARD4": {},
+                    "ARD5": {},
+                    "ARD6": {},
+                    "AVD7": {},
+                    "AVD8": {},
+                    "AVC9": {},
+                    "AVG10": {},
+                    "AVG11": {},
+                    "TRG12": {},
+                    "TRD13": {},
+                    "VOY14": {},
+                    "_abbrVarG": {},
+                    "_indexInstances": {}
+                },
+                "abbrProprietes": {}
+            }
+        },
+        "micros_Arduino": {
+            "nomVarG": "micros_Arduino",
+            "abbrVarG": "MiA",
+            "typeVarG": "object",
+            "instances": [
+                "MicroAVG",
+                "MicroAVC",
+                "MicroAVD",
+                "_abbrVarG",
+                "_indexInstances"
+            ],
+            "descriptionVarG": "Auto-export",
+            "dateUpdateVarG": "2025-08-28T06:53:13.736Z",
+            "indexInstances": "0,1,2,3,4",
+            "proprietesByInstance": {
+                "proprietes": [
+                    {
+                        "nom": "actif",
+                        "type": "undefined"
+                    },
+                    {
+                        "nom": "intensite",
+                        "type": "undefined"
+                    }
+                ],
+                "valeurs": {
+                    "MicroAVG": {
+                        "actif": "",
+                        "intensite": ""
+                    },
+                    "MicroAVC": {
+                        "actif": "",
+                        "intensite": ""
+                    },
+                    "MicroAVD": {
+                        "actif": "",
+                        "intensite": ""
+                    },
+                    "_abbrVarG": {
+                        "actif": "",
+                        "intensite": ""
+                    },
+                    "_indexInstances": {
+                        "actif": "",
+                        "intensite": ""
+                    }
+                },
+                "abbrProprietes": {}
+            }
+        },
+        "capteurForce": {
+            "nomVarG": "capteurForce",
+            "abbrVarG": "",
+            "typeVarG": "object",
+            "instances": [
+                "*"
+            ],
+            "descriptionVarG": "Auto-export",
+            "dateUpdateVarG": "2025-08-28T06:53:13.737Z",
+            "indexInstances": "0",
+            "proprietesByInstance": {
+                "proprietes": [
+                    {
+                        "nom": "*",
+                        "type": "object"
+                    }
+                ],
+                "valeurs": {
+                    "*": {
+                        "*": "{}"
+                    }
+                },
+                "abbrProprietes": {}
+            }
+        },
+        "LedRing": {
+            "nomVarG": "LedRing",
+            "abbrVarG": "LR",
+            "typeVarG": "object",
+            "instances": [
+                "0",
+                "1",
+                "2",
+                "3",
+                "4",
+                "5",
+                "6",
+                "7",
+                "8",
+                "9",
+                "10",
+                "11"
+            ],
+            "indexInstances": [
+                "0",
+                "1",
+                "2",
+                "3",
+                "4",
+                "5",
+                "6",
+                "7",
+                "8",
+                "9",
+                "10",
+                "11"
+            ],
+            "descriptionVarG": "- Objectif: gestion du cercle de led pour expression \"faciale\"\n- Source arduino, 12 leds programmables numérotation sens aiguille d'une montre la 0 en Ht (montage actuel). fonctions préprogrammées dans l'arduino et node-red / affichage : sourire, triste,....",
+            "dateUpdateVarG": "2025-08-28T10:49:20.898Z",
+            "proprietesByInstance": {
+                "proprietes": [],
+                "valeurs": {
+                    "0": {},
+                    "1": {},
+                    "2": {},
+                    "3": {},
+                    "4": {},
+                    "5": {},
+                    "6": {},
+                    "7": {},
+                    "8": {},
+                    "9": {},
+                    "10": {},
+                    "11": {}
+                },
+                "abbrProprietes": {}
+            }
+        }
+    },
+    "ipListe": [
+        {
+            "id": "SmartP_IP_Direct",
+            "ip": "192.168.48.xx",
+            "description": "Adresse IP : 192.168.48.xx - Cas : SmartP_IP_Direct - Smartphone (partage de connexion) - Activez le partage de connexion sur le smartphone embarqué ",
+            "etat": "indéfini"
+        },
+        {
+            "id": "RPI_IP_Wifi",
+            "ip": "192.168.1.38",
+            "description": "Adresse IP : 192.168.1.38 - Cas : RPI_IP_Wifi - Serveur RPI sur réseau local (connecté à la box maison) ",
+            "etat": "non défini"
+        },
+        {
+            "id": "SmartPiloteViaBox",
+            "ip": "192.168.1.13",
+            "description": "Adresse IP : 192.168.1.13 - Cas : SmartPiloteViaBox - Le smartphone pilote utilise une adresse fourni par la box ",
+            "etat": "connecté"
+        },
+        {
+            "id": "RPI_IP_Serveur",
+            "ip": "",
+            "description": "Adresse IP :  - Cas : RPI_IP_Serveur - Serveur RPI distant exposé Internet - (Nécessite une carte SIM sur le Smartphone embarqué) ",
+            "etat": "indisponible"
+        }
+    ],
+    "reglesVars": [
+        {
+            "var1": "us",
+            "val1": "*",
+            "var2": "ModeF",
+            "val2": "danger",
+            "var3": "led",
+            "val3": "*",
+            "action": "⚠️ Obstacle détecté",
+            "type": "affichage"
+        },
+        {
+            "var1": "servo",
+            "val1": "T:90",
+            "var2": "*",
+            "val2": "*",
+            "var3": "ModeF",
+            "val3": "auto",
+            "action": "Positionner la tête au centre",
+            "type": "mqtt"
+        }
+    ]

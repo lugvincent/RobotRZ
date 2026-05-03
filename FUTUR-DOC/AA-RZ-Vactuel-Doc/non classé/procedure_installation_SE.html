@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Procédure Installation SE — RobotRZ</title>
+<style>
+:root{--bg:#0d1117;--bg2:#161b22;--bg3:#21262d;--text:#e6edf3;--text2:#8b949e;--text3:#484f58;--green:#3fb950;--orange:#d29922;--blue:#58a6ff;--purple:#bc8cff;--red:#f85149;--border:rgba(240,246,252,0.1)}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;font-size:14px;line-height:1.7;padding:32px 16px 80px}
+.page{max-width:900px;margin:0 auto}
+h1{font-size:24px;font-weight:600;border-bottom:1px solid var(--border);padding-bottom:16px;margin-bottom:8px}
+h2{font-size:16px;font-weight:600;color:var(--blue);margin:28px 0 12px;display:flex;align-items:center;gap:8px}
+h2::before{content:'';display:inline-block;width:4px;height:16px;background:var(--blue);border-radius:2px}
+.sub{color:var(--text2);font-size:13px;margin-bottom:28px}
+.sec{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:20px 24px;margin-bottom:18px}
+code{font-family:'Courier New',monospace;font-size:12px;background:var(--bg3);color:var(--orange);padding:2px 6px;border-radius:4px}
+pre{font-family:'Courier New',monospace;font-size:12px;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:14px 16px;margin:10px 0;overflow-x:auto;line-height:1.6;color:#c9d1d9;white-space:pre-wrap}
+.al{border-radius:8px;padding:10px 14px;font-size:13px;margin:10px 0;display:flex;gap:8px;align-items:flex-start}
+.al-ok{background:rgba(63,185,80,.08);border:1px solid rgba(63,185,80,.25);color:var(--green)}
+.al-warn{background:rgba(210,153,34,.08);border:1px solid rgba(210,153,34,.25);color:var(--orange)}
+.al-red{background:rgba(248,81,73,.08);border:1px solid rgba(248,81,73,.25);color:var(--red)}
+.step{display:flex;gap:12px;margin:10px 0}
+.sn{width:28px;height:28px;background:#1f6feb;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;color:white;min-width:28px}
+.sc{flex:1;padding-top:4px;font-size:13px;color:var(--text2)}
+p{margin:6px 0;color:var(--text2);font-size:13px}
+ul{padding-left:18px;margin:6px 0}
+ul li{font-size:13px;color:var(--text2);margin:3px 0}
+strong{color:var(--text)}
+hr{border:none;border-top:1px solid var(--border);margin:28px 0}
+h3{font-size:13px;font-weight:600;color:var(--text);margin:16px 0 8px}
+</style>
+</head>
+<body>
+<div class="page">
+<h1>Procédure d'Installation SE — RobotRZ</h1>
+<p class="sub">Installation complète depuis zéro — Téléphone Doro (Android) — Version 2026-04-28</p>
+
+<h2>Prérequis</h2>
+<div class="sec">
+<ul>
+<li>Téléphone Android (Doro) avec accès au Play Store</li>
+<li>Connexion WiFi (même réseau que le RPI broker)</li>
+<li>Accès SSH depuis un PC (optionnel mais recommandé)</li>
+<li>Dépôt Git : <code>https://github.com/lugvincent/RobotRZ</code></li>
+</ul>
+</div>
+
+<h2>Étape 1 — Installation des applications Android</h2>
+<div class="sec">
+<div class="step"><div class="sn">1</div><div class="sc">Installer <strong>Termux</strong> depuis F-Droid (pas le Play Store — version maintenue)</div></div>
+<div class="step"><div class="sn">2</div><div class="sc">Installer <strong>Termux:API</strong> depuis F-Droid (même source que Termux)</div></div>
+<div class="step"><div class="sn">3</div><div class="sc">Installer <strong>Termux:Tasker</strong> depuis F-Droid</div></div>
+<div class="step"><div class="sn">4</div><div class="sc">Installer <strong>Tasker</strong> depuis le Play Store (version payante recommandée)</div></div>
+<div class="step"><div class="sn">5</div><div class="sc">Installer <strong>IP Webcam Pro</strong> (<code>com.pas.webcam.pro</code>) depuis le Play Store — Thyoni Tech</div></div>
+<div class="al al-warn"><span>⚠️</span><span>Termux et Termux:API doivent venir de la <strong>même source</strong> (F-Droid). Mélanger Play Store et F-Droid empêche la communication entre les applis.</span></div>
+</div>
+
+<h2>Étape 2 — Configuration Termux</h2>
+<div class="sec">
+<pre># Accorder les permissions de stockage
+termux-setup-storage
+
+# Mettre à jour les packages
+pkg update && pkg upgrade -y
+
+# Installer les dépendances essentielles
+pkg install -y git jq openssh curl mosquitto python
+
+# Installer les packages Python
+pip install paho-mqtt pyserial --break-system-packages
+
+# Activer SSH (port 8022 par défaut)
+sshd</pre>
+<div class="al al-warn"><span>⚠️</span><span>Le port SSH de Termux est <strong>8022</strong> (pas 22). Connexion : <code>ssh rzServeur@&lt;IP_DORO&gt; -p 8022</code></span></div>
+</div>
+
+<h2>Étape 3 — Clone du dépôt</h2>
+<div class="sec">
+<pre># Cloner le dépôt
+cd ~
+git clone https://github.com/lugvincent/RobotRZ robotRZ-smartSE
+
+# Configurer l'identité Git
+git config --global user.name "lugvincent"
+git config --global user.email "vincentphcom@gmail.com"
+
+# Configurer le token GitHub (remplacer TOKEN par votre PAT)
+git remote set-url origin https://lugvincent:TOKEN@github.com/lugvincent/RobotRZ</pre>
+</div>
+
+<h2>Étape 4 — Création de keys.json (OBLIGATOIRE — non versionné)</h2>
+<div class="sec">
+<div class="al al-red"><span>🔴</span><span><code>keys.json</code> n'est pas dans Git pour des raisons de sécurité. Il doit être créé manuellement à chaque nouvelle installation.</span></div>
+<pre>mkdir -p ~/robotRZ-smartSE/termux/config
+
+nano ~/robotRZ-smartSE/termux/config/keys.json</pre>
+<p>Contenu du fichier :</p>
+<pre>{
+    "GEMINI_API_KEY": "VOTRE_CLE_GEMINI",
+    "MQTT_USER":      "rpibrokerUser",
+    "MQTT_PASS":      "VOTRE_MOT_DE_PASSE_MQTT",
+    "MQTT_HOST":      "192.168.1.40"
+}</pre>
+</div>
+
+<h2>Étape 5 — Génération des fichiers de config</h2>
+<div class="sec">
+<pre># Exécuter check_config.sh (génère tous les *_runtime.json)
+cd ~/robotRZ-smartSE/termux/config
+bash check_config.sh</pre>
+<p>Résultat attendu : tous les fichiers générés et validés ✓</p>
+<pre>gyro_runtime.json    généré et validé ✓
+mag_runtime.json     généré et validé ✓
+sys_runtime.json     généré et validé ✓
+cam_config.json      généré et validé ✓
+appli_config.json    généré et validé ✓
+mic_config.json      généré et validé ✓
+stt_config.json      généré et validé ✓</pre>
+<div class="al al-warn"><span>⚠️</span><span>La section <code>.voice</code> absente de courant_init.json génère un WARN non bloquant. rz_voice_manager.sh utilisera les valeurs par défaut.</span></div>
+</div>
+
+<h2>Étape 6 — Démarrage du système</h2>
+<div class="sec">
+<pre># Démarrage complet (lance tous les managers actifs)
+bash ~/robotRZ-smartSE/termux/scripts/core/rz_start.sh
+
+# Vérifier l'état des processus
+bash ~/robotRZ-smartSE/termux/scripts/core/rz_start.sh --status
+
+# Arrêt propre
+bash ~/robotRZ-smartSE/termux/scripts/core/rz_start.sh --stop</pre>
+<p>Managers démarrés automatiquement selon <code>courant_init.json</code> :</p>
+<ul>
+<li><code>rz_vpiv_parser.sh</code> — toujours</li>
+<li><code>rz_state-manager.sh</code> — toujours</li>
+<li><code>rz_sys_monitor.sh</code> — si modeSys != OFF</li>
+<li><code>rz_gyro_manager.sh</code> — si modeGyro != OFF</li>
+<li><code>rz_mg_manager.sh</code> — si modeMg != OFF</li>
+<li><code>rz_stt_manager.sh</code> — si modeSTT != OFF</li>
+</ul>
+</div>
+
+<h2>Étape 7 — Vérification SSH depuis le PC</h2>
+<div class="sec">
+<pre># Connexion SSH standard (réseau local)
+ssh rzServeur@192.168.1.12 -p 8022
+
+# Via NAT box (depuis internet)
+ssh rzServeur@192.168.1.12 -p 5800
+
+# Vérifier les processus actifs
+ps | grep -E "rz_|mosquitto|python"
+
+# Vérifier la connexion MQTT
+mosquitto_pub -h 192.168.1.40 -p 1883 \
+    -u "rpibrokerUser" -P "VOTRE_MOT_DE_PASSE" \
+    -t "SE/statut" -m "test" -q 0</pre>
+</div>
+
+<h2>Étape 8 — Configuration IP Webcam Pro</h2>
+<div class="sec">
+<div class="step"><div class="sn">1</div><div class="sc">Ouvrir IP Webcam Pro sur le Doro</div></div>
+<div class="step"><div class="sn">2</div><div class="sc">Menu → Paramètres de connexion → Port : 8080 (défaut)</div></div>
+<div class="step"><div class="sn">3</div><div class="sc">Menu → Démarrer le serveur</div></div>
+<div class="step"><div class="sn">4</div><div class="sc">Vérifier l'URL affichée : <code>http://192.168.1.12:8080</code></div></div>
+<div class="step"><div class="sn">5</div><div class="sc">Tester depuis Termux : <code>curl -s --max-time 3 -I "http://192.168.1.12:8080/video"</code></div></div>
+</div>
+
+<hr>
+<p style="text-align:center;color:var(--text3);font-size:12px;margin-top:24px">Projet RobotRZ — Procédure installation SE — Version 2026-04-28 — Vincent Philippe</p>
+</div>
+</body>
+</html>

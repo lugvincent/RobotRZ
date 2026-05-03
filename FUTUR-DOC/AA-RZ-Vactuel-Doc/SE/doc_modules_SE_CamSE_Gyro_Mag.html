@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Doc Modules SE — CamSE, Gyro, Mag — RobotRZ</title>
+<style>
+:root {
+    --bg:     #0d1117;
+    --bg2:    #161b22;
+    --bg3:    #21262d;
+    --text:   #e6edf3;
+    --text2:  #8b949e;
+    --text3:  #484f58;
+    --green:  #3fb950;
+    --orange: #d29922;
+    --blue:   #58a6ff;
+    --purple: #bc8cff;
+    --teal:   #39d353;
+    --red:    #f85149;
+    --coral:  #ff7b72;
+    --border: rgba(240,246,252,0.1);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    font-size: 14px;
+    line-height: 1.7;
+    padding: 32px 16px 80px;
+}
+.page { max-width: 900px; margin: 0 auto; }
+
+/* HEADER */
+.header {
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 20px;
+    margin-bottom: 32px;
+}
+.header h1 {
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 4px;
+}
+.header .sub { color: var(--text2); font-size: 13px; }
+.badge {
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    margin-left: 8px;
+    vertical-align: middle;
+}
+.badge-ok  { background: rgba(63,185,80,0.15);  color: var(--green);  border: 1px solid rgba(63,185,80,0.3);  }
+.badge-wip { background: rgba(210,153,34,0.15); color: var(--orange); border: 1px solid rgba(210,153,34,0.3); }
+.badge-todo{ background: rgba(88,166,255,0.15); color: var(--blue);   border: 1px solid rgba(88,166,255,0.3); }
+
+/* NAVIGATION */
+.nav {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 32px;
+    flex-wrap: wrap;
+}
+.nav a {
+    padding: 6px 16px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    color: var(--text2);
+    text-decoration: none;
+    font-size: 13px;
+    transition: all 0.15s;
+}
+.nav a:hover { background: var(--bg3); color: var(--text); border-color: var(--blue); }
+
+/* MODULES */
+.module {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    margin-bottom: 32px;
+    overflow: hidden;
+}
+.module-header {
+    padding: 18px 24px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+.module-icon {
+    width: 36px; height: 36px;
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+    flex-shrink: 0;
+}
+.ic-cam    { background: rgba(88,166,255,0.15); }
+.ic-gyro   { background: rgba(188,140,255,0.15); }
+.ic-mag    { background: rgba(63,185,80,0.15); }
+
+.module-title { font-size: 18px; font-weight: 600; }
+.module-body { padding: 24px; }
+
+/* SECTIONS */
+h3 {
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--text2);
+    margin: 20px 0 10px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--border);
+}
+h3:first-child { margin-top: 0; }
+
+/* GRILLE 2 colonnes */
+.g2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 10px 0; }
+.card {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px;
+}
+.card-title {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text2);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 8px;
+}
+
+/* FLUX */
+.flow {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin: 12px 0;
+    padding: 14px;
+    background: var(--bg3);
+    border-radius: 8px;
+}
+.fb {
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 500;
+    border: 1px solid var(--border);
+}
+.fb-blue   { border-color: var(--blue);   color: var(--blue);   background: rgba(88,166,255,0.08); }
+.fb-green  { border-color: var(--green);  color: var(--green);  background: rgba(63,185,80,0.08); }
+.fb-purple { border-color: var(--purple); color: var(--purple); background: rgba(188,140,255,0.08); }
+.fb-orange { border-color: var(--orange); color: var(--orange); background: rgba(210,153,34,0.08); }
+.fb-coral  { border-color: var(--coral);  color: var(--coral);  background: rgba(255,123,114,0.08); }
+.fa { color: var(--text3); font-size: 14px; }
+
+/* CODE */
+code {
+    font-family: 'Courier New', monospace;
+    font-size: 12px;
+    background: var(--bg3);
+    color: var(--orange);
+    padding: 2px 6px;
+    border-radius: 4px;
+}
+pre {
+    font-family: 'Courier New', monospace;
+    font-size: 12px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 16px;
+    margin: 10px 0;
+    overflow-x: auto;
+    line-height: 1.6;
+    color: #c9d1d9;
+    white-space: pre-wrap;
+}
+
+/* TABLES */
+table { width: 100%; border-collapse: collapse; font-size: 12.5px; margin: 10px 0; }
+th {
+    background: var(--bg3);
+    color: var(--text2);
+    font-weight: 600;
+    padding: 8px 12px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+}
+td { padding: 7px 12px; border-bottom: 1px solid var(--border); color: var(--text2); }
+tr:last-child td { border-bottom: none; }
+td code { font-size: 11px; }
+
+/* ALERTES */
+.al {
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 13px;
+    margin: 10px 0;
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+}
+.al-ok   { background: rgba(63,185,80,0.08);  border: 1px solid rgba(63,185,80,0.25);  color: var(--green); }
+.al-warn { background: rgba(210,153,34,0.08); border: 1px solid rgba(210,153,34,0.25); color: var(--orange); }
+.al-info { background: rgba(88,166,255,0.08); border: 1px solid rgba(88,166,255,0.25); color: var(--blue); }
+.al-todo { background: rgba(188,140,255,0.08);border: 1px solid rgba(188,140,255,0.25);color: var(--purple); }
+
+/* CHECKLIST */
+.cl { list-style: none; margin: 8px 0; }
+.cl li { padding: 4px 0; font-size: 13px; display: flex; align-items: flex-start; gap: 8px; color: var(--text2); }
+.cl li::before { content: '✅'; flex-shrink: 0; }
+.cl li.warn::before { content: '⚠️'; }
+.cl li.todo::before { content: '📋'; }
+.cl li.block::before { content: '🔴'; }
+
+/* ÉTAPES */
+.step { display: flex; gap: 12px; margin: 8px 0; }
+.sn {
+    width: 24px; height: 24px;
+    background: #1f6feb;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 700;
+    flex-shrink: 0; color: white; min-width: 24px;
+}
+.sc { flex: 1; padding-top: 2px; font-size: 13px; color: var(--text2); }
+
+p { margin: 6px 0; color: var(--text2); font-size: 13px; }
+ul { padding-left: 18px; margin: 6px 0; }
+ul li { font-size: 13px; color: var(--text2); margin: 3px 0; }
+strong { color: var(--text); }
+hr { border: none; border-top: 1px solid var(--border); margin: 28px 0; }
+
+@media(max-width:600px) { .g2 { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<div class="page">
+
+<!-- HEADER -->
+<div class="header">
+    <h1>📡 Documentation Modules SE — RobotRZ</h1>
+    <p class="sub">Session 27-28 avril 2026 — CamSE · Gyro · Mag — État, architecture, procédures, prochaines étapes</p>
+</div>
+
+<!-- NAV -->
+<div class="nav">
+    <a href="#camse">📷 CamSE</a>
+    <a href="#gyro">🔄 Gyro</a>
+    <a href="#mag">🧭 Mag</a>
+</div>
+
+<!-- ========================================================== -->
+<!-- MODULE CAMSE -->
+<!-- ========================================================== -->
+<div class="module" id="camse">
+    <div class="module-header">
+        <div class="module-icon ic-cam">📷</div>
+        <div>
+            <div class="module-title">CamSE — Caméra Smartphone
+                <span class="badge badge-wip">En cours</span>
+            </div>
+            <div style="color:var(--text2);font-size:12px;">IP Webcam Pro (com.pas.webcam.pro) · port 8080</div>
+        </div>
+    </div>
+    <div class="module-body">
+
+        <h3>État au 28 avril 2026</h3>
+        <ul class="cl">
+            <li>IP Webcam Pro installée sur SE (com.pas.webcam.pro)</li>
+            <li>Serveur HTTP vérifié : /video et /shot.jpg répondent sur port 8080</li>
+            <li>rz_camera_manager.sh v3.0 déployé (délégation Tasker)</li>
+            <li>cam_config.json configuré (front/rear, profils normal/optimized)</li>
+            <li class="warn">Lancement/arrêt IP Webcam par Tasker non encore implémenté</li>
+            <li class="todo">Tâches Tasker RZ_CamStart / RZ_CamStop à créer</li>
+            <li class="todo">Test bout en bout SP → Tasker → IP Webcam → URL → SP</li>
+            <li class="todo">Intégration Node-RED : affichage StreamURL dans dashboard</li>
+        </ul>
+
+        <h3>Architecture</h3>
+        <div class="flow">
+            <div class="fb fb-blue">SP Node-RED</div>
+            <div class="fa">→ MQTT SE/commande →</div>
+            <div class="fb fb-purple">rz_vpiv_parser.sh</div>
+            <div class="fa">→</div>
+            <div class="fb fb-coral">fifo_tasker_in</div>
+            <div class="fa">→</div>
+            <div class="fb fb-orange">Tasker RZ_CamStart</div>
+            <div class="fa">→</div>
+            <div class="fb fb-green">IP Webcam Pro</div>
+        </div>
+        <div class="flow">
+            <div class="fb fb-purple">rz_vpiv_parser.sh</div>
+            <div class="fa">→</div>
+            <div class="fb fb-blue">rz_camera_manager.sh</div>
+            <div class="fa">attend port 8080 →</div>
+            <div class="fb fb-green">publie StreamURL</div>
+            <div class="fa">→ MQTT SE/statut →</div>
+            <div class="fb fb-blue">SP Node-RED</div>
+        </div>
+
+        <div class="al al-info">
+            <span>ℹ️</span>
+            <span>Le lancement d'IP Webcam est délégué à Tasker (contrainte Android : permission denied pour am/termux-am). rz_camera_manager.sh v3.0 attend que le serveur soit disponible sur le port 8080 (timeout 15s) puis publie l'URL.</span>
+        </div>
+
+        <h3>VPIV (Table A)</h3>
+        <table>
+            <tr><th>Direction</th><th>Trame</th><th>Description</th></tr>
+            <tr><td>SP→SE</td><td><code>$V:CamSE:modeCam:rear:stream#</code></td><td>Démarrage flux vidéo</td></tr>
+            <tr><td>SP→SE</td><td><code>$V:CamSE:modeCam:rear:snapshot#</code></td><td>Mode photo</td></tr>
+            <tr><td>SP→SE</td><td><code>$V:CamSE:modeCam:rear:off#</code></td><td>Arrêt caméra</td></tr>
+            <tr><td>SP→SE</td><td><code>$V:CamSE:paraCam:rear:{...}#</code></td><td>Paramètres res/fps/quality/urgDelay</td></tr>
+            <tr><td>SP→SE</td><td><code>$V:CamSE:snap:rear:1#</code></td><td>Snapshot immédiat</td></tr>
+            <tr><td>SE→SP</td><td><code>$I:CamSE:StreamURL:rear:http://...#</code></td><td>URL stream ou snapshot</td></tr>
+            <tr><td>SE→SP</td><td><code>$I:CamSE:modeCam:rear:stream#</code></td><td>ACK mode appliqué</td></tr>
+            <tr><td>SE→SP</td><td><code>$E:CamSE:error:rear:CAM_START_FAIL#</code></td><td>Erreur démarrage</td></tr>
+            <tr><td>SE→SP</td><td><code>$E:Urg:source:SE:URG_SENSOR_FAIL#</code></td><td>Urgence (typePtge 0 ou 2)</td></tr>
+        </table>
+
+        <h3>Fichiers</h3>
+        <div class="g2">
+            <div class="card">
+                <div class="card-title">SE — Termux</div>
+                <ul>
+                    <li><code>scripts/sensors/cam/rz_camera_manager.sh</code> v3.0</li>
+                    <li><code>config/sensors/cam_config.json</code></li>
+                    <li><code>logs/camera.log</code></li>
+                </ul>
+            </div>
+            <div class="card">
+                <div class="card-title">SE — Tasker (à créer)</div>
+                <ul>
+                    <li>Tâche <code>RZ_CamStart</code> — lance IP Webcam Pro + démarre serveur</li>
+                    <li>Tâche <code>RZ_CamStop</code> — arrête IP Webcam Pro</li>
+                    <li>Profil <code>RZ_Cam</code> — déclencheur VPIV CAT=A</li>
+                </ul>
+            </div>
+        </div>
+
+        <h3>Prochaines étapes (discussion Tasker)</h3>
+        <div class="step"><div class="sn">1</div><div class="sc">Créer tâche Tasker <strong>RZ_CamStart</strong> : lance com.pas.webcam.pro et démarre le serveur via l'action Tasker "Launch App" + plugin IP Webcam Pro (intégration native Tasker de la version Pro).</div></div>
+        <div class="step"><div class="sn">2</div><div class="sc">Créer tâche Tasker <strong>RZ_CamStop</strong> : arrête com.pas.webcam.pro.</div></div>
+        <div class="step"><div class="sn">3</div><div class="sc">Tester le flux complet : SP envoie <code>$V:CamSE:modeCam:rear:stream#</code> → Tasker lance IP Webcam → manager publie StreamURL → Node-RED affiche l'URL.</div></div>
+        <div class="step"><div class="sn">4</div><div class="sc">Ajouter nœud Node-RED pour afficher le stream dans le dashboard (balise img src=StreamURL ou player MJPEG).</div></div>
+
+        <h3>Commandes de diagnostic</h3>
+        <pre># Vérifier que IP Webcam Pro est installée
+pm list packages | grep webcam
+
+# Tester le serveur manuellement (IP Webcam lancée)
+curl -s --max-time 3 -I "http://192.168.1.12:8080/video"
+curl -s --max-time 3 -I "http://192.168.1.12:8080/shot.jpg"
+
+# Voir les logs caméra
+tail -f ~/robotRZ-smartSE/termux/logs/camera.log
+
+# Tester le manager directement (IP Webcam déjà lancée)
+bash ~/robotRZ-smartSE/termux/scripts/sensors/cam/rz_camera_manager.sh modeCam stream rear</pre>
+    </div>
+</div>
+
+<!-- ========================================================== -->
+<!-- MODULE GYRO -->
+<!-- ========================================================== -->
+<div class="module" id="gyro">
+    <div class="module-header">
+        <div class="module-icon ic-gyro">🔄</div>
+        <div>
+            <div class="module-title">Gyro — Gyroscope LSM6DS3C
+                <span class="badge badge-ok">Validé</span>
+            </div>
+            <div style="color:var(--text2);font-size:12px;">termux-sensor · rad/s × 100 · mode DATACont</div>
+        </div>
+    </div>
+    <div class="module-body">
+
+        <h3>État au 28 avril 2026</h3>
+        <ul class="cl">
+            <li>Capteur LSM6DS3C détecté par termux-sensor</li>
+            <li>rz_gyro_manager.sh opérationnel en mode DATACont</li>
+            <li>Trames $F:Gyro:dataContGyro:*:[x,y,z]# reçues dans Node-RED</li>
+            <li>Parsing Node-RED validé (fn_extract_gyro_v2)</li>
+            <li>Dashboard Diag-SE affiche Gx/Gy/Gz en rad/s</li>
+            <li>gyro_runtime.json généré par check_config.sh</li>
+            <li class="todo">Relai Odom (Gz → Arduino) non encore implémenté dans Node-RED</li>
+            <li class="todo">Mode DATAMoy non testé</li>
+            <li class="todo">Seuils d'alerte non testés</li>
+        </ul>
+
+        <h3>Architecture</h3>
+        <div class="flow">
+            <div class="fb fb-green">LSM6DS3C</div>
+            <div class="fa">→ termux-sensor →</div>
+            <div class="fb fb-purple">rz_gyro_manager.sh</div>
+            <div class="fa">→ fifo_termux_in →</div>
+            <div class="fb fb-purple">rz_vpiv_parser.sh</div>
+            <div class="fa">→ MQTT SE/statut →</div>
+            <div class="fb fb-blue">SP Node-RED</div>
+        </div>
+
+        <h3>Configuration (courant_init.json)</h3>
+        <pre>{
+  "gyro": {
+    "modeGyro":    "DATACont",
+    "angleVSEBase": 150,
+    "paraGyro": {
+      "freqCont":     20,      // Hz
+      "freqMoy":       2,      // Hz
+      "nbValPourMoy":  5,
+      "seuilMesure":  { "x": 10, "y": 10, "z": 5 },   // rad/s×100
+      "seuilAlerte":  { "x": 300, "y": 300 }           // rad/s×100
+    }
+  }
+}</pre>
+
+        <h3>VPIV (Table A)</h3>
+        <table>
+            <tr><th>Direction</th><th>Trame</th><th>Description</th></tr>
+            <tr><td>SP→SE</td><td><code>$V:Gyro:modeGyro:*:DATACont#</code></td><td>Mode flux continu</td></tr>
+            <tr><td>SP→SE</td><td><code>$V:Gyro:modeGyro:*:OFF#</code></td><td>Arrêt gyro</td></tr>
+            <tr><td>SE→SP</td><td><code>$F:Gyro:dataContGyro:*:[x,y,z]#</code></td><td>Données continues (rad/s×100)</td></tr>
+            <tr><td>SE→SP</td><td><code>$F:Gyro:dataMoyGyro:*:[x,y,z]#</code></td><td>Données moyennées</td></tr>
+            <tr><td>SE→SP</td><td><code>$I:Gyro:modeGyro:*:DATACont#</code></td><td>ACK mode</td></tr>
+            <tr><td>SE→SP</td><td><code>$I:Gyro:angleVSEBase:*:150#</code></td><td>Angle base SE</td></tr>
+        </table>
+
+        <h3>Unités et codage</h3>
+        <div class="g2">
+            <div class="card">
+                <div class="card-title">Valeurs brutes</div>
+                <p>Entiers = rad/s × 100</p>
+                <p>Ex: <code>[120, -45, 300]</code></p>
+                <p>→ Gx=1.20 rad/s, Gy=-0.45, Gz=3.00</p>
+            </div>
+            <div class="card">
+                <div class="card-title">Formats supportés</div>
+                <p>Tableau : <code>[x, y, z]</code> ← format réel SE</p>
+                <p>Objet : <code>{"x":120,"y":-45,"z":300}</code></p>
+                <p>Les deux sont parsés par Node-RED</p>
+            </div>
+        </div>
+
+        <h3>Fichiers</h3>
+        <div class="g2">
+            <div class="card">
+                <div class="card-title">SE — Termux</div>
+                <ul>
+                    <li><code>scripts/sensors/gyro/rz_gyro_manager.sh</code></li>
+                    <li><code>config/gyro_runtime.json</code> (généré)</li>
+                    <li><code>logs/gyro.log</code></li>
+                </ul>
+            </div>
+            <div class="card">
+                <div class="card-title">SP — Node-RED</div>
+                <ul>
+                    <li>Flux <code>Diag_SE_Statut</code></li>
+                    <li>Fonction <code>fn_extract_gyro_v2</code></li>
+                    <li>Fonction <code>fn_dispatch_gyro_v2</code></li>
+                    <li>Dashboard groupe <code>Gyro - dataContGyro</code></li>
+                </ul>
+            </div>
+        </div>
+
+        <h3>Prochaines étapes</h3>
+        <div class="step"><div class="sn">1</div><div class="sc">Implémenter le relai Odom dans Node-RED : à la réception de <code>dataContGyro</code>, extraire Gz et publier <code>$V:Odom:*:gyro:&lt;gz_dps&gt;,&lt;ts_ms&gt;#</code> vers Arduino.</div></div>
+        <div class="step"><div class="sn">2</div><div class="sc">Tester le mode <strong>DATAMoy</strong> : envoyer <code>$V:Gyro:modeGyro:*:DATAMoy#</code> et vérifier les trames <code>dataMoyGyro</code>.</div></div>
+        <div class="step"><div class="sn">3</div><div class="sc">Tester le mode <strong>ALERTE</strong> et vérifier les seuils (seuilAlerte x/y).</div></div>
+
+        <h3>Commandes de diagnostic</h3>
+        <pre># Vérifier le capteur
+termux-sensor -l | grep -i gyro
+
+# Lancer le manager
+bash ~/robotRZ-smartSE/termux/scripts/sensors/gyro/rz_gyro_manager.sh &
+
+# Voir les logs
+tail -f ~/robotRZ-smartSE/termux/logs/gyro.log
+
+# Test mode depuis Node-RED (inject)
+$V:Gyro:modeGyro:*:DATACont#   → topic SE/commande</pre>
+    </div>
+</div>
+
+<!-- ========================================================== -->
+<!-- MODULE MAG -->
+<!-- ========================================================== -->
+<div class="module" id="mag">
+    <div class="module-header">
+        <div class="module-icon ic-mag">🧭</div>
+        <div>
+            <div class="module-title">Mag — Magnétomètre MMC3630KJ
+                <span class="badge badge-ok">Validé</span>
+            </div>
+            <div style="color:var(--text2);font-size:12px;">termux-sensor · degrés × 10 · mode DATAMgCont</div>
+        </div>
+    </div>
+    <div class="module-body">
+
+        <h3>État au 28 avril 2026</h3>
+        <ul class="cl">
+            <li>Capteur MMC3630KJ détecté par termux-sensor</li>
+            <li>rz_mg_manager.sh opérationnel en mode DATAMgCont</li>
+            <li>Trames $F:Mag:DataContMg:*:&lt;cap_deg10&gt;# reçues dans Node-RED</li>
+            <li>Parsing Node-RED validé (fn_extract_mag_v2)</li>
+            <li>Dashboard Diag-SE affiche cap en degrés et point cardinal</li>
+            <li>mag_runtime.json généré par check_config.sh</li>
+            <li class="warn">Valeurs = 0 fréquentes quand téléphone à plat (normal — axe Z dominant)</li>
+            <li class="todo">Relai compass (cap géo → Arduino) non encore implémenté</li>
+            <li class="todo">Mode DATAMgMoy non testé</li>
+            <li class="todo">Mode DATAGeoCont / DATAGeoMoy non testés</li>
+            <li class="todo">Calibration magnétique non réalisée</li>
+        </ul>
+
+        <h3>Architecture</h3>
+        <div class="flow">
+            <div class="fb fb-green">MMC3630KJ</div>
+            <div class="fa">→ termux-sensor →</div>
+            <div class="fb fb-purple">rz_mg_manager.sh</div>
+            <div class="fa">→ fifo_termux_in →</div>
+            <div class="fb fb-purple">rz_vpiv_parser.sh</div>
+            <div class="fa">→ MQTT SE/statut →</div>
+            <div class="fb fb-blue">SP Node-RED</div>
+        </div>
+
+        <h3>Configuration (courant_init.json)</h3>
+        <pre>{
+  "mag": {
+    "modeMg": "DATAMgCont",
+    "paraMg": {
+      "freqCont":    5,       // Hz
+      "freqMoy":     1,       // Hz
+      "nbValPourMoy": 5,
+      "seuilMesure": { "x": 50, "y": 50, "z": 50 }  // µT×100
+    }
+  }
+}</pre>
+
+        <h3>VPIV (Table A)</h3>
+        <table>
+            <tr><th>Direction</th><th>Trame</th><th>Description</th></tr>
+            <tr><td>SP→SE</td><td><code>$V:Mag:modeMg:*:DATAMgCont#</code></td><td>Cap magnétique continu</td></tr>
+            <tr><td>SP→SE</td><td><code>$V:Mag:modeMg:*:DATAGeoCont#</code></td><td>Cap géographique continu</td></tr>
+            <tr><td>SP→SE</td><td><code>$V:Mag:modeMg:*:DATABrutCont#</code></td><td>Champ brut continu [x,y,z]</td></tr>
+            <tr><td>SP→SE</td><td><code>$V:Mag:modeMg:*:OFF#</code></td><td>Arrêt magnétomètre</td></tr>
+            <tr><td>SE→SP</td><td><code>$F:Mag:DataContMg:*:1850#</code></td><td>Cap magnétique (degrés×10)</td></tr>
+            <tr><td>SE→SP</td><td><code>$F:Mag:DataContGeo:*:1830#</code></td><td>Cap géographique (degrés×10)</td></tr>
+            <tr><td>SE→SP</td><td><code>$F:Mag:dataContBrut:*:[x,y,z]#</code></td><td>Champ brut (µT×100)</td></tr>
+            <tr><td>SE→SP</td><td><code>$I:Mag:modeMg:*:DATAMgCont#</code></td><td>ACK mode</td></tr>
+        </table>
+
+        <h3>Unités et codage</h3>
+        <div class="g2">
+            <div class="card">
+                <div class="card-title">Cap magnétique / géographique</div>
+                <p>Entier = degrés × 10</p>
+                <p>Ex: <code>1850</code> → 185,0° (Sud)</p>
+                <p>Ex: <code>3450</code> → 345,0° (Nord-Nord-Ouest)</p>
+                <p>Plage : 0 à 3599 (0,0° à 359,9°)</p>
+            </div>
+            <div class="card">
+                <div class="card-title">Champ brut</div>
+                <p>Tableau [x, y, z] en µT × 100</p>
+                <p>Ex: <code>[1234, -567, 890]</code></p>
+                <p>→ Bx=12.34µT, By=-5.67µT, Bz=8.90µT</p>
+                <p>⚠️ Valeurs = 0 si téléphone à plat (normal)</p>
+            </div>
+        </div>
+
+        <div class="al al-warn">
+            <span>⚠️</span>
+            <span><strong>Orientation requise :</strong> le magnétomètre donne des valeurs fiables uniquement quand le téléphone est tenu <strong>verticalement</strong>. En position horizontale (à plat), les axes X et Y sont sous le seuil de mesure (50 µT×100) et la valeur retournée est 0. C'est le mode d'utilisation normal sur le robot (téléphone monté verticalement).</span>
+        </div>
+
+        <h3>Points cardinaux calculés par Node-RED</h3>
+        <table>
+            <tr><th>Cap (°)</th><th>Direction</th><th>Cap (°)</th><th>Direction</th></tr>
+            <tr><td>0 / 360</td><td>N</td><td>180</td><td>S</td></tr>
+            <tr><td>45</td><td>NE</td><td>225</td><td>SO</td></tr>
+            <tr><td>90</td><td>E</td><td>270</td><td>O</td></tr>
+            <tr><td>135</td><td>SE</td><td>315</td><td>NO</td></tr>
+        </table>
+
+        <h3>Fichiers</h3>
+        <div class="g2">
+            <div class="card">
+                <div class="card-title">SE — Termux</div>
+                <ul>
+                    <li><code>scripts/sensors/Mg/rz_mg_manager.sh</code></li>
+                    <li><code>config/mag_runtime.json</code> (généré)</li>
+                    <li><code>logs/mag.log</code></li>
+                </ul>
+            </div>
+            <div class="card">
+                <div class="card-title">SP — Node-RED</div>
+                <ul>
+                    <li>Flux <code>Diag_SE_Statut</code></li>
+                    <li>Fonction <code>fn_extract_mag_v2</code></li>
+                    <li>Fonction <code>fn_dispatch_mag_v2</code></li>
+                    <li>Dashboard groupe <code>Mag - Cap</code></li>
+                </ul>
+            </div>
+        </div>
+
+        <h3>Prochaines étapes</h3>
+        <div class="step"><div class="sn">1</div><div class="sc">Tester le mode <strong>DATAGeoCont</strong> : envoyer <code>$V:Mag:modeMg:*:DATAGeoCont#</code> pour obtenir le cap géographique (corrigé de la déclinaison magnétique).</div></div>
+        <div class="step"><div class="sn">2</div><div class="sc">Implémenter le relai compass dans Node-RED : à la réception de <code>DataContGeo</code>, publier <code>$V:Odom:*:compass:&lt;deg&gt;,&lt;quality&gt;#</code> vers Arduino.</div></div>
+        <div class="step"><div class="sn">3</div><div class="sc">Réaliser la <strong>calibration magnétique</strong> : faire tourner le téléphone sur les 3 axes pour corriger les perturbations locales (fer du châssis robot).</div></div>
+        <div class="step"><div class="sn">4</div><div class="sc">Tester le mode <strong>DATAMgMoy</strong> et <strong>DATAGeoMoy</strong>.</div></div>
+
+        <h3>Commandes de diagnostic</h3>
+        <pre># Vérifier le capteur
+termux-sensor -l | grep -i magnet
+
+# Lancer le manager
+bash ~/robotRZ-smartSE/termux/scripts/sensors/Mg/rz_mg_manager.sh &
+
+# Voir les logs
+tail -f ~/robotRZ-smartSE/termux/logs/mag.log
+
+# Test mode depuis Node-RED (inject)
+$V:Mag:modeMg:*:DATAMgCont#    → topic SE/commande
+$V:Mag:modeMg:*:DATAGeoCont#   → topic SE/commande</pre>
+    </div>
+</div>
+
+<hr>
+<p style="text-align:center;color:var(--text3);font-size:12px;margin-top:24px">
+    Projet RobotRZ — Doc modules SE — Session 27-28 avril 2026 — Vincent Philippe
+</p>
+
+</div>
+</body>
+</html>

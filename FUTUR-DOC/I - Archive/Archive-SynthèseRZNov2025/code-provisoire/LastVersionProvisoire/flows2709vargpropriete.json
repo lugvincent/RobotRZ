@@ -1,0 +1,558 @@
+[
+    {
+        "id": "f0ab228de63f40d9",
+        "type": "function",
+        "z": "61d8f8019f224437",
+        "name": "prepareTableauProprietes",
+        "func": "// 🔹 prepareTableauProprietes\n// Lit la variable sélectionnée dans flow context (flow.get(\"varSelected\"))\n// et prépare msg.payload.variable attendu par le ui-template tableau.\n\n// commentaire: structure attendue : msg.payload.variable { nomVarG, abbrVarG, descriptionVarG, dateUpdateVarG, instances[], proprietes[] }\n\nlet varSelected = flow.get(\"varSelected\") || null;\nlet enrichedVars = global.get(\"enrichedVars\",\"file\") || {};\nlet variable = enrichedVars[varSelected] || null;\n\nif (!varSelected || !variable) {\n    msg.payload = { variable: { nomVarG: \"\", abbrVarG: \"\", descriptionVarG: \"\", dateUpdateVarG: \"\", instances: [], proprietes: [] } };\n    msg.info = \"⚠️ Aucune variable sélectionnée ou variable introuvable.\";\n    return msg;\n}\n\n// Construire la structure propre des propriétés (norme interne)\nmsg.payload = { variable: {\n    nomVarG: variable.nomVarG,\n    abbrVarG: variable.abbrVarG,\n    descriptionVarG: variable.descriptionVarG,\n    dateUpdateVarG: variable.dateUpdateVarG,\n    instances: variable.instances || [\"*\"],\n    proprietes: (variable.proprietes || []).map(p => ({\n        nomP: p.nomP,\n        abbrP: p.abbrP,\n        typeP: p.typeP,\n        schema: p.schema || null,\n        valeurs: p.valeurs || {}\n    }))\n}};\nmsg.info = `✅ Variable sélectionnée : ${varSelected}`;\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 510,
+        "y": 1040,
+        "wires": [
+            [
+                "2e90bdf097c3f47b",
+                "34163c94dede6afc",
+                "80b5fac4ff99274d"
+            ]
+        ]
+    },
+    {
+        "id": "2e90bdf097c3f47b",
+        "type": "ui-template",
+        "z": "61d8f8019f224437",
+        "group": "grp1",
+        "page": "",
+        "ui": "",
+        "name": "Tableau propriétés (template)",
+        "order": 2,
+        "width": "0",
+        "height": "0",
+        "format": "<template>\n  <div>\n    <h3 style=\"margin:6px 0\">Propriétés de : <strong>{{ payload.variable.nomVarG }}</strong></h3>\n    <p style=\"margin:0 0 10px;color:#666\">{{ payload.variable.descriptionVarG }}</p>\n\n    <table class=\"tbl\">\n      <thead>\n        <tr>\n          <th>Nom</th>\n          <th>Abbr</th>\n          <th>Type</th>\n          <th>Schema</th>\n          <th>Défaut(*)</th>\n          <th v-for=\"inst in payload.variable.instances\" :key=\"inst\">{{inst}}</th>\n          <th>Actions</th>\n        </tr>\n      </thead>\n      <tbody>\n        <tr v-for=\"(prop, i) in payload.variable.proprietes\" :key=\"i\">\n          <td>{{ prop.nomP }}</td>\n          <td>{{ prop.abbrP }}</td>\n          <td>{{ prop.typeP }}</td>\n          <td>{{ prop.schema ? JSON.stringify(prop.schema) : '—' }}</td>\n          <td>{{ formatValue(prop.valeurs['*']) }}</td>\n\n          <td v-for=\"inst in payload.variable.instances\" :key=\"inst\">{{ formatValue(prop.valeurs[inst]) }}</td>\n\n          <td class=\"actions\">\n            <!-- confirmation pour suppression côté template -->\n            <button class=\"btn del\" title=\"Supprimer\" @click=\"confirmAndSend('supprimer', prop)\">🗑</button>\n            <button class=\"btn edit\" title=\"Éditer base\" @click=\"sendAction('edit', prop)\">✏️</button>\n            <button class=\"btn schema\" title=\"Édition schéma\" @click=\"sendAction('schema', prop)\">📑</button>\n            <button class=\"btn vals\" title=\"Éditer valeurs\" @click=\"sendAction('valeur', prop)\">💾</button>\n          </td>\n        </tr>\n      </tbody>\n    </table>\n  </div>\n</template>\n\n<script>\nexport default {\n  data() { return { payload: { variable: { nomVarG: '', instances: [], proprietes: [] } } } },\n  mounted() {\n    this.$watch('msg', (m) => { if (m && m.payload) this.payload = m.payload }, { immediate: true })\n  },\n  methods: {\n    formatValue(v) {\n      if (v === null || v === undefined) return '—';\n      if (typeof v === 'object') return JSON.stringify(v);\n      return v;\n    },\n    sendAction(action, prop) {\n      // envoye le message action au flow (GestionnaireActions)\n      this.send({ topic: 'propriete_action', payload: { action, propriete: prop } });\n    },\n    confirmAndSend(action, prop) {\n      if (confirm('⚠️ Confirmer la suppression de la propriété \"' + prop.nomP + '\" ?')) {\n        this.send({ topic: 'propriete_action', payload: { action, propriete: prop } })\n      }\n    }\n  }\n}\n</script>\n\n<style>\n.tbl { width:100%; border-collapse: collapse; }\n.tbl th, .tbl td { border:1px solid #ccc; padding:8px; text-align:left }\n.tbl thead th { background:#f4f6f8 }\n.actions { white-space:nowrap }\n.btn { border:0; background:#f1f1f1; width:30px; height:30px; border-radius:6px; margin:0 3px; cursor:pointer }\n.btn:hover { background:#e0e0e0 }\n.btn.del { color: #b30000 }\n.btn.edit { color: #1a73e8 }\n.btn.schema { color: #ff8c00 }\n.btn.vals { color: #1bbf5a }\n</style>",
+        "storeOutMessages": true,
+        "passthru": true,
+        "resendOnRefresh": true,
+        "templateScope": "local",
+        "className": "",
+        "x": 810,
+        "y": 1040,
+        "wires": [
+            [
+                "c8b1bad7326a9c0c",
+                "2db4138f4dca634b"
+            ]
+        ]
+    },
+    {
+        "id": "c8b1bad7326a9c0c",
+        "type": "function",
+        "z": "61d8f8019f224437",
+        "name": "GestionnaireActions",
+        "func": "// Centralise les actions envoyées par le tableau\n// Stocke la propriete sélectionnée dans flow context (propSelected)\n// et renvoie un msg.payload:{action, propriete}\nlet varSelected = flow.get(\"varSelected\") || null;\nif (msg.topic === 'propriete_action' && msg.payload) {\n    let action = msg.payload.action;\n    let prop = msg.payload.propriete || {};\n    // sauvegarde dans flow pour que tous les éditeurs pointent la même propriété\n    flow.set('propSelected', prop);\n    node.status({fill:'blue',shape:'dot',text:`action: ${action} prop:${prop.nomP || ''}`});\n    msg.info = `✅ Var : ${varSelected} `;\n    msg.payload = { action, propriete: prop };\n    return msg;\n}\nreturn null;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1070,
+        "y": 1040,
+        "wires": [
+            [
+                "3d206b493ca01301",
+                "2030f62748d7a203"
+            ]
+        ]
+    },
+    {
+        "id": "3d206b493ca01301",
+        "type": "switch",
+        "z": "61d8f8019f224437",
+        "name": "choix action sur propriete",
+        "property": "payload.action",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "supprimer",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "edit",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "schema",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "valeur",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 4,
+        "x": 1310,
+        "y": 1040,
+        "wires": [
+            [
+                "ee988ab01bcb862f"
+            ],
+            [
+                "8fceb7465790ec87"
+            ],
+            [
+                "4f3c4873fc4a41c4"
+            ],
+            [
+                "3fea03e83bf718cb"
+            ]
+        ]
+    },
+    {
+        "id": "ee988ab01bcb862f",
+        "type": "function",
+        "z": "61d8f8019f224437",
+        "name": "deleteProperty",
+        "func": "// 🔹 suppression de propriété\n// msg.payload.propriete contient la propriété à supprimer\n// on supprime de enrichedVars[varSelected].proprietes\n\nlet varSelected = flow.get('varSelected');\nlet enrichedVars = global.get('enrichedVars','file') || {};\nlet prop = msg.payload.propriete || {};\nif (!varSelected || !prop || !prop.nomP) {\n    msg.info = '❌ Données insuffisantes pour supprimer.';\n    return msg;\n}\n\nlet variable = enrichedVars[varSelected] || {};\nlet proprietes = variable.proprietes || [];\nlet idx = proprietes.findIndex(p => p.nomP === prop.nomP);\nif (idx === -1) {\n    msg.info = '⚠️ Propriété introuvable.';\n    return msg;\n}\n\n// suppression\nproprietes.splice(idx,1);\nenrichedVars[varSelected].proprietes = proprietes;\nglobal.set('enrichedVars', enrichedVars, 'file');\n\nmsg.info = `✅ Propriété \"${prop.nomP}\" supprimée.`;\n// renvoyer vers préparation tableau pour refresh\nreturn { payload: null, info: msg.info };\n",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1570,
+        "y": 980,
+        "wires": [
+            [
+                "f0ab228de63f40d9",
+                "cb990f5e24082e9a"
+            ]
+        ]
+    },
+    {
+        "id": "8fceb7465790ec87",
+        "type": "function",
+        "z": "61d8f8019f224437",
+        "name": "prepaFormulaireBasePropriete",
+        "func": "// 🔹 Prepa Formulaire Base Propriété\n// Récupère la propriété déjà sauvegardée dans flow.propSelected\n// Si propSelected absent, on prépare un formulaire vide (création nouvelle prop)\n\nlet prop = flow.get('propSelected') || {};\nlet varSelected = flow.get('varSelected');\nlet enrichedVars = global.get('enrichedVars','file') || {};\nlet variable = enrichedVars[varSelected] || {};\n\n// si pas de property, préparer formulaire vide (création)\nlet payload = {\n    nomP: prop.nomP || \"\",\n    abbrP: prop.abbrP || \"\",\n    typeP: prop.typeP || \"string\",\n    schema: prop.schema ? JSON.stringify(prop.schema, null, 2) : \"\",\n    instances: variable.instances || [\"*\"]\n};\n\nmsg.payload = payload;\nmsg.info = `✏️ Chargement formulaire propriété: ${payload.nomP || '(nouvelle)'} `;\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1570,
+        "y": 1100,
+        "wires": [
+            [
+                "b457243b1923ae4e",
+                "cb990f5e24082e9a"
+            ]
+        ]
+    },
+    {
+        "id": "b457243b1923ae4e",
+        "type": "ui-template",
+        "z": "61d8f8019f224437",
+        "group": "grp1",
+        "page": "",
+        "ui": "",
+        "name": "tpl Form Base Propriété",
+        "order": 3,
+        "width": "0",
+        "height": "0",
+        "format": "<template>\n  <div class=\"card\">\n    <h4>Éditer propriété: <strong>{{payload.nomP || '(nouvelle)'}} </strong></h4>\n    <div class=\"row\">\n      <label>Nom</label>\n      <input v-model=\"form.nomP\" />\n    </div>\n    <div class=\"row\">\n      <label>Abréviation</label>\n      <input v-model=\"form.abbrP\" />\n    </div>\n    <div class=\"row\">\n      <label>Type</label>\n      <select v-model=\"form.typeP\">\n        <option value=\"string\">string</option>\n        <option value=\"number\">number</option>\n        <option value=\"boolean\">boolean</option>\n        <option value=\"array\">array</option>\n        <option value=\"object\">object</option>\n      </select>\n    </div>\n    <div class=\"row\">\n      <label>Schema (JSON) — uniquement pour object/array</label>\n      <textarea v-model=\"form.schema\" rows=\"4\"></textarea>\n    </div>\n    <div class=\"actions\">\n      <button class=\"btn save\" @click=\"submit()\">💾 Enregistrer</button>\n      <button class=\"btn cancel\" @click=\"cancel()\">↩️ Annuler</button>\n    </div>\n  </div>\n</template>\n\n<script>\nexport default {\n  data() {\n    return { form: { nomP: '', abbrP: '', typeP: 'string', schema: '' } }\n  },\n  mounted() {\n    this.$watch('msg', (m) => { if (m && m.payload) this.form = { ...this.form, ...m.payload } }, { immediate: true })\n  },\n  methods: {\n    submit() {\n      // parse schema si présent\n      let schemaParsed = null;\n      if (this.form.schema && this.form.schema.trim() !== '') {\n        try { schemaParsed = JSON.parse(this.form.schema) }\n        catch(e){ alert('Erreur JSON schema: '+e.message); return }\n      }\n      this.send({ payload: { nomP: this.form.nomP, abbrP: this.form.abbrP, typeP: this.form.typeP, schema: schemaParsed } });\n    },\n    cancel(){ this.send({ payload: null }) }\n  }\n}\n</script>\n\n<style>\n.card{ padding:12px; background:white; border-radius:6px; border:1px solid #e3e6ea }\n.row{ margin:8px 0 }\n.row label{ display:block; font-size:0.9em; color:#333 }\n.row input, .row select, .row textarea{ width:100%; padding:6px; box-sizing:border-box }\n.actions{ margin-top:10px }\n.btn{ padding:6px 10px; border-radius:6px; border:0; margin-right:6px }\n.btn.save{ background:#1bbf5a; color:white }\n.btn.cancel{ background:#6c757d; color:white }\n</style>",
+        "storeOutMessages": true,
+        "passthru": true,
+        "resendOnRefresh": true,
+        "templateScope": "local",
+        "className": "",
+        "x": 1830,
+        "y": 1100,
+        "wires": [
+            [
+                "231f296e011c5569"
+            ]
+        ]
+    },
+    {
+        "id": "231f296e011c5569",
+        "type": "function",
+        "z": "61d8f8019f224437",
+        "name": "sauvegardePropriete",
+        "func": "// 🔹 sauvegardePropriete\n// Reçoit msg.payload { nomP, abbrP, typeP, schema }\n// Met à jour global.enrichedVars[varSelected].proprietes\n\nlet form = msg.payload;\nlet varSelected = flow.get('varSelected');\nlet enriched = global.get('enrichedVars','file') || {};\nif (!form || !varSelected) { msg.info='❌ Données incomplètes'; return msg }\n\nlet variable = enriched[varSelected] = enriched[varSelected] || { proprietes: [], instances: ['*'] };\nlet proprietes = variable.proprietes || [];\nlet propSel = flow.get('propSelected') || {};\nlet idx = proprietes.findIndex(p => p.nomP === (propSel.nomP || ''));\n\n// parser schema déjà fait côté template: form.schema est null ou objet\nlet schemaParsed = form.schema || null;\n\nif (idx >= 0) {\n    // met à jour\n    proprietes[idx].nomP = form.nomP;\n    proprietes[idx].abbrP = form.abbrP;\n    proprietes[idx].typeP = form.typeP;\n    proprietes[idx].schema = schemaParsed;\n} else {\n    // ajout d'une nouvelle propriété (valeurs initialisées avec valeur par défaut pour l'instance '*')\n    let newProp = { nomP: form.nomP, abbrP: form.abbrP, typeP: form.typeP, schema: schemaParsed, valeurs: {} };\n    // initialiser valeurs pour chaque instance\n    (variable.instances || ['*']).forEach(inst => { newProp.valeurs[inst] = null });\n    proprietes.push(newProp);\n    idx = proprietes.length - 1;\n}\n\n// sauvegarde\nenriched[varSelected].proprietes = proprietes;\nglobal.set('enrichedVars', enriched, 'file');\n\n// met à jour flow.propSelected\nflow.set('propSelected', proprietes[idx]);\n\nmsg.info = `✅ Propriété \"${form.nomP}\" sauvegardée.`;\nreturn { payload: null, info: msg.info };",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 2070,
+        "y": 1100,
+        "wires": [
+            [
+                "f0ab228de63f40d9",
+                "742600550133aa1c"
+            ]
+        ]
+    },
+    {
+        "id": "4f3c4873fc4a41c4",
+        "type": "function",
+        "z": "61d8f8019f224437",
+        "name": "prepaformEditeurSchema",
+        "func": "// 🔹 prepaFormSchema\n// Récupère la propriété dans flow.propSelected et prépare un payload.sousProprietes[]\nlet prop = flow.get('propSelected') || {};\nif (!prop || !prop.nomP) { msg.info='⚠️ Aucune propriété sélectionnée.'; return null }\nif (prop.typeP !== 'object' && prop.typeP !== 'array') { msg.info='⚠️ Propriété non composite (object/array requis).'; return null }\n\nlet sous = [];\nif (prop.schema && Array.isArray(prop.schema)) {\n    sous = prop.schema.map(sp => ({ nom: sp.nomSsP, type: sp.typeSsP }));\n}\n\nmsg.payload = { nomPropriete: prop.nomP, typePropriete: prop.typeP, sousProprietes: sous };\nmsg.info = `📐 Édition schéma: ${prop.nomP}`;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 1570,
+        "y": 1220,
+        "wires": [
+            [
+                "8dcc8f822f1d7c40",
+                "cb990f5e24082e9a"
+            ]
+        ]
+    },
+    {
+        "id": "8dcc8f822f1d7c40",
+        "type": "ui-template",
+        "z": "61d8f8019f224437",
+        "group": "grp1",
+        "page": "",
+        "ui": "",
+        "name": "tpl Editor Schema",
+        "order": 4,
+        "width": "0",
+        "height": "0",
+        "format": "<template>\n  <div class=\"card\">\n    <h4>Édition du schéma pour \"{{payload.nomPropriete}}\" ({{payload.typePropriete}})</h4>\n    <table class=\"tbl-s\">\n      <thead><tr><th>Nom</th><th>Type</th><th>Actions</th></tr></thead>\n      <tbody>\n        <tr v-for=\"(sp, idx) in payload.sousProprietes\" :key=\"idx\">\n          <td><input v-model=\"sp.nom\" /></td>\n          <td>\n            <select v-model=\"sp.type\">\n              <option value=\"string\">string</option>\n              <option value=\"number\">number</option>\n              <option value=\"boolean\">boolean</option>\n            </select>\n          </td>\n          <td><button class=\"btn del\" @click=\"remove(idx)\">🗑</button></td>\n        </tr>\n      </tbody>\n    </table>\n    <div style=\"margin-top:10px\">\n      <button class=\"btn add\" @click=\"add()\">➕ Ajouter</button>\n      <button class=\"btn save\" @click=\"save()\">✅ Enregistrer</button>\n      <button class=\"btn cancel\" @click=\"cancel()\">❌ Annuler</button>\n    </div>\n  </div>\n</template>\n\n<script>\nexport default {\n  data(){ return { payload: { nomPropriete:'', typePropriete:'', sousProprietes:[] } } },\n  mounted(){ this.$watch('msg', (m)=> { if(m && m.payload) this.payload = JSON.parse(JSON.stringify(m.payload)) }, { immediate:true }) },\n  methods:{\n    add(){ this.payload.sousProprietes.push({ nom:'', type:'string' }) },\n    remove(i){ this.payload.sousProprietes.splice(i,1) },\n    save(){ this.send({ payload: this.payload }) },\n    cancel(){ this.send({ payload: null }) }\n  }\n}\n</script>\n\n<style>\n.card{ padding:12px; background:white; border-radius:6px; border:1px solid #e3e6ea }\n.tbl-s{ width:100%; border-collapse:collapse }\n.tbl-s td, .tbl-s th{ border:1px solid #ddd; padding:6px }\n.btn{ padding:6px 8px; margin-right:6px }\n.btn.add{ background:#28a745; color:white }\n.btn.save{ background:#1bbf5a; color:white }\n.btn.cancel{ background:#6c757d; color:white }\n.btn.del{ background:#b30000; color:white }\n</style>",
+        "storeOutMessages": true,
+        "passthru": true,
+        "resendOnRefresh": true,
+        "templateScope": "local",
+        "className": "",
+        "x": 1810,
+        "y": 1220,
+        "wires": [
+            [
+                "be1b8a495444f39b"
+            ]
+        ]
+    },
+    {
+        "id": "be1b8a495444f39b",
+        "type": "function",
+        "z": "61d8f8019f224437",
+        "name": "sauvegarderSchema",
+        "func": "// 🔹 sauvegarderSchema\n// Reçoit msg.payload { nomPropriete, typePropriete, sousProprietes }\n// Convertit en tableau schema[{nomSsP,typeSsP}] et enregistre\n\nlet form = msg.payload;\nlet varSelected = flow.get('varSelected');\nlet propSelected = flow.get('propSelected') || {};\nlet enriched = global.get('enrichedVars','file') || {};\nif (!form || !varSelected || !propSelected) { msg.info='❌ Données incomplètes'; return msg }\n\nlet variable = enriched[varSelected] || {};\nlet proprietes = variable.proprietes || [];\nlet idx = proprietes.findIndex(p=> p.nomP === propSelected.nomP);\nif (idx === -1) { msg.info='❌ Propriété introuvable'; return msg }\n\n// construire schema à partir de sousProprietes\nlet newSchema = (form.sousProprietes || []).filter(sp=>sp.nom).map(sp => ({ nomSsP: sp.nom, typeSsP: sp.type }));\nproprietes[idx].schema = newSchema;\n// sauvegarde\nenriched[varSelected].proprietes = proprietes;\nglobal.set('enrichedVars', enriched, 'file');\n// update flow.propSelected\nflow.set('propSelected', proprietes[idx]);\nmsg.info = `✅ Schéma mis à jour pour ${propSelected.nomP}`;\nreturn { payload: null, info: msg.info };",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 2070,
+        "y": 1220,
+        "wires": [
+            [
+                "f0ab228de63f40d9",
+                "742600550133aa1c"
+            ]
+        ]
+    },
+    {
+        "id": "3fea03e83bf718cb",
+        "type": "function",
+        "z": "61d8f8019f224437",
+        "name": "prepaFormulaireEditeurValeurs",
+        "func": "// 🔹 prepaFormValues\n// Prépare l'éditeur de valeurs selon le type de la propriété\n// si type simple -> valeursInstances: [{instance, valeur, type}]\n// si object/array -> vérifie schema puis construit valeursComplexes [{instance, nomSsP, typeSsP, valeur}]\n\nlet prop = flow.get('propSelected') || {};\nlet varSelected = flow.get('varSelected');\nlet enriched = global.get('enrichedVars','file') || {};\nlet variable = enriched[varSelected] || {};\nlet instances = variable.instances || ['*'];\n\nif (!prop || !prop.nomP) { msg.info='⚠️ Aucune propriété sélectionnée.'; return null }\n\nif (prop.typeP === 'object' || prop.typeP === 'array') {\n    // besoin d'un schema\n    if (!prop.schema || !Array.isArray(prop.schema) || prop.schema.length === 0) {\n        msg.info = '⚠️ Définir d\\'abord le schéma pour éditer les valeurs.';\n        return msg; // renvoyer msg.info pour affichage\n    }\n    // construire valeursComplexes\n    let valeursComplexes = [];\n    instances.forEach(inst => {\n        // la valeur brute pour cette instance est un objet ou tableau\n        let raw = (prop.valeurs && prop.valeurs[inst]) || (prop.typeP==='array'?[]:{});\n        // si array on attend un array d'objets? ici on mappe par sous-propriété\n        prop.schema.forEach(sp => {\n            // pour object/array on supporte stockage en objet par clef nomSsP\n            let v = null;\n            if (prop.typeP === 'array') {\n                // principe simplifié: si valeur est array of primitives, on stocke la liste joinée\n                // mais pour édition par sous propriété, on essaie de récupérer un objet si possible\n                // si raw est array and elements are primitives, on keep raw\n                v = raw ? raw[sp.nomSsP] : null;\n            } else {\n                v = raw ? raw[sp.nomSsP] : null;\n            }\n            valeursComplexes.push({ instance: inst, nomSsP: sp.nomSsP, typeSsP: sp.typeSsP, valeur: v });\n        });\n    });\n    msg.payload = { nomPropriete: prop.nomP, typePropriete: prop.typeP, schema: prop.schema, valeursComplexes };\n    msg.info = `🧩 Édition valeurs (complexe) pour ${prop.nomP}`;\n    return msg;\n} else {\n    // type simple\n    let valeurs = prop.valeurs || {};\n    let valeursInstances = instances.map(inst => ({ instance: inst, valeur: (valeurs[inst] !== undefined ? valeurs[inst] : null), type: prop.typeP }));\n    msg.payload = { nomPropriete: prop.nomP, typePropriete: prop.typeP, valeursInstances };\n    msg.info = `✏️ Édition valeurs (simple) pour ${prop.nomP}`;\n    return msg;\n}\n",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 1570,
+        "y": 1340,
+        "wires": [
+            [
+                "ad5683d98ef03906",
+                "cb990f5e24082e9a"
+            ]
+        ]
+    },
+    {
+        "id": "ad5683d98ef03906",
+        "type": "ui-template",
+        "z": "61d8f8019f224437",
+        "group": "grp1",
+        "page": "",
+        "ui": "",
+        "name": "tpl Editor Values",
+        "order": 5,
+        "width": "0",
+        "height": "0",
+        "format": "<template>\n  <div class=\"card\">\n    <h4>Édition valeurs : {{ payload.nomPropriete }} ({{payload.typePropriete}})</h4>\n\n    <!-- cas 'simple' -->\n    <div v-if=\"payload.valeursInstances\">\n      <div v-for=\"(vi, idx) in payload.valeursInstances\" :key=\"idx\" class=\"row\">\n        <label>{{vi.instance}}</label>\n        <input v-if=\"vi.type==='string'\" v-model=\"vi.valeur\" />\n        <input v-else-if=\"vi.type==='number'\" type=\"number\" v-model.number=\"vi.valeur\" />\n        <label v-else-if=\"vi.type==='boolean'\"><input type=\"checkbox\" v-model=\"vi.valeur\" /> {{vi.valeur}}</label>\n        <input v-else v-model=\"vi.valeur\" />\n      </div>\n    </div>\n\n    <!-- cas 'complex' -->\n    <div v-else-if=\"payload.valeursComplexes\">\n      <table class=\"tbl\">\n        <thead><tr><th>Instance</th><th>Sous-propriété</th><th>Type</th><th>Valeur</th></tr></thead>\n        <tbody>\n          <tr v-for=\"(row,i) in payload.valeursComplexes\" :key=\"i\">\n            <td>{{row.instance}}</td>\n            <td>{{row.nomSsP}}</td>\n            <td>{{row.typeSsP}}</td>\n            <td>\n              <input v-if=\"row.typeSsP==='string'\" v-model=\"row.valeur\" />\n              <input v-else-if=\"row.typeSsP==='number'\" type=\"number\" v-model.number=\"row.valeur\" />\n              <label v-else-if=\"row.typeSsP==='boolean'\"> <input type=\"checkbox\" v-model=\"row.valeur\"/> {{row.valeur}} </label>\n              <input v-else v-model=\"row.valeur\" />\n            </td>\n          </tr>\n        </tbody>\n      </table>\n    </div>\n\n    <div style=\"margin-top:10px\">\n      <button class=\"btn save\" @click=\"save()\">💾 Enregistrer</button>\n      <button class=\"btn cancel\" @click=\"cancel()\">↩️ Annuler</button>\n    </div>\n  </div>\n</template>\n\n<script>\nexport default {\n  data(){ return { payload: { nomPropriete:'', typePropriete:'', valeursInstances:null, valeursComplexes:null, schema:null } } },\n  mounted(){ this.$watch('msg', (m)=>{ if(m && m.payload) {\n      // deep clone pour dissocier form data\n      this.payload = JSON.parse(JSON.stringify(m.payload));\n    } }, { immediate:true }) },\n  methods:{\n    save(){ this.send({ payload: this.payload }) },\n    cancel(){ this.send({ payload: null }) }\n  }\n}\n</script>\n\n<style>\n.card{ padding:12px; background:white; border-radius:6px; border:1px solid #e3e6ea }\n.row{ display:flex; gap:10px; align-items:center; margin:6px 0 }\n.tbl{ width:100%; border-collapse:collapse }\n.tbl td, .tbl th { border:1px solid #ddd; padding:6px }\n.btn{ padding:6px 10px; margin-right:6px }\n.btn.save{ background:#1bbf5a; color:white }\n.btn.cancel{ background:#6c757d; color:white }\n</style>",
+        "storeOutMessages": true,
+        "passthru": true,
+        "resendOnRefresh": true,
+        "templateScope": "local",
+        "className": "",
+        "x": 1810,
+        "y": 1340,
+        "wires": [
+            [
+                "6911096f32a15bf5"
+            ]
+        ]
+    },
+    {
+        "id": "6911096f32a15bf5",
+        "type": "function",
+        "z": "61d8f8019f224437",
+        "name": "sauvegarderValeurs",
+        "func": "// 🔹 sauvegarderValeurs\n// Reçoit payload soit {valeursInstances[]} (simple) soit {valeursComplexes[], schema}\n\nlet form = msg.payload;\nlet varSelected = flow.get('varSelected');\nlet propSelected = flow.get('propSelected') || {};\nlet enriched = global.get('enrichedVars','file') || {};\nif (!form || !varSelected || !propSelected) { msg.info='❌ Données incomplètes'; return msg }\n\nlet variable = enriched[varSelected] || {};\nlet proprietes = variable.proprietes || [];\nlet idx = proprietes.findIndex(p=>p.nomP === propSelected.nomP);\nif (idx === -1) { msg.info='❌ Propriété introuvable'; return msg }\n\nlet prop = proprietes[idx];\n\nif (form.valeursInstances) {\n    // simple\n    let valeurs = {};\n    form.valeursInstances.forEach(vi => { valeurs[vi.instance] = vi.valeur });\n    prop.valeurs = valeurs;\n} else if (form.valeursComplexes) {\n    // reconstruire par instance\n    let valeurs = {};\n    form.valeursComplexes.forEach(vc => {\n        if (!valeurs[vc.instance]) valeurs[vc.instance] = {};\n        valeurs[vc.instance][vc.nomSsP] = vc.valeur;\n    });\n    prop.valeurs = valeurs;\n}\n\n// sauvegarde\nenriched[varSelected].proprietes = proprietes;\nglobal.set('enrichedVars', enriched, 'file');\n// met à jour propSelected\nflow.set('propSelected', prop);\n\nmsg.info = `✅ Valeurs sauvegardées pour ${prop.nomP}`;\nreturn { payload: null, info: msg.info };",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 2070,
+        "y": 1340,
+        "wires": [
+            [
+                "f0ab228de63f40d9",
+                "742600550133aa1c"
+            ]
+        ]
+    },
+    {
+        "id": "34163c94dede6afc",
+        "type": "debug",
+        "z": "61d8f8019f224437",
+        "name": "debug 5",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 680,
+        "y": 1180,
+        "wires": []
+    },
+    {
+        "id": "2db4138f4dca634b",
+        "type": "debug",
+        "z": "61d8f8019f224437",
+        "name": "debug 7",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 980,
+        "y": 1200,
+        "wires": []
+    },
+    {
+        "id": "2030f62748d7a203",
+        "type": "debug",
+        "z": "61d8f8019f224437",
+        "name": "debug 8",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1240,
+        "y": 1260,
+        "wires": []
+    },
+    {
+        "id": "cb990f5e24082e9a",
+        "type": "debug",
+        "z": "61d8f8019f224437",
+        "name": "debug 14",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1820,
+        "y": 1480,
+        "wires": []
+    },
+    {
+        "id": "80b5fac4ff99274d",
+        "type": "change",
+        "z": "61d8f8019f224437",
+        "name": "",
+        "rules": [
+            {
+                "t": "move",
+                "p": "info",
+                "pt": "msg",
+                "to": "payload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1550,
+        "y": 880,
+        "wires": [
+            [
+                "2a15b4c639662eab"
+            ]
+        ]
+    },
+    {
+        "id": "2a15b4c639662eab",
+        "type": "ui-text",
+        "z": "61d8f8019f224437",
+        "group": "grp1",
+        "order": 6,
+        "width": "12",
+        "height": "1",
+        "name": "infoNotification",
+        "label": "ℹ️ Info",
+        "format": "{{msg.info}}",
+        "layout": "row-left",
+        "style": false,
+        "font": "",
+        "fontSize": "",
+        "color": "#000000",
+        "wrapText": false,
+        "className": "",
+        "x": 1820,
+        "y": 880,
+        "wires": []
+    },
+    {
+        "id": "1eb1afa02080e2bb",
+        "type": "ui-button",
+        "z": "61d8f8019f224437",
+        "group": "grp1",
+        "name": "Charger ",
+        "label": "Charger",
+        "order": 1,
+        "width": "1",
+        "height": "1",
+        "emulateClick": false,
+        "className": "",
+        "icon": "",
+        "iconPosition": "left",
+        "payload": "go",
+        "payloadType": "str",
+        "topic": "",
+        "topicType": "str",
+        "buttonColor": "",
+        "textColor": "",
+        "iconColor": "",
+        "enableClick": true,
+        "enablePointerdown": false,
+        "pointerdownPayload": "",
+        "pointerdownPayloadType": "str",
+        "enablePointerup": false,
+        "pointerupPayload": "",
+        "pointerupPayloadType": "str",
+        "x": 940,
+        "y": 920,
+        "wires": [
+            [
+                "f0ab228de63f40d9"
+            ]
+        ]
+    },
+    {
+        "id": "grp1",
+        "type": "ui-group",
+        "name": "Grpe_Propriete",
+        "page": "page-1",
+        "width": 6,
+        "height": 1,
+        "order": 4,
+        "showTitle": false,
+        "className": "",
+        "visible": "true",
+        "disabled": "false",
+        "groupType": "default"
+    },
+    {
+        "id": "page-1",
+        "type": "ui-page",
+        "name": "P_admin-VarG",
+        "ui": "930a8a5e70986346",
+        "path": "/admin_varG",
+        "icon": "dashboard",
+        "layout": "notebook",
+        "theme": "1050ebb74976e9e1",
+        "breakpoints": [
+            {
+                "name": "Default",
+                "px": "0",
+                "cols": "3"
+            },
+            {
+                "name": "Tablet",
+                "px": "576",
+                "cols": "6"
+            },
+            {
+                "name": "Small Desktop",
+                "px": "768",
+                "cols": "9"
+            },
+            {
+                "name": "Desktop",
+                "px": "1024",
+                "cols": "12"
+            }
+        ],
+        "order": 4,
+        "className": "",
+        "visible": "true",
+        "disabled": "false"
+    },
+    {
+        "id": "930a8a5e70986346",
+        "type": "ui-base",
+        "name": "My Dashboard",
+        "path": "/dashboard",
+        "appIcon": "",
+        "includeClientData": true,
+        "acceptsClientConfig": [],
+        "showPathInSidebar": false,
+        "headerContent": "page",
+        "navigationStyle": "default",
+        "titleBarStyle": "default",
+        "showReconnectNotification": true,
+        "notificationDisplayTime": 1,
+        "showDisconnectNotification": true,
+        "allowInstall": true
+    },
+    {
+        "id": "1050ebb74976e9e1",
+        "type": "ui-theme",
+        "name": "Default Theme",
+        "colors": {
+            "surface": "#ffffff",
+            "primary": "#0094ce",
+            "bgPage": "#eeeeee",
+            "groupBg": "#ffffff",
+            "groupOutline": "#cccccc"
+        },
+        "sizes": {
+            "density": "default",
+            "pagePadding": "12px",
+            "groupGap": "4px",
+            "groupBorderRadius": "4px",
+            "widgetGap": "10px"
+        }
+    }
+]

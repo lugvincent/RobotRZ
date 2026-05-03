@@ -1,0 +1,60 @@
+"CamSE": {
+  "nomVarG": "CamSE",
+  "nomCpletVarG": "Caméra Smartphone",
+  "instances": ["front", "rear"],
+  "descriptionVarG": "Gestion de la caméra via IP Webcam. Supporte le streaming, les snapshots et l'adaptation CPU.",
+  "dateUpdateVarG": "2026-03-30T10:00:00.000Z",
+  "proprietes": [
+    {
+      "nomP": "modeCam",
+      "nomCpletP": "Mode Caméra",
+      "descriptionP": "Commande de flux : off (arrêt), stream (flux continu), snapshot (mode photo).",
+      "typeP": "enum",
+      "valeurs": {
+        "*": "off"
+      },
+      "optionsP": [
+        {"value": "off", "label": "Arrêt"},
+        {"value": "stream", "label": "Streaming"},
+        {"value": "snapshot", "label": "Snapshot"}
+      ]
+    },
+    {
+      "nomP": "paraCam",
+      "nomCpletP": "Paramètres Caméra",
+      "descriptionP": "Configuration technique : résolution, fps, qualité et délai avant urgence (urgDelay).",
+      "typeP": "object",
+      "valeurs": {
+        "front": "{\"res\":\"480p\",\"fps\":15,\"quality\":50,\"urgDelay\":5}",
+        "rear": "{\"res\":\"720p\",\"fps\":30,\"quality\":80,\"urgDelay\":5}"
+      }
+    },
+    {
+      "nomP": "snap",
+      "nomCpletP": "Capture immédiate",
+      "descriptionP": "Déclenche une capture d'image sur l'instance active (renvoie l'URL via StreamURL).",
+      "typeP": "boolean",
+      "valeurs": {
+        "*": "0"
+      }
+    },
+    {
+      "nomP": "StreamURL",
+      "nomCpletP": "Lien du flux",
+      "descriptionP": "URL générée dynamiquement par le SE pour accéder au flux vidéo ou à l'image.",
+      "typeP": "string",
+      "valeurs": {
+        "*": null
+      }
+    },
+    {
+      "nomP": "error",
+      "nomCpletP": "Code Erreur",
+      "descriptionP": "Code d'erreur spécifique : CAM_START_FAIL, CAM_IP_FAIL, CAM_CONFIG_FAIL.",
+      "typeP": "string",
+      "valeurs": {
+        "*": null
+      }
+    }
+  ]
+}

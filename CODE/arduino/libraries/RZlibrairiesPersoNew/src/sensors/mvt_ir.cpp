@@ -1,0 +1,125 @@
+/************************************************************
+ * FICHIER : src/sensors/mvt_ir.cpp
+ * ROLE    : Gestion haut-niveau du détecteur IR
+ *
+ * Fonctionnalités :
+ *   - read          -> lecture immédiate
+ *   - valeur périodique
+ *   - alert si nombre de détections successives > seuil (thd)
+ *   - act           -> activer/désactiver
+ *   - freq          -> période
+ *   - mode          -> idle / monitor / surveillance
+ ************************************************************/
+
+#include "mvt_ir.h"
+#include "../hardware/mvt_ir_hardware.h"
+#include "../configuration/config.h"
+#include <Arduino.h>
+#include <string.h>
+#include "../communication/communication.h" // pour sendInfo / sendError
+
+// Compteur interne (ne va pas dans config)
+static int mvtir_counter = 0;
+
+// Envoi VPIV : value immédiate
+static void _send_value_vpiv(int v) {
+    char buf[8];
+    snprintf(buf, sizeof(buf), "%d", v);
+    sendInfo("MvtIR", "value", "*", buf);
+}
+
+// Envoi alerte
+static void _send_alert_vpiv() {
+    sendInfo("MvtIR", "alert", "*", "1");
+}
+
+// Initialisation
+void mvt_ir_init() {
+    mvt_ir_hw_init();
+    // charger valeurs depuis config variables existantes (déjà définies dans config.cpp)
+    mvtir_counter = 0;
+}
+
+// Lecture instantanée et envoi VPIV
+void mvt_ir_readInstant() {
+    int v = mvt_ir_hw_readRaw();
+    _send_value_vpiv(v);
+}
+
+// Activation / désactivation
+void mvt_ir_setActive(bool on) {
+    cfg_mvtir_active = on;
+    // ack
+    sendInfo("MvtIR", "act", "*", on ? "1" : "0");
+}
+
+// Fréquence (ms)
+void mvt_ir_setFreqMs(unsigned long ms) {
+    if (ms < 10) ms = 10;
+    cfg_mvtir_freq_ms = ms;
+    char buf[16]; snprintf(buf, sizeof(buf), "%lu", ms);
+    sendInfo("MvtIR", "freq", "*", buf);
+}
+
+// Seuil
+void mvt_ir_setThreshold(int n) {
+    if (n < 1) n = 1;
+    cfg_mvtir_threshold = n;
+    char buf[16]; snprintf(buf, sizeof(buf), "%d", n);
+    sendInfo("MvtIR", "thd", "*", buf);
+}
+
+// Mode : met en place valeurs par défaut associées
+void mvt_ir_setMode(const char* mode) {
+    if (!mode) return;
+    if (strcmp(mode, "idle") == 0) {
+        cfg_mvtir_active = false;
+        strncpy(cfg_mvtir_mode, "idle", sizeof(cfg_mvtir_mode)-1);
+        cfg_mvtir_mode[sizeof(cfg_mvtir_mode)-1] = '\0';
+        sendInfo("MvtIR", "mode", "*", "idle");
+        return;
+    }
+    if (strcmp(mode, "monitor") == 0) {
+        cfg_mvtir_active = true;
+        cfg_mvtir_freq_ms = 150;
+        cfg_mvtir_threshold = 1;
+        strncpy(cfg_mvtir_mode, "monitor", sizeof(cfg_mvtir_mode)-1);
+        cfg_mvtir_mode[sizeof(cfg_mvtir_mode)-1] = '\0';
+        sendInfo("MvtIR", "mode", "*", "monitor");
+        return;
+    }
+    if (strcmp(mode, "surveillance") == 0) {
+        cfg_mvtir_active = true;
+        cfg_mvtir_freq_ms = 80;
+        cfg_mvtir_threshold = 2;
+        strncpy(cfg_mvtir_mode, "surveillance", sizeof(cfg_mvtir_mode)-1);
+        cfg_mvtir_mode[sizeof(cfg_mvtir_mode)-1] = '\0';
+        sendInfo("MvtIR", "mode", "*", "surveillance");
+        return;
+    }
+
+    // si mode inconnu -> retourner erreur
+    sendError("MvtIR", "mode", "*", "unknown");
+}
+
+// Process périodique (à appeler depuis loop())
+void mvt_ir_processPeriodic() {
+    static unsigned long lastT = 0;
+    if (!cfg_mvtir_active) return;
+
+    unsigned long now = millis();
+    if (now - lastT < cfg_mvtir_freq_ms) return;
+    lastT = now;
+
+    int v = mvt_ir_hw_readRaw();
+
+    if (v == 1) {
+        mvtir_counter++;
+        if (mvtir_counter >= cfg_mvtir_threshold) {
+            _send_alert_vpiv();
+            mvtir_counter = 0;
+        }
+    } else {
+        mvtir_counter = 0;
+    }
+}

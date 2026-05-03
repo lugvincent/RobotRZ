@@ -1,0 +1,26 @@
+#!/bin/bash
+
+echo "=== Diagnostic MQTT Broker ==="
+echo
+
+echo "1. Statut du service:"
+sudo systemctl status mosquitto --no-pager -l
+
+echo -e "\n2. Configuration active:"
+sudo grep -v "^#" /etc/mosquitto/mosquitto.conf | grep -v "^$"
+
+echo -e "\n3. Utilisateurs définis:"
+if [ -f "/etc/mosquitto/passwd" ]; then
+    sudo cat /etc/mosquitto/passwd | cut -d: -f1
+else
+    echo "Aucun fichier passwd trouvé"
+fi
+
+echo -e "\n4. Test de connexion locale:"
+timeout 3 mosquitto_sub -h localhost -t "\$SYS/broker/version" -C 1 -v 2>&1
+
+echo -e "\n5. Ports en écoute:"
+sudo netstat -tlnp | grep :1883
+
+echo -e "\n6. Derniers logs:"
+sudo journalctl -u mosquitto --since "1 minute ago" --no-pager

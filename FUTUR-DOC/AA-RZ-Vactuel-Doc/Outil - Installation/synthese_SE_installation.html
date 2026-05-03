@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Synthese SE RobotRZ</title>
+<style>
+:root{--bg:#1a1a2e;--bg2:#16213e;--bg3:#0f3460;--text:#eaeaea;--text2:#a8b2c8;--text3:#6b7a99;--green:#00b894;--orange:#fdcb6e;--blue:#74b9ff;--purple:#a29bfe;--teal:#00cec9;--red:#d63031;--border:rgba(255,255,255,0.08)}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;font-size:15px;line-height:1.65;padding:24px 16px 60px}
+.page{max-width:860px;margin:0 auto}
+h1{font-size:22px;font-weight:600;border-bottom:2px solid #e94560;padding-bottom:10px;margin-bottom:6px}
+h2{font-size:17px;font-weight:600;color:var(--blue);margin:28px 0 12px;display:flex;align-items:center;gap:8px}
+h2::before{content:'';display:inline-block;width:4px;height:18px;background:var(--blue);border-radius:2px}
+h3{font-size:14px;font-weight:600;color:var(--text2);margin:16px 0 8px}
+.sub{color:var(--text3);font-size:13px;margin-bottom:28px}
+.sec{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:20px 22px;margin-bottom:18px}
+.sg{border-left:3px solid var(--green)}.sb{border-left:3px solid var(--blue)}.sp{border-left:3px solid var(--purple)}.so{border-left:3px solid var(--orange)}.st{border-left:3px solid var(--teal)}.sr{border-left:3px solid var(--red)}
+code{font-family:'Courier New',monospace;font-size:13px;background:rgba(255,255,255,0.07);color:var(--orange);padding:2px 6px;border-radius:4px}
+pre{font-family:'Courier New',monospace;font-size:12.5px;background:#0d1117;border:1px solid var(--border);border-radius:8px;padding:14px 16px;margin:10px 0;overflow-x:auto;line-height:1.6;color:#c9d1d9;white-space:pre-wrap}
+.flow{display:flex;align-items:center;flex-wrap:wrap;gap:6px;margin:12px 0}
+.fb{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:6px 12px;font-size:13px;font-weight:500}
+.fa{color:var(--text3);font-size:16px}
+.fg{border-color:var(--green);color:var(--green)}.fbl{border-color:var(--blue);color:var(--blue)}.fpu{border-color:var(--purple);color:var(--purple)}.fo{border-color:var(--orange);color:var(--orange)}
+table{width:100%;border-collapse:collapse;font-size:13px;margin:10px 0}
+th{background:var(--bg3);color:var(--text2);font-weight:600;padding:8px 12px;text-align:left;border-bottom:1px solid var(--border)}
+td{padding:7px 12px;border-bottom:1px solid var(--border);color:var(--text2)}
+tr:last-child td{border-bottom:none}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:10px 0}
+.mc{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:12px 14px}
+.mc h4{font-size:11px;font-weight:600;color:var(--text3);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.5px}
+.cl{list-style:none;margin:8px 0}
+.cl li{padding:4px 0;font-size:14px;display:flex;align-items:flex-start;gap:8px;color:var(--text2)}
+.cl li::before{content:'OK ';color:var(--green);font-weight:700;flex-shrink:0}
+.cl li.w::before{content:'!! ';color:var(--orange);font-weight:700}
+.step{display:flex;gap:12px;margin:8px 0}
+.sn{width:24px;height:24px;background:#533483;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;color:white;min-width:24px}
+.sc{flex:1;padding-top:2px;font-size:14px;color:var(--text2)}
+.al{border-radius:8px;padding:10px 14px;font-size:13px;margin:10px 0}
+.alo{background:rgba(253,203,110,0.08);border:1px solid rgba(253,203,110,0.25);color:var(--orange)}
+.alg{background:rgba(0,184,148,0.08);border:1px solid rgba(0,184,148,0.25);color:var(--green)}
+.alb{background:rgba(116,185,255,0.08);border:1px solid rgba(116,185,255,0.25);color:var(--blue)}
+hr{border:none;border-top:1px solid var(--border);margin:24px 0}
+p{margin:6px 0;color:var(--text2);font-size:14px}
+ul{padding-left:18px;margin:6px 0}
+ul li{font-size:14px;color:var(--text2);margin:3px 0}
+strong{color:var(--text);font-weight:600}
+@media(max-width:600px){.g2{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="page">
+<h1>Synthese - Installation SE RobotRZ</h1>
+<p class="sub">Session du 27 avril 2026 - Etat des lieux, schemas, commandes cles, prochaines etapes</p>
+
+<h2>1. Architecture generale SP - SE</h2>
+<div class="sec sb">
+<div class="flow">
+<div class="fb fg">SP (Node-RED)</div><div class="fa">MQTT</div>
+<div class="fb fbl">Broker RPI 192.168.1.40:1883</div><div class="fa">MQTT</div>
+<div class="fb fpu">SE (Termux)</div><div class="fa">USB-C</div>
+<div class="fb fo">Arduino Mega</div>
+</div>
+<table>
+<tr><th>Topic MQTT</th><th>Sens</th><th>Contenu</th></tr>
+<tr><td><code>SE/commande</code></td><td>SP vers SE</td><td>Trames VPIV : commandes, config, urgences</td></tr>
+<tr><td><code>SE/statut</code></td><td>SE vers SP</td><td>Trames VPIV : donnees capteurs, ACKs, alertes</td></tr>
+<tr><td><code>SE/arduino/data</code></td><td>Arduino vers SP</td><td>Donnees serie converties par mqtt_bridge.py</td></tr>
+</table>
+</div>
+
+<h2>2. Qu'est-ce qu'une FIFO ?</h2>
+<div class="sec sp">
+<p><strong>FIFO = First In First Out</strong> - un "tuyau nomme" (pipe nomme) entre deux processus sur le meme systeme. C'est un fichier special reconnaissable au <code>p</code> devant ses permissions : <code>prw-rw-rw-</code>. Un processus ecrit dedans, un autre lit a l'autre bout - dans l'ordre d'arrivee.</p>
+<div class="flow" style="margin:14px 0">
+<div class="fb fpu">manager (ex: sys_monitor) ecrit une trame</div>
+<div class="fa">--&gt; fifo_termux_in --&gt;</div>
+<div class="fb fbl">rz_vpiv_parser.sh lit et publie MQTT</div>
+<div class="fa">--&gt; MQTT --&gt;</div>
+<div class="fb fg">SP (Node-RED)</div>
+</div>
+<div class="al alo"><strong>Regle fondamentale :</strong> les managers SE n'ecrivent JAMAIS directement avec mosquitto_pub. Tout passe par la FIFO - rz_vpiv_parser.sh - MQTT.</div>
+<h3>Les 5 FIFOs du projet</h3>
+<table>
+<tr><th>Nom</th><th>Qui ecrit</th><th>Qui lit</th></tr>
+<tr><td><code>fifo_termux_in</code></td><td>Tous les managers SE</td><td>rz_vpiv_parser.sh (boucle FIFO-MQTT)</td></tr>
+<tr><td><code>fifo_tasker_in</code></td><td>rz_vpiv_parser.sh</td><td>rz_tasker_bridge.sh</td></tr>
+<tr><td><code>fifo_appli_in</code></td><td>rz_vpiv_parser.sh</td><td>rz_appli_manager.sh</td></tr>
+<tr><td><code>fifo_voice_in</code></td><td>rz_vpiv_parser.sh</td><td>rz_voice_manager.sh</td></tr>
+<tr><td><code>fifo_return</code></td><td>rz_vpiv_parser.sh</td><td>Tasker bridge (ACKs)</td></tr>
+</table>
+<h3>Creer / verifier les FIFOs</h3>
+<pre>bash ~/robotRZ-smartSE/termux/scripts/utils/fifo.manager.sh create
+bash ~/robotRZ-smartSE/termux/scripts/utils/fifo.manager.sh check</pre>
+</div>
+
+<h2>3. Demarrage minimal pour tester</h2>
+<div class="sec st">
+<pre># 1. Tuer les eventuels processus restants
+kill $(pgrep -f "rz_vpiv_parser") 2>/dev/null
+kill $(pgrep -f "rz_sys_monitor") 2>/dev/null
+
+# 2. Lancer le parser en arriere-plan
+bash ~/robotRZ-smartSE/termux/scripts/core/rz_vpiv_parser.sh &amp;
+
+# 3. Attendre que le parser soit pret
+sleep 2
+
+# 4. Lancer le monitor systeme
+bash ~/robotRZ-smartSE/termux/scripts/sensors/sys/rz_sys_monitor.sh</pre>
+<div class="al alg"><strong>Resultat attendu :</strong> des lignes FIFO-MQTT s'affichent toutes les 10 secondes avec CPU, thermique, stockage, RAM, batterie.</div>
+</div>
+
+<h2>4. Commandes Git essentielles</h2>
+<div class="sec sb">
+<div class="g2">
+<div class="mc">
+<h4>Sur le PC - envoyer vers GitHub</h4>
+<pre>git status
+git add .
+git commit -m "description"
+git push origin main</pre>
+</div>
+<div class="mc">
+<h4>Sur SE - recuperer depuis GitHub</h4>
+<pre>cd ~/robotRZ-smartSE
+git pull origin main
+git status
+git log --oneline -5</pre>
+</div>
+</div>
+<div class="al alb"><strong>Bon reflexe :</strong> fin de session = git add . ET git commit -m "..." ET git push. Toujours committer avant de fermer VS Code.</div>
+<h3>Comprendre les 3 zones Git</h3>
+<pre>Fichiers modifies (disque)
+       |-- git add .   --&gt;  Zone de transit (stage)
+                                    |-- git commit  --&gt;  Depot local
+                                                                |-- git push  --&gt;  GitHub
+                                                    &lt;-- git pull ----------------</pre>
+</div>
+
+<h2>5. Fichiers cles sur SE</h2>
+<div class="sec so">
+<div class="g2">
+<div class="mc">
+<h4>Configuration (~/robotRZ-smartSE/termux/)</h4>
+<ul>
+<li><code>config/keys.json</code> - credentials MQTT</li>
+<li><code>config/courant_init.json</code> - config complete SE</li>
+<li><code>config/global.json</code> - etat dynamique partage</li>
+<li><code>config/sys_runtime.json</code> - config sys validee</li>
+<li><code>config/sensors/*.json</code> - configs capteurs</li>
+</ul>
+</div>
+<div class="mc">
+<h4>Scripts core</h4>
+<ul>
+<li><code>scripts/core/rz_vpiv_parser.sh</code></li>
+<li><code>scripts/core/rz_state-manager.sh</code></li>
+<li><code>scripts/core/safety_stop.sh</code></li>
+<li><code>scripts/core/mqtt_bridge.py</code></li>
+</ul>
+</div>
+<div class="mc">
+<h4>Managers capteurs</h4>
+<ul>
+<li><code>sensors/sys/rz_sys_monitor.sh</code> OK teste</li>
+<li><code>sensors/gyro/rz_gyro_manager.sh</code></li>
+<li><code>sensors/Mg/rz_mg_manager.sh</code></li>
+<li><code>sensors/cam/rz_camera_manager.sh</code></li>
+<li><code>sensors/mic/rz_microSe_manager.sh</code></li>
+<li><code>sensors/stt/rz_stt_manager.sh</code></li>
+</ul>
+</div>
+<div class="mc">
+<h4>Logs utiles</h4>
+<ul>
+<li><code>logs/sys_monitor.log</code></li>
+<li><code>logs/vpiv_parser.log</code></li>
+<li><code>logs/state_manager.log</code></li>
+<li><code>logs/emergency.log</code></li>
+</ul>
+</div>
+</div>
+</div>
+
+<h2>6. Bilan - ce qui fonctionne</h2>
+<div class="sec sg">
+<ul class="cl">
+<li>git + jq installes sur SE</li>
+<li>Depot GitHub connecte (robotRZ-smartSE)</li>
+<li>Renommage scripts_RZ_SE vers robotRZ-smartSE applique partout</li>
+<li>original_init.sh execute - 8 fichiers config generes</li>
+<li>Connexion MQTT broker RPI confirmee (credentials dans keys.json)</li>
+<li>rz_vpiv_parser.sh operationnel - ecoute MQTT + lit FIFO + publie SE/statut</li>
+<li>rz_sys_monitor.sh publie CPU / thermique / stockage / RAM / batterie</li>
+<li>Flux SE vers SP fonctionnel et valide dans Node-RED</li>
+<li class="w">17 mots STT sans phonetique dans fr.dict (non bloquant pour les tests)</li>
+</ul>
+</div>
+
+<h2>7. Prochaines etapes</h2>
+<div class="sec st">
+<div class="step"><div class="sn">1</div><div class="sc"><strong>Verifier Node-RED SP</strong> - s'assurer que les trames SE/statut arrivent et sont parsees (subscriber MQTT sur SE/statut, affichage des valeurs sys dans le dashboard).</div></div>
+<div class="step"><div class="sn">2</div><div class="sc"><strong>Tester rz_gyro_manager.sh</strong> - LSM6DS3C detecte par termux-sensor. Lancer le manager, verifier les trames $F:Gyro:dataContGyro:SE dans Node-RED.</div></div>
+<div class="step"><div class="sn">3</div><div class="sc"><strong>Tester rz_mg_manager.sh</strong> - magnetometre MMC3630KJ detecte. Meme procedure que gyro.</div></div>
+<div class="step"><div class="sn">4</div><div class="sc"><strong>Tester le flux SP vers SE</strong> - envoyer une commande depuis Node-RED (ex: $V:CfgS:modeRZ:*:2#) et verifier que SE la recoit et met a jour global.json.</div></div>
+<div class="step"><div class="sn">5</div><div class="sc"><strong>Corriger error_handler.sh et mqtt_bridge.py</strong> - ajouter les credentials MQTT (meme pattern que vpiv_parser.sh : lecture keys.json).</div></div>
+<div class="step"><div class="sn">6</div><div class="sc"><strong>Creer rz_start.sh</strong> - script de demarrage automatique qui lance dans le bon ordre : FIFOs - parser - state-manager - managers capteurs.</div></div>
+<div class="step"><div class="sn">7</div><div class="sc"><strong>Tester rz_camera_manager.sh</strong> - necessite IP Webcam installee sur SE. Verifier la reception de StreamURL cote SP.</div></div>
+</div>
+
+<h2>8. Points de vigilance</h2>
+<div class="sec sr">
+<ul class="cl">
+<li class="w"><strong>error_handler.sh</strong> - utilise ancienne URL DuckDNS sans credentials. A corriger avec keys.json.</li>
+<li class="w"><strong>mqtt_bridge.py</strong> - utilise ancienne URL DuckDNS sans credentials. A corriger avec keys.json.</li>
+<li class="w"><strong>rz_state-manager.sh</strong> - ecoute MQTT directement sur SE/commande en parallele du parser. Double abonnement possible. A clarifier architecturalement.</li>
+<li class="w"><strong>fr.dict</strong> - 17 mots sans phonetique : rz, gps, leds, tasker, reset, snapshot, vas-y, reveille-toi, active-toi, desactive, eteins, localise, reinitialise, d'ou, l'alerte, l'anneau, l'urgence.</li>
+</ul>
+</div>
+
+<h2>9. Commandes de diagnostic</h2>
+<div class="sec sb">
+<pre># Verifier la connexion MQTT
+mosquitto_pub -h 192.168.1.40 -p 1883 -u "rpibrokerUser" -P "RZthLEga99?" -t "test" -m "ping"
+
+# Voir les processus en cours
+ps | grep -E "rz_|mosquitto|python"
+
+# Tuer proprement les managers
+kill $(pgrep -f "rz_vpiv_parser") 2>/dev/null
+kill $(pgrep -f "rz_sys_monitor") 2>/dev/null
+
+# Voir les logs en temps reel
+tail -f ~/robotRZ-smartSE/termux/logs/vpiv_parser.log
+tail -f ~/robotRZ-smartSE/termux/logs/sys_monitor.log
+
+# Verifier les FIFOs
+ls -la ~/robotRZ-smartSE/termux/fifo/
+
+# Debug d'un script bash
+bash -x ~/robotRZ-smartSE/termux/scripts/core/rz_vpiv_parser.sh 2>&amp;1 | head -40</pre>
+</div>
+
+<hr>
+<p style="text-align:center;color:var(--text3);font-size:12px;margin-top:24px">Projet RobotRZ - Synthese session 27 avril 2026 - Vincent Philippe</p>
+</div>
+</body>
+</html>

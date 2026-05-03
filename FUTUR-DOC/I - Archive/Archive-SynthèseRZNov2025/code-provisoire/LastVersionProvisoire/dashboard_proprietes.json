@@ -1,0 +1,8 @@
+
+{
+  "id": "enriched-vars-flow",
+  "type": "tab",
+  "label": "Dashboard2 - Propriétés enrichies",
+  "disabled": false,
+  "info": "Flow complet : tableau des propriétés + éditeurs (base, schéma, valeurs) + backend (prepare, save, delete, router). Version robuste avec schemaProvisoire."
+}

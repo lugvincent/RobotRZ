@@ -1,0 +1,28 @@
+Pour les intégrateurs ou fabricants de robots tondeuses et aspirateurs, voici les principales sources et fournisseurs de composants et de solutions clés en France et en Europe :
+1. Fournisseurs de robots et composants clés :
+
+Altverse (Chine) : Propose des services OEM/ODM pour les tondeuses robotisées, avec une personnalisation complète (capteurs, logiciels, intégration de marque). Idéal pour les intégrateurs souhaitant une solution clé en main ou des composants spécifiques.
+Kress (Allemagne, présent en France) : Fabrique des robots tondeuses professionnels et fournit des solutions pour les grands espaces (terrains de golf, parcs). Leurs produits sont souvent utilisés comme base par des intégrateurs pour des applications spécifiques.
+Roborock, Mammotion, Eufy, Segway Ninebot : Ces marques (souvent chinoises) sont leaders sur le marché des robots tondeuses et aspirateurs. Elles proposent des SDK et des partenariats pour l’intégration de leurs technologies (navigation LiDAR, IA, gestion des obstacles) dans des solutions personnalisées.
+
+2. Distributeurs et revendeurs spécialisés en France :
+
+Best of Robots : Basé dans le sud de la France, ce distributeur propose une large gamme de robots aspirateurs et tondeuses, et travaille avec les principales marques (iRobot, Roborock, Ecovacs, etc.). Ils peuvent servir d’intermédiaire pour l’approvisionnement en gros ou en solutions rebrandées.
+
+3. Composants et technologies :
+
+Capteurs et navigation : Les intégrateurs se fournissent souvent en capteurs LiDAR, GPS RTK, et caméras auprès de fabricants spécialisés comme Slamtec (LiDAR), Intel RealSense, ou STMicroelectronics (capteurs inertiels).
+Moteurs et batteries : Des fournisseurs comme Maxon Motor (Suisse) ou LG Chem (batteries lithium) sont couramment utilisés pour les robots mobiles.
+Plateformes logicielles : Certaines entreprises proposent des solutions logicielles pour la gestion de flottes de robots (ex : Awabot pour la téléprésence, mais aussi des startups françaises comme Recif Technologies pour la robotique de service).
+
+4. Laboratoires et clusters technologiques :
+
+LAAS-CNRS (Toulouse) et CEA-List (Grenoble) : Ces laboratoires collaborent avec des industriels pour le développement de technologies robotiques avancées, et peuvent orienter vers des fournisseurs locaux ou des partenariats R&D.
+
+Où se fournissent les intégrateurs ?
+
+Directement auprès des fabricants (ex : Altverse, Roborock, Kress) pour des solutions OEM/ODM.
+Via des distributeurs spécialisés (ex : Best of Robots) pour des produits finis ou des composants.
+Sur des plateformes B2B comme Alibaba, Made-in-China, ou des salons professionnels (ex : SITEVI, SIMA en France).
+
+Conseil : Pour un projet d’intégration, il est recommandé de contacter directement les fabricants pour discuter des options OEM/ODM, ou de s’adresser à des distributeurs comme Best of Robots pour des solutions clés en main ou des composants adaptés.

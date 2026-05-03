@@ -1,0 +1,198 @@
+<template>
+  <div v-if="msg && msg.topic==='openEditor' && msg.editor==='valeurs'"
+    style="border:1px solid #ddd;padding:15px;background:#fff;margin-top:12px;border-radius:6px;">
+    <h4 style="margin-bottom:15px;">💾 Valeurs pour : {{propData.nomP}}</h4>
+
+    <!-- Indicateur de liste de valeurs -->
+    <div v-if="hasValueList" style="margin-bottom:15px;padding:8px;background:#e3f2fd;border-radius:4px;">
+      <small>📝 Utilise une liste de valeurs prédéfinies</small>
+    </div>
+
+    <!-- Valeur par défaut (*) -->
+    <div style="margin-bottom:20px;border:1px solid #e0e0e0;padding:12px;border-radius:4px;background:#f8f9fa;">
+      <h5 style="margin-bottom:10px;">⭐ Valeur par défaut (*)</h5>
+
+      <div v-if="isComplex" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+        <div v-for="(ssp,i) in schema" :key="i" style="margin-bottom:8px;">
+          <label style="display:block;font-weight:600;margin-bottom:4px;color:#333;font-size:0.9em;">
+            {{ssp.nomSsP}} ({{ssp.typeSsP}})
+          </label>
+
+          <select v-if="hasValueList && ssp.typeSsP==='string'"
+                  v-model="local.valeurs['*'][ssp.nomSsP]"
+                  style="width:100%;padding:6px;border:1px solid #ccc;border-radius:3px;font-size:13px;background:white;">
+            <option value="">-- Sélectionner --</option>
+            <option v-for="item in valueList" :key="item.value" :value="item.value">
+              {{ item.label || item.value }}
+            </option>
+          </select>
+
+          <input v-else
+                 v-model="local.valeurs['*'][ssp.nomSsP]"
+                 :type="ssp.typeSsP==='boolean' ? 'checkbox' : 'text'"
+                 style="width:100%;padding:6px;border:1px solid #ccc;border-radius:3px;font-size:13px;" />
+        </div>
+      </div>
+
+      <div v-else>
+        <select v-if="hasValueList && propData.typeP==='string'"
+                v-model="local.valeurs['*']"
+                style="width:100%;padding:8px;border:1px solid #ccc;border-radius:4px;font-size:14px;background:white;">
+          <option value="">-- Sélectionner --</option>
+          <option v-for="item in valueList" :key="item.value" :value="item.value">
+            {{ item.label || item.value }}
+          </option>
+        </select>
+
+        <input v-else
+               v-model="local.valeurs['*']"
+               :type="propData.typeP==='boolean' ? 'checkbox' : 'text'"
+               style="width:100%;padding:8px;border:1px solid #ccc;border-radius:4px;font-size:14px;" />
+      </div>
+    </div>
+
+    <!-- Valeurs par instance -->
+    <div v-for="inst in instances" :key="inst"
+      style="margin-bottom:15px;border:1px solid #e8e8e8;padding:12px;border-radius:4px;background:white;">
+      <strong style="display:block;margin-bottom:10px;padding-bottom:5px;border-bottom:1px solid #eee;color:#2c3e50;">{{inst}}</strong>
+
+      <div v-if="isComplex" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+        <div v-for="(ssp,i) in schema" :key="i" style="margin-bottom:8px;">
+          <label style="display:block;font-weight:600;margin-bottom:4px;color:#333;font-size:0.9em;">
+            {{ssp.nomSsP}} ({{ssp.typeSsP}})
+          </label>
+
+          <select v-if="hasValueList && ssp.typeSsP==='string'"
+                  v-model="local.valeurs[inst][ssp.nomSsP]"
+                  style="width:100%;padding:6px;border:1px solid #ccc;border-radius:3px;font-size:13px;background:white;">
+            <option value="">-- Sélectionner --</option>
+            <option v-for="item in valueList" :key="item.value" :value="item.value">
+              {{ item.label || item.value }}
+            </option>
+          </select>
+
+          <input v-else
+                 v-model="local.valeurs[inst][ssp.nomSsP]"
+                 :type="ssp.typeSsP==='boolean' ? 'checkbox' : 'text'"
+                 style="width:100%;padding:6px;border:1px solid #ccc;border-radius:3px;font-size:13px;" />
+        </div>
+      </div>
+
+      <div v-else>
+        <select v-if="hasValueList && propData.typeP==='string'"
+                v-model="local.valeurs[inst]"
+                style="width:100%;padding:8px;border:1px solid #ccc;border-radius:4px;font-size:14px;background:white;">
+          <option value="">-- Sélectionner --</option>
+          <option v-for="item in valueList" :key="item.value" :value="item.value">
+            {{ item.label || item.value }}
+          </option>
+        </select>
+
+        <input v-else
+               v-model="local.valeurs[inst]"
+               :type="propData.typeP==='boolean' ? 'checkbox' : 'text'"
+               style="width:100%;padding:8px;border:1px solid #ccc;border-radius:4px;font-size:14px;" />
+      </div>
+    </div>
+
+    <!-- Boutons d'action -->
+    <div style="margin-top:20px;display:flex;gap:10px;">
+      <button @click="onSave"
+              style="background:#2196F3;color:white;border:none;padding:10px 20px;border-radius:4px;cursor:pointer;font-weight:600;">
+        💾 Enregistrer
+      </button>
+      <button @click="onCancel"
+              style="background:#f0f0f0;color:#333;border:1px solid #ccc;padding:10px 20px;border-radius:4px;cursor:pointer;">
+        ↩ Annuler
+      </button>
+    </div>
+  </div>
+</template>
+
+<script>
+  export default {
+  data(){ 
+    return { 
+      local: {valeurs: {}}, 
+      propData: {},
+      schema: [], 
+      isComplex: false, 
+      instances: [], 
+      hasValueList: false,
+      valueList: []
+    }; 
+  },
+  mounted(){ 
+    this.$watch('msg',(m)=>{ 
+      if(!m) return; 
+      if(m.topic==='openEditor' && m.editor==='valeurs'){
+        console.log('Éditeur Valeurs - Message reçu:', m);
+        
+        this.propData = m.prop || {};
+        this.schema = (m.prop && m.prop.schema) ? JSON.parse(JSON.stringify(m.prop.schema)) : [];
+        this.isComplex = (m.prop && (m.prop.typeP==='object' || m.prop.typeP==='array')) || false;
+        this.instances = m.instances || [];
+        
+        // Initialisation des listes de valeurs
+        this.hasValueList = !!(m.prop && m.prop.useValueList && m.prop.valueList);
+        this.valueList = (m.prop && m.prop.valueList) || [];
+        
+        console.log('Données analysées:', {
+          hasValueList: this.hasValueList,
+          valueList: this.valueList,
+          propData: this.propData,
+          isComplex: this.isComplex
+        });
+        
+        // Initialisation des valeurs
+        this.local = {valeurs: {}};
+        
+        if(this.isComplex && this.schema.length){
+          // Propriété complexe (objet/array)
+          let def = {}; 
+          this.schema.forEach(s => {
+            def[s.nomSsP] = (m.prop && m.prop.valeurs && m.prop.valeurs['*'] && m.prop.valeurs['*'][s.nomSsP] !== undefined)
+              ? m.prop.valeurs['*'][s.nomSsP]
+              : null;
+          });
+          this.local.valeurs['*'] = JSON.parse(JSON.stringify(def));
+          
+          this.instances.forEach(i => { 
+            let instVal = {}; 
+            this.schema.forEach(s => {
+              instVal[s.nomSsP] = (m.prop && m.prop.valeurs && m.prop.valeurs[i] && m.prop.valeurs[i][s.nomSsP] !== undefined)
+                ? m.prop.valeurs[i][s.nomSsP]
+                : null;
+            }); 
+            this.local.valeurs[i] = instVal; 
+          });
+        } else {
+          // Propriété simple
+          this.local.valeurs['*'] = (m.prop && m.prop.valeurs && m.prop.valeurs['*'] !== undefined)
+            ? m.prop.valeurs['*']
+            : null;
+          this.instances.forEach(i => { 
+            this.local.valeurs[i] = (m.prop && m.prop.valeurs && m.prop.valeurs[i] !== undefined)
+              ? m.prop.valeurs[i]
+              : null; 
+          });
+        }
+        
+        console.log('Valeurs initialisées:', this.local.valeurs);
+      } 
+    }, {immediate: true}); 
+  },
+  methods: {
+    onSave(){ 
+      this.send({
+        topic: 'saveValues',
+        prop: {
+          nomP: this.propData.nomP,
+          valeurs: this.local.valeurs
+        }
+      }); 
+    },
+    onCancel(){ this.send({topic: 'cancel'}); }
+  }
+}
+</script>

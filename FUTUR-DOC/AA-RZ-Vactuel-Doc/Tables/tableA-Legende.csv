@@ -1,0 +1,50 @@
+LÉGENDE — Variables VPIV — Projet RZ — v3.0 — Mars 2026;;
+CHAMP;VALEUR / SIGNIFICATION;NOTES
+SOURCE;P;SP (Node-RED) — seul émetteur possible
+SOURCE;S;SE (smartphone embarqué) — seul émetteur possible
+SOURCE;A;Arduino Mega — seul émetteur possible
+SOURCE;E;SE ou Arduino selon qui détecte la situation
+CAT;V;Consigne — ordre à exécuter par le destinataire
+CAT;I;Information — retour d'état, ACK, publication
+CAT;E;Événement critique — urgence, réaction automatique SP
+CAT;F;Flux — données continues publiées à fréquence régulière
+CAT;A;Commande applicative Android — Tasker, apps
+TYPE;boolean;0 ou 1 dans le VPIV — jamais true/false
+TYPE;number;Entier — pas de float dans le VPIV
+TYPE;string;Chaîne libre ou structurée (ex: CSV entiers)
+TYPE;enum;Valeur parmi liste exhaustive dans FORMAT_VALUE
+TYPE;object;JSON sérialisé — uniquement pour configuration (pas temps réel)
+CYCLE;Ini;Initialisé par SP au boot (courant_init.json). Peut évoluer au runtime via CAT=V.
+CYCLE;Dyn;Produit uniquement au runtime. Pas de valeur au boot.
+CYCLE;Cste;Constante en exécution — ne change pas sans réflash ou calibration.
+NATURE;Config;Paramètre pilotable durable — CAT=V attendu
+NATURE;ACK;Confirmation miroir d'une commande — même VAR/PROP, sens inverse
+NATURE;Etat;État réel mesuré ou calculé — non directement commandable
+NATURE;Intent;Capsule d'intention STT envoyée à SP pour validation
+NATURE;Event;Commande ponctuelle — effet immédiat, pas d'état persistant
+NATURE;fusion;Donnée externe (SE) relayée par SP vers Arduino (ex: gyro, compass)
+NATURE;param;Paramètre de configuration (ex: paraOdom)
+NATURE;_;Pas de qualification sémantique particulière
+INTERFACE;oui;Propriété visible/pilotable dans le tableau de bord Node-RED
+INTERFACE;_;Propriété interne — pas d'élément UI dédié dans SP
+FORMAT VPIV;$CAT:VAR:INST:PROP:VAL#;⚠ INST avant PROP — ordre inhabituel mais convention projet
+VARS PARTAGÉES SE+A;CfgS, Urg, COM;Instances identifiées par SE ou A dans INSTANCE/NOTES
+ENUM modeRZ;0=ARRET|1=VEILLE|2=FIXE|3=DEPLACEMENT|4=AUTONOME|5=ERREUR;Partagé SE et Arduino
+ENUM typePtge;0=ECRAN|1=VOCALE|2=JOYSTICK|3=LAISSE|4=LAISSE+VOCALE;Partagé SE et Arduino
+CODAGE ×1000;Entier ×1000;Ex: scale Mtr/SecMvt, kturn, Odom pos/vel
+CODAGE Gyro/Mag;rad/s × 100;VPIV = rad/s × 100 → diviser par 100 pour rad/s réels
+CODAGE Mag;µT × 100;VPIV = µT × 100 → diviser par 100 pour µT réels
+CODAGE Odom pos;mm (×1000);x_mm = x×1000, y_mm = y×1000, theta_mrad = theta×1000
+CODAGE Odom vel;mm/s et mrad/s (×1000);v_mm_s = v×1000, omega_mrad_s = omega×1000
+CODAGE MicroSE;RMS × 10;VPIV = RMS × 10 → diviser par 10 pour RMS réel
+CODAGE MicroSE dir;deg × 10;direction 450 = 45,0°. ⚠ à valider vs code
+UNITÉS FREQ — Gyro/Mag;freqCont en Hz;Plus GRAND = plus fréquent (ex: 5 = 5 mesures/s)
+UNITÉS FREQ — Sys;freqCont en SECONDES;Plus PETIT = plus fréquent (ex: 10 = toutes les 10s)
+UNITÉS FREQ — MicroSE;freqCont en ms;Plus PETIT = plus fréquent (ex: 300 = toutes les 300ms)
+UNITÉS FREQ — Odom;freqCalc/freqPos/freqVel en ms;fCalc=50→20Hz, fPos=200→5Hz, fVel=40→25Hz
+ALERTES — règle 10s;warn et urg déclenchés après 10s CONTINUS;alerts_sys.sh
+ALERTES — Sys batt;SENS INVERSÉ : alerte si INFÉRIEUR au seuil;urg < warn pour batterie
+ALERTES — Sys autres;SENS HAUT : alerte si SUPÉRIEUR au seuil;urg > warn pour CPU/thermal/etc
+⚠ ATTENTION;TorchSE;rz_torch_manager.sh — bug var Torch→TorchSE corrigé v2.1
+⚠ ATTENTION;courant_init.json;Ancienne version dans /mnt/project — référence = courant_init.sh v5.1
+⚠ ATTENTION;Odom coeffs angulaires;Positifs (×1000). Soustraction dans processPeriodic — corrigé v3.0

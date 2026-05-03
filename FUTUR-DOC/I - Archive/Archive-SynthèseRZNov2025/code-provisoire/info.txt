@@ -1,0 +1,82 @@
+📘 Fiche synthèse — Flow ui-VarG
+🎯 Objectif
+
+Ce flow gère les Variables Globales (VarG), leurs instances et leurs propriétés de manière structurée et persistante via global.enrichedVars.
+Il assure :
+
+Création / édition / suppression des variables.
+
+Gestion des propriétés par variable (ajout, édition, suppression).
+
+Maintien de la cohérence entre instances et valeurs par propriété.
+
+Persistance dans le fichier (enrichedVars stocké en file).
+
+🏗️ Architecture fonctionnelle
+1. Gestion des Variables Globales
+
+Form_Var_Modif : saisie/édition des champs généraux :
+
+nomVarG, abbrVarG, instances, descriptionVarG, dateUpdateVarG.
+
+prepareFormVarSelected : prépare le formulaire selon la variable choisie.
+
+Infos générales enrichedVars :
+
+crée ou modifie une variable,
+
+gère renommage et mise à jour,
+
+initialise les propriétés si besoin.
+
+2. Gestion des Propriétés
+
+Boutons d’action
+
+🛠️ Éditer les propriétés → ouvre le tableau dynamique.
+
+➕ Ajouter une propriété → ouvre formulaire vide.
+
+❌ Supprimer une propriété → supprime la propriété choisie.
+
+prepareTable :
+
+Construit la table dynamique (colonnes fixes + colonnes par instance + action ✏️).
+
+Alimente templateTablePropriete.
+
+templateTablePropriete :
+
+Affiche la table des propriétés.
+
+Envoie editProperty quand l’utilisateur clique ✏️.
+
+onTableEvent :
+
+Reçoit editProperty.
+
+Prépare les données pour formEditProp.
+
+formEditProp :
+
+Formulaire pour éditer une propriété (nom, abbr, type, valeur défaut).
+
+saveSchemaOrRow :
+
+Ajoute ou met à jour une propriété.
+
+Initialise les valeurs par défaut pour toutes les instances.
+
+deleteProperty :
+
+Supprime une propriété sélectionnée.
+
+3. Persistance et Synchronisation
+
+sauvVarsGlobalInFile : enregistre dans le fichier.
+
+synchro : synchronise avec les autres flows.
+
+link out : met à jour la table après chaque opération.
+
+msg.info : feedback utilisateur (succès, erreur, avertissement).

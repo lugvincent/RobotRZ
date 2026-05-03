@@ -1,0 +1,281 @@
+[
+    {
+        "id": "f0a1d000.testinject",
+        "type": "inject",
+        "z": "61d8f8019f224437",
+        "name": "Init DemoVar si absent",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.5,
+        "topic": "",
+        "x": 180,
+        "y": 980,
+        "wires": [
+            [
+                "f0a1d001.setdemo"
+            ]
+        ]
+    },
+    {
+        "id": "f0a1d001.setdemo",
+        "type": "function",
+        "z": "61d8f8019f224437",
+        "name": "Set DemoVar global",
+        "func": "// Initialise enrichedVars avec une variable DemoVar si absent\nlet enrichedVars = global.get(\"enrichedVars\", \"file\") || {};\n\nif (!enrichedVars.DemoVar) {\n    enrichedVars.DemoVar = {\n        nomVarG: \"DemoVar\",\n        abbrVarG: \"DVar\",\n        descriptionVarG: \"Variable de démo avec différents types de propriétés\",\n        dateUpdateVarG: new Date().toISOString(),\n        instances: [\"*\", \"inst1\", \"inst2\"],\n        proprietes: [\n            {\n                nomP: \"nom\",\n                abbrP: \"nm\",\n                typeP: \"string\",\n                schema: null,\n                valeurs: { \"*\": \"Inconnu\", inst1: \"Alice\", inst2: \"Bob\" }\n            },\n            {\n                nomP: \"age\",\n                abbrP: \"ag\",\n                typeP: \"number\",\n                schema: null,\n                valeurs: { \"*\": 0, inst1: 30, inst2: 25 }\n            },\n            {\n                nomP: \"actif\",\n                abbrP: \"act\",\n                typeP: \"boolean\",\n                schema: null,\n                valeurs: { \"*\": true, inst1: false, inst2: true }\n            },\n            {\n                nomP: \"adresse\",\n                abbrP: \"adr\",\n                typeP: \"object\",\n                schema: [\n                    { nomSsP: \"rue\", typeSsP: \"string\" },\n                    { nomSsP: \"ville\", typeSsP: \"string\" }\n                ],\n                valeurs: {\n                    \"*\": { rue: \"?\", ville: \"?\" },\n                    inst1: { rue: \"12 rue A\", ville: \"Paris\" },\n                    inst2: { rue: \"34 rue B\", ville: \"Lyon\" }\n                }\n            }\n        ]\n    };\n    global.set(\"enrichedVars\", enrichedVars, \"file\");\n}\n\n// Définit DemoVar comme variable sélectionnée par défaut\nflow.set(\"varSelected\", \"DemoVar\");\n\nreturn { payload: \"DemoVar prêt\" };",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 440,
+        "y": 980,
+        "wires": [
+            [
+                "4711168da011143b",
+                "prepare-tableau"
+            ]
+        ]
+    },
+    {
+        "id": "4711168da011143b",
+        "type": "debug",
+        "z": "61d8f8019f224437",
+        "name": "debug 7",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 700,
+        "y": 1060,
+        "wires": []
+    },
+    {
+        "id": "prepare-tableau",
+        "type": "function",
+        "z": "61d8f8019f224437",
+        "name": "Prepare Tableau Propriétés",
+        "func": "// Prépare le tableau principal des propriétés\nlet varSelected = flow.get(\"varSelected\") || null;\nlet enriched = global.get(\"enrichedVars\",\"file\") || {};\nlet variable = enriched[varSelected] || {};\n\nif (!varSelected || !variable.proprietes) {\n    msg.payload = { proprietes: [], instances: [] };\n    msg.view = \"tableau\";\n    msg.info = \"⚠️ Aucune variable sélectionnée.\";\n    return msg;\n}\n\nlet instances = variable.instances || [\"*\"];\nlet proprietes = variable.proprietes.map(p => {\n    let valeurs = p.valeurs || {};\n    return {\n        nomP: p.nomP,\n        abbrP: p.abbrP,\n        typeP: p.typeP,\n        schema: p.schema || null,\n        defaut: valeurs[\"*\"], // valeur par défaut\n        valeurs: valeurs\n    };\n});\n\nmsg.payload = {\n    variable: variable,\n    proprietes: proprietes,\n    instances: instances.filter(i => i !== \"*\") // on cache * côté tableau\n};\n\nmsg.view = \"tableau\";\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 440,
+        "y": 1140,
+        "wires": [
+            [
+                "ui-template",
+                "80b5fac4ff99274d"
+            ]
+        ]
+    },
+    {
+        "id": "router-ui",
+        "type": "function",
+        "z": "61d8f8019f224437",
+        "name": "Router actions UI",
+        "func": "// Router les actions du frontend vers les bons handlers\n// sorties: [openEditor, deleteProp, saveProp, cancel]\n\nconst topic = msg.topic;\n\nif (!topic) return null;\n\nswitch (topic) {\n  case \"openEditor\":\n    flow.set(\"propSelected\", JSON.parse(JSON.stringify(msg.prop || {})));\n    flow.set(\"propOriginalName\", (msg.prop && msg.prop.nomP) || null);\n    return [msg, null, null, null];\n\n  case \"deleteProp\":\n    msg.prop = JSON.parse(JSON.stringify(msg.prop || {}));\n    return [null, msg, null, null];\n\n  case \"save\":\n    msg.prop = JSON.parse(JSON.stringify(msg.prop || {}));\n    msg.saveKind = msg.saveKind || \"base\";\n    msg.originalName = flow.get(\"propOriginalName\") || (msg.prop && msg.prop.nomP);\n    return [null, null, msg, null];\n\n  case \"cancel\":\n    return [null, null, null, { topic: \"refresh\", view: \"tableau\" }];\n\n  default:\n    return null;\n}",
+        "outputs": 4,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1070,
+        "y": 1140,
+        "wires": [
+            [
+                "ui-template",
+                "232c0e1f2f6c2d89"
+            ],
+            [
+                "delete-prop",
+                "232c0e1f2f6c2d89"
+            ],
+            [
+                "save-prop",
+                "232c0e1f2f6c2d89"
+            ],
+            [
+                "ui-template",
+                "232c0e1f2f6c2d89"
+            ]
+        ]
+    },
+    {
+        "id": "delete-prop",
+        "type": "function",
+        "z": "61d8f8019f224437",
+        "name": "Delete propriété",
+        "func": "// Suppression avec backup automatique\nlet varSelected = flow.get(\"varSelected\");\nlet enriched = global.get(\"enrichedVars\",\"file\") || {};\nlet variable = enriched[varSelected];\n\nif (!variable || !msg.prop || !msg.prop.nomP) {\n  msg.info = \"❌ Données manquantes pour supprimer.\";\n  return msg;\n}\n\nlet backups = global.get(\"enrichedVars_backups\",\"file\") || [];\nbackups.push({ ts: new Date().toISOString(), snapshot: JSON.parse(JSON.stringify(enriched)) });\nglobal.set(\"enrichedVars_backups\", backups, \"file\");\n\nlet idx = variable.proprietes.findIndex(p => p.nomP === msg.prop.nomP);\nif (idx === -1) {\n  msg.info = \"⚠️ Propriété introuvable.\";\n  return { payload: null, info: msg.info };\n}\n\nvariable.proprietes.splice(idx, 1);\nenriched[varSelected] = variable;\nglobal.set(\"enrichedVars\", enriched, \"file\");\n\nmsg.info = `✅ Propriété supprimée : ${msg.prop.nomP}`;\nreturn { topic: \"refresh\", view: \"tableau\", info: msg.info };",
+        "outputs": 1,
+        "x": 1360,
+        "y": 1120,
+        "wires": [
+            [
+                "ui-template"
+            ]
+        ]
+    },
+    {
+        "id": "save-prop",
+        "type": "function",
+        "z": "61d8f8019f224437",
+        "name": "Save propriété",
+        "func": "// Sauvegarde une propriété (base | schema | valeurs)\nlet varSelected = flow.get(\"varSelected\");\nlet enriched = global.get(\"enrichedVars\",\"file\") || {};\nlet variable = enriched[varSelected];\n\nif (!variable || !msg.prop) {\n  msg.info = \"❌ Données incomplètes pour la sauvegarde.\";\n  return msg;\n}\n\nlet originalName = msg.originalName || (flow.get(\"propSelected\")||{}).nomP;\nlet proprietes = variable.proprietes || [];\nlet idx = proprietes.findIndex(p => p.nomP === originalName);\n\nif (idx === -1 && msg.saveKind === \"base\") {\n  let newProp = {\n    nomP: msg.prop.nomP,\n    abbrP: msg.prop.abbrP || \"\",\n    typeP: msg.prop.typeP || \"string\",\n    schema: msg.prop.schema || null,\n    valeurs: {}\n  };\n  (variable.instances || [\"*\"]).forEach(i => { newProp.valeurs[i] = null; });\n  proprietes.push(newProp);\n  idx = proprietes.length - 1;\n}\n\nif (idx === -1) {\n  msg.info = \"❌ Propriété introuvable.\";\n  return msg;\n}\n\nlet backups = global.get(\"enrichedVars_backups\",\"file\") || [];\nbackups.push({ ts: new Date().toISOString(), snapshot: JSON.parse(JSON.stringify(enriched)) });\nglobal.set(\"enrichedVars_backups\", backups, \"file\");\n\nif (msg.saveKind === \"base\") {\n  proprietes[idx].nomP = msg.prop.nomP;\n  proprietes[idx].abbrP = msg.prop.abbrP;\n  proprietes[idx].typeP = msg.prop.typeP;\n}\nelse if (msg.saveKind === \"schema\") {\n  proprietes[idx].schema = msg.prop.schema || [];\n}\nelse if (msg.saveKind === \"valeurs\") {\n  proprietes[idx].valeurs = msg.prop.valeurs || {};\n}\n\nenriched[varSelected].proprietes = proprietes;\nglobal.set(\"enrichedVars\", enriched, \"file\");\n\nflow.set(\"propSelected\", proprietes[idx]);\n\nmsg.info = `✅ Propriété ${proprietes[idx].nomP} sauvegardée (${msg.saveKind}).`;\nreturn { topic: \"refresh\", view: \"tableau\", info: msg.info };",
+        "outputs": 1,
+        "x": 1380,
+        "y": 1180,
+        "wires": [
+            [
+                "ui-template"
+            ]
+        ]
+    },
+    {
+        "id": "ui-template",
+        "type": "ui-template",
+        "z": "61d8f8019f224437",
+        "group": "grp1",
+        "page": "",
+        "ui": "",
+        "name": "Dashboard2 - Propriétés",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "format": "<template>\n  <div>\n    <!-- Vue dynamique -->\n    <div v-if=\"msg.view === 'tableau'\">\n      <h3>📋 Tableau des propriétés</h3>\n      <table border=\"1\" cellpadding=\"6\">\n        <thead>\n          <tr>\n            <th>Nom</th>\n            <th>Actions</th>\n            <th>Abbr</th>\n            <th>Type</th>\n            <th>Schema</th>\n            <th>Défaut</th>\n            <th v-for=\"inst in msg.payload.instances\" :key=\"inst\">{{ inst }}</th>\n          </tr>\n        </thead>\n        <tbody>\n          <tr v-for=\"prop in msg.payload.proprietes\" :key=\"prop.nomP\">\n            <td>{{ prop.nomP }}</td>\n            <td>\n              <button title=\"Éditer\" @click=\"sendAction('openEditor','base',prop)\">✏️</button>\n              <button title=\"Schéma\" @click=\"sendAction('openEditor','schema',prop)\">📑</button>\n              <button title=\"Valeurs\" @click=\"sendAction('openEditor','valeurs',prop)\">💾</button>\n              <button title=\"Supprimer\" style=\"color:red\" @click=\"confirmDelete(prop)\">🗑</button>\n            </td>\n            <td>{{ prop.abbrP }}</td>\n            <td>{{ prop.typeP }}</td>\n            <td>{{ prop.schema ? JSON.stringify(prop.schema) : 'null' }}</td>\n            <td>{{ formatVal(prop.defaut) }}</td>\n            <td v-for=\"inst in msg.payload.instances\" :key=\"inst\">{{ formatVal(prop.valeurs[inst]) }}</td>\n          </tr>\n        </tbody>\n      </table>\n    </div>\n\n    <!-- Formulaire Base -->\n    <div v-if=\"msg.view==='formBase'\">\n      <h3>✏️ Éditer Base</h3>\n      <table border=\"1\" cellpadding=\"6\">\n        <tr><td>Nom</td><td><input v-model=\"msg.prop.nomP\"/></td></tr>\n        <tr><td>Abbr</td><td><input v-model=\"msg.prop.abbrP\"/></td></tr>\n        <tr><td>Type</td><td><input v-model=\"msg.prop.typeP\"/></td></tr>\n      </table>\n      <button @click=\"sendSave('base')\">💾 Enregistrer</button>\n      <button @click=\"sendCancel\">↩️ Annuler</button>\n    </div>\n\n    <!-- Formulaire Schéma -->\n    <div v-if=\"msg.view==='formSchema'\">\n      <h3>📑 Éditer Schéma</h3>\n      <table border=\"1\" cellpadding=\"6\">\n        <tr v-for=\"(ssp,idx) in (msg.prop.schema||[])\" :key=\"idx\">\n          <td><input v-model=\"ssp.nomSsP\" placeholder=\"Nom sous-prop\"/></td>\n          <td><input v-model=\"ssp.typeSsP\" placeholder=\"Type\"/></td>\n        </tr>\n      </table>\n      <button @click=\"msg.prop.schema.push({nomSsP:'',typeSsP:''})\">➕ Ajouter</button>\n      <button @click=\"sendSave('schema')\">💾 Enregistrer</button>\n      <button @click=\"sendCancel\">↩️ Annuler</button>\n    </div>\n\n    <!-- Formulaire Valeurs -->\n    <div v-if=\"msg.view==='formValeurs'\">\n      <h3>💾 Éditer Valeurs</h3>\n      <table border=\"1\" cellpadding=\"6\">\n        <tr><th>Instance</th><th>Valeur</th></tr>\n        <tr v-for=\"(val,inst) in msg.prop.valeurs\" :key=\"inst\">\n          <td>{{inst}}</td>\n          <td><input v-model=\"msg.prop.valeurs[inst]\"/></td>\n        </tr>\n      </table>\n      <button @click=\"sendSave('valeurs')\">💾 Enregistrer</button>\n      <button @click=\"sendCancel\">↩️ Annuler</button>\n    </div>\n  </div>\n</template>\n\n<script>\nexport default {\n  methods: {\n    formatVal(v){\n      if(v===null||v===undefined) return 'null';\n      if(typeof v==='object') return JSON.stringify(v);\n      return v;\n    },\n    sendAction(topic,view,prop){\n      this.send({topic:topic,view:'form'+view.charAt(0).toUpperCase()+view.slice(1),prop});\n    },\n    sendSave(kind){\n      this.send({topic:'save',saveKind:kind,prop:this.msg.prop});\n    },\n    sendCancel(){\n      this.send({topic:'cancel'});\n    },\n    confirmDelete(prop){\n      if(confirm(`Supprimer la propriété ${prop.nomP} ?`)){\n        this.send({topic:'deleteProp',prop});\n      }\n    }\n  }\n}\n</script>\n",
+        "storeOutMessages": true,
+        "passthru": true,
+        "resendOnRefresh": true,
+        "templateScope": "local",
+        "className": "",
+        "x": 750,
+        "y": 1160,
+        "wires": [
+            [
+                "router-ui"
+            ]
+        ]
+    },
+    {
+        "id": "232c0e1f2f6c2d89",
+        "type": "debug",
+        "z": "61d8f8019f224437",
+        "name": "debug 8",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1480,
+        "y": 1000,
+        "wires": []
+    },
+    {
+        "id": "link_start",
+        "type": "link out",
+        "z": "61d8f8019f224437",
+        "name": "to prepareTableau on refresh",
+        "links": [
+            "link_in_prepare"
+        ],
+        "x": 1750,
+        "y": 1280,
+        "wires": []
+    },
+    {
+        "id": "grp1",
+        "type": "ui-group",
+        "name": "Grpe_Propriete",
+        "page": "page-1",
+        "width": 6,
+        "height": 1,
+        "order": 4,
+        "showTitle": false,
+        "className": "",
+        "visible": "true",
+        "disabled": "false",
+        "groupType": "default"
+    },
+    {
+        "id": "page-1",
+        "type": "ui-page",
+        "name": "P_admin-VarG",
+        "ui": "930a8a5e70986346",
+        "path": "/admin_varG",
+        "icon": "dashboard",
+        "layout": "notebook",
+        "theme": "1050ebb74976e9e1",
+        "breakpoints": [
+            {
+                "name": "Default",
+                "px": "0",
+                "cols": "3"
+            },
+            {
+                "name": "Tablet",
+                "px": "576",
+                "cols": "6"
+            },
+            {
+                "name": "Small Desktop",
+                "px": "768",
+                "cols": "9"
+            },
+            {
+                "name": "Desktop",
+                "px": "1024",
+                "cols": "12"
+            }
+        ],
+        "order": 4,
+        "className": "",
+        "visible": "true",
+        "disabled": "false"
+    },
+    {
+        "id": "930a8a5e70986346",
+        "type": "ui-base",
+        "name": "My Dashboard",
+        "path": "/dashboard",
+        "appIcon": "",
+        "includeClientData": true,
+        "acceptsClientConfig": [],
+        "showPathInSidebar": false,
+        "headerContent": "page",
+        "navigationStyle": "default",
+        "titleBarStyle": "default",
+        "showReconnectNotification": true,
+        "notificationDisplayTime": 1,
+        "showDisconnectNotification": true,
+        "allowInstall": true
+    },
+    {
+        "id": "1050ebb74976e9e1",
+        "type": "ui-theme",
+        "name": "Default Theme",
+        "colors": {
+            "surface": "#ffffff",
+            "primary": "#0094ce",
+            "bgPage": "#eeeeee",
+            "groupBg": "#ffffff",
+            "groupOutline": "#cccccc"
+        },
+        "sizes": {
+            "density": "default",
+            "pagePadding": "12px",
+            "groupGap": "4px",
+            "groupBorderRadius": "4px",
+            "widgetGap": "10px"
+        }
+    }
+]

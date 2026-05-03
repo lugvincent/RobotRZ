@@ -1,0 +1,183 @@
+[
+  {
+    "id": "3ffe017fe2a38943",
+    "type": "ui-button",
+    "z": "cb693a41d603ae40",
+    "group": "5d9040f02211696f",
+    "name": "Send Request",
+    "label": "Send Request",
+    "order": 4,
+    "width": "3",
+    "height": "1",
+    "emulateClick": false,
+    "tooltip": "",
+    "color": "",
+    "bgcolor": "",
+    "className": "",
+    "icon": "",
+    "iconPosition": "left",
+    "payload": "",
+    "payloadType": "str",
+    "topic": "topic",
+    "topicType": "msg",
+    "buttonColor": "green",
+    "textColor": "white",
+    "iconColor": "",
+    "x": 180,
+    "y": 40,
+    "wires": [
+      [
+        "75d892cf6406a7ef"
+      ]
+    ]
+  },
+  {
+    "id": "75d892cf6406a7ef",
+    "type": "http request",
+    "z": "cb693a41d603ae40",
+    "name": "GET Star Wars Character",
+    "method": "GET",
+    "ret": "obj",
+    "paytoqs": "ignore",
+    "url": "https://swapi.dev/api/people",
+    "tls": "",
+    "persist": false,
+    "proxy": "",
+    "insecureHTTPParser": false,
+    "authType": "",
+    "senderr": false,
+    "headers": [],
+    "x": 410,
+    "y": 40,
+    "wires": [
+      [
+        "774945a624ac4587"
+      ]
+    ]
+  },
+  {
+    "id": "774945a624ac4587",
+    "type": "change",
+    "z": "cb693a41d603ae40",
+    "name": "",
+    "rules": [
+      {
+        "t": "set",
+        "p": "payload",
+        "pt": "msg",
+        "to": "payload.results",
+        "tot": "msg"
+      }
+    ],
+    "action": "",
+    "property": "",
+    "from": "",
+    "to": "",
+    "reg": false,
+    "x": 640,
+    "y": 40,
+    "wires": [
+      [
+        "30ae643c57ae22d9",
+        "e7e8decff487b9d3"
+      ]
+    ]
+  },
+  {
+    "id": "30ae643c57ae22d9",
+    "type": "ui-table",
+    "z": "cb693a41d603ae40",
+    "group": "5d9040f02211696f",
+    "name": "",
+    "label": "text",
+    "order": 3,
+    "width": 0,
+    "height": 0,
+    "maxrows": 0,
+    "passthru": false,
+    "autocols": true,
+    "showSearch": true,
+    "selectionType": "none",
+    "columns": [],
+    "x": 810,
+    "y": 40,
+    "wires": [
+      []
+    ]
+  },
+  {
+    "id": "5d9040f02211696f",
+    "type": "ui-group",
+    "name": "Button with an API Request",
+    "page": "9d4bc1caffe751ab",
+    "width": "6",
+    "height": "1",
+    "order": 4,
+    "showTitle": true,
+    "className": "",
+    "visible": "true",
+    "disabled": "false"
+  },
+  {
+    "id": "9d4bc1caffe751ab",
+    "type": "ui-page",
+    "name": "UI Button Example",
+    "ui": "a171c8195c1b8e57",
+    "path": "/ui-button-example",
+    "icon": "button-pointer",
+    "layout": "notebook",
+    "theme": "9d8bfd7e0d216779",
+    "order": 1,
+    "className": "",
+    "visible": true,
+    "disabled": false
+  },
+  {
+    "id": "a171c8195c1b8e57",
+    "type": "ui-base",
+    "name": "My Dashboard",
+    "path": "/dashboard",
+    "includeClientData": true,
+    "acceptsClientConfig": [
+      "ui-control",
+      "ui-gauge",
+      "ui-chart",
+      "ui-form",
+      "ui-text-input",
+      "ui-file-input",
+      "ui-button",
+      "ui-button-group",
+      "ui-dropdown",
+      "ui-radio-group",
+      "ui-slider",
+      "ui-switch",
+      "ui-text",
+      "ui-table",
+      "ui-markdown",
+      "ui-notification",
+      "ui-template"
+    ],
+    "showPathInSidebar": false,
+    "showPageTitle": true,
+    "navigationStyle": "icon",
+    "titleBarStyle": "fixed"
+  },
+  {
+    "id": "9d8bfd7e0d216779",
+    "type": "ui-theme",
+    "name": "Default Theme",
+    "colors": {
+      "surface": "#ffffff",
+      "primary": "#15617e",
+      "bgPage": "#eeeeee",
+      "groupBg": "#ffffff",
+      "groupOutline": "#cccccc"
+    },
+    "sizes": {
+      "pagePadding": "12px",
+      "groupGap": "12px",
+      "groupBorderRadius": "4px",
+      "widgetGap": "12px"
+    }
+  }
+]

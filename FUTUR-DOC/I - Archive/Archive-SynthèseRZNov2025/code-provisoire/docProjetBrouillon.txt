@@ -1,0 +1,68 @@
+Merci pour ces documents détaillés, Vincent. Voici une synthèse structurée de l’architecture et de la communication entre Arduino et Node-RED, en vérifiant la cohérence entre les fichiers NewRC_DocArduino.md, communication.*, et config.h.
+
+1. Synthèse de l’Architecture Globale
+Objectif du Projet
+
+RobotZ (NewRZ4) : Arduino Mega 2560 + capteurs/actionneurs (ultrasons, LEDs NeoPixel, servos, moteurs, HX711, IR, microphones).
+Communication : Protocole série textuel VPIV (Variable-Propriété-Instance-Valeur) entre Arduino et Node-RED via MQTT.
+Modularité : Chaque fonctionnalité est isolée dans un couple .h/.cpp et reliée par la librairie RZlibrariesPerso.
+
+
+2. Protocole VPIV : Cohérence et Implémentation
+Format des Messages
+
+Format retenu :
+$<Variable>:<Instances>:<Propriétés>:<Valeurs>#
+(Exemple : $B:5:C:255,0,0# → Ruban LED n°5 en rouge.)
+Abandon du champ <Type> (I/F/V/E) : Simplification pour éviter la redondance.
+
+Structure dans communication.h
+
+MessageVPIV :
+ Copierstruct MessageVPIV {
+    char variable;           // Ex: 'U' (ultrason), 'B' (ruban LED)
+    char properties[MAX_PROPERTIES];  // Ex: 'C' (couleur), 'D' (distance)
+    char values[MAX_PROPERTIES][MAX_INSTANCES][MAX_VALUE_LEN];  // Valeurs associées
+    uint8_t instances[MAX_INSTANCES];  // Instances concernées
+    int nbProperties;        // Nombre de propriétés
+    int nbInstances;         // Nombre d’instances
+    bool allInstances;       // True si '*' est utilisé
+};
+
+Limites :
+
+MAX_PROPERTIES = 10, MAX_INSTANCES = 10, MAX_VALUE_LEN = 20 (définis dans config.h).
+Utilisation de char au lieu de String pour éviter la fragmentation mémoire.
+
+
+
+Parsing et Traitement
+
+parseVPIV() :
+
+Découpe le message avec strtok et remplit la structure MessageVPIV.
+Gestion des cas spéciaux (*, erreurs de format).
+
+
+SeTraitementNewV4() :
+
+Exemple pour les LEDs : Parse les valeurs RGB et applique la couleur.
+À étendre pour chaque module (moteurs, servos, etc.).
+
+
+
+Envoi de Réponses
+
+Accusé de réception :
+ Copiervoid sendAck(const char* message) {
+    Serial.print("$I:ACK:"); Serial.print(message); Serial.println("#");
+}
+
+Erreurs :
+ Copiervoid sendError(const char* errorMsg, const char* module, const char* details) {
+    Serial.print("$E:"); Serial.print(errorMsg); Serial.print(":"); // ...
+}
+
+
+
+3. Vérification de la Cohérence

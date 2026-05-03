@@ -1,0 +1,161 @@
+{
+"enrichedVars": {
+  "Temp": {
+    "nomVarG": "Temp",
+    "abbrVarG": "TMP",
+    "instances": ["*", "thermo1", "thermo2"],
+    "descriptionVarG": "Mesures de température",
+    "dateUpdateVarG": "2025-09-16T10:00:00.000Z",
+    "proprietes": [
+      {
+        "nom": "valeur",
+        "abbr": "val",
+        "type": "number",
+        "schema": null,
+        "valeurs": {
+          "*": 0,
+          "thermo1": 22.5,
+          "thermo2": 23
+        }
+      },
+      {
+        "nom": "unite",
+        "abbr": "uni",
+        "type": "string",
+        "schema": null,
+        "valeurs": {
+          "*": "°C",
+          "thermo1": "°C",
+          "thermo2": "°C"
+        }
+      }
+    ]
+  },
+
+  "LED": {
+    "nomVarG": "LED",
+    "abbrVarG": "LED",
+    "instances": ["*", "1", "8"],
+    "descriptionVarG": "Gestion des LEDs",
+    "dateUpdateVarG": "2025-09-16T10:00:00.000Z",
+    "proprietes": [
+      {
+        "nom": "active",
+        "abbr": "act",
+        "type": "boolean",
+        "schema": null,
+        "valeurs": {
+          "*": false,
+          "1": false,
+          "8": true
+        }
+      },
+      {
+        "nom": "couleur",
+        "abbr": "clr",
+        "type": "string",
+        "schema": null,
+        "valeurs": {
+          "*": "red",
+          "1": "blue",
+          "8": "green"
+        }
+      }
+    ]
+  },
+
+  "Position": {
+    "nomVarG": "Position",
+    "abbrVarG": "POS",
+    "instances": ["*", "capteur1"],
+    "descriptionVarG": "Position spatiale",
+    "dateUpdateVarG": "2025-09-16T10:00:00.000Z",
+    "proprietes": [
+      {
+        "nom": "coord",
+        "abbr": "c",
+        "type": "object",
+        "schema": {
+          "x": "number",
+          "y": "number"
+        },
+        "valeurs": {
+          "*": { "x": 0, "y": 0 },
+          "capteur1": { "x": 12, "y": 5 }
+        }
+      }
+    ]
+  },
+
+  "Profil": {
+    "nomVarG": "Profil",
+    "abbrVarG": "PRF",
+    "instances": ["*", "user1", "user2"],
+    "descriptionVarG": "Informations utilisateurs",
+    "dateUpdateVarG": "2025-09-16T10:00:00.000Z",
+    "proprietes": [
+      {
+        "nom": "roles",
+        "abbr": "rls",
+        "type": "array",
+        "schema": {
+          "role": "string"
+        },
+        "valeurs": {
+          "*": ["guest"],
+          "user1": ["admin", "editor"],
+          "user2": ["viewer"]
+        }
+      }
+    ]
+  }
+},
+"ipListe": [
+        {
+            "id": "SmartP_IP_Direct",
+            "ip": "192.168.48.xx",
+            "description": "Smartphone (partage de connexion)",
+            "etat": "indéfini"
+        },
+        {
+            "id": "RPI_IP_Wifi",
+            "ip": "192.168.1.38",
+            "description": "Serveur RPI sur réseau local",
+            "etat": "non défini"
+        },
+        {
+            "id": "SmartPiloteViaBox",
+            "ip": "192.168.1.13",
+            "description": "Smartphone pilote via box",
+            "etat": "connecté"
+        },
+        {
+            "id": "RPI_IP_Serveur",
+            "ip": "",
+            "description": "Serveur RPI distant (nécessite SIM)",
+            "etat": "indisponible"
+        }
+    ],
+"reglesVars": [
+        {
+            "var1": "us",
+            "val1": "*",
+            "var2": "ModeF",
+            "val2": "danger",
+            "var3": "led",
+            "val3": "*",
+            "action": "⚠️ Obstacle détecté",
+            "type": "affichage"
+        },
+        {
+            "var1": "servo",
+            "val1": "T:90",
+            "var2": "*",
+            "val2": "*",
+            "var3": "ModeF",
+            "val3": "auto",
+            "action": "Positionner la tête au centre",
+            "type": "mqtt"
+        }
+    ]
+}

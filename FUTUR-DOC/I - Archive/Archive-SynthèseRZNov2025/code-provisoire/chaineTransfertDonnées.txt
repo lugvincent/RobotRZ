@@ -1,0 +1,93 @@
+1️⃣ RPLIDAR A1
+
+Rôle : capteur de distance 2D (360°), génère des nuages de points {angle, distance, intensité}.
+
+Limitation : ne fait pas de carte ni de localisation, seulement des mesures brutes.
+
+Connexion : idéalement via USB OTG vers le smartphone pour le traitement SLAM.
+
+Consommation : ~500–700 mA, important pour l’alimentation du robot.
+
+2️⃣ SLAM (Simultaneous Localization And Mapping)
+
+Rôle : logiciel qui construit une carte 2D et estime la position du robot en temps réel.
+
+Entrées :
+
+Données RPLIDAR (nuages de points).
+
+Odométrie des roues (Arduino).
+
+Sorties :
+
+Carte 2D de l’environnement.
+
+Pose du robot (x, y, θ) dans la carte.
+
+Implémentation sur smartphone :
+
+Termux + Python/ROS → plus flexible, DIY.
+
+Application Android native → plus simple pour visualiser et mapper.
+
+3️⃣ Gestion des “lieux” / waypoints
+
+Concept : chaque point d’intérêt (cuisine, porte, salon) = {x, y, θ, nom} dans la carte SLAM.
+
+Stockage recommandé : JSON ou YAML (places.json) pour liaison avec scripts/applications.
+
+Méthodes de définition :
+
+Déplacement manuel du robot → enregistrement de la pose actuelle.
+
+Interface graphique sur smartphone → clic pour sélectionner le point.
+
+Fiducials / tags visuels (AprilTag, QR) pour correction automatique de position.
+
+Communication : commandes simples GOTO name=cuisine envoyées à Arduino ou module de contrôle via série ou MQTT.
+
+4️⃣ Architecture de communication
+
+Option actuelle : Arduino ↔ smartphone ↔ Tasker ↔ MQTT ↔ Node-RED (cascade complexe).
+
+Problème : difficile à maintenir, fragilité et multiplicité des intermédiaires.
+
+Solution recommandée : centraliser via MQTT.
+
+Arduino / ESP32 → MQTT.
+
+Tasker → MQTT (capteurs Android).
+
+Node-RED → hub de traitement et orchestration, distribution vers autres appareils.
+
+Avantages :
+
+Suppression des cascades multiples.
+
+Orchestration centralisée, plus simple à programmer et maintenir.
+
+5️⃣ Problème USB Série sur Android / Termux
+
+Android non-root : pas d’accès natif /dev/ttyUSB0 → Termux ne peut pas ouvrir le port série directement.
+
+Solutions :
+
+Utiliser des applications Android tierces (USB→TCP/MQTT).
+
+Utiliser des librairies Android (usb-serial-for-android) → nécessite appli Java.
+
+Rooter le téléphone → activer drivers cdc_acm → /dev/ttyUSB0 visible dans Termux.
+
+Remplacer liaison par Bluetooth (HC-05) ou Wi-Fi (ESP32) → plus simple, pas besoin de root.
+
+6️⃣ Bluetooth vs USB vs Wi-Fi
+
+Liaison	Débit pratique	Latence	Consommation	Usage recommandé
+
+USB OTG	>1 Mbps	<10 ms	alime + faible	LiDAR + commandes
+
+Bluetooth Classic (HC-05)	100–300 kb/s	20–100 ms	30–60 mA	Commandes, odométrie, faible débit
+
+BLE	50–200 kb/s	variable	5–15 mA	Commandes / capteurs, faible consommation
+
+Wi-Fi (ESP32)	1–5 Mbps	10–50 ms	80–150 mA	LiDAR, commandes, flux élevés

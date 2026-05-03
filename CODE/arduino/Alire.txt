@@ -1,0 +1,12 @@
+Ici les fichiers arduino sont dans la config utilisé par l'ide arduino.
+Mais je telecharge depuis l'espace projet de plateformIO qui contient mes fichiers projets dont sa propre version du fichier .ino
+donc garder par principe celle d'ici comme version de travail et si besoin de récupérer l'active compiler rechercher celle qui est dans plateformIO
+Attention, idem RZlibrariesPersoNew version coté IO est prioritaire il n'ira pas chercher celle de ce dossier
+
+Projet PIO
+│
+├─ lib/
+│    └─ RZlibrariesPersoNew/      ← ta version PIO
+│
+└─ lib_extra_dirs :
+       C:/.../libraries/RZlibrariesPersoNew  ← version Arduino IDE il ne la prendra pas prioritaire

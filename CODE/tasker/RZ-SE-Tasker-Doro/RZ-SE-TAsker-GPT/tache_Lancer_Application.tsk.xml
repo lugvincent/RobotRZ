@@ -1,0 +1,15 @@
+<Task sr="task0" ve="2">
+	<Name>Tache_Lancer_Application</Name>
+	<Action sr="act0" ve="7">
+		<code>130</code>
+		<Str sr="arg0">am start -n com.termux/.app.TermuxActivity</Str>
+	</Action>
+	<Action sr="act1" ve="7">
+		<code>130</code>
+		<Str sr="arg0">sleep 2</Str>
+	</Action>
+	<Action sr="act2" ve="7">
+		<code>130</code>
+		<Str sr="arg0">termux-open-url file:///data/data/com.termux/files/home/Scripts_RZ_Local/connectDoro_v2.sh</Str>
+	</Action>
+</Task>

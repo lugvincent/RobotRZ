@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Synthèse Tasker — Amorce — RobotRZ</title>
+<style>
+:root{--bg:#0d1117;--bg2:#161b22;--bg3:#21262d;--text:#e6edf3;--text2:#8b949e;--text3:#484f58;--green:#3fb950;--orange:#d29922;--blue:#58a6ff;--purple:#bc8cff;--red:#f85149;--border:rgba(240,246,252,0.1)}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;font-size:14px;line-height:1.7;padding:32px 16px 80px}
+.page{max-width:900px;margin:0 auto}
+h1{font-size:24px;font-weight:600;border-bottom:1px solid var(--border);padding-bottom:16px;margin-bottom:8px}
+h2{font-size:16px;font-weight:600;color:var(--blue);margin:28px 0 12px;display:flex;align-items:center;gap:8px}
+h2::before{content:'';display:inline-block;width:4px;height:16px;background:var(--blue);border-radius:2px}
+.sub{color:var(--text2);font-size:13px;margin-bottom:28px}
+.sec{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:20px 24px;margin-bottom:18px}
+code{font-family:'Courier New',monospace;font-size:12px;background:var(--bg3);color:var(--orange);padding:2px 6px;border-radius:4px}
+pre{font-family:'Courier New',monospace;font-size:12px;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:14px 16px;margin:10px 0;overflow-x:auto;line-height:1.6;color:#c9d1d9;white-space:pre-wrap}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:10px 0}
+.card{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:14px}
+.card-title{font-size:11px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px}
+table{width:100%;border-collapse:collapse;font-size:12.5px;margin:10px 0}
+th{background:var(--bg3);color:var(--text2);font-weight:600;padding:8px 12px;text-align:left;border-bottom:1px solid var(--border)}
+td{padding:7px 12px;border-bottom:1px solid var(--border);color:var(--text2)}
+tr:last-child td{border-bottom:none}
+.al{border-radius:8px;padding:10px 14px;font-size:13px;margin:10px 0;display:flex;gap:8px;align-items:flex-start}
+.al-warn{background:rgba(210,153,34,.08);border:1px solid rgba(210,153,34,.25);color:var(--orange)}
+.al-ok{background:rgba(63,185,80,.08);border:1px solid rgba(63,185,80,.25);color:var(--green)}
+.al-info{background:rgba(88,166,255,.08);border:1px solid rgba(88,166,255,.25);color:var(--blue)}
+.step{display:flex;gap:12px;margin:8px 0}
+.sn{width:24px;height:24px;background:#1f6feb;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;color:white;min-width:24px}
+.sc{flex:1;padding-top:2px;font-size:13px;color:var(--text2)}
+p{margin:6px 0;color:var(--text2);font-size:13px}
+ul{padding-left:18px;margin:6px 0}
+ul li{font-size:13px;color:var(--text2);margin:3px 0}
+strong{color:var(--text)}
+hr{border:none;border-top:1px solid var(--border);margin:28px 0}
+.badge{display:inline-block;padding:2px 10px;border-radius:20px;font-size:11px;font-weight:600;margin-left:6px;vertical-align:middle}
+.b-todo{background:rgba(88,166,255,.15);color:var(--blue);border:1px solid rgba(88,166,255,.3)}
+.b-ok{background:rgba(63,185,80,.15);color:var(--green);border:1px solid rgba(63,185,80,.3)}
+@media(max-width:600px){.g2{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="page">
+<h1>Synthèse Tasker — Amorce Projet RZ</h1>
+<p class="sub">Architecture, répartition Termux/Tasker, tâches à créer — Version 2026-04-28</p>
+
+<h2>1. Répartition Termux / Tasker</h2>
+<div class="sec">
+<div class="g2">
+<div class="card">
+<div class="card-title">Termux — Communication et capteurs</div>
+<ul>
+<li>Parsing VPIV (rz_vpiv_parser.sh)</li>
+<li>État global (rz_state-manager.sh)</li>
+<li>Capteurs : Gyro, Mag, Sys, Mic</li>
+<li>STT / TTS via scripts bash/python</li>
+<li>Bridge Arduino (mqtt_bridge.py)</li>
+<li>Boucles périodiques et seuils</li>
+</ul>
+<p style="margin-top:8px;font-style:italic">👉 VPIV CAT=V/F/I/E majoritairement</p>
+</div>
+<div class="card">
+<div class="card-title">Tasker — Apps Android et UI</div>
+<ul>
+<li>Lancement/arrêt applications Android</li>
+<li>CamSE : IP Webcam Pro</li>
+<li>Expressions faciales (yeux, bouche)</li>
+<li>Scènes UI (écrans d'initialisation)</li>
+<li>Torche, volume, notifications</li>
+<li>Déclencheurs Android (hotspot, appli...)</li>
+</ul>
+<p style="margin-top:8px;font-style:italic">👉 VPIV CAT=A majoritairement</p>
+</div>
+</div>
+
+<h3 style="margin-top:16px;font-size:13px;color:var(--text)">Flux de communication Termux → Tasker</h3>
+<pre>rz_vpiv_parser.sh
+  → fifo_tasker_in
+      → rz_tasker_bridge.sh
+          → termux-tasker (plugin Termux:Tasker)
+              → Tâche Tasker nommée</pre>
+</div>
+
+<h2>2. Projet Tasker — Structure proposée</h2>
+<div class="sec">
+<div class="al al-info"><span>ℹ️</span><span>Le projet existant <code>NewRz.prj.xml</code> contient des éléments d'initialisation SE (connexion WiFi, variables). Il sera conservé ou intégré dans le nouveau projet.</span></div>
+<table>
+<tr><th>Catégorie</th><th>Tâches à créer</th><th>Statut</th></tr>
+<tr><td>Caméra</td><td>RZ_CamStart, RZ_CamStop</td><td><span class="badge b-todo">À créer</span></td></tr>
+<tr><td>Expressions</td><td>RZ_Expression (sourire, neutre, colère)</td><td><span class="badge b-ok">Profils XML existants</span></td></tr>
+<tr><td>Applications</td><td>RZ_Baby, RZ_Zoom, RZ_NavGPS, RZ_BabyMonitor</td><td><span class="badge b-todo">À créer</span></td></tr>
+<tr><td>Info/Erreur</td><td>RZ_Info — affiche scène d'information</td><td><span class="badge b-ok">Profil XML existant</span></td></tr>
+<tr><td>Torche</td><td>RZ_TorchOn, RZ_TorchOff</td><td><span class="badge b-todo">À créer</span></td></tr>
+<tr><td>Initialisation</td><td>RZ_Init — démarrage système SE</td><td><span class="badge b-ok">Partiel (NewRz)</span></td></tr>
+</table>
+</div>
+
+<h2>3. Tâche prioritaire — RZ_CamStart / RZ_CamStop</h2>
+<div class="sec">
+<p>Ces deux tâches sont bloquantes pour la validation complète de CamSE.</p>
+
+<h3 style="margin-top:16px;font-size:13px;color:var(--text)">RZ_CamStart</h3>
+<div class="step"><div class="sn">1</div><div class="sc">Action Tasker : <strong>Launch App</strong> → <code>com.pas.webcam.pro</code></div></div>
+<div class="step"><div class="sn">2</div><div class="sc">Action Tasker : <strong>Wait</strong> → 2 secondes (laisser l'appli démarrer)</div></div>
+<div class="step"><div class="sn">3</div><div class="sc">Action IP Webcam Pro (plugin natif Tasker Pro) : <strong>Start Server</strong></div></div>
+<div class="step"><div class="sn">4</div><div class="sc">rz_camera_manager.sh prend le relai — attend port 8080 et publie StreamURL</div></div>
+
+<h3 style="margin-top:16px;font-size:13px;color:var(--text)">RZ_CamStop</h3>
+<div class="step"><div class="sn">1</div><div class="sc">Action IP Webcam Pro (plugin) : <strong>Stop Server</strong></div></div>
+<div class="step"><div class="sn">2</div><div class="sc">Action Tasker : <strong>Kill App</strong> → <code>com.pas.webcam.pro</code></div></div>
+
+<div class="al al-warn"><span>⚠️</span><span>IP Webcam Pro version payante requise pour l'intégration Tasker native. La version gratuite ne supporte pas le plugin Tasker.</span></div>
+</div>
+
+<h2>4. Déclenchement depuis Termux</h2>
+<div class="sec">
+<p>Le script <code>rz_tasker_bridge.sh</code> reçoit le nom de la tâche et les paramètres :</p>
+<pre># Appel depuis rz_vpiv_parser.sh via fifo_tasker_in
+# Format de la trame dans la FIFO :
+$A:Appli:launch:*:Baby#        → tâche RZ_Baby
+$A:CamSE:modeCam:rear:stream#  → tâche RZ_CamStart
+$A:Appli:expr:*:sourire#       → tâche RZ_Expression
+
+# rz_tasker_bridge.sh extrait le nom et appelle :
+termux-tasker NOM_TACHE PARAMETRE</pre>
+<div class="al al-warn"><span>⚠️</span><span>Les scripts appelés par Termux:Tasker doivent être dans <code>~/.termux/tasker/</code>. Vérifier ce répertoire lors de la configuration.</span></div>
+</div>
+
+<h2>5. Profils XML existants à intégrer</h2>
+<div class="sec">
+<table>
+<tr><th>Fichier</th><th>Contenu</th><th>Action</th></tr>
+<tr><td><code>tasker/Profiles/rz_apps_manager.xml</code></td><td>Gestionnaire applications</td><td>Intégrer dans projet RZ</td></tr>
+<tr><td><code>tasker/Profiles/rz_tts_task.xml</code></td><td>Synthèse vocale</td><td>Intégrer dans projet RZ</td></tr>
+<tr><td><code>tasker/Profiles/rz_zoom_profile.xml</code></td><td>Lancement Zoom</td><td>Intégrer dans projet RZ</td></tr>
+<tr><td><code>tasker/Profiles/rz_facial_expressions/</code></td><td>angry, neutral, smile</td><td>Intégrer dans projet RZ</td></tr>
+<tr><td><code>tasker_projects/NewRz.prj.xml</code></td><td>Initialisation SE (partiel)</td><td>Fusionner ou archiver</td></tr>
+</table>
+</div>
+
+<h2>6. Prochaines étapes (discussion Tasker)</h2>
+<div class="sec">
+<div class="step"><div class="sn">1</div><div class="sc">Créer le projet Tasker <strong>RobotRZ</strong> et y intégrer les profils XML existants.</div></div>
+<div class="step"><div class="sn">2</div><div class="sc">Créer et tester <strong>RZ_CamStart / RZ_CamStop</strong> — validation CamSE bout en bout.</div></div>
+<div class="step"><div class="sn">3</div><div class="sc">Créer <strong>RZ_Expression</strong> — expressions faciales pilotées par VPIV CAT=A.</div></div>
+<div class="step"><div class="sn">4</div><div class="sc">Créer <strong>RZ_TorchOn / RZ_TorchOff</strong> — torche smartphone.</div></div>
+<div class="step"><div class="sn">5</div><div class="sc">Intégrer les tâches apps : RZ_Baby, RZ_Zoom, RZ_NavGPS.</div></div>
+<div class="step"><div class="sn">6</div><div class="sc">Tester le flux complet SP → Tasker → App → retour VPIV → SP.</div></div>
+</div>
+
+<hr>
+<p style="text-align:center;color:var(--text3);font-size:12px;margin-top:24px">Projet RobotRZ — Synthèse Tasker amorce — Version 2026-04-28 — Vincent Philippe</p>
+</div>
+</body>
+</html>

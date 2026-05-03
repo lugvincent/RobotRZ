@@ -1,0 +1,212 @@
+[
+    {
+        "id": "tab_gtion_init",
+        "type": "tab",
+        "label": "Gtion_Init",
+        "disabled": false,
+        "info": ""
+    },
+    {
+        "id": "c_init_header",
+        "type": "comment",
+        "z": "tab_gtion_init",
+        "name": "Gtion_Init — INITIALISATION SYSTÈME",
+        "info": "FLOW D’INITIALISATION GLOBALE\n\nRôle :\n- Initialiser l’état du système au démarrage ou après RESET\n- Charger enrichedVars (JSON)\n- Préparer les IP (SP / SE / Arduino)\n- Initialiser l’UI Accueil en mode INIT\n- Initialiser Arduino via VPIV\n\n⚠️ AUCUNE règle métier\n⚠️ AUCUNE décision modeRZ\n➡️ Le flow se termine par un événement système INIT_OK vers Gtion_EtatGlobal\n\nÉvolutions futures :\n- Ajout watchdog init\n- Gestion timeout Arduino / SE\n- Journalisation INIT\n",
+        "x": 320,
+        "y": 40,
+        "wires": []
+    },
+    {
+        "id": "li_evt_start",
+        "type": "link in",
+        "z": "tab_gtion_init",
+        "name": "Evt_System_START / RESET",
+        "links": [],
+        "x": 120,
+        "y": 120,
+        "wires": [
+            [
+                "f_init_1_vars"
+            ]
+        ]
+    },
+    {
+        "id": "f_init_1_vars",
+        "type": "function",
+        "z": "tab_gtion_init",
+        "name": "SF_Init_1 — Chargement enrichedVars (STUB)",
+        "func": "/*****************************************************\n * SF_Init_1 — Chargement enrichedVars\n *\n * Rôle :\n * - Charger le dictionnaire canonique enrichedVars\n * - Initialiser les variables globales Node-RED\n * - Appliquer les valeurs par défaut (*)\n *\n * Source :\n * - Fichier JSON enrichedVars \n *\n * IMPORTANT :\n * - Aucune règle métier\n * - Aucune validation de cohérence\n * - Aucune décision modeRZ\n *****************************************************/\n\n/*****************************************************\n * SF_Init_1 — Chargement enrichedVars depuis le fichier\n * avec typage des valeurs (identique à ui_VarG)\n *****************************************************/\n\nconst storeDefault = \"default\";\nconst storeFile = \"file\";\n\n// 🔄 Valeur par défaut selon le type\nfunction defaultForType(type) {\n    switch (type) {\n        case \"boolean\": return false;\n        case \"int\": case \"number\": return 0;\n        case \"array\": return [];\n        case \"object\": return {};\n        case \"date\": return new Date().toISOString().slice(0, 10);\n        default: return \"\";\n    }\n}\n\n// 🔄 Conversion string → typé (avec gestion des valeurs par défaut)\nfunction convertFromString(value, type, defaultVal) {\n    if (value === null || value === undefined) {\n        return defaultVal !== undefined ? convertFromString(defaultVal, type) : defaultForType(type);\n    }\n    try {\n        switch (type) {\n            case \"int\": return parseInt(value, 10);\n            case \"number\": return parseFloat(value);\n            case \"boolean\": return (value === true || value === \"true\");\n            case \"string\": return String(value);\n            case \"array\": return Array.isArray(value) ? value : JSON.parse(value);\n            case \"object\": return typeof value === \"object\" ? value : JSON.parse(value);\n            case \"date\": return new Date(value);\n            default: return value;\n        }\n    } catch (err) {\n        node.error(`Erreur de conversion (${type}): ${err.message} (valeur: ${value})`);\n        return defaultForType(type);\n    }\n}\n\n// ---- 1. Charger enrichedVars depuis le fichier ----\nlet enrichedVars = global.get(\"enrichedVars\", storeFile) || {};\n\n// ✅ AJOUT : vérification que les données sont bien chargées\nif (Object.keys(enrichedVars).length === 0) {\n    node.warn(\"⚠️ SF_Init_1 : enrichedVars vide dans le fichier.\");\n    node.warn(\"   → Vérifier que le fichier context/global.json contient bien la clé 'enrichedVars'\");\n    node.warn(\"   → Chemin habituel : ~/.node-red/context/global.json\");\n    node.status({ fill: \"red\", shape: \"ring\", text: \"enrichedVars vide\" });\n    \n    // On sort proprement sans initialiser (ne pas écraser avec du vide)\n    msg.topic = \"INIT_VARS_EMPTY\";\n    msg.payload = {\n        varsLoaded: false,\n        varCount: 0,\n        instanceCount: 0,\n        source: \"file\",\n        erreur: \"enrichedVars absent ou vide dans le contexte fichier\"\n    };\n    return msg;\n}\n\nnode.status({ fill: \"green\", shape: \"dot\", text: `${Object.keys(enrichedVars).length} vars chargées` });\n\n// ---- 2. Supprimer l'ancienne variable enrichedVars du store par défaut ----\nglobal.set(\"enrichedVars\", undefined, storeDefault);\n\n// ---- 3. Parcourir chaque variable et créer les globales typées ----\nlet totalVars = 0;\nlet totalInstances = 0;\n\nObject.entries(enrichedVars).forEach(([key, e]) => {\n    const instances = e.instances || [\"*\"];\n    const props = e.proprietes || [];\n    let variable = {};\n\n    instances.forEach(instance => {\n        variable[instance] = {};\n        props.forEach(prop => {\n            const name = prop.nomP;\n            const type = prop.typeP;\n            const rawValue = prop.valeurs?.[instance];\n            const defaultVal = prop.valeurs?.[\"*\"];\n            variable[instance][name] = convertFromString(rawValue, type, defaultVal);\n        });\n    });\n\n    // Ajouter les métadonnées (abréviations, etc.)\n    if (e.abbrVarG) variable._abbrVarG = e.abbrVarG;\n    if (e.indexInstances) variable._indexInstances = e.indexInstances;\n\n    // Stocker dans les variables globales (store par défaut)\n    if (instances.length === 1 && instances[0] === \"*\") {\n        global.set(key, variable[\"*\"], storeDefault);\n    } else {\n        global.set(key, variable, storeDefault);\n    }\n    totalVars++;\n    totalInstances += instances.length;\n});\n\n// ---- 4. Traçabilité ----\nglobal.set(\"INIT_STATUS\", {\n    enrichedVarsLoaded: true,\n    timestamp: new Date().toISOString(),\n    varCount: totalVars,\n    instanceCount: totalInstances\n});\n\n// ---- 5. Sortie ----\nmsg.topic = \"INIT_VARS_OK\";\nmsg.payload = {\n    varsLoaded: true,\n    varCount: totalVars,\n    instanceCount: totalInstances,\n    source: \"file\"\n};\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 380,
+        "y": 120,
+        "wires": [
+            [
+                "f_init_2_ip",
+                "5e2ab5d530b26ab9"
+            ]
+        ]
+    },
+    {
+        "id": "f_init_2_ip",
+        "type": "function",
+        "z": "tab_gtion_init",
+        "name": "SF_Init_2 — Détection IP SP / SE / Arduino (STUB)",
+        "func": "/*****************************************************\n * SF_Init_2 — Détection & préparation contexte réseau\n *\n * Rôle :\n * - Identifier le contexte réseau de SP (Node-RED)\n * - Déterminer le type de connexion (MAISON / PARTAGE / DISTANT)\n * - Préparer les IP candidates pour SE\n * - Initialiser les variables réseau globales\n *\n * IMPORTANT :\n * - Pas de ping\n * - Pas de MQTT\n * - Pas de VPIV\n *****************************************************/\n\nconst os = require(\"os\");\n\n// ---- 1. Récupération infos réseau SP ----\nlet interfaces = os.networkInterfaces();\nlet ipLocal = null;\n\nfor (let iface in interfaces) {\n    interfaces[iface].forEach(addr => {\n        if (addr.family === \"IPv4\" && !addr.internal) {\n            ipLocal = addr.address;\n        }\n    });\n}\n\nconst hostname = os.hostname();\n\n// ---- 2. Détermination du type réseau ----\nlet ipType = \"INCONNU\";\n\nif (ipLocal) {\n    if (ipLocal.startsWith(\"192.168.\")) {\n        ipType = \"MAISON\";\n    } else if (ipLocal.startsWith(\"10.\") || ipLocal.startsWith(\"172.\")) {\n        ipType = \"PARTAGE\";\n    } else {\n        ipType = \"DISTANT\";\n    }\n}\n\n// ---- 3. Préparation des IP candidates SE ----\nlet seCandidates = [];\n\n// Valeurs possibles issues config admin (si existantes)\nconst cfgSE = global.get(\"CfgSE\") || {};\n\nif (cfgSE.ipFixeMaison && ipType === \"MAISON\") {\n    seCandidates.push(cfgSE.ipFixeMaison);\n}\n\nif (cfgSE.ipDerniereConnue) {\n    seCandidates.push(cfgSE.ipDerniereConnue);\n}\n\n// Fallback générique (édition manuelle UI)\nseCandidates.push(\"MANUEL\");\n\n// ---- 4. Configuration broker MQTT ----\nlet broker = {\n    mode: (ipType === \"MAISON\") ? \"LOCAL\" : \"DISTANT\",\n    host: (ipType === \"MAISON\") ? \"rpi.local\" : \"broker.externe\",\n    port: 1883\n};\n\n// ---- 5. Écriture variables globales ----\nglobal.set(\"Net_SP\", {\n    ipLocal,\n    ipType,\n    hostname\n});\n\nglobal.set(\"Net_SE\", {\n    ipSelected: null,\n    ipCandidates: seCandidates,\n    status: \"NON_CONNECTE\"\n});\n\nglobal.set(\"Net_Broker\", broker);\n\n// ---- 6. Sortie ----\nmsg.topic = \"INIT_NET_OK\";\nmsg.payload = {\n    ipType,\n    seCandidates,\n    brokerMode: broker.mode\n};\n\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 650,
+        "y": 200,
+        "wires": [
+            [
+                "f_init_3_ui"
+            ]
+        ]
+    },
+    {
+        "id": "f_init_3_ui",
+        "type": "function",
+        "z": "tab_gtion_init",
+        "name": "SF_Init_3 — UI Accueil (contexte INIT) (STUB)",
+        "func": "/*****************************************************\n * SF_Init_3 — Validation connexion SE & Arduino\n *\n * Rôle :\n * - Confirmer la présence de SE et Arduino\n * - Synchroniser l’état de session INIT\n * - Autoriser la suite de l’initialisation\n *\n * IMPORTANT :\n * - Aucun envoi VPIV\n * - SP reste maître de la validation\n *****************************************************/\n\n// ---- 1. Initialisation session si absente ----\nlet initSession = global.get(\"INIT_SESSION\");\n\nif (!initSession) {\n    initSession = {\n        seReady: false,\n        arduinoReady: false,\n        validated: false,\n        timestamp: null\n    };\n}\n\n// ---- 2. Analyse du message entrant ----\nswitch (msg.topic) {\n\n    case \"VPIV/SE/STATUS\":\n        if (msg.payload && msg.payload.status === \"OK\") {\n            initSession.seReady = true;\n            global.set(\"Net_SE\", {\n                ...(global.get(\"Net_SE\") || {}),\n                status: \"VALIDE\"\n            });\n        }\n        break;\n\n    case \"VPIV/ARD/STATUS\":\n        if (msg.payload && msg.payload.status === \"OK\") {\n            initSession.arduinoReady = true;\n            global.set(\"Net_Arduino\", {\n                status: \"VALIDE\",\n                lastSeen: new Date().toISOString()\n            });\n        }\n        break;\n\n    case \"FORCE_VALIDATE\":\n        initSession.seReady = true;\n        initSession.arduinoReady = true;\n        break;\n\n    default:\n        // Message non pertinent pour cette étape\n        return null;\n}\n\n// ---- 3. Vérification globale ----\nif (initSession.seReady && initSession.arduinoReady) {\n\n    initSession.validated = true;\n    initSession.timestamp = new Date().toISOString();\n\n    global.set(\"INIT_SESSION\", initSession);\n\n    msg.topic = \"INIT_CONN_OK\";\n    msg.payload = {\n        se: initSession.seReady,\n        arduino: initSession.arduinoReady,\n        validated: true\n    };\n\n    return msg;\n}\n\n// ---- 4. Mise à jour partielle ----\nglobal.set(\"INIT_SESSION\", initSession);\nreturn null;\n",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1020,
+        "y": 340,
+        "wires": [
+            [
+                "f_init_4_vpiv"
+            ]
+        ]
+    },
+    {
+        "id": "f_init_4_vpiv",
+        "type": "function",
+        "z": "tab_gtion_init",
+        "name": "SF_Init_4 — Initialisation VPIV Arduino (STUB)",
+        "func": "/*****************************************************\n * SF_Init_4 — RESET & synchronisation Arduino / SE\n *\n * Rôle :\n * - Émettre les séquences VPIV RESET\n * - Synchroniser Arduino et SE\n * - Positionner le système en modeRZ = VEILLE\n *\n * IMPORTANT :\n * - SP est maître\n * - Aucune règle métier\n *****************************************************/\n\n// ---- 1. Vérification INIT_SESSION ----\nconst initSession = global.get(\"INIT_SESSION\");\n\nif (!initSession || initSession.validated !== true) {\n    node.warn(\"SF_Init_4 : INIT_SESSION non validée, RESET bloqué\");\n    return null;\n}\n\n// ---- 2. Chargement dictionnaire ----\nconst enrichedVars = global.get(\"enrichedVars\");\n\nif (!enrichedVars) {\n    node.error(\"SF_Init_4 : enrichedVars absent\");\n    return null;\n}\n\n// ---- 3. Préparation messages VPIV ----\nlet vpivArduino = [];\nlet vpivSE = [];\n\n/*\n * Règle :\n * - Toute variable ayant une signification Arduino → Arduino\n * - Toute variable logique / applicative → SE\n * À ce stade, on envoie TOUT, le filtrage fin viendra plus tard\n */\n\nObject.keys(enrichedVars).forEach(varKey => {\n\n    const varDef = enrichedVars[varKey];\n    if (!varDef || !varDef.abbrVarG) return;\n\n    const abbrVar = varDef.abbrVarG;\n    const instances = varDef.instances || [\"*\"];\n    const props = varDef.proprietes || [];\n\n    instances.forEach(inst => {\n        props.forEach(prop => {\n\n            const abbrP = prop.abbrP;\n            if (!abbrP || !prop.valeurs) return;\n\n            let value = null;\n\n            if (prop.valeurs[inst] !== undefined) {\n                value = prop.valeurs[inst];\n            } else if (prop.valeurs[\"*\"] !== undefined) {\n                value = prop.valeurs[\"*\"];\n            }\n\n            if (value === null || value === undefined) return;\n\n            const vpivMsg = {\n                v: abbrVar,\n                i: inst,\n                p: abbrP,\n                val: value\n            };\n\n            // Heuristique simple (à raffiner plus tard)\n            if ([\"mtr\", \"srv\", \"us\", \"mic\", \"ledring\", \"ledrub\", \"CfgS\"].includes(abbrVar)) {\n                vpivArduino.push(vpivMsg);\n            } else {\n                vpivSE.push(vpivMsg);\n            }\n        });\n    });\n});\n\n// ---- 4. Positionnement modeRZ = VEILLE ----\nconst VEILLE = 1;\n\nglobal.set(\"configuration\", {\n    ...(global.get(\"configuration\") || {}),\n    instances: {\n        \"*\": {\n            mode_op: VEILLE\n        }\n    }\n});\n\n// ---- 5. Traçabilité INIT ----\nglobal.set(\"INIT_SYNC\", {\n    done: true,\n    timestamp: new Date().toISOString(),\n    arduinoCount: vpivArduino.length,\n    seCount: vpivSE.length\n});\n\n// ---- 6. Sorties (multi-sorties recommandées) ----\n/*\n * Sortie 1 → VPIV Arduino\n * Sortie 2 → VPIV SE\n * Sortie 3 → signal INIT terminé\n */\n\nreturn [\n    { topic: \"VPIV/ARD/RESET\", payload: vpivArduino },\n    { topic: \"VPIV/SE/RESET\", payload: vpivSE },\n    {\n        topic: \"INIT_SYNC_DONE\",\n        payload: {\n            arduinoInitSent: true,\n            seInitSent: true,\n            modeRZ: VEILLE\n        }\n    }\n];\n",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1400,
+        "y": 440,
+        "wires": [
+            [
+                "lo_evt_init_ok"
+            ]
+        ]
+    },
+    {
+        "id": "lo_evt_init_ok",
+        "type": "link out",
+        "z": "tab_gtion_init",
+        "name": "Evt_System → INIT_OK",
+        "mode": "link",
+        "links": [
+            "df8ba8c4d83a29ee"
+        ],
+        "x": 1685,
+        "y": 600,
+        "wires": []
+    },
+    {
+        "id": "9810c470b967bfea",
+        "type": "comment",
+        "z": "tab_gtion_init",
+        "name": "init_1",
+        "info": "1️⃣ Rôle exact de SF_Init_1 (version définitive)\n\nSF_Init_1 est la seule étape qui :\n\ncharge le fichier JSON canonique enrichedVars\n\ninitialise toutes les variables globales Node-RED\n\napplique les valeurs par défaut\n\nprépare un snapshot cohérent utilisable par :\n\nArduino (via VPIV)\n\nUI\n\nrègles (Gtion_EtatGlobal, SF_ReglesMinimales_V1, etc.)\n\n❌ Ce que SF_Init_1 NE FAIT PAS\n\npas de décision métier\n\npas de validation de cohérence\n\npas de calcul de modeRZ\n\npas d’accès UI\n\npas de communication MQTT\n\n👉 Il prépare l’état, rien de plus.\n\n2️⃣ Contrat du nœud Function\n🔹 Entrée attendue (msg)\nmsg.topic === \"SYSTEM_START\" || \"RESET\"\n\n\n(la valeur exacte n’est pas critique ici)\n🔹 Sortie garantie (msg)\nmsg.topic = \"INIT_VARS_OK\"\n\nmsg.payload = {\n  varsLoaded: true,\n  varCount: <nombre de variables>,\n  instanceCount: <total instances>,\n  source: \"enrichedVars\"\n}\n\n\n👉 Ce msg est consommé tel quel par SF_Init_2\n\n✅ Garanties apportées par ce code\n\n✔ respecte strictement ton dictionnaire JSON\n✔ respecte nomVarG / nomP / instances / valeurs\n✔ compatible avec ui_VarG\n✔ compatible VPIV Arduino\n✔ compatible Tasker / SE\n✔ aucune référence aux anciens noms\n✔ totalement déterministe\n✔ facilement debuggable (global.get() clair)\n\n*****\nDans tous les nœuds function de vos flows qui font global.set(\"enrichedVars\", quelquechose, \"file\"), ajoutez cette vérification juste avant l'appel à global.set :\njavascript\n\n// Protection contre l'écriture de données vides\nif (!enrichedVars || Object.keys(enrichedVars).length === 0) {\n    node.warn(\"⚠️ Tentative d'écriture d'un enrichedVars vide ignorée\");\n    // Ne pas faire le set, mais continuer le flow si nécessaire\n} else {\n    global.set(\"enrichedVars\", enrichedVars, \"file\");\n}\n\nVous devez le faire dans au moins ces nœuds (repérés dans vos extraits) :\n\n    SauvResultatActions (dans ui-VarG)\n\n    Le nœud \"Infos générales enrichedVars\" (celui qui gère création/modification de variable)\n\n    Le nœud de suppression de variable (qui utilise global.set après suppression)\n\n    Tout autre nœud qui écrit enrichedVars\n",
+        "x": 230,
+        "y": 160,
+        "wires": []
+    },
+    {
+        "id": "a549299a63b5d4a1",
+        "type": "comment",
+        "z": "tab_gtion_init",
+        "name": "init2",
+        "info": "SF_Init_2 est responsable de l’établissement du contexte de communication, sans prendre de décision métier.\n\nIl fait :\n\n✔ identifier le contexte réseau courant de SP (Node-RED)\n✔ déterminer le mode de connexion attendu (maison / partage / distant)\n✔ préparer la liste des IP candidates pour SE\n✔ positionner les variables globales réseau\n✔ produire un état exploitable par l’UI (ui_Accueil)\n✔ signaler si on peut passer à l’étape suivante\n\nIl ne fait PAS :\n\n❌ pas de ping actif (optionnel plus tard)\n❌ pas de connexion MQTT\n❌ pas d’échange VPIV\n❌ pas de décision de modeRZ\n❌ pas d’accès Arduino / Tasker\n\n👉 C’est une étape d’observation et de préparation.\n\n2️⃣ Variables globales manipulées (canon)\n🔹 Variables réseau créées / mises à jour\nNet_SP\nNet_SE\nNet_Broker\n\n\nCes variables n’existent pas côté Arduino\n👉 elles sont Node-RED / SP only\n\n🔹 Structure normalisée\nNet_SP\n{\n  ipLocal,\n  ipType,        // \"MAISON\" | \"PARTAGE\" | \"DISTANT\" | \"INCONNU\"\n  hostname\n}\n\nNet_SE\n{\n  ipSelected,    // null au départ\n  ipCandidates,  // []\n  status         // \"NON_CONNECTE\" | \"EN_ATTENTE\" | \"VALIDE\"\n}\n\nNet_Broker\n{\n  mode,          // \"LOCAL\" | \"DISTANT\"\n  host,\n  port\n}\n\n3️⃣ Contrat d’entrée / sortie\n🔹 Entrée attendue\nmsg.topic === \"INIT_VARS_OK\"\n\n\n(provenant de SF_Init_1)\n\n🔹 Sortie garantie\nmsg.topic = \"INIT_NET_OK\"\n\nmsg.payload = {\n  ipType,\n  seCandidates,\n  brokerMode\n}\n\n\n👉 consommé par :\n\nui_Accueil\n\nSF_Init_3\n\naffichage messages utilisateur\n✅ Ce que SF_Init_2 t’apporte concrètement\n\n✔ UI_Accueil peut :\n\nafficher le contexte réseau\n\nproposer automatiquement des IP SE\n\nguider l’utilisateur\n\n✔ Aucun effet irréversible\n✔ Compatible reset / relance\n✔ Compatible évolution (ping, scan réseau, etc.)\n✔ Compatible multi-sites",
+        "x": 550,
+        "y": 240,
+        "wires": []
+    },
+    {
+        "id": "815ff2dd78e9573f",
+        "type": "comment",
+        "z": "tab_gtion_init",
+        "name": "Init3",
+        "info": "🧩 SF_Init_3 — Validation de la connexion SE & Arduino\n1️⃣ Rôle exact de SF_Init_3 (verrouillé)\n\nSF_Init_3 est l’étape charnière entre :\n\nla préparation réseau (SF_Init_2)\n\net la mise en service fonctionnelle du robot\n\nIl fait exactement :\n\n✔ écouter les retours de connexion\n✔ confirmer que :\n\nSE (Tasker) est joignable\n\nArduino est présent sur la chaîne VPIV\n✔ synchroniser l’état global\n✔ autoriser l’accès au groupe “définition du fonctionnement” dans ui_Accueil\n✔ préparer la séquence RESET / INIT VPIV suivante\n\nIl ne fait PAS :\n\n❌ pas d’envoi VPIV reset\n❌ pas d’initialisation Arduino\n❌ pas de décision modeRZ\n❌ pas de règles de cohérence\n❌ pas de pilotage\n\n👉 Il valide que “tout le monde est là”, rien de plus.\n\n2️⃣ Événements écoutés (entrées possibles)\n\nSF_Init_3 est événementiel.\n\nIl peut être appelé par :\n\nEvt_VPIV_In\nEvt_System\n\nMessages attendus (canon VPIV)\nSource\tTopic\tSens\nSE\tVPIV/SE/STATUS\tprésence SE\nArduino\tVPIV/ARD/STATUS\tprésence Arduino\nSystem\tFORCE_VALIDATE\toverride admin\n3️⃣ Variables globales utilisées / mises à jour\n🔹 Variables réseau (déjà créées)\nNet_SE\nNet_Arduino\n\n🔹 Variable de session INIT\nINIT_SESSION\n\n🔹 Structure INIT_SESSION\n{\n  seReady: false,\n  arduinoReady: false,\n  validated: false,\n  timestamp\n}\n\n4️⃣ Condition de sortie VALIDÉE\nSE présent\nET\nArduino présent\n\n\n👉 SEUL SP valide\n👉 Arduino et SE ne font que déclarer\n6️⃣ Effets attendus dans ton projet\n\n✔ ui_Accueil :\n\npasse du groupe Connexion au groupe Définition du fonctionnement\n\n✔ Gtion_EtatGlobal :\n\npeut accepter des intentions utilisateur\n\n✔ SF_Init_4 :\n\npeut envoyer les VPIV RESET / INIT\n\n✔ sécurité :\n\ntant que non validé → aucune action possible",
+        "x": 910,
+        "y": 400,
+        "wires": []
+    },
+    {
+        "id": "869b5cfade4446f9",
+        "type": "comment",
+        "z": "tab_gtion_init",
+        "name": "Init4",
+        "info": "🧩 SF_Init_4 — RESET & synchronisation Arduino / SE (VPIV)\n1️⃣ Rôle exact de SF_Init_4 (verrouillé)\n\nSF_Init_4 est la seule étape qui :\n\n✔ déclenche les séquences RESET / INIT VPIV\n✔ synchronise :\n\nArduino ← valeurs par défaut\n\nSE (Tasker) ← valeurs par défaut\n✔ garantit un point zéro fonctionnel commun\n✔ prépare le système à entrer en modeRZ = VEILLE\n\n👉 SP (Node-RED) reste l’unique maître de cette étape.\n\n❌ Ce que SF_Init_4 NE FAIT PAS\n\npas de décision métier\n\npas de règles de cohérence\n\npas de pilotage\n\npas de modification UI directe\n\npas de transition modeRZ autre que VEILLE\n\npas de gestion d’urgence\n\n2️⃣ Prérequis d’entrée\n\nSF_Init_4 ne s’exécute que si :\n\nINIT_SESSION.validated === true\n\n\nSinon → sortie bloquée (sécurité)\n\n3️⃣ Séquences VPIV émises (canon)\n🔹 Séquence 1 — RESET Arduino\n\ndestination : Arduino\n\nobjectif : remettre le matériel dans un état connu\n\nsource des valeurs : enrichedVars\n\n🔹 Séquence 2 — RESET SE (Tasker)\n\ndestination : SE\n\nobjectif : aligner les états applicatifs\n\nsource des valeurs : enrichedVars\n\n⚠️ Les deux séquences sont distinctes, même si issues de la même source.\n\n4️⃣ Variables globales utilisées / mises à jour\n🔹 Lecture\nenrichedVars\nINIT_SESSION\n\n🔹 Écriture\nINIT_SYNC\nconfiguration.modeRZ = VEILLE\n\n\nrappel :\nVEILLE = 1 (VPIV)\n\n5️⃣ Contrat de sortie\nmsg.topic = \"INIT_SYNC_DONE\"\n\nmsg.payload = {\n  arduinoInitSent: true,\n  seInitSent: true,\n  modeRZ: 1\n}\n7️⃣ Ce que tu obtiens après SF_Init_4\n\n✔ Arduino matériellement aligné\n✔ SE applicativement aligné\n✔ Node-RED maître de l’état\n✔ modeRZ = VEILLE garanti\n✔ ui_Accueil peut afficher :\n\n“Système prêt – choisissez le fonctionnement”",
+        "x": 1270,
+        "y": 500,
+        "wires": []
+    },
+    {
+        "id": "389aff020b46513d",
+        "type": "inject",
+        "z": "tab_gtion_init",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": true,
+        "onceDelay": "2",
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 130,
+        "y": 80,
+        "wires": [
+            [
+                "f_init_1_vars"
+            ]
+        ]
+    },
+    {
+        "id": "5e2ab5d530b26ab9",
+        "type": "debug",
+        "z": "tab_gtion_init",
+        "name": "debug 8",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 700,
+        "y": 100,
+        "wires": []
+    }
+]

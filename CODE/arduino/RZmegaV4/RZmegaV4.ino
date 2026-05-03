@@ -1,5 +1,15 @@
 /* === INCLUSIONS ET DÉCLARATIONS DE BIBLIOTHÈQUES AA  voir ds fichier .h === */
 
+/*
+Info : Mon fichier RZmegaV4.ino est le fichier principal à la réception d'un message dans la boucle
+ mes données au format "VPIV" sont lus. la séquence d'include est de type :
+RZlibrairiesPerso.h>config.h (récup des constantes) > communication.h (lecture VPIV) >
+traitement du message en fonction de la variable servo.h , led.h,... dans communication.cpp le switch
+qui traite en fonction de la variable et gère les retour d'infos et d'erreur.
+format des messages échangés : $<type>:<contenu>:<variable>,<instances>,<propriétés>,<valeurs>#
+
+*/
+
 // bibliothèque perso : RZlibairiePerso
 #include <RZlibrairiesPerso.h>
 
@@ -59,7 +69,7 @@ void loop() {
         rubanTpsFin = 0;
     }
 
-    // Réception des messages série ( de SE :node-red...)
+    // Réception des messages série ( de SE :node-red...) 
     recvSeWithStartEndMarkers();
 
     //Traitement des modules

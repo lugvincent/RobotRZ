@@ -1,0 +1,186 @@
+{
+  "enrichedVars": {
+    "CfgS": {
+      "nomVarG": "CfgS",
+      "instances": ["*"],
+      "descriptionVarG": "CfgS",
+      "dateUpdateVarG": "2026-03-23T18:03:47.958193Z",
+      "proprietes": [
+        {
+          "nomP": "emg",
+          "typeP": "string",
+          "valeurs": { "*": "clear" },
+          "descriptionP": "Efface l'urgence active. Préférer Urg:clear.",
+          "optionsP": [{ "value": "clear", "label": "clear" }]
+        },
+        {
+          "nomP": "modeRZ",
+          "typeP": "string",
+          "valeurs": { "*": "0" },
+          "descriptionP": "0=ARRET 1=VEILLE 2=FIXE 3=DEPLACEMENT 4=AUTONOME 5=ERREUR.\nMis à jour dans global.json .CfgS.modeRZ.\nDéclenche recalcul STT.context via calculate_stt_context().\nConditionne les autorisations vocales (filtrage modeRZ 0 et 5 dans stt_handler).",
+          "optionsP": [
+            { "value": "0", "label": "0" },
+            { "value": "1", "label": "1" },
+            { "value": "2", "label": "2" },
+            { "value": "3", "label": "3" },
+            { "value": "4", "label": "4" },
+            { "value": "5", "label": "5" }
+          ]
+        },
+        {
+          "nomP": "reset",
+          "typeP": "boolean",
+          "valeurs": { "*": false },
+          "descriptionP": "Réinitialisation complète. Refusé si urgence active.\n→ retour $I:COM:error:SE:\"urgence active, clear first\"#"
+        },
+        {
+          "nomP": "reset",
+          "typeP": "string",
+          "valeurs": { "*": "true" },
+          "descriptionP": "Réinitialise Arduino via RZ_initAll(). Bloqué si urgence active.",
+          "optionsP": [
+            { "value": "true", "label": "true" },
+            { "value": "1", "label": "1" }
+          ]
+        },
+        {
+          "nomP": "typePtge",
+          "typeP": "string",
+          "valeurs": { "*": "0" },
+          "descriptionP": "0=Ecran 1=Vocal 2=Manette 3=Laisse 4=Laisse+Vocal.\nConditionne : activation TTS (≠0), blocage cmdes motrices laisse (=3 ou 4),\ndéclenchement URG_SENSOR_FAIL caméra (=0 ou 2), contexte STT.",
+          "optionsP": [
+            { "value": "0", "label": "0" },
+            { "value": "1", "label": "1" },
+            { "value": "2", "label": "2" },
+            { "value": "3", "label": "3" },
+            { "value": "4", "label": "4" }
+          ]
+        },
+        {
+          "nomP": "typeReseau",
+          "typeP": "string",
+          "valeurs": { "*": "4K" },
+          "descriptionP": "4K=SIM dédiée SE. Wifi4KSP=Wi-Fi sur partage SP.\nWifiSPSsI=Wi-Fi SP sans Internet. WifiInternetBox=box Internet.\n⚠️ Paradoxe d'amorçage : valeur doit être dans courant_init.json\navant toute connexion MQTT. SP peut la mettre à jour ensuite.",
+          "optionsP": [
+            { "value": "4K", "label": "4K" },
+            { "value": "Wifi4KSP", "label": "Wifi4KSP" },
+            { "value": "WifiSPSsI", "label": "WifiSPSsI" },
+            { "value": "WifiInternetBox", "label": "WifiInternetBox" }
+          ]
+        }
+      ]
+    },
+    "Urg": {
+      "nomVarG": "Urg",
+      "instances": ["*"],
+      "descriptionVarG": "Urg",
+      "dateUpdateVarG": "2026-03-23T18:03:47.958193Z",
+      "proprietes": [
+        {
+          "nomP": "clear",
+          "typeP": "boolean",
+          "valeurs": { "*": false },
+          "descriptionP": "Efface l'état d'urgence (cleared). SE attend clear avant de reprendre.\nAprès clear, SP renvoie modeSys et/ou modeRZ pour relancer les managers."
+        },
+        {
+          "nomP": "clear",
+          "typeP": "string",
+          "valeurs": { "*": "1" },
+          "descriptionP": "Efface l'urgence active Arduino.",
+          "optionsP": [{ "value": "1", "label": "1" }]
+        },
+        {
+          "nomP": "etat",
+          "typeP": "string",
+          "valeurs": { "*": "active" },
+          "descriptionP": "Urgence active côté Arduino. Instance=A. Publié simultanément avec source.",
+          "optionsP": [{ "value": "active", "label": "active" }]
+        },
+        {
+          "nomP": "niveau",
+          "typeP": "string",
+          "valeurs": { "*": "warn" },
+          "descriptionP": "danger → rz_vpiv_parser.sh lance safety_stop.sh (Point C).\nwarn → affichage SP, pas d'arrêt automatique.\nglobal.json : .Urg.niveau",
+          "optionsP": [
+            { "value": "warn", "label": "warn" },
+            { "value": "danger", "label": "danger" }
+          ]
+        },
+        {
+          "nomP": "source",
+          "typeP": "string",
+          "valeurs": { "*": "loop_slow" },
+          "descriptionP": "Cause de l'urgence détectée par Arduino. Instance=A. SP doit réagir automatiquement.",
+          "optionsP": [
+            { "value": "loop_slow", "label": "loop_slow" },
+            { "value": "us_danger", "label": "us_danger" },
+            { "value": "mvt_danger", "label": "mvt_danger" },
+            { "value": "...", "label": "..." }
+          ]
+        },
+        {
+          "nomP": "statut",
+          "typeP": "string",
+          "valeurs": { "*": "cleared" },
+          "descriptionP": "Reflète l'état courant urgence côté SE.\nglobal.json : .Urg.statut",
+          "optionsP": [
+            { "value": "cleared", "label": "cleared" },
+            { "value": "active", "label": "active" }
+          ]
+        }
+      ]
+    },
+    "COM": {
+      "nomVarG": "COM",
+      "instances": ["SE", "A"],
+      "descriptionVarG": "COM",
+      "dateUpdateVarG": "2026-03-23T18:03:47.958193Z",
+      "proprietes": [
+        {
+          "nomP": "debug",
+          "typeP": "string",
+          "valeurs": { "*": "" },
+          "descriptionP": "global.json : .COM.debug\nRéservé au débogage — ne pas activer en production."
+        },
+        {
+          "nomP": "error",
+          "typeP": "string",
+          "valeurs": { "*": "" },
+          "descriptionP": "Erreur non critique — SP affiche, pas d'arrêt automatique.\nÉmis par tous les managers sur erreur récupérable.\nglobal.json : .COM.error\nTTS si typePtge ≠ 0 (retour vocal activé dans rz_vpiv_parser.sh)."
+        },
+        {
+          "nomP": "info",
+          "typeP": "string",
+          "valeurs": { "*": "" },
+          "descriptionP": "Information de fonctionnement — ACK, notifications.\nTTS si typePtge ≠ 0.\nglobal.json : .COM.info"
+        },
+        {
+          "nomP": "warn",
+          "typeP": "string",
+          "valeurs": { "*": "" },
+          "descriptionP": "Avertissement non bloquant.\nDéclenché par alerts_sys.sh quand seuil warn franchi 10s.\nglobal.json : .COM.warn"
+        }
+      ]
+    }
+  },
+  "ipListe": [
+    {
+      "id": "SmartP_IP_Direct",
+      "ip": "192.168.48.xx",
+      "description": "Adresse IP : 192.168.48.xx - Cas : SmartP_IP_Direct - Smartphone (partage de connexion)",
+      "etat": "indéfini"
+    },
+    {
+      "id": "RPI_IP_Wifi",
+      "ip": "192.168.1.40",
+      "description": "Adresse IP : 192.168.1.40 - Cas : RPI_IP_Wifi - Serveur RPI sur réseau local",
+      "etat": "non défini"
+    },
+    {
+      "id": "SmartPiloteViaBox",
+      "ip": "192.168.1.13",
+      "description": "Adresse IP : 192.168.1.13 - Cas : SmartPiloteViaBox - Le smartphone pilote utilise une adresse fourni par la box",
+      "etat": "indéfini"
+    }
+  ]
+}

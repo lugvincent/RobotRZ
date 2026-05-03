@@ -1,0 +1,114 @@
+[
+    {
+        "id": "85e7b30232c1fbef",
+        "type": "ui-template",
+        "z": "61d8f8019f224437",
+        "group": "group-vars",
+        "page": "",
+        "ui": "",
+        "name": "Template éditeur de propriétésVold4",
+        "order": 9,
+        "width": 0,
+        "height": 0,
+        "head": "",
+        "format": "<template>\n  <div class=\"var-editor\">\n    <h3>Propriétés de : {{ nomVarG }}</h3>\n    <table class=\"var-table\">\n      <thead>\n        <tr>\n          <th>Nom propriété</th>\n          <th>Abréviation</th>\n          <th>Type</th>\n          <th v-for=\"instanceName in instances\" :key=\"instanceName\">{{ instanceName }}</th>\n          <th>Actions</th>\n        </tr>\n      </thead>\n      <tbody>\n        <tr v-for=\"(prop, index) in proprietesByInstance.proprietes\" :key=\"index\">\n          <td><input v-model=\"prop.nom\" class=\"edit-input\" /></td>\n          <td>\n            <input\n              v-model=\"proprietesByInstance.abbrProprietes[prop.nom]\"\n              class=\"edit-input\"\n              placeholder=\"abbr\"\n            />\n          </td>\n          <td>\n            <select v-model=\"prop.type\" class=\"edit-select\" @change=\"onTypeChange(prop, $event)\">\n              <option value=\"string\">string</option>\n              <option value=\"int\">int</option>\n              <option value=\"number\">number</option>\n              <option value=\"boolean\">boolean</option>\n              <option value=\"array\">array</option>\n              <option value=\"object\">object</option>\n            </select>\n          </td>\n          <td v-for=\"instanceName in instances\" :key=\"instanceName\">\n            <input\n              v-if=\"prop.type === 'boolean'\"\n              type=\"checkbox\"\n              v-model=\"proprietesByInstance.valeurs[instanceName][prop.nom]\"\n              class=\"edit-checkbox\"\n            />\n            <input\n              v-else-if=\"prop.type !== 'object' && prop.type !== 'array'\"\n              v-model=\"proprietesByInstance.valeurs[instanceName][prop.nom]\"\n              :type=\"getInputType(prop.type)\"\n              class=\"edit-input\"\n            />\n            <textarea\n              v-else-if=\"prop.type === 'object'\"\n              v-model=\"proprietesByInstance.valeurs[instanceName][prop.nom]\"\n              class=\"edit-textarea\"\n              placeholder='{\"exemple\": \"valeur\"}'\n            ></textarea>\n            <input\n              v-else\n              v-model=\"proprietesByInstance.valeurs[instanceName][prop.nom]\"\n              placeholder=\"1,2,3\"\n              class=\"edit-input\"\n            />\n          </td>\n          <td class=\"action-buttons\">\n            <button\n              v-if=\"prop.type === 'object'\"\n              @click=\"openSchemaModal(prop)\"\n              class=\"edit-schema-btn\"\n            >\n              ⚙️ Schema\n            </button>\n            <button @click=\"deleteProperty(index)\" class=\"delete-btn\">🗑️ Supprimer</button>\n          </td>\n        </tr>\n        <tr class=\"new-line\">\n          <td><input v-model=\"newProperty.nom\" placeholder=\"Nom\" /></td>\n          <td><input v-model=\"newProperty.abbr\" placeholder=\"Abréviation\" /></td>\n          <td>\n            <select v-model=\"newProperty.type\">\n              <option value=\"\">-- type --</option>\n              <option value=\"string\">string</option>\n              <option value=\"int\">int</option>\n              <option value=\"number\">number</option>\n              <option value=\"boolean\">boolean</option>\n              <option value=\"array\">array</option>\n              <option value=\"object\">object</option>\n            </select>\n          </td>\n          <td v-for=\"instanceName in instances\" :key=\"instanceName\">\n            <input v-model=\"newProperty.initialValues[instanceName]\" placeholder=\"Valeur\" />\n          </td>\n          <td><button @click=\"addProperty\" class=\"add-btn\">➕ Ajouter</button></td>\n        </tr>\n      </tbody>\n    </table>\n    <fieldset class=\"styled-box\">\n      <legend>⚙️ Gestion des instances</legend>\n      <div>\n        <input v-model=\"newInstanceName\" placeholder=\"Nouvelle instance\" />\n        <button @click=\"addInstance\" class=\"instance-btn\">➕ Ajouter</button>\n        <button v-if=\"instances.length > 0\" @click=\"confirmDeleteInstance\" class=\"delete-instance-btn\">\n          🗑️ Supprimer dernière\n        </button>\n      </div>\n    </fieldset>\n    <div class=\"control-buttons\">\n      <button @click=\"saveAllChanges\" class=\"save-btn\">💾 Enregistrer</button>\n      <button @click=\"resetChanges\" class=\"reset-btn\">🔁 Annuler</button>\n    </div>\n\n    <!-- Modale pour éditer le schéma des objets -->\n    <div v-if=\"showSchemaModal\" class=\"modal-overlay\">\n      <div class=\"modal-content\">\n        <h3>Éditer le schéma pour : {{ editingProperty.nom }}</h3>\n        <div class=\"schema-fields\">\n          <div v-for=\"(field, fieldKey) in editingProperty.schema\" :key=\"fieldKey\" class=\"schema-field\">\n            <input v-model=\"fieldKey\" class=\"field-key\" placeholder=\"Nom du champ\" />\n            <select v-model=\"field.type\" class=\"field-type\">\n              <option value=\"int\">int</option>\n              <option value=\"boolean\">boolean</option>\n              <option value=\"string\">string</option>\n              <option value=\"number\">number</option>\n            </select>\n            <input v-model=\"field.default\" class=\"field-default\" placeholder=\"Valeur par défaut\" />\n            <button @click=\"removeSchemaField(fieldKey)\" class=\"remove-field\">❌</button>\n          </div>\n        </div>\n        <div class=\"new-schema-field\">\n          <input v-model=\"newSchemaField.key\" placeholder=\"Nouveau champ\" />\n          <select v-model=\"newSchemaField.type\">\n            <option value=\"int\">int</option>\n            <option value=\"boolean\">boolean</option>\n            <option value=\"string\">string</option>\n            <option value=\"number\">number</option>\n          </select>\n          <input v-model=\"newSchemaField.default\" placeholder=\"Valeur par défaut\" />\n          <button @click=\"addSchemaField\" class=\"add-field\">➕ Ajouter</button>\n        </div>\n        <div class=\"modal-actions\">\n          <button @click=\"saveSchema\" class=\"save-btn\">Enregistrer</button>\n          <button @click=\"cancelSchema\" class=\"cancel-btn\">Annuler</button>\n        </div>\n      </div>\n    </div>\n  </div>\n</template>\n\n<script>\n  export default {\n  data() {\n    return {\n      nomVarG: '',\n      typeVarG: '',\n      instances: [],\n      proprietesByInstance: {\n        proprietes: [],\n        abbrProprietes: {},\n        valeurs: {}\n      },\n      newProperty: {\n        nom: '',\n        type: '',\n        abbr: '',\n        initialValues: {}\n      },\n      newInstanceName: '',\n      showSchemaModal: false,\n      editingProperty: null,\n      newSchemaField: { key: '', type: 'int', default: '' }\n    };\n  },\n  methods: {\n    getInputType(type) {\n      switch (type) {\n        case 'boolean': return 'checkbox';\n        case 'int': case 'number': return 'number';\n        default: return 'text';\n      }\n    },\n\n    onTypeChange(prop, event) {\n      const newType = event.target.value;\n      if (newType === 'object' && !prop.schema) {\n        this.$set(prop, 'schema', {});\n      }\n      // Mise à jour des valeurs existantes\n      this.instances.forEach(instance => {\n        if (this.proprietesByInstance.valeurs[instance]?.[prop.nom] !== undefined) {\n          let newValue;\n          const currentValue = this.proprietesByInstance.valeurs[instance][prop.nom];\n          try {\n            switch (newType) {\n              case 'boolean': newValue = Boolean(currentValue); break;\n              case 'int': case 'number': newValue = parseFloat(currentValue) || 0; break;\n              case 'array': newValue = Array.isArray(currentValue) ? currentValue : []; break;\n              case 'object': newValue = typeof currentValue === 'object' ? currentValue : {}; break;\n              default: newValue = String(currentValue);\n            }\n          } catch (e) {\n            newValue = this.defaultForType(newType);\n          }\n          this.$set(this.proprietesByInstance.valeurs[instance], prop.nom, newValue);\n        }\n      });\n    },\n\n    defaultForType(type) {\n      switch (type) {\n        case \"boolean\": return false;\n        case \"int\": case \"number\": return 0;\n        case \"array\": return [];\n        case \"object\": return {};\n        default: return \"\";\n      }\n    },\n\n    addProperty() {\n      if (!this.newProperty.nom || !this.newProperty.type) {\n        alert(\"Le nom et le type sont obligatoires\");\n        return;\n      }\n      const newProp = {\n        nom: this.newProperty.nom,\n        type: this.newProperty.type\n      };\n      if (newProp.type === 'object') {\n        newProp.schema = {};\n      }\n      this.proprietesByInstance.proprietes.push(newProp);\n      if (this.newProperty.abbr) {\n        this.$set(this.proprietesByInstance.abbrProprietes, newProp.nom, this.newProperty.abbr);\n      }\n      // Initialisation des valeurs\n      this.instances.forEach(instance => {\n        if (!this.proprietesByInstance.valeurs[instance]) {\n          this.$set(this.proprietesByInstance.valeurs, instance, {});\n        }\n        this.$set(\n          this.proprietesByInstance.valeurs[instance],\n          newProp.nom,\n          this.defaultForType(newProp.type)\n        );\n      });\n      this.newProperty = { nom: '', type: '', abbr: '', initialValues: {} };\n    },\n\n    deleteProperty(index) {\n      if (!confirm(\"Supprimer cette propriété ?\")) return;\n      const propName = this.proprietesByInstance.proprietes[index].nom;\n      this.proprietesByInstance.proprietes.splice(index, 1);\n      this.instances.forEach(instance => {\n        this.$delete(this.proprietesByInstance.valeurs[instance], propName);\n      });\n      this.$delete(this.proprietesByInstance.abbrProprietes, propName);\n    },\n\n    addInstance() {\n      if (!this.newInstanceName) return;\n      const instanceName = this.newInstanceName.trim();\n      if (!instanceName || this.instances.includes(instanceName)) return;\n      this.instances.push(instanceName);\n      this.$set(this.proprietesByInstance.valeurs, instanceName, {});\n      this.proprietesByInstance.proprietes.forEach(prop => {\n        this.$set(\n          this.proprietesByInstance.valeurs[instanceName],\n          prop.nom,\n          this.defaultForType(prop.type)\n        );\n      });\n      this.newInstanceName = '';\n    },\n\n    confirmDeleteInstance() {\n      if (this.instances.length === 0) return;\n      const lastInstance = this.instances[this.instances.length - 1];\n      if (confirm(`Supprimer l'instance \"${lastInstance}\" ?`)) {\n        this.instances.pop();\n        this.$delete(this.proprietesByInstance.valeurs, lastInstance);\n      }\n    },\n\n    saveAllChanges() {\n      const payload = {\n        nomVarG: this.nomVarG,\n        abbrVarG: this.proprietesByInstance.abbrVarG || \"\",\n        typeVarG: this.typeVarG,\n        instances: this.instances,\n        proprietesByInstance: {\n          proprietes: this.proprietesByInstance.proprietes.map(p => ({\n            nom: p.nom,\n            type: p.type,\n            schema: p.schema\n          })),\n          abbrProprietes: this.proprietesByInstance.abbrProprietes,\n          valeurs: {}\n        }\n      };\n      // Sérialisation des valeurs\n      this.instances.forEach(instance => {\n        payload.proprietesByInstance.valeurs[instance] = {};\n        this.proprietesByInstance.proprietes.forEach(prop => {\n          const value = this.proprietesByInstance.valeurs[instance][prop.nom];\n          if (value !== undefined) {\n            payload.proprietesByInstance.valeurs[instance][prop.nom] =\n              (prop.type === 'object' || prop.type === 'array') ? JSON.stringify(value) : value;\n          }\n        });\n      });\n      this.send({ topic: \"saveChanges\", payload: payload });\n    },\n\n    resetChanges() {\n      this.send({ topic: \"reloadVar\", payload: this.nomVarG });\n    },\n\n    // Méthodes pour la modale\n    openSchemaModal(prop) {\n      this.editingProperty = prop;\n      if (!prop.schema) this.$set(prop, 'schema', {});\n      this.showSchemaModal = true;\n    },\n\n    updateFieldKey(oldKey, newKey) {\n      if (oldKey !== newKey && this.editingProperty.schema[oldKey]) {\n        this.$set(this.editingProperty.schema, newKey, this.editingProperty.schema[oldKey]);\n        this.$delete(this.editingProperty.schema, oldKey);\n      }\n    },\n\n    addSchemaField() {\n      if (!this.newSchemaField.key) return;\n      this.$set(this.editingProperty.schema, this.newSchemaField.key, {\n        type: this.newSchemaField.type,\n        default: this.newSchemaField.default\n      });\n      this.newSchemaField = { key: '', type: 'int', default: '' };\n    },\n\n    removeSchemaField(key) {\n      this.$delete(this.editingProperty.schema, key);\n    },\n\n    saveSchema() {\n      this.showSchemaModal = false;\n    },\n\n    cancelSchema() {\n      this.showSchemaModal = false;\n    }\n  },\n  watch: {\n    msg: {\n      immediate: true,\n      handler(newMsg) {\n        if (newMsg?.payload) {\n          const data = newMsg.payload;\n          this.nomVarG = data.nomVarG;\n          this.typeVarG = data.typeVarG || '';\n          this.instances = data.instances || [];\n          this.proprietesByInstance = {\n            proprietes: data.proprietesByInstance.proprietes || [],\n            abbrProprietes: data.proprietesByInstance.abbrProprietes || {},\n            valeurs: data.proprietesByInstance.valeurs || {}\n          };\n        }\n      }\n    }\n  }\n};\n</script>\n\n<style scoped>\n  /* Styles inchangés (voir version précédente) */\n  .var-editor {\n    overflow-x: auto;\n    max-width: 100%;\n    padding: 10px;\n  }\n\n  .var-table {\n    border-collapse: collapse;\n    width: 100%;\n    min-width: 900px;\n  }\n\n  .var-table th,\n  .var-table td {\n    border: 1px solid #ccc;\n    padding: 6px;\n    text-align: center;\n  }\n\n  .edit-input,\n  .edit-select {\n    width: 90%;\n    padding: 3px;\n  }\n\n  .edit-checkbox {\n    transform: scale(1.5);\n  }\n\n  .edit-textarea {\n    width: 90%;\n    min-height: 60px;\n    font-family: monospace;\n  }\n\n  /* ... (autres styles inchangés) */\n</style>",
+        "storeOutMessages": true,
+        "passthru": false,
+        "resendOnRefresh": true,
+        "templateScope": "local",
+        "className": "",
+        "x": 1010,
+        "y": 1220,
+        "wires": [
+            [
+                "15c0c58862aa5479"
+            ]
+        ]
+    },
+    {
+        "id": "group-vars",
+        "type": "ui-group",
+        "name": "Variable selectionnée",
+        "page": "page-1",
+        "width": 6,
+        "height": 4,
+        "order": 3,
+        "showTitle": false,
+        "className": "",
+        "visible": "true",
+        "disabled": "false",
+        "groupType": "default"
+    },
+    {
+        "id": "page-1",
+        "type": "ui-page",
+        "name": "P_admin-VarG",
+        "ui": "930a8a5e70986346",
+        "path": "/admin_varG",
+        "icon": "dashboard",
+        "layout": "notebook",
+        "theme": "1050ebb74976e9e1",
+        "breakpoints": [
+            {
+                "name": "Default",
+                "px": "0",
+                "cols": "3"
+            },
+            {
+                "name": "Tablet",
+                "px": "576",
+                "cols": "6"
+            },
+            {
+                "name": "Small Desktop",
+                "px": "768",
+                "cols": "9"
+            },
+            {
+                "name": "Desktop",
+                "px": "1024",
+                "cols": "12"
+            }
+        ],
+        "order": 4,
+        "className": "",
+        "visible": "true",
+        "disabled": "false"
+    },
+    {
+        "id": "930a8a5e70986346",
+        "type": "ui-base",
+        "name": "My Dashboard",
+        "path": "/dashboard",
+        "appIcon": "",
+        "includeClientData": true,
+        "acceptsClientConfig": [],
+        "showPathInSidebar": false,
+        "headerContent": "page",
+        "navigationStyle": "default",
+        "titleBarStyle": "default",
+        "showReconnectNotification": true,
+        "notificationDisplayTime": 1,
+        "showDisconnectNotification": true,
+        "allowInstall": true
+    },
+    {
+        "id": "1050ebb74976e9e1",
+        "type": "ui-theme",
+        "name": "Default Theme",
+        "colors": {
+            "surface": "#ffffff",
+            "primary": "#0094ce",
+            "bgPage": "#eeeeee",
+            "groupBg": "#ffffff",
+            "groupOutline": "#cccccc"
+        },
+        "sizes": {
+            "density": "default",
+            "pagePadding": "12px",
+            "groupGap": "4px",
+            "groupBorderRadius": "4px",
+            "widgetGap": "10px"
+        }
+    }
+]

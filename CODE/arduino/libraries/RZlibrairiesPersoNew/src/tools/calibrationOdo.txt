@@ -1,0 +1,43 @@
+📐 2 — Script Arduino de calibration odométrique
+— Fichier : /tools/odom_test_arduino.ino
+
+Pour tester les déplacements manuels.
+Ce script va afficher :
+ticks roue gauche
+ticks roue droite
+distance estimée
+angle estimé
+Pour tester les déplacements manuels.
+
+📝 2.2 — Mode d’emploi calibration
+✔️ Étape 1 — Relever les ticks par déplacement précis
+
+Place le robot sur le sol, marque un point au sol, puis :
+
+pousse le robot 1 mètre tout droit
+
+note les ticks L et R → ticks_m
+
+moyenne = (L + R)/2
+
+Distance par tick →
+
+tick_m = 1.0 / ticks_m
+
+
+👉 Tu mets tick_m dans la commande :
+
+$V:Odo:*:geom:<diam_mm>,<entraxe_mm>#
+
+✔️ Étape 2 — Relever ticks pour un tour complet (360°)
+
+fais tourner le robot exactement 360° sur place
+
+note ticks L et R
+
+Angle/tick →
+
+angCoeff = 2*PI / ((R - L)/2)
+
+
+➡️ Ce coefficient est automatiquement recalculé quand tu envoies geom.

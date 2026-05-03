@@ -1,0 +1,22 @@
+🧭 RobotZ_SE - Logique de connexion
+
+Ce système permet au smartphone embarqué (SE) de choisir automatiquement la meilleure méthode de communication avec le pilote (SP) ou le serveur RPI.
+
+🔹 Étapes :
+1. Activation du Wi-Fi et lecture du SSID courant.
+2. Détection du contexte réseau :
+   - Livebox → connexion au broker local (maison)
+   - Hotspot SP → connexion au broker du smartphone pilote
+   - Autre Wi-Fi → connexion au broker du RPI
+   - Aucun réseau → tentative via Bluetooth
+3. Mise à jour de l’adresse publique sur DuckDNS.
+4. Publication d’un message de présence MQTT (“SE/status”).
+5. Attente de la réponse du pilote (SP ou RPI).
+6. Si OK → Node-RED et mosquitto sont initialisés.
+
+💡 Fichier “network_context.txt” :
+Contient le contexte détecté (SSID, IP locale, IP publique).
+Il est lu par Tasker pour afficher le statut de connexion.
+
+⚙️ En cas d’échec :
+Le script peut relancer la recherche Wi-Fi ou notifier par MQTT.

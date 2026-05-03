@@ -1,0 +1,411 @@
+SOURCE,VAR,PROP,CAT,TYPE,FORMAT_VALUE,CODAGE,DIRECTION,INSTANCE,COMPLEXE,CYCLE,NATURE,INTERFACE,VPIV_EX,NOTES,,,,,,,,,,,,,,,,
+A,CfgS,emg,I,number,0,_,A→SP,*,_,Dyn,ACK,_,$I:CfgS:*:emg:0#,_,,,,,,,,,,,,,,,,
+P,CfgS,emg,V,enum,clear,_,SP→A,*,_,Dyn,Event,oui,$V:CfgS:*:emg:clear#,Efface l'urgence active. Préférer Urg:clear.,,,,,,,,,,,,,,,,
+A,CfgS,modeRZ,I,enum,0=ARRET|1=VEILLE|2=FIXE|3=DEPLACEMENT|4=AUTONOME|5=ERREUR,_,A→SP,*,_,Ini,ACK,_,$I:CfgS:*:modeRZ:2#,Confirmation du mode appliqué. Même enum que SE pour cohérence.,,,,,,,,,,,,,,,,
+P,CfgS,modeRZ,V,enum,0|1|2|3|4|5,_,SP→SE,*,_,Ini,Config,oui,$V:CfgS:modeRZ:*:3#,"0=ARRET 1=VEILLE 2=FIXE 3=DEPLACEMENT 4=AUTONOME 5=ERREUR.
+Mis à jour dans global.json .CfgS.modeRZ.
+Déclenche recalcul STT.context via calculate_stt_context().
+Conditionne les autorisations vocales (filtrage modeRZ 0 et 5 dans stt_handler).",,,,,,,,,,,,,,,,
+P,CfgS,modeRZ,V,enum,0=ARRET|1=VEILLE|2=FIXE|3=DEPLACEMENT|4=AUTONOME|5=ERREUR,_,SP→A,*,_,Ini,Config,oui,$V:CfgS:*:modeRZ:2#,Mode global du robot. Côté Arduino : number interne mais les valeurs sont les mêmes que l'enum SE. Via SE→bridge→Arduino.,,,,,,,,,,,,,,,,
+S,CfgS,modeRZ,I,enum,0|1|2|3|4|5,_,SE→SP,*,_,Ini,ACK,oui,$I:CfgS:modeRZ:*:3#,"ACK publié par handle_state_transition() dans rz_state-manager.sh
+après mise à jour atomique de global.json.",,,,,,,,,,,,,,,,
+A,CfgS,reset,I,boolean,1,_,A→SP,*,_,Dyn,ACK,_,$I:CfgS:*:reset:true#,_,,,,,,,,,,,,,,,,
+P,CfgS,reset,V,boolean,1,_,SP→SE,*,_,Dyn,Event,oui,$V:CfgS:reset:*:1#,"Réinitialisation complète. Refusé si urgence active.
+→ retour $I:COM:error:SE:""urgence active, clear first""#",,,,,,,,,,,,,,,,
+P,CfgS,reset,V,enum,true|1,_,SP→A,*,_,Dyn,Event,oui,$V:CfgS:*:reset:true#,Réinitialise Arduino via RZ_initAll(). Bloqué si urgence active.,,,,,,,,,,,,,,,,
+A,CfgS,typePtge,I,enum,0=ECRAN|1=VOCALE|2=JOYSTICK|3=LAISSE|4=LAISSE+VOCALE,_,A→SP,*,_,Ini,ACK,_,$I:CfgS:*:typePtge:3#,Confirmation type de pilotage appliqué.,,,,,,,,,,,,,,,,
+P,CfgS,typePtge,V,enum,0|1|2|3|4,_,SP→SE,*,_,Ini,Config,oui,$V:CfgS:typePtge:*:4#,"0=Ecran 1=Vocal 2=Manette 3=Laisse 4=Laisse+Vocal.
+Conditionne : activation TTS (≠0), blocage cmdes motrices laisse (=3 ou 4),
+déclenchement URG_SENSOR_FAIL caméra (=0 ou 2), contexte STT.",,,,,,,,,,,,,,,,
+P,CfgS,typePtge,V,enum,0=ECRAN|1=VOCALE|2=JOYSTICK|3=LAISSE|4=LAISSE+VOCALE,_,SP→A,*,_,Ini,Config,oui,$V:CfgS:*:typePtge:3#,Mode de pilotage. Active ctrl_L automatiquement si 3 ou 4.,,,,,,,,,,,,,,,,
+S,CfgS,typePtge,I,enum,0|1|2|3|4,_,SE→SP,*,_,Ini,ACK,oui,$I:CfgS:typePtge:*:4#,_,,,,,,,,,,,,,,,,
+P,CfgS,typeReseau,V,enum,4K|Wifi4KSP|WifiSPSsI|WifiInternetBox,_,SP→SE,*,_,Cste,Config,oui,$V:CfgS:typeReseau:*:WifiInternetBox#,"4K=SIM dédiée SE. Wifi4KSP=Wi-Fi sur partage SP.
+WifiSPSsI=Wi-Fi SP sans Internet. WifiInternetBox=box Internet.
+⚠️ Paradoxe d'amorçage : valeur doit être dans courant_init.json
+avant toute connexion MQTT. SP peut la mettre à jour ensuite.",,,,,,,,,,,,,,,,
+S,CfgS,typeReseau,I,enum,4K|Wifi4KSP|WifiSPSsI|WifiInternetBox,_,SE→SP,*,_,Cste,ACK,oui,$I:CfgS:typeReseau:*:WifiInternetBox#,_,,,,,,,,,,,,,,,,
+P,Urg,clear,V,boolean,0|1,_,SP→SE,*,_,Dyn,Event,oui,$V:Urg:clear:*:1#,"Efface l'état d'urgence (cleared). SE attend clear avant de reprendre.
+Après clear, SP renvoie modeSys et/ou modeRZ pour relancer les managers.",,,,,,,,,,,,,,,,
+P,Urg,clear,V,enum,1,_,SP→A,*,_,Dyn,Event,oui,$V:Urg:*:clear:1#,Efface l'urgence active Arduino.,,,,,,,,,,,,,,,,
+A,Urg,etat,E,enum,active,_,A→SP,A,_,Dyn,Etat,oui,$E:Urg:*:etat:A:active#,Urgence active côté Arduino. Instance=A. Publié simultanément avec source.,,,,,,,,,,,,,,,,
+A,Urg,etat,I,enum,cleared,_,A→SP,A,_,Dyn,Etat,oui,$I:Urg:*:etat:A:cleared#,Urgence effacée côté Arduino.,,,,,,,,,,,,,,,,
+S,Urg,niveau,I,enum,warn|danger,_,SE→SP,*,_,Dyn,Etat,oui,$I:Urg:niveau:SE:danger#,"danger → rz_vpiv_parser.sh lance safety_stop.sh (Point C).
+warn → affichage SP, pas d'arrêt automatique.
+global.json : .Urg.niveau",,,,,,,,,,,,,,,,
+A,Urg,source,E,enum,loop_slow|us_danger|mvt_danger|...,_,A→SP,A,_,Dyn,Etat,oui,$E:Urg:*:source:A:loop_slow#,Cause de l'urgence détectée par Arduino. Instance=A. SP doit réagir automatiquement.,,,,,,,,,,,,,,,,
+E,Urg,source,E,enum,"URG_NONE|URG_LOW_BAT|URG_CPU_CHARGE|URG_OVERHEAT|
+URG_MOTOR_STALL|URG_SENSOR_FAIL|URG_BUFFER_OVERFLOW|
+URG_PARSING_ERROR|URG_LOOP_TOO_SLOW|URG_APPLI_FAIL|
+URG_DANGER|URG_UNKNOWN",_,SE→SP,SE,_,Dyn,Etat,oui,$E:Urg:source:SE:URG_CPU_CHARGE#,"Émis par trigger_urgence() (urgence.sh) ou safety_stop.sh (URG_DANGER).
+Codes validés dans URG_CODES_VALIDES[] — fallback URG_UNKNOWN si inconnu.
+SP décide du niveau (warn/danger) et orchestre la réponse.
+global.json : .Urg.source",,,,,,,,,,,,,,,,
+S,Urg,statut,I,enum,cleared|active,_,SE→SP,*,_,Dyn,Etat,oui,$I:Urg:statut:SE:active#,"Reflète l'état courant urgence côté SE.
+global.json : .Urg.statut",,,,,,,,,,,,,,,,
+E,COM,debug,I,string,texte libre,_,SE→SP,SE|A,_,Dyn,_,_,"$I:COM:debug:SE:""gyro init OK""#","global.json : .COM.debug
+Réservé au débogage — ne pas activer en production.",,,,,,,,,,,,,,,,
+E,COM,error,I,string,texte libre,_,SE→SP,SE|A,_,Dyn,_,_,"$I:COM:error:SE:""CamSE rear : CAM_START_FAIL""#","Erreur non critique — SP affiche, pas d'arrêt automatique.
+Émis par tous les managers sur erreur récupérable.
+global.json : .COM.error
+TTS si typePtge ≠ 0 (retour vocal activé dans rz_vpiv_parser.sh).",,,,,,,,,,,,,,,,
+E,COM,info,I,string,texte libre,_,SE→SP,SE|A,_,Dyn,_,_,"$I:COM:info:SE:""CAMERA_START_PRIORITY""#","Information de fonctionnement — ACK, notifications.
+TTS si typePtge ≠ 0.
+global.json : .COM.info",,,,,,,,,,,,,,,,
+E,COM,warn,I,string,texte libre,_,SE→SP,SE|A,_,Dyn,_,_,"$I:COM:warn:SE:""CPU 85% depuis 10s""#","Avertissement non bloquant.
+Déclenché par alerts_sys.sh quand seuil warn franchi 10s.
+global.json : .COM.warn",,,,,,,,,,,,,,,,
+S,Sys,dataContBatt,F,number,0–100,%,SE→SP,SE,_,Dyn,Etat,oui,$F:Sys:dataContBatt:SE:65#,"Niveau batterie via termux-battery-status (pkg install termux-api requis).
+⚠️ SENS INVERSÉ : <warn(30%) → COM:warn | <urg(15%) → URG_LOW_BAT
+global.json .Sys.batt",,,,,,,,,,,,,,,,
+S,Sys,dataContCpu,F,number,0–100,%,SE→SP,SE,_,Dyn,Etat,oui,$F:Sys:dataContCpu:SE:45#,"Charge CPU via top. Publié à freqCont s (mode FLOW).
+>warn(80%) depuis 10s → $I:COM:warn | >urg(90%) depuis 10s → $E:Urg:source:SE:URG_CPU_CHARGE
+global.json .Sys.cpu — lu par rz_stt_handler.sh (filtre CPU>90%).",,,,,,,,,,,,,,,,
+S,Sys,dataContMem,F,number,0–100,%,SE→SP,SE,_,Dyn,Etat,_,$F:Sys:dataContMem:SE:58#,"RAM utilisée via /proc/meminfo — (MemTotal−MemAvailable)/MemTotal.
+>warn(80%) → COM:warn | >urg(90%) → URG_SENSOR_FAIL
+global.json .Sys.mem",,,,,,,,,,,,,,,,
+S,Sys,dataContStorage,F,number,0–100,%,SE→SP,SE,_,Dyn,Etat,_,$F:Sys:dataContStorage:SE:72#,"% espace utilisé /sdcard via df.
+>warn(85%) → COM:warn | >urg(95%) → URG_SENSOR_FAIL
+global.json .Sys.storage",,,,,,,,,,,,,,,,
+S,Sys,dataContThermal,F,number,0–150,°C,SE→SP,SE,_,Dyn,Etat,oui,$F:Sys:dataContThermal:SE:38#,"Température via termux-sensor puis fallback /sys/thermal_zone0.
+>warn(70°C) → COM:warn | >urg(85°C) → URG_OVERHEAT
+global.json .Sys.thermal",,,,,,,,,,,,,,,,
+S,Sys,dataMoyBatt,F,number,0–100,%,SE→SP,SE,_,Dyn,Etat,_,$F:Sys:dataMoyBatt:SE:63#,Moyenne batt sur nbCycles (mode MOY).,,,,,,,,,,,,,,,,
+S,Sys,dataMoyCpu,F,number,0–100,%,SE→SP,SE,_,Dyn,Etat,_,$F:Sys:dataMoyCpu:SE:42#,Moyenne CPU sur nbCycles mesures. Publié à freqMoy s (mode MOY).,,,,,,,,,,,,,,,,
+S,Sys,dataMoyMem,F,number,0–100,%,SE→SP,SE,_,Dyn,Etat,_,$F:Sys:dataMoyMem:SE:56#,Moyenne mem sur nbCycles (mode MOY).,,,,,,,,,,,,,,,,
+S,Sys,dataMoyStorage,F,number,0–100,%,SE→SP,SE,_,Dyn,Etat,_,$F:Sys:dataMoyStorage:SE:71#,Moyenne storage sur nbCycles (mode MOY).,,,,,,,,,,,,,,,,
+S,Sys,dataMoyThermal,F,number,0–150,°C,SE→SP,SE,_,Dyn,Etat,_,$F:Sys:dataMoyThermal:SE:37#,Moyenne thermal sur nbCycles (mode MOY).,,,,,,,,,,,,,,,,
+P,Sys,modeSys,V,enum,OFF|FLOW|MOY|ALERTE,_,SP→SE,*,_,Ini,Config,oui,$V:Sys:modeSys:*:FLOW#,"OFF=aucune surveillance.
+FLOW=dataCont* publiés à freqCont secondes.
+MOY=dataMoy* (moyenne nbCycles) publiés à freqMoy secondes.
+ALERTE=surveillance seuils uniquement, aucun flux.
+⚠️ Après urgence : SE arrête émissions et attend nouveau modeSys de SP.",,,,,,,,,,,,,,,,
+S,Sys,modeSys,I,enum,OFF|FLOW|MOY|ALERTE,_,SE→SP,SE,_,Ini,ACK,oui,$I:Sys:modeSys:SE:FLOW#,ACK émis par load_config() dans rz_sys_monitor.sh.,,,,,,,,,,,,,,,,
+P,Sys,paraSys,V,object,voir COMPLEXE,voir COMPLEXE,SP→SE,*,"freqCont     : number >0  (secondes — plus petit = plus fréquent)
+freqMoy      : number >=freqCont  (secondes)
+nbCycles     : number >0
+thresholds.cpu.warn     : number 0–100  (%)
+thresholds.cpu.urg      : number >warn  (%)
+thresholds.thermal.warn : number >0  (°C)
+thresholds.thermal.urg  : number >warn  (°C)
+thresholds.storage.warn : number 0–100  (%)
+thresholds.storage.urg  : number >warn  (%)
+thresholds.mem.warn     : number 0–100  (%)
+thresholds.mem.urg      : number >warn  (%)
+thresholds.batt.warn    : number 0–100  (%) ⚠️SENS INVERSÉ : alerte si <warn
+thresholds.batt.urg     : number <warn  (%) ⚠️SENS INVERSÉ : alerte si <urg",Cste,Config,_,"$V:Sys:paraSys:*:{""freqCont"":10,""freqMoy"":60,""nbCycles"":3,""thresholds"":{""cpu"":{""warn"":80,""urg"":90},""thermal"":{""warn"":70,""urg"":85},""storage"":{""warn"":85,""urg"":95},""mem"":{""warn"":80,""urg"":90},""batt"":{""warn"":30,""urg"":15}}}#","⚠️ freqCont/freqMoy en SECONDES (≠ Gyro/Mag en Hz, ≠ MicroSE en ms).
+⚠️ Batterie SENS INVERSÉ : urg < warn (15 < 30).
+Alertes déclenchées après 10s de dépassement continu (règle alerts_sys.sh).",,,,,,,,,,,,,,,,
+S,Sys,paraSys,I,object,voir COMPLEXE,_,SE→SP,SE,_,Cste,ACK,_,"$I:Sys:paraSys:SE:{""freqCont"":10,""thresholds"":{...}}#",ACK émis par load_config() — image des paramètres réellement appliqués.,,,,,,,,,,,,,,,,
+S,Sys,uptime,I,number,>0,s,SE→SP,SE,_,Dyn,Etat,_,$I:Sys:uptime:SE:3600#,"Publié UNE SEULE FOIS au démarrage via send_uptime().
+Lu depuis /proc/uptime. Valeur ponctuelle (pas de flux).",,,,,,,,,,,,,,,,
+P,Gyro,angleVSEBase,V,number,0–3600,deg × 10,SP→SE,*,_,Cste,Config,_,$V:Gyro:angleVSEBase:*:150#,"Angle combiné BASE+THB pour correction tangage (mode ALERTE).
+150 = 15,0°. Calculé lors de la calibration. Ne change pas au runtime.",,,,,,,,,,,,,,,,
+S,Gyro,angleVSEBase,I,number,0–3600,deg × 10,SE→SP,*,_,Cste,ACK,_,$I:Gyro:angleVSEBase:*:150#,_,,,,,,,,,,,,,,,,
+S,Gyro,dataContGyro,F,string,"""[gx,gy,gz]""",rad/s × 100,SE→SP,*,_,Dyn,Etat,_,$F:Gyro:dataContGyro:*:[1200,-450,9800]#,"Flux vitesses angulaires 3 axes. Diviser par 100 pour rad/s réels.
+Filtré par seuilMesure (valeurs sous seuil mises à 0).
+Publié à freqCont Hz (mode DATACont).",,,,,,,,,,,,,,
+S,Gyro,dataMoyGyro,F,string,"""[gx,gy,gz]""",rad/s × 100,SE→SP,*,_,Dyn,Etat,_,$F:Gyro:dataMoyGyro:*:[1150,-420,9750]#,"Moyenne glissante sur nbValPourMoy mesures.
+Publié à freqMoy Hz (mode DATAMoy).",,,,,,,,,,,,,,
+P,Gyro,modeGyro,V,enum,OFF|DATACont|DATAMoy|ALERTE,_,SP→SE,*,_,Ini,Config,oui,$V:Gyro:modeGyro:*:DATACont#,"OFF=capteur inactif.
+DATACont=flux brut dataContGyro à freqCont Hz.
+DATAMoy=flux moyenné dataMoyGyro à freqMoy Hz.
+ALERTE=surveillance seuilAlerte uniquement → statusGyro si changement.",,,,,,,,,,,,,,,,
+S,Gyro,modeGyro,I,enum,OFF|DATACont|DATAMoy|ALERTE,_,SE→SP,*,_,Ini,ACK,oui,$I:Gyro:modeGyro:*:DATACont#,ACK réception du mode envoyé par load_config().,,,,,,,,,,,,,,,,
+P,Gyro,paraGyro,V,object,voir COMPLEXE,voir COMPLEXE,SP→SE,*,"freqCont       : number >0  (Hz — plus grand = plus fréquent)
+freqMoy        : number >0  (Hz)
+nbValPourMoy   : number >0
+seuilMesure.x  : number >=0  (rad/s × 100) filtrage bruit axe x
+seuilMesure.y  : number >=0  (rad/s × 100) filtrage bruit axe y
+seuilMesure.z  : number >=0  (rad/s × 100) filtrage bruit axe z
+seuilAlerte.x  : number >0  (rad/s × 100) seuil chute axe x
+seuilAlerte.y  : number >0  (rad/s × 100) seuil chute axe y",Cste,Config,_,"$V:Gyro:paraGyro:*:{""freqCont"":20,""freqMoy"":2,""nbValPourMoy"":5,""seuilMesure"":{""x"":10,""y"":10,""z"":5},""seuilAlerte"":{""x"":300,""y"":300}}#","⚠️ freqCont/freqMoy en Hz (≠ Sys en secondes, ≠ MicroSE en ms).
+seuilAlerte > seuilMesure recommandé (vérifié par check_config.sh).",,,,,,,,,,,,,,,,
+S,Gyro,paraGyro,I,object,voir COMPLEXE,_,SE→SP,*,_,Cste,ACK,_,"$I:Gyro:paraGyro:*:{""freqCont"":20,""nbValPourMoy"":5,...}#",ACK réception — image des paramètres réellement appliqués.,,,,,,,,,,,,,,,,
+S,Gyro,statusGyro,E,enum,OFF|OK|ALERTE|ERROR,_,SE→SP,*,_,Dyn,Etat,oui,$E:Gyro:statusGyro:*:ALERTE#,"Publié UNIQUEMENT si changement d'état ou dépassement seuilAlerte.
+ALERTE = axe x ou y dépasse seuilAlerte → risque chute détecté.
+ERROR = capteur inaccessible (termux-sensor absent ou erreur critique).",,,,,,,,,,,,,,,,
+S,Mag,DataContGeo,F,number,0–3600,deg × 10,SE→SP,*,_,Dyn,Etat,oui,$F:Mag:DataContGeo:*:1830#,"Cap géographique continu. Mode DATAGeoCont.
+⚠️ Correction déclinaison magnétique non implémentée en v1.",,,,,,,,,,,,,,,,
+S,Mag,DataContMg,F,number,0–3600,deg × 10,SE→SP,*,_,Dyn,Etat,oui,$F:Mag:DataContMg:*:1850#,"Cap magnétique continu. 1850 = 185,0°. Nord=0°.
+Calculé via atan2(y,x) sur les axes magnétomètre.
+Mode DATAMgCont.",,,,,,,,,,,,,,,,
+S,Mag,DataMoyGeo,F,number,0–3600,deg × 10,SE→SP,*,_,Dyn,Etat,_,$F:Mag:DataMoyGeo:*:1820#,Moyenne cap géographique. Mode DATAGeoMoy.,,,,,,,,,,,,,,,,
+S,Mag,DataMoyMg,F,number,0–3600,deg × 10,SE→SP,*,_,Dyn,Etat,_,$F:Mag:DataMoyMg:*:1840#,"Moyenne cap magnétique sur nbValPourMoy mesures.
+Mode DATAMgMoy.",,,,,,,,,,,,,,,,
+S,Mag,dataContBrut,F,string,"""[mx,my,mz]""",µT × 100,SE→SP,*,_,Dyn,Etat,_,$F:Mag:dataContBrut:*:[4520,-1230,5800]#,"Champ magnétique brut 3 axes. Diviser par 100 pour µT réels.
+Publié en mode DATABrutCont à freqCont Hz.
+Filtré par seuilMesure.",,,,,,,,,,,,,,
+P,Mag,modeMg,V,enum,OFF|DATABrutCont|DATAGeoCont|DATAGeoMoy|DATAMgCont|DATAMgMoy,_,SP→SE,*,_,Ini,Config,oui,$V:Mag:modeMg:*:DATAMgCont#,"OFF=capteur inactif.
+DATABrutCont=champ magnétique brut [x,y,z] µT×100.
+DATAMgCont/Moy=cap magnétique continu/moyenné.
+DATAGeoCont/Moy=cap géographique continu/moyenné.
+⚠️ Pas de correction déclinaison magnétique en v1.",,,,,,,,,,,,,,,,
+S,Mag,modeMg,I,enum,OFF|DATABrutCont|DATAGeoCont|DATAGeoMoy|DATAMgCont|DATAMgMoy,_,SE→SP,*,_,Ini,ACK,oui,$I:Mag:modeMg:*:DATAMgCont#,ACK réception du mode.,,,,,,,,,,,,,,,,
+P,Mag,paraMg,V,object,voir COMPLEXE,voir COMPLEXE,SP→SE,*,"freqCont       : number >0  (Hz)
+freqMoy        : number >0  (Hz)
+nbValPourMoy   : number >0
+seuilMesure.x  : number >=0  (µT × 100) filtrage bruit axe x
+seuilMesure.y  : number >=0  (µT × 100) filtrage bruit axe y
+seuilMesure.z  : number >=0  (µT × 100) filtrage bruit axe z",Cste,Config,_,"$V:Mag:paraMg:*:{""freqCont"":5,""freqMoy"":1,""nbValPourMoy"":5,""seuilMesure"":{""x"":50,""y"":50,""z"":50}}#",_,,,,,,,,,,,,,,,,
+S,Mag,paraMg,I,object,voir COMPLEXE,_,SE→SP,*,_,Cste,ACK,_,"$I:Mag:paraMg:*:{""freqCont"":5,...}#",_,,,,,,,,,,,,,,,,
+S,CamSE,StreamURL,I,string,URL HTTP,_,SE→SP,rear|front,_,Dyn,Etat,oui,$I:CamSE:StreamURL:rear:http://192.168.1.10:8080/video#,"URL du flux ou du snapshot, publiée après démarrage réussi.
+IP récupérée dynamiquement via ifconfig wlan0 (fallback ip addr).
+Mise à jour dans cam_config.json .status.last_ip.",,,,,,,,,,,,,,,,
+S,CamSE,error,E,enum,CAM_START_FAIL|CAM_IP_FAIL|CAM_CONFIG_FAIL,_,SE→SP,rear|front,_,Dyn,Event,oui,$E:CamSE:error:rear:CAM_START_FAIL#,"Événement erreur caméra non récupérable.
+CAM_START_FAIL = IP Webcam ne répond pas sur 8080 après démarrage.
+CAM_IP_FAIL = IP wlan0 non lisible.
+CAM_CONFIG_FAIL = cam_config.json absent ou illisible.
+Si typePtge=0 ou 2 : déclenche URG_SENSOR_FAIL après urgDelay secondes.
+⚠️ Ancienne notation (error) remplacée par error + NATURE=Event.",,,,,,,,,,,,,,,,
+P,CamSE,modeCam,V,enum,off|stream|snapshot,_,SP→SE,rear|front|*,_,Ini,Config,oui,$V:CamSE:modeCam:rear:stream#,"Commande principale caméra.
+off → am force-stop IP Webcam.
+stream → démarrage flux vidéo continu (IP Webcam port 8080/video).
+snapshot → démarrage mode photo (shot.jpg).
+Profil CPU adapté automatiquement : normal (<70%) ou optimized (>70%).",,,,,,,,,,,,,,,,
+S,CamSE,modeCam,I,enum,off|stream|snapshot|error,_,SE→SP,rear|front,_,Ini,ACK,oui,$I:CamSE:modeCam:rear:stream#,"ACK mode appliqué, émis par send_mode_state().
+error = mode positionné automatiquement sur erreur non critique.",,,,,,,,,,,,,,,,
+P,CamSE,paraCam,V,object,voir COMPLEXE,voir COMPLEXE,SP→SE,rear|front|*,"res       : enum  (low|720p|1080p|1920x1080|1280x720)
+fps       : number >0  (images/s)
+quality   : number 0–100  (compression JPEG)
+urgDelay  : number >0  (secondes avant URG si perte cam avec typePtge 0 ou 2)",Cste,Config,_,"$V:CamSE:paraCam:rear:{""res"":""1080p"",""fps"":30,""quality"":80,""urgDelay"":5}#","Paramètres mémorisés dans cam_config.json par instance.
+Le profil CPU (normal/optimized) prend le dessus sur res/fps en cas de surcharge.
+Mise à jour sélective : seuls les champs présents sont modifiés.",,,,,,,,,,,,,,,,
+S,CamSE,paraCam,I,object,voir COMPLEXE,_,SE→SP,rear|front,_,Cste,ACK,_,"$I:CamSE:paraCam:rear:{""res"":""1080p"",""fps"":30,""quality"":80,""urgDelay"":5}#",ACK avec valeurs finales réellement appliquées à l'instance.,,,,,,,,,,,,,,,,
+P,CamSE,snap,V,boolean,0|1,_,SP→SE,rear|front|*,_,Dyn,Event,oui,$V:CamSE:snap:rear:1#,"Déclenche un snapshot immédiat via IP Webcam.
+L'URL de la photo est retournée via StreamURL.
+⚠️ Ancienne notation (snap) remplacée par snap + NATURE=Event.",,,,,,,,,,,,,,,,
+P,TorchSE,active,V,boolean,0|1,_,SP→SE,*,_,Dyn,Config,oui,$V:TorchSE:active:*:On#,"Si caméra active → HTTP /enablels ou /disablels (API IP Webcam).
+Si caméra inactive → termux-torch on/off (natif Android).
+Bascule automatique selon cam_config.json .status.active.
+⚠️ Incohérence code actuel : rz_torch_manager.sh envoie $I:Torch:..., le parser route TorchSE. Corriger VAR dans torch_manager.sh.",,,,,,,,,,,,,,,,
+S,TorchSE,active,I,boolean,0|1,_,SE→SP,SE,_,Dyn,ACK,oui,$I:TorchSE:active:SE:On#,"ACK émis après exécution de set_torch().
+⚠️ Code actuel émet $I:Torch:... — à corriger en $I:TorchSE:...",,,,,,,,,,,,,,,,
+S,MicroSE,alerte,E,enum,faible|moyen|fort|silence,_,SE→SP,*,_,Dyn,Etat,_,$E:MicroSE:alerte:*:fort#,"Envoyé à chaque CHANGEMENT de niveau d'intensité (montée ET retour silence).
+Seuil franchi seulement si maintenu >= holdTime ms (anti-faux positifs).
+⚠️ Le code émet encore la notation alerte — à normaliser en alerte + NATURE=Event.",,,,,,,,,,,,,,,,
+S,MicroSE,dataContRMS,F,number,0–1000,RMS × 10,SE→SP,*,_,Dyn,Etat,_,$F:MicroSE:dataContRMS:*:342#,"Niveau sonore RMS × 10 (entier). Diviser par 10 pour valeur réelle.
+Enregistrement winSize ms via termux-microphone-record.
+Analyse RMS via ffmpeg/astats. Filtre delta : envoyé si |moy−dernière| > seuilDelta.",,,,,,,,,,,,,,,,
+S,MicroSE,direction,F,number,0–1800,deg × 10,SE→SP,*,_,Dyn,Etat,_,$F:MicroSE:direction:*:450#,"Direction estimée de la source sonore dominante. 450 = 45,0°.
+Calculé par rz_balayage_sonore.sh : balayage servo TGD, angle à max RMS.
+Publié en modes orientation et surveillance.",,,,,,,,,,,,,,,,
+P,MicroSE,modeMicro,V,enum,off|normal|intensite|orientation|surveillance,_,SP→SE,*,_,Ini,Config,_,$V:MicroSE:modeMicro:*:intensite#,"off=micro coupé, aucun flux.
+normal=dataContRMS publié à chaque mesure.
+intensite=dataContRMS si delta>seuilDelta + alerte si seuil franchi holdTime ms.
+orientation=balayage servo TGD → angle direction sonore.
+surveillance=intensite + balayage auto si RMS>seuilMoyen.",,,,,,,,,,,,,,,,
+S,MicroSE,modeMicro,I,enum,off|normal|intensite|orientation|surveillance,_,SE→SP,*,_,Ini,ACK,_,$I:MicroSE:modeMicro:*:intensite#,_,,,,,,,,,,,,,,,,
+P,MicroSE,paraMicro,V,object,voir COMPLEXE,voir COMPLEXE,SP→SE,*,"freqCont           : number >0  (ms — plus petit = plus fréquent)
+winSize            : number >=freqCont  (ms) fenêtre glissante
+seuilDelta         : number 0–1000  (RMS × 10) variation min pour envoi
+holdTime           : number >0  (ms) durée maintien seuil avant alerte
+seuilFaible        : number 0–1000  (RMS × 10)
+seuilMoyen         : number >seuilFaible  (RMS × 10)
+seuilFort          : number >seuilMoyen  (RMS × 10)
+pasBalayage        : number >0  (degrés/étape)
+timeoutOrientation : number >0  (secondes)",Cste,Config,_,"$V:MicroSE:paraMicro:*:{""freqCont"":300,""winSize"":300,""seuilDelta"":30,""holdTime"":500,""seuilFaible"":100,""seuilMoyen"":400,""seuilFort"":700,""pasBalayage"":10,""timeoutOrientation"":15}#","⚠️ freqCont/winSize en MILLISECONDES (≠ Gyro/Mag en Hz, ≠ Sys en s).
+seuilFaible < seuilMoyen < seuilFort obligatoire (vérifié par check_config.sh).
+N fenêtre glissante = winSize/freqCont (min 2 → winSize >= 2×freqCont recommandé).",,,,,,,,,,,,,,,,
+S,MicroSE,paraMicro,I,object,voir COMPLEXE,_,SE→SP,*,_,Cste,ACK,_,"$I:MicroSE:paraMicro:*:{""freqCont"":300,...}#",_,,,,,,,,,,,,,,,,
+S,STT,context,I,enum,Inactif|Cmde|Conv|Mixte,_,SE→SP,*,_,Dyn,Etat,oui,$I:STT:context:*:Cmde#,"Calculé par calculate_stt_context() dans rz_state-manager.sh.
+Inactif : modeRZ=0 ou 5, ou typePtge ≠ 1 et ≠ 4.
+Cmde    : speed ≠ 0 (robot en mouvement) → PocketSphinx uniquement.
+Conv    : modeRZ=1 (VEILLE) → Gemini prioritaire.
+Mixte   : modeRZ=2/3/4 à l'arrêt → PocketSphinx puis Gemini si exit 1.
+global.json : .STT.context",,,,,,,,,,,,,,,,
+S,STT,intent,A,object,"""{CAT:VAR:PROP:INST:VAL}""",_,SE→SP,*,"CAT  : enum  (V|I|E|F|A) — catégorie de la commande encapsulée
+VAR  : string  — variable VPIV cible
+PROP : string  — propriété VPIV cible
+INST : string  — instance VPIV cible
+VAL  : string  — valeur de la commande",Dyn,Intent,_,$A:STT:intent:*:{V:Gyro:modeGyro:*:DATACont}#,"Capsule d'intention vocale construite par rz_stt_handler.sh.
+Inner VPIV encapsulé entre {} (sans $ ni #).
+SP reçoit, valide la commande, puis l'exécute ou la refuse.
+Permet un contrôle SP sur toutes les commandes vocales (validation sécurité).",,,,,,,,,,,,,,,,
+P,STT,modeSTT,V,enum,KWS|OFF,_,SP→SE,*,_,Ini,Config,oui,$V:STT:modeSTT:*:KWS#,"KWS=Keyword Spotting PocketSphinx (wake word + catalogue 45 commandes).
+OFF=STT désactivé.
+Repli automatique vers Gemini si PocketSphinx exit 1 (non reconnu).",,,,,,,,,,,,,,,,
+S,STT,modeSTT,I,enum,KWS|OFF,_,SE→SP,*,_,Ini,ACK,oui,$I:STT:modeSTT:*:KWS#,_,,,,,,,,,,,,,,,,
+P,STT,paraSTT,V,object,voir COMPLEXE,voir COMPLEXE,SP→SE,*,"keyphrase : string  (mot de réveil, ex: ""rz"" — doit être dans fr.dict)
+lang      : enum  (fr|en)
+threshold : number  (notation scientifique, ex: 1e-20 — plus petit = plus exigeant)
+lib_path  : string  (chemin relatif vers dossier lib_pocketsphinx/)",Cste,Config,_,"$V:STT:paraSTT:*:{""keyphrase"":""rz"",""lang"":""fr"",""threshold"":1e-20,""lib_path"":""lib_pocketsphinx""}#","keyphrase doit être dans fr.dict (regénérable via rz_build_dict.py).
+⚠️ model-fr/ et lexique_referent.dict : fichiers lourds (~50–200 Mo),
+hors Git, à installer manuellement une seule fois. original_init.sh vérifie leur présence.",,,,,,,,,,,,,,,,
+P,Voice,tts,A,string,texte libre,_,SP→SE,*,_,Dyn,Event,_,"$A:Voice:tts:*:""Démarrage terminé""#","SP demande à SE de prononcer un texte via termux-tts-speak.
+Géré directement dans rz_vpiv_parser.sh (case A / MODULE=Voice).
+Les guillemets sont retirés avant envoi au moteur TTS.",,,,,,,,,,,,,,,,
+P,Appli,Baby,A,enum,On|Off,_,SP→SE,*,_,Dyn,Config,oui,$A:Appli:Baby:*:On#,"Démarre/arrête app Baby via Tasker (tâche RZ_Baby).
+⚠️ Tasker doit être actif (bloquant si Tasker OFF).",,,,,,,,,,,,,,,,
+S,Appli,Baby,I,enum,OK|FAIL,_,SE→SP,*,_,Dyn,ACK,oui,$I:Appli:Baby:*:OK#,"FAIL si : Tasker OFF, urgence active, ou erreur bridge.
+État mis à jour dans appli_config.json (state, last_change).",,,,,,,,,,,,,,,,
+P,Appli,BabyMonitor,A,enum,On|Off,_,SP→SE,*,_,Dyn,Config,oui,$A:Appli:BabyMonitor:*:On#,"Via RZ_BabyMonitor (Tasker).
+warn si cam active, modeMicro=off, ou modeRZ=3.
+⚠️ Tasker requis (bloquant si Tasker OFF).",,,,,,,,,,,,,,,,
+S,Appli,BabyMonitor,I,enum,OK|FAIL,_,SE→SP,*,_,Dyn,ACK,oui,$I:Appli:BabyMonitor:*:OK#,_,,,,,,,,,,,,,,,,
+P,Appli,ExprTasker,A,string,voir INSTANCE,_,SP→SE,Expression (nom expression) | Info (texte) | Off (*),_,Dyn,Event,_,$A:Appli:ExprTasker:Expression:sourire#,"Expression → tâche RZ_Expression (expressions faciales robot).
+Info → tâche RZ_Info (affichage message sur écran SE).
+Off → arrêt ExprTasker.
+⚠️ L'INSTANCE porte le type d'action (≠ autres Appli où INSTANCE=*).
+La VALUE porte l'argument (nom expression ou texte).",,,,,,,,,,,,,,,,
+S,Appli,ExprTasker,I,enum,OK|FAIL,_,SE→SP,Expression|Info|Off,_,Dyn,ACK,_,$I:Appli:ExprTasker:Expression:OK#,L'instance de l'ACK reprend l'instance de la commande reçue.,,,,,,,,,,,,,,,,
+P,Appli,NavGPS,A,enum,On|Off,_,SP→SE,*,_,Dyn,Config,oui,$A:Appli:NavGPS:*:On#,"Via RZ_NavGPS (Tasker) ou Maps am start (com.google.android.apps.maps).
+warn si modeRZ=3 (robot en déplacement).",,,,,,,,,,,,,,,,
+S,Appli,NavGPS,I,enum,OK|FAIL,_,SE→SP,*,_,Dyn,ACK,oui,$I:Appli:NavGPS:*:OK#,_,,,,,,,,,,,,,,,,
+P,Appli,tasker,A,enum,On|Off,_,SP→SE,*,_,Dyn,Config,oui,$A:Appli:tasker:*:On#,"Démarre Tasker lui-même via am start (net.dinglisch.android.taskerm).
+Pas de dépendance Tasker pour cette app (am start direct).",,,,,,,,,,,,,,,,
+S,Appli,tasker,I,enum,OK|FAIL,_,SE→SP,*,_,Dyn,ACK,oui,$I:Appli:tasker:*:OK#,_,,,,,,,,,,,,,,,,
+P,Appli,zoom,A,enum,On|Off,_,SP→SE,*,_,Dyn,Config,oui,$A:Appli:zoom:*:On#,"Via RZ_Zoom (Tasker) ou am start fallback (us.zoom.videomeetings).
+warn si cam active ou modeRZ=3.
+bloquant si CPU > seuil urgence.",,,,,,,,,,,,,,,,
+S,Appli,zoom,I,enum,OK|FAIL,_,SE→SP,*,_,Dyn,ACK,oui,$I:Appli:zoom:*:OK#,_,,,,,,,,,,,,,,,,
+A,System,boot,I,enum,OK,_,A→SP,*,_,Dyn,Etat,oui,$I:System:*:boot:OK#,Publié par RZ_initAll() à la fin de l'initialisation Arduino. Indique à SP que le firmware est opérationnel.,,,,,,,,,,,,,,,,
+A,Mtr,act,I,boolean,0|1,_,A→SP,*,_,Ini,ACK,_,$I:Mtr:*:act:1#,_,,,,,,,,,,,,,,,,
+P,Mtr,act,V,boolean,0|1,_,SP→A,*,_,Ini,Config,oui,$V:Mtr:*:act:1#,Active (1) ou désactive (0) l'envoi vers l'UNO.,,,,,,,,,,,,,,,,
+P,Mtr,cmd,V,string,"""v,omega,a""",_,SP→A,*,_,Dyn,Config,oui,$V:Mtr:*:cmd:80,0,2#,v∈[-100..100], omega∈[-100..100], a∈[0..4]. Bloqué si urgence active.,,,,,,,,,,,,
+A,Mtr,kturn,I,number,0–2000,×1000,A→SP,*,_,Ini,ACK,_,$I:Mtr:*:kturn:800#,Confirmation kturn appliqué, en entier ×1000.,,,,,,,,,,,,,,,
+P,Mtr,kturn,V,number,0–2000,×1000 (1000=standard),SP→A,*,_,Ini,Config,oui,$V:Mtr:*:kturn:800#,Coefficient rotation encodé ×1000. 500=doux, 800=confort, 1000=standard, 1500=franc. Converti en float interne.,,,,,,,,,,,,,
+A,Mtr,override,I,enum,stop|cleared,_,A→SP,*,_,Dyn,ACK,_,$I:Mtr:*:override:stop#,_,,,,,,,,,,,,,,,,
+P,Mtr,override,V,enum,stop|clear,_,SP→A,*,_,Dyn,Event,oui,$V:Mtr:*:override:stop#,Arrêt forcé (stop) ou lever override (clear).,,,,,,,,,,,,,,,,
+P,Mtr,read,V,enum,1,_,SP→A,*,_,Dyn,Event,_,$V:Mtr:*:read:1#,Demande l'état courant L,R,A.,,,,,,,,,,,,,,
+A,Mtr,scale,I,number,0–1000,×1000,A→SP,*,_,Ini,ACK,_,$I:Mtr:*:scale:750#,Confirmation facteur scale appliqué, en entier ×1000.,,,,,,,,,,,,,,,
+P,Mtr,scale,V,number,0–1000,×1000 (0=arrêt 1000=normal),SP→A,*,_,Ini,Config,oui,$V:Mtr:*:scale:750#,Facteur réduction vitesses encodé ×1000. 750=0.750, 1000=pleine vitesse. Converti en float interne par dispatch_Mtr.cpp.,,,,,,,,,,,,,,,
+A,Mtr,state,I,string,"""L,R,A""",_,A→SP,*,_,Dyn,Etat,_,$I:Mtr:*:state:80,-80,2#,Consignes actuelles en réponse à read.,,,,,,,,,,,,,,
+A,Mtr,stop,I,enum,OK,_,A→SP,*,_,Dyn,ACK,_,$I:Mtr:*:stop:OK#,_,,,,,,,,,,,,,,,,
+P,Mtr,stop,V,enum,1,_,SP→A,*,_,Dyn,Event,oui,$V:Mtr:*:stop:1#,Arrêt propre : v=0, omega=0.,,,,,,,,,,,,,,,
+A,Mtr,targets,I,string,"""L,R,A""",_,A→SP,*,_,Dyn,Etat,oui,$I:Mtr:*:targets:80,-80,2#,Consignes différentielles calculées envoyées à l'UNO.,,,,,,,,,,,,,,
+A,Odom,act,I,boolean,0|1,_,A→SP,*,_,—,info,_,$I:Odom:act:*:1#,Confirmation état activation.,,,,,,,,,,,,,,,,
+P,Odom,act,V,boolean,0|1,_,SP→A,*,_,—,cmd,oui,$V:Odom:*:act:1#,Active (1) ou met en pause (0) le calcul odométrique.,,,,,,,,,,,,,,,,
+A,Odom,compass,I,enum,OK,_,A→SP,*,_,—,info,_,$I:Odom:compass:*:OK#,Confirmation réception données boussole.,,,,,,,,,,,,,,,,
+S,Odom,compass,V,string,deg,quality,deg;0-100,SP→A,*,_,—,fusion,_,$V:Odom:*:compass:125,85#,Cap boussole SE relayé par SP vers Arduino. deg=cap(0-360°,0=Nord), quality=fiabilité(0-100). Source=SE, acheminé via SP (Node-RED relaie Mag:DataContGeo).,,,,,,,,,,,
+A,Odom,freq,I,number,≥ 1,ms,A→SP,*,_,—,info,_,$I:Odom:freq:*:50#,Confirmation période calcul.,,,,,,,,,,,,,,,,
+P,Odom,freq,V,number,≥ 1,ms,SP→A,*,_,—,param,oui,$V:Odom:*:freq:50#,Période de calcul odométrique (ms). 50=20Hz recommandé. Aussi configurable via paraOdom.,,,,,,,,,,,,,,,,
+A,Odom,freqPos,I,number,≥ 0,ms,A→SP,*,_,—,info,_,$I:Odom:freqPos:*:200#,Confirmation période envoi position.,,,,,,,,,,,,,,,,
+P,Odom,freqPos,V,number,≥ 0,ms,SP→A,*,_,—,param,oui,$V:Odom:*:freqPos:200#,Période d'envoi automatique de la position (ms). 0=désactivé. 200ms=5Hz recommandé. Aussi configurable via paraOdom.,,,,,,,,,,,,,,,,
+A,Odom,freqVel,I,number,≥ 0,ms,A→SP,*,_,—,info,_,$I:Odom:freqVel:*:40#,Confirmation période envoi vitesse.,,,,,,,,,,,,,,,,
+P,Odom,freqVel,V,number,≥ 0,ms,SP→A,*,_,—,param,oui,$V:Odom:*:freqVel:40#,Période d'envoi automatique de la vitesse (ms). 0=désactivé. 40ms=25Hz recommandé. Aussi configurable via paraOdom.,,,,,,,,,,,,,,,,
+A,Odom,gyro,I,enum,OK,_,A→SP,*,_,—,info,_,$I:Odom:gyro:*:OK#,Confirmation réception données gyro.,,,,,,,,,,,,,,,,
+S,Odom,gyro,V,string,deg_s,ts_ms,deg/s;ms,SP→A,*,_,—,fusion,_,$V:Odom:*:gyro:12,170932#,Données gyroscope SE relayées par SP vers Arduino. deg_s=vitesse angulaire axe Z(deg/s), ts_ms=horodatage(ms). Source=SE, acheminé via SP (Node-RED relaie Gyro:dataContGyro).,,,,,,,,,,,,
+A,Odom,mode,I,enum,idle|normal|surv,_,A→SP,*,_,—,info,_,$I:Odom:mode:*:normal#,Confirmation mode appliqué.,,,,,,,,,,,,,,,,
+P,Odom,mode,V,enum,idle|normal|surv,_,SP→A,*,_,—,cmd,oui,$V:Odom:*:mode:normal#,Preset. idle=arrêt calcul+report lent(1s). normal=reprend avec fréquences par défaut. surv=calcul et vel deux fois plus fréquents.,,,,,,,,,,,,,,,,
+A,Odom,paraOdom,I,string,wheel_mm,track_mm,cpr,gainG,gainD,fCalc,fPos,fVel,mm;mm;ticks;×1000;×1000;ms;ms;ms,A→SP,*,wheel_mm : number (mm) diamètre roue track_mm : number (mm) voie (distance entre roues) cpr : number (ticks/tour) résolution encodeur gainG : number ×1000 — gain gauche (1000=neutre) gainD : number ×1000 — gain droit (1000=neutre) fCalc : number (ms) période calcul fPos : number (ms) période envoi position (0=désactivé) fVel : number (ms) période envoi vitesse (0=désactivé) ,—,info,_,$I:Odom:paraOdom:*:65,200,256,1000,1000,50,200,40#,Echo de confirmation avec TOUTES les valeurs effectives après application.,,
+P,Odom,paraOdom,V,string,wheel_mm,track_mm,cpr[,gainG,gainD,fCalc,fPos,fVel],mm;mm;ticks;×1000;×1000;ms;ms;ms,SP→A,*,wheel_mm : number (mm) diamètre roue track_mm : number (mm) voie (distance entre roues) cpr : number (ticks/tour) résolution encodeur gainG : number ×1000 — gain gauche (1000=neutre) gainD : number ×1000 — gain droit (1000=neutre) fCalc : number (ms) période calcul fPos : number (ms) période envoi position (0=désactivé) fVel : number (ms) période envoi vitesse (0=désactivé) ,—,param,oui,$V:Odom:*:paraOdom:65,200,256,1000,1000,50,200,40#,Configuration physique complète. Les 3 premiers sont obligatoires. gainG/gainD×1000 (1000=neutre). fCalc=période calcul(ms), fPos=période envoi pos(ms), fVel=période envoi vel(ms). 0 pour un paramètre optionnel = garder valeur actuelle. Séquence recommandée : act:0 → paraOdom → reset:1 → act:1
+A,Odom,pos,I,string,x_mm,y_mm,theta_mrad,mm;mm;mrad,A→SP,*,_,—,info,_,$I:Odom:pos:*:1234,567,1570#,Position du robot. Entiers ×1000. x_mm=x×1000(mm), y_mm=y×1000(mm), theta_mrad=theta×1000(mrad). Envoi périodique selon freqPos_ms.,,,,,,,,,,
+P,Odom,read,V,enum,pos|vel|all,_,SP→A,*,_,—,cmd,_,$V:Odom:*:read:pos#,Lecture immédiate. pos=position, vel=vitesse, all=les deux. Réponse : $I:Odom:pos:*:...# ou $I:Odom:vel:*:...# ou $I:Odom:report:*:...#,,,,,,,,,,,,,,
+A,Odom,report,I,string,"pos:x,y,t;vel:v,w",mm;mm;mrad;mm/s;mrad/s,A→SP,*,pos.x : number (mm) position x ×1000 pos.y : number (mm) position y ×1000 pos.theta : number (mrad) cap ×1000 vel.v : number (mm/s) vitesse linéaire ×1000 vel.w : number (mrad/s) vitesse angulaire ×1000 ,—,info,_,"$I:Odom:report:*:pos:1234,567,1570;vel:250,12#",Rapport combiné one-shot (sur demande). Toutes valeurs en entiers ×1000. Déclenché par read:all, report, ou reset.,,,,,,,,,,,,,,
+A,Odom,reset,I,boolean,1,_,A→SP,*,_,—,info,_,$I:Odom:reset:*:OK#,Confirmation reset pose.,,,,,,,,,,,,,,,,
+P,Odom,reset,V,boolean,1,_,SP→A,*,_,—,cmd,oui,$V:Odom:*:reset:1#,Remet pose à zéro (x=0,y=0,theta=0). Déclenche un report one-shot.,,,,,,,,,,,,,,
+A,Odom,vel,I,string,v_mm_s,omega_mrad_s,mm/s;mrad/s,A→SP,*,_,—,info,_,$I:Odom:vel:*:250,12#,Vitesse robot. Entiers ×1000. v_mm_s=vitesse_linéaire×1000(mm/s), omega_mrad_s=vitesse_angulaire×1000(mrad/s). Envoi périodique selon freqVel_ms.,,,,,,,,,,,,,
+A,Mic,bruitNiv1,I,number,≥ 0,ADC,A→SP,*,_,Dyn,Etat,oui,$I:Mic:*:bruitNiv1:310#,Bruit soutenu > seuil1. Mode InfoNuisce requis.,,,,,,,,,,,,,,,,
+A,Mic,bruitNiv2,I,number,≥ 0,ADC,A→SP,*,_,Dyn,Etat,oui,$I:Mic:*:bruitNiv2:650#,Bruit soutenu > seuil2.,,,,,,,,,,,,,,,,
+A,Mic,detectPresenceSon,I,number,≥ 0,ADC,A→SP,*,_,Dyn,Etat,oui,$I:Mic:*:detectPresenceSon:120#,Présence sonore détectée. Mode DetectPresence requis.,,,,,,,,,,,,,,,,
+A,Mic,micAngle,F,number,−180–180,deg,A→SP,*,_,Dyn,Etat,oui,$F:Mic:*:micAngle:45#,Angle d'arrivée du son. Mode ANGLE requis.,,,,,,,,,,,,,,,,
+A,Mic,micMoy,F,number,≥ 0,ADC,A→SP,*,_,Dyn,Etat,oui,$F:Mic:*:micMoy:512#,Niveau sonore moyen. Mode MOY requis.,,,,,,,,,,,,,,,,
+A,Mic,micPIC,F,number,≥ 0,ADC,A→SP,*,_,Dyn,Etat,oui,$F:Mic:*:micPIC:820#,Niveau sonore pic. Mode PIC requis.,,,,,,,,,,,,,,,,
+A,Mic,modeMicsF,I,enum,OFF|MOY|ANGLE|PIC,_,A→SP,*,_,Ini,ACK,_,$I:Mic:*:modeMicsF:MOY#,_,,,,,,,,,,,,,,,,
+P,Mic,modeMicsF,V,enum,OFF|MOY|ANGLE|PIC,_,SP→A,*,_,Ini,Config,oui,$V:Mic:*:modeMicsF:MOY#,Mode flux microphone Arduino.,,,,,,,,,,,,,,,,
+A,Mic,modeMicsI,I,enum,OFF|InfoNuisce|DetectPresence,_,A→SP,*,_,Ini,ACK,_,$I:Mic:*:modeMicsI:InfoNuisce#,_,,,,,,,,,,,,,,,,
+P,Mic,modeMicsI,V,enum,OFF|InfoNuisce|DetectPresence,_,SP→A,*,_,Ini,Config,oui,$V:Mic:*:modeMicsI:InfoNuisce#,Mode détection événements sonores Arduino.,,,,,,,,,,,,,,,,
+A,Mic,paraMicsF,I,enum,OK,_,A→SP,*,_,Ini,ACK,_,$I:Mic:*:paraMicsF:OK#,_,,,,,,,,,,,,,,,,
+P,Mic,paraMicsF,V,string,"""fMoy,fPic,wMoy,wPic,dSeuil,dAngle""",ms/ms/ms/ms/ADC/deg,SP→A,*,_,Ini,Config,oui,$V:Mic:*:paraMicsF:200,100,200,100,5,10#,6 entiers CSV paramètres flux.,,,,,,,,,,,
+A,Mic,paraMicsI,I,enum,OK,_,A→SP,*,_,Ini,ACK,_,$I:Mic:*:paraMicsI:OK#,_,,,,,,,,,,,,,,,,
+P,Mic,paraMicsI,V,string,"""s0,s1,s2,sP,dNuisce,dPresence,cooldown""",ADC×4/ms×3,SP→A,*,_,Ini,Config,oui,$V:Mic:*:paraMicsI:30,300,600,100,500,300,2000#,7 entiers CSV paramètres détection.,,,,,,,,,,
+A,US,act,I,enum,OK,_,A→SP,inst,_,Ini,ACK,_,$I:US:*:act:OK#,_,,,,,,,,,,,,,,,,
+P,US,act,V,boolean,0|1,_,SP→A,*,_,Ini,Config,oui,$V:US:*:act:1#,_,,,,,,,,,,,,,,,,
+A,US,alert,I,number,0–600,cm,A→SP,idx,_,Dyn,Etat,oui,$I:US:2:alert:12#,Capteur sous seuil danger. Instance=index numérique.,,,,,,,,,,,,,,,,
+A,US,delta,I,enum,OK,_,A→SP,inst,_,Ini,ACK,_,$I:US:*:delta:OK#,_,,,,,,,,,,,,,,,,
+P,US,delta,V,number,≥ 0,cm,SP→A,*,_,Ini,Config,oui,$V:US:*:delta:5#,_,,,,,,,,,,,,,,,,
+A,US,freq,I,enum,OK,_,A→SP,inst,_,Ini,ACK,_,$I:US:*:freq:OK#,_,,,,,,,,,,,,,,,,
+P,US,freq,V,number,≥ 5,ms,SP→A,*,_,Ini,Config,oui,$V:US:*:freq:100#,_,,,,,,,,,,,,,,,,
+A,US,mode,I,enum,OK,_,A→SP,inst,_,Dyn,ACK,_,$I:US:*:mode:OK#,_,,,,,,,,,,,,,,,,
+P,US,mode,V,enum,idle|normal|surv,_,SP→A,*,_,Dyn,Config,oui,$V:US:*:mode:normal#,_,,,,,,,,,,,,,,,,
+A,US,one,I,number,0–600,cm,A→SP,ArG|ArC|...|TtC,_,Dyn,Etat,oui,$I:US:AvC:one:45#,Valeur d'un capteur US spécifique en cm.,,,,,,,,,,,,,,,,
+P,US,read,V,enum,1,_,SP→A,*|ArG|ArC|ArD|AvD|AvC|AvG|TtG|TtD|TtC,_,Dyn,Event,_,$V:US:AvC:read:1#,_,,,,,,,,,,,,,,,,
+A,US,sendall,I,enum,OK,_,A→SP,inst,_,Ini,ACK,_,$I:US:*:sendall:OK#,_,,,,,,,,,,,,,,,,
+P,US,sendall,V,boolean,0|1,_,SP→A,*,_,Ini,Config,oui,$V:US:*:sendall:0#,1=publie toutes valeurs, 0=seulement si variation > delta.,,,,,,,,,,,,,,,
+A,US,suspect_ms,I,enum,OK,_,A→SP,inst,_,Ini,ACK,_,$I:US:*:suspect_ms:OK#,_,,,,,,,,,,,,,,,,
+P,US,suspect_ms,V,number,≥ 0,ms,SP→A,*,_,Ini,Config,_,$V:US:*:suspect_ms:500#,Délai sans réponse pour marquer capteur suspect.,,,,,,,,,,,,,,,,
+A,US,thd,I,enum,OK,_,A→SP,inst,_,Ini,ACK,_,$I:US:*:thd:OK#,_,,,,,,,,,,,,,,,,
+P,US,thd,V,number,≥ 0,cm,SP→A,*|0–8,_,Ini,Config,oui,$V:US:*:thd:20#,_,,,,,,,,,,,,,,,,
+A,US,val,I,string,CSV 9 valeurs,cm,A→SP,*,_,Dyn,Etat,oui,$I:US:*:val:120,45,80,200,35,90,150,60,110#,Toutes les valeurs US.,,,,,,,,
+A,SecMvt,act,I,boolean,0|1,_,A→SP,*,_,Ini,ACK,_,$I:SecMvt:*:act:1#,_,,,,,,,,,,,,,,,,
+P,SecMvt,act,V,boolean,0|1,_,SP→A,*,_,Ini,Config,oui,$V:SecMvt:*:act:1#,_,,,,,,,,,,,,,,,,
+A,SecMvt,alert,I,enum,danger_soft,_,A→SP,*,_,Dyn,Etat,oui,$I:SecMvt:*:alert:danger_soft#,Alerte seuil danger en mode soft.,,,,,,,,,,,,,,,,
+A,SecMvt,mode,I,enum,soft|hard|idle,_,A→SP,*,_,Ini,ACK,_,$I:SecMvt:*:mode:soft#,_,,,,,,,,,,,,,,,,
+P,SecMvt,mode,V,enum,soft|hard|idle,_,SP→A,*,_,Ini,Config,oui,$V:SecMvt:*:mode:soft#,soft=réduit vitesse, hard=arrêt complet.,,,,,,,,,,,,,,,
+A,SecMvt,scale,I,number,0–1000,×1000,A→SP,*,_,Ini,ACK,_,$I:SecMvt:*:scale:500#,_,,,,,,,,,,,,,,,,
+P,SecMvt,scale,V,number,0–1000,×1000,SP→A,*,_,Ini,Config,oui,$V:SecMvt:*:scale:500#,Facteur vitesse max mode soft ×1000. Même convention que Mtr:scale.,,,,,,,,,,,,,,,,
+A,SecMvt,status,I,number,0–3,_,A→SP,*,_,Dyn,Etat,oui,$I:SecMvt:*:status:1#,0=idle, 1=OK, 2=warn, 3=danger.,,,,,,,,,,,,,
+P,SecMvt,status,V,enum,1,_,SP→A,*,_,Dyn,Event,_,$V:SecMvt:*:status:1#,Demande état courant.,,,,,,,,,,,,,,,,
+A,SecMvt,thd,I,string,"""warn,danger""",cm,A→SP,*,_,Ini,ACK,_,$I:SecMvt:*:thd:40,20#,_,,,,,,,,,,,,,,,
+P,SecMvt,thd,V,string,"""warn,danger""",cm,SP→A,*,_,Ini,Config,oui,$V:SecMvt:*:thd:40,20#,warn=ralentissement, danger=arrêt.,,,,,,,,,,,,,,
+A,Srv,act,I,boolean,0|1,_,A→SP,TGD|THB|BASE,_,Ini,ACK,_,$I:Srv:TGD:act:1#,_,,,,,,,,,,,,,,,,
+P,Srv,act,V,boolean,0|1,_,SP→A,TGD|THB|BASE|*,_,Ini,Config,oui,$V:Srv:*:act:1#,_,,,,,,,,,,,,,,,,
+A,Srv,angle,I,number,0–180,deg,A→SP,TGD|THB|BASE,_,Dyn,Etat,oui,$I:Srv:TGD:angle:90#,_,,,,,,,,,,,,,,,,
+P,Srv,angle,V,number,0–180,deg,SP→A,TGD|THB|BASE|*,_,Dyn,Config,oui,$V:Srv:TGD:angle:90#,_,,,,,,,,,,,,,,,,
+P,Srv,read,V,enum,1,_,SP→A,TGD|THB|BASE|*,_,Dyn,Event,_,$V:Srv:*:read:1#,Demande lecture angle courant par instance.,,,,,,,,,,,,,,,,
+A,Srv,speed,I,number,≥ 0,_,A→SP,TGD|THB|BASE,_,Ini,ACK,_,$I:Srv:TGD:speed:10#,_,,,,,,,,,,,,,,,,
+P,Srv,speed,V,number,≥ 0,_,SP→A,TGD|THB|BASE|*,_,Ini,Config,oui,$V:Srv:TGD:speed:10#,_,,,,,,,,,,,,,,,,
+A,IRmvt,act,I,boolean,0|1,_,A→SP,*,_,Ini,ACK,_,$I:IRmvt:*:act:1#,_,,,,,,,,,,,,,,,,
+P,IRmvt,act,V,boolean,0|1,_,SP→A,*,_,Ini,Config,oui,$V:IRmvt:*:act:1#,_,,,,,,,,,,,,,,,,
+A,IRmvt,alert,I,boolean,0|1,_,A→SP,*,_,Dyn,Etat,oui,$I:IRmvt:*:alert:1#,Alerte mouvement détecté (dépassement seuil).,,,,,,,,,,,,,,,,
+A,IRmvt,freq,I,number,≥ 0,ms,A→SP,*,_,Ini,ACK,_,$I:IRmvt:*:freq:500#,_,,,,,,,,,,,,,,,,
+P,IRmvt,freq,V,number,≥ 0,ms,SP→A,*,_,Ini,Config,oui,$V:IRmvt:*:freq:500#,_,,,,,,,,,,,,,,,,
+A,IRmvt,mode,I,enum,idle|monitor|surveillance,_,A→SP,*,_,Dyn,ACK,_,$I:IRmvt:*:mode:monitor#,_,,,,,,,,,,,,,,,,
+P,IRmvt,mode,V,enum,idle|monitor|surveillance,_,SP→A,*,_,Dyn,Config,oui,$V:IRmvt:*:mode:monitor#,_,,,,,,,,,,,,,,,,
+A,IRmvt,read,I,enum,OK,_,A→SP,*,_,Dyn,ACK,_,$I:IRmvt:*:read:OK#,_,,,,,,,,,,,,,,,,
+P,IRmvt,read,V,enum,1,_,SP→A,*,_,Dyn,Event,_,$V:IRmvt:*:read:1#,_,,,,,,,,,,,,,,,,
+A,IRmvt,thd,I,number,≥ 0,_,A→SP,*,_,Ini,ACK,_,$I:IRmvt:*:thd:10#,_,,,,,,,,,,,,,,,,
+P,IRmvt,thd,V,number,≥ 0,_,SP→A,*,_,Ini,Config,oui,$V:IRmvt:*:thd:10#,_,,,,,,,,,,,,,,,,
+A,IRmvt,value,I,number,≥ 0,_,A→SP,*,_,Dyn,Etat,oui,$I:IRmvt:*:value:23#,Valeur capteur IR. Publié à cadence freq.,,,,,,,,,,,,,,,,
+A,FS,act,I,boolean,0|1,_,A→SP,*,_,Ini,ACK,_,$I:FS:*:act:1#,_,,,,,,,,,,,,,,,,
+P,FS,act,V,boolean,0|1,_,SP→A,*,_,Ini,Config,oui,$V:FS:*:act:1#,_,,,,,,,,,,,,,,,,
+A,FS,alerte,I,number,≥ 0,même unité force,A→SP,*,_,Dyn,Etat,oui,$I:FS:*:alerte:95#,Valeur force au dépassement seuil.,,,,,,,,,,,,,,,,
+A,FS,cal,I,enum,OK,_,A→SP,*,_,Ini,ACK,_,$I:FS:*:cal:OK#,_,,,,,,,,,,,,,,,,
+P,FS,cal,V,number,≠ 0,×1000,SP→A,*,_,Ini,Config,oui,$V:FS:*:cal:950#,Facteur calibration ×1000 (950=0.950). 0 interdit.,,,,,,,,,,,,,,,,
+A,FS,force,F,number,plage calibration,_,A→SP,*,_,Dyn,Etat,oui,$F:FS:*:force:320#,Force normalisée. Périodique et réponse à read.,,,,,,,,,,,,,,,,
+A,FS,freq,I,enum,OK,_,A→SP,*,_,Ini,ACK,_,$I:FS:*:freq:OK#,_,,,,,,,,,,,,,,,,
+P,FS,freq,V,number,≥ 0,ms,SP→A,*,_,Ini,Config,oui,$V:FS:*:freq:200#,Fréquence publication ms. 0=désactive.,,,,,,,,,,,,,,,,
+A,FS,raw,F,number,plage HX711,_,A→SP,*,_,Dyn,Etat,_,$F:FS:*:raw:1245600#,Valeur brute HX711.,,,,,,,,,,,,,,,,
+P,FS,read,V,enum,force|raw,_,SP→A,*,_,Dyn,Event,oui,$V:FS:*:read:force#,Lecture immédiate force ou raw.,,,,,,,,,,,,,,,,
+A,FS,status,I,enum,alerte|actif,_,A→SP,*,_,Dyn,Etat,oui,$I:FS:*:status:alerte#,État du module FS.,,,,,,,,,,,,,,,,
+A,FS,tare,I,enum,OK,_,A→SP,*,_,Dyn,ACK,_,$I:FS:*:tare:OK#,_,,,,,,,,,,,,,,,,
+P,FS,tare,V,enum,1,_,SP→A,*,_,Dyn,Event,oui,$V:FS:*:tare:1#,Remise à zéro capteur.,,,,,,,,,,,,,,,,
+A,FS,thd,I,enum,OK,_,A→SP,*,_,Ini,ACK,_,$I:FS:*:thd:OK#,_,,,,,,,,,,,,,,,,
+P,FS,thd,V,number,≥ 0,même unité force,SP→A,*,_,Ini,Config,oui,$V:FS:*:thd:80#,Seuil déclenchement alerte.,,,,,,,,,,,,,,,,
+A,Lring,act,I,boolean,0|1,_,A→SP,*|0–11,_,Ini,ACK,_,$I:Lring:*:act:1#,_,,,,,,,,,,,,,,,,
+P,Lring,act,V,boolean,0|1,_,SP→A,*|0–11,_,Ini,Config,oui,$V:Lring:*:act:1#,_,,,,,,,,,,,,,,,,
+A,Lring,clr,I,enum,OK,_,A→SP,*|0–11,_,Dyn,ACK,_,$I:Lring:*:clr:OK#,_,,,,,,,,,,,,,,,,
+P,Lring,clr,V,enum,1,_,SP→A,*|0–11,_,Dyn,Event,oui,$V:Lring:*:clr:1#,Éteint l'anneau.,,,,,,,,,,,,,,,,
+A,Lring,expr,I,string,nom expression,_,A→SP,*,_,Dyn,ACK,_,$I:Lring:*:expr:smile#,_,,,,,,,,,,,,,,,,
+P,Lring,expr,V,string,smile|angry|neutral|...,_,SP→A,*,_,Dyn,Event,oui,$V:Lring:*:expr:smile#,Expression prédéfinie.,,,,,,,,,,,,,,,,
+A,Lring,init,I,enum,OK,_,A→SP,*,_,Dyn,ACK,_,$I:Lring:*:init:OK#,_,,,,,,,,,,,,,,,,
+P,Lring,init,V,enum,1,_,SP→A,*,_,Dyn,Event,_,$V:Lring:*:init:1#,Réinitialise l'anneau LED.,,,,,,,,,,,,,,,,
+A,Lring,int,I,number,0–255,ADC,A→SP,*|0–11,_,Ini,ACK,_,$I:Lring:*:int:128#,_,,,,,,,,,,,,,,,,
+P,Lring,int,V,number,0–255,ADC,SP→A,*|0–11,_,Ini,Config,oui,$V:Lring:*:int:128#,Intensité globale.,,,,,,,,,,,,,,,,
+A,Lring,mode,I,enum,expr|extern,_,A→SP,*,_,Dyn,ACK,_,$I:Lring:*:mode:extern#,_,,,,,,,,,,,,,,,,
+P,Lring,mode,V,enum,expr|extern,_,SP→A,*,_,Dyn,Config,oui,$V:Lring:*:mode:extern#,'expr'=interne firmware, 'extern'=contrôle SP direct.,,,,,,,,,,,,,,,
+A,Lring,rgb,I,string,"""R,G,B""",ADC 0–255,A→SP,*|0–11,_,Dyn,ACK,_,$I:Lring:3:rgb:255,0,0#,_,,,,,,,,,,,,,,
+P,Lring,rgb,V,string,"""R,G,B""",ADC 0–255,SP→A,*|0–11,_,Dyn,Config,oui,$V:Lring:3:rgb:255,0,0#,_,,,,,,,,,,,,,,
+A,Lring,urg,I,string,état urgence,_,A→SP,*,_,Dyn,Etat,_,$I:Lring:*:urg:active_loop_slow#,Notification visuelle urgence via lring_emergencyTrigger().,,,,,,,,,,,,,,,,
+A,Lrub,act,I,boolean,0|1,_,A→SP,*,_,Ini,ACK,_,$I:Lrub:*:act:1#,_,,,,,,,,,,,,,,,,
+P,Lrub,act,V,boolean,0|1,_,SP→A,*,_,Ini,Config,oui,$V:Lrub:*:act:1#,_,,,,,,,,,,,,,,,,
+A,Lrub,col,I,string,"""R,G,B""",ADC 0–255,A→SP,*|0–N,_,Dyn,ACK,_,$I:Lrub:*:col:255,128,0#,_,,,,,,,,,,,,,,
+P,Lrub,col,V,string,"""R,G,B""",ADC 0–255,SP→A,*|0–N,_,Dyn,Config,oui,$V:Lrub:*:col:255,128,0#,_,,,,,,,,,,,,,,
+A,Lrub,effetFuite,I,boolean,0|1,_,A→SP,*,_,Dyn,ACK,_,$I:Lrub:*:effetFuite:1#,_,,,,,,,,,,,,,,,,
+P,Lrub,effetFuite,V,boolean,0|1,_,SP→A,*,_,Dyn,Event,oui,$V:Lrub:*:effetFuite:1#,Effet visuel fuite alternance pairs/impairs.,,,,,,,,,,,,,,,,
+A,Lrub,init,I,enum,OK,_,A→SP,*,_,Dyn,ACK,_,$I:Lrub:*:init:OK#,_,,,,,,,,,,,,,,,,
+P,Lrub,init,V,enum,1,_,SP→A,*,_,Dyn,Event,_,$V:Lrub:*:init:1#,_,,,,,,,,,,,,,,,,
+A,Lrub,lumin,I,number,0–255,ADC,A→SP,*,_,Ini,ACK,_,$I:Lrub:*:lumin:128#,_,,,,,,,,,,,,,,,,
+P,Lrub,lumin,V,number,0–255,ADC,SP→A,*,_,Ini,Config,oui,$V:Lrub:*:lumin:128#,Intensité ruban.,,,,,,,,,,,,,,,,
+A,Lrub,timeout,I,string,durée ms ou annulé,ms,A→SP,*,_,Dyn,ACK,_,$I:Lrub:*:timeout:5000#,_,,,,,,,,,,,,,,,,
+P,Lrub,timeout,V,number,≥ 0,ms,SP→A,*,_,Dyn,Config,oui,$V:Lrub:*:timeout:5000#,Extinction auto. 0=annule timeout sans éteindre.,,,,,,,,,,,,,,,,
+A,Ctrl_L,act,I,enum,OK|OFF,_,A→SP,*,_,Ini,ACK,_,$I:Ctrl_L:*:act:OK#,_,,,,,,,,,,,,,,,,
+P,Ctrl_L,act,V,boolean,0|1,_,SP→A,*,_,Ini,Config,oui,$V:Ctrl_L:*:act:1#,Active/désactive contrôle laisse. Aussi activé par CfgS:typePtge=3|4.,,,,,,,,,,,,,,,,
+A,Ctrl_L,dead,I,enum,OK,_,A→SP,*,_,Ini,ACK,_,$I:Ctrl_L:*:dead:OK#,_,,,,,,,,,,,,,,,,
+P,Ctrl_L,dead,V,number,≥ 0,mm,SP→A,*,_,Ini,Config,oui,$V:Ctrl_L:*:dead:100#,Zone morte mm. Pas de correction si delta < dead.,,,,,,,,,,,,,,,,
+A,Ctrl_L,dist,I,enum,OK,_,A→SP,*,_,Ini,ACK,_,$I:Ctrl_L:*:dist:OK#,_,,,,,,,,,,,,,,,,
+P,Ctrl_L,dist,V,number,≥ 0,mm,SP→A,*,_,Ini,Config,oui,$V:Ctrl_L:*:dist:500#,Distance cible mm.,,,,,,,,,,,,,,,,
+A,Ctrl_L,status,I,enum,OK|OFF|FceKO|VtKO,_,A→SP,*,_,Dyn,Etat,oui,$I:Ctrl_L:*:status:OK#,État laisse. Anti-spam : publié seulement si changement.,,,,,,,,,,,,,,,,
+P,Ctrl_L,status,V,enum,1,_,SP→A,*,_,Dyn,Event,_,$V:Ctrl_L:*:status:1#,Demande état courant.,,,,,,,,,,,,,,,,
+A,Ctrl_L,vmax,I,enum,OK,_,A→SP,*,_,Ini,ACK,_,$I:Ctrl_L:*:vmax:OK#,_,,,,,,,,,,,,,,,,
+P,Ctrl_L,vmax,V,number,≥ 0,_,SP→A,*,_,Ini,Config,oui,$V:Ctrl_L:*:vmax:50#,Vitesse longitudinale max correction laisse.,,,,,,,,,,,,,,,,

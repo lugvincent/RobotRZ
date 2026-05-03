@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Architecture Node-RED SP — RobotRZ</title>
+<style>
+:root{--bg:#0d1117;--bg2:#161b22;--bg3:#21262d;--text:#e6edf3;--text2:#8b949e;--text3:#484f58;--green:#3fb950;--orange:#d29922;--blue:#58a6ff;--purple:#bc8cff;--red:#f85149;--border:rgba(240,246,252,0.1)}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;font-size:14px;line-height:1.7;padding:32px 16px 80px}
+.page{max-width:900px;margin:0 auto}
+h1{font-size:24px;font-weight:600;border-bottom:1px solid var(--border);padding-bottom:16px;margin-bottom:8px}
+h2{font-size:16px;font-weight:600;color:var(--blue);margin:28px 0 12px;display:flex;align-items:center;gap:8px}
+h2::before{content:'';display:inline-block;width:4px;height:16px;background:var(--blue);border-radius:2px}
+.sub{color:var(--text2);font-size:13px;margin-bottom:28px}
+.sec{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:20px 24px;margin-bottom:18px}
+code{font-family:'Courier New',monospace;font-size:12px;background:var(--bg3);color:var(--orange);padding:2px 6px;border-radius:4px}
+pre{font-family:'Courier New',monospace;font-size:12px;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:14px 16px;margin:10px 0;overflow-x:auto;line-height:1.6;color:#c9d1d9;white-space:pre-wrap}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:10px 0}
+.card{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:14px}
+.card-title{font-size:11px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px}
+table{width:100%;border-collapse:collapse;font-size:12.5px;margin:10px 0}
+th{background:var(--bg3);color:var(--text2);font-weight:600;padding:8px 12px;text-align:left;border-bottom:1px solid var(--border)}
+td{padding:7px 12px;border-bottom:1px solid var(--border);color:var(--text2)}
+tr:last-child td{border-bottom:none}
+.al{border-radius:8px;padding:10px 14px;font-size:13px;margin:10px 0;display:flex;gap:8px;align-items:flex-start}
+.al-warn{background:rgba(210,153,34,.08);border:1px solid rgba(210,153,34,.25);color:var(--orange)}
+.al-ok{background:rgba(63,185,80,.08);border:1px solid rgba(63,185,80,.25);color:var(--green)}
+p{margin:6px 0;color:var(--text2);font-size:13px}
+ul{padding-left:18px;margin:6px 0}
+ul li{font-size:13px;color:var(--text2);margin:3px 0}
+strong{color:var(--text)}
+hr{border:none;border-top:1px solid var(--border);margin:28px 0}
+.flow{display:flex;align-items:center;flex-wrap:wrap;gap:6px;margin:12px 0;padding:14px;background:var(--bg3);border-radius:8px}
+.fb{padding:4px 10px;border-radius:6px;font-size:12px;font-weight:500;border:1px solid var(--border)}
+.fb-blue{border-color:var(--blue);color:var(--blue);background:rgba(88,166,255,.08)}
+.fb-green{border-color:var(--green);color:var(--green);background:rgba(63,185,80,.08)}
+.fb-purple{border-color:var(--purple);color:var(--purple);background:rgba(188,140,255,.08)}
+.fa{color:var(--text3);font-size:14px}
+.badge{display:inline-block;padding:2px 10px;border-radius:20px;font-size:11px;font-weight:600;margin-left:6px;vertical-align:middle}
+.b-ok{background:rgba(63,185,80,.15);color:var(--green);border:1px solid rgba(63,185,80,.3)}
+.b-wip{background:rgba(210,153,34,.15);color:var(--orange);border:1px solid rgba(210,153,34,.3)}
+@media(max-width:600px){.g2{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="page">
+<h1>Architecture Node-RED SP — RobotRZ</h1>
+<p class="sub">État des flux, onglets, links et broker — Version 2026-04-28</p>
+
+<h2>1. Configuration broker MQTT</h2>
+<div class="sec">
+<table>
+<tr><th>Paramètre</th><th>Valeur</th></tr>
+<tr><td>ID broker Node-RED</td><td><code>ad09248d7131b4e0</code></td></tr>
+<tr><td>Adresse</td><td>192.168.1.40:1883</td></tr>
+<tr><td>Authentification</td><td>credentials dans broker Node-RED (pas dans flows.json)</td></tr>
+<tr><td>Topics entrants</td><td><code>SE/statut</code>, <code>SE/arduino/data</code></td></tr>
+<tr><td>Topics sortants</td><td><code>SE/commande</code>, <code>SE/arduino</code></td></tr>
+</table>
+</div>
+
+<h2>2. Onglets (Tabs) — État</h2>
+<div class="sec">
+<table>
+<tr><th>Onglet</th><th>Rôle</th><th>État</th></tr>
+<tr><td><code>Gtion_Init</code></td><td>Initialisation système — charge enrichedVars, détecte réseau</td><td><span class="badge b-wip">Partiel</span></td></tr>
+<tr><td><code>ui_Accueil_v3</code></td><td>Interface utilisateur principale</td><td><span class="badge b-wip">Liens manquants</span></td></tr>
+<tr><td><code>RZ_GestionFlux_V3</code></td><td>Bus VPIV — parsing, routage CAT, encodeur hardware</td><td><span class="badge b-ok">✅</span></td></tr>
+<tr><td><code>Gtion_EtatGlobal_V1</code></td><td>Règles métier — décisions modeRZ</td><td><span class="badge b-ok">✅ branché</span></td></tr>
+<tr><td><code>ef2b489e — ui_VarG</code></td><td>Éditeur variables enrichedVars (Table C)</td><td><span class="badge b-ok">✅</span></td></tr>
+<tr><td><code>B2_Variables_Complexes</code></td><td>Variables complexes</td><td><span class="badge b-wip">En cours</span></td></tr>
+<tr><td><code>Test-MQTT</code></td><td>Tests MQTT manuels</td><td><span class="badge b-ok">✅</span></td></tr>
+<tr><td><code>Diag_SE_Statut</code></td><td>Diagnostic SE — Sys, Gyro, Mag</td><td><span class="badge b-ok">✅ v3.0</span></td></tr>
+</table>
+</div>
+
+<h2>3. Flux principal — RZ_GestionFlux_V3</h2>
+<div class="sec">
+<div class="flow">
+<div class="fb fb-green">MQTT IN SE/statut</div>
+<div class="fa">→</div>
+<div class="fb fb-blue">parseVPIV + routage CAT</div>
+<div class="fa">F↓ I/E/V/A→</div>
+<div class="fb fb-purple">Contexte global RZ_&lt;VAR&gt;</div>
+</div>
+<div class="flow">
+<div class="fb fb-blue">parseVPIV</div>
+<div class="fa">→ CAT=I/E/V/A →</div>
+<div class="fb fb-green">Link EVT_RAW_IN</div>
+<div class="fa">→</div>
+<div class="fb fb-purple">Gtion_EtatGlobal</div>
+<div class="fa">→</div>
+<div class="fb fb-green">Link CMD_FROM_BRAIN</div>
+<div class="fa">→</div>
+<div class="fb fb-blue">Encodeur VPIV</div>
+<div class="fa">→</div>
+<div class="fb fb-green">MQTT OUT SE/commande</div>
+</div>
+<div class="g2">
+<div class="card">
+<div class="card-title">Nœuds clés</div>
+<ul>
+<li><code>fn_parse_vpiv_v3</code> — parser VPIV + contexte global</li>
+<li><code>fn_encoder_router_v3</code> — encodeur + routage SE/Arduino</li>
+<li><code>link_out_evt_raw_v3</code> → EVT_RAW_IN Gtion</li>
+<li><code>link_in_cmd_brain_v3</code> ← ETAGLOBAL_OUT</li>
+</ul>
+</div>
+<div class="card">
+<div class="card-title">Variables SE routées</div>
+<ul>
+<li>CfgS, Sys, Gyro, Mag, CamSE</li>
+<li>TorchSE, MicroSE, STT, Voice</li>
+<li>Appli, Urg, COM → SE/commande</li>
+<li>Mtr, Odom, US, Lring... → SE/arduino</li>
+</ul>
+</div>
+</div>
+<div class="al al-warn"><span>⚠️</span><span>Filtre CAT obligatoire dans l'encodeur : seuls V et A sont routés vers le hardware. Sans ce filtre, les ACK I/E créent une boucle de rétroaction.</span></div>
+</div>
+
+<h2>4. Links inter-flux</h2>
+<div class="sec">
+<table>
+<tr><th>Link OUT</th><th>Depuis</th><th>Link IN</th><th>Vers</th></tr>
+<tr><td><code>link_out_evt_raw_v3</code></td><td>RZ_GestionFlux_V3</td><td><code>EVT_RAW_IN (df8ba8c4)</code></td><td>Gtion_EtatGlobal_V1</td></tr>
+<tr><td><code>lo_evt_init_ok</code></td><td>Gtion_Init</td><td><code>EVT_RAW_IN (df8ba8c4)</code></td><td>Gtion_EtatGlobal_V1</td></tr>
+<tr><td><code>ETAGLOBAL_OUT (e7ddcd86)</code></td><td>Gtion_EtatGlobal_V1</td><td><code>link_in_cmd_brain_v3</code></td><td>RZ_GestionFlux_V3</td></tr>
+<tr><td><code>ETAGLOBAL_OUT (e7ddcd86)</code></td><td>Gtion_EtatGlobal_V1</td><td><code>UI_Map_StateLevel</code></td><td>ui_Accueil_v3</td></tr>
+</table>
+</div>
+
+<h2>5. Contexte global Node-RED</h2>
+<div class="sec">
+<p>RZ_GestionFlux_V3 alimente automatiquement le contexte global Node-RED à chaque trame reçue :</p>
+<pre>// Accès depuis n'importe quel flux Node-RED
+const sys  = global.get('RZ_Sys');   // { dataContCpu: { SE: 42, _last: 42 }, ... }
+const gyro = global.get('RZ_Gyro');  // { dataContGyro: { '*': [120,-45,300], ... } }
+const cfgs = global.get('RZ_CfgS');  // { modeRZ: { '*': 2 }, ... }</pre>
+<div class="al al-ok"><span>✅</span><span>La clé <code>_last</code> permet d'accéder rapidement à la dernière valeur sans connaître l'instance : <code>global.get('RZ_Sys').dataContCpu._last</code></span></div>
+</div>
+
+<h2>6. Dashboard</h2>
+<div class="sec">
+<table>
+<tr><th>Page</th><th>Path</th><th>Contenu</th></tr>
+<tr><td>Test</td><td>/dashboard/test</td><td>Tests MQTT manuels</td></tr>
+<tr><td>Diag-SE</td><td>/dashboard/diag-se</td><td>Sys + Gyro + Mag temps réel</td></tr>
+<tr><td>Accueil</td><td>/dashboard/</td><td>Interface principale (en cours)</td></tr>
+</table>
+<p>UI Base : <code>fd4a29193b12ad84</code> — path <code>/dashboard</code></p>
+<p>Thème : <code>9360ec42f78669ac</code> — Default Theme (couleur primaire #0094CE)</p>
+</div>
+
+<h2>7. Sécurité Node-RED</h2>
+<div class="sec">
+<div class="al al-ok"><span>✅</span><span>adminAuth activé depuis le 28 avril 2026. Accès protégé par login/mot de passe.</span></div>
+<pre># Régénérer un hash de mot de passe si nécessaire
+node-red admin hash-pw
+
+# Emplacement settings.js
+/home/rzServeur/.node-red/settings.js</pre>
+</div>
+
+<hr>
+<p style="text-align:center;color:var(--text3);font-size:12px;margin-top:24px">Projet RobotRZ — Architecture Node-RED SP — Version 2026-04-28 — Vincent Philippe</p>
+</div>
+</body>
+</html>

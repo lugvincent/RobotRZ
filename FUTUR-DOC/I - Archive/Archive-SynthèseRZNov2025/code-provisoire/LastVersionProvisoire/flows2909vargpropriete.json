@@ -1,0 +1,347 @@
+[
+    {
+        "id": "e8232be1196609a3",
+        "type": "debug",
+        "z": "61d8f8019f224437",
+        "d": true,
+        "name": "debug 6",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 920,
+        "y": 980,
+        "wires": []
+    },
+    {
+        "id": "108a7fc9ee16265d",
+        "type": "inject",
+        "z": "61d8f8019f224437",
+        "name": "Init demo enrichedVars once",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.5,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 160,
+        "y": 1000,
+        "wires": [
+            [
+                "1ba233d554d61cd1"
+            ]
+        ]
+    },
+    {
+        "id": "1ba233d554d61cd1",
+        "type": "function",
+        "z": "61d8f8019f224437",
+        "name": "Init DemoVar + set varSelected",
+        "func": "// Initialise une variable DemoVar pour tests (scope file)\n// Définit aussi flow.varSelected = 'DemoVar'\nlet enriched = global.get('enrichedVars','file') || {};\nif (!enriched.DemoVar) {\n    enriched.DemoVar = {\n        nomVarG: 'DemoVar',\n        abbrVarG: 'DVar',\n        descriptionVarG: 'Variable de démonstration',\n        dateUpdateVarG: new Date().toISOString(),\n        instances: ['*','inst1','inst2'],\n        proprietes: [\n            { nomP:'nom', abbrP:'nm', typeP:'string', schema:null, valeurs:{'*':'Inconnu','inst1':'Alice','inst2':'Bob'} },\n            { nomP:'age', abbrP:'ag', typeP:'number', schema:null, valeurs:{'*':0,'inst1':30,'inst2':25} },\n            { nomP:'actif', abbrP:'act', typeP:'boolean', schema:null, valeurs:{'*':true,'inst1':false,'inst2':true} },\n            { nomP:'config', abbrP:'cfg', typeP:'object', schema:[{nomSsP:'couleur',typeSsP:'string'},{nomSsP:'intensite',typeSsP:'number'},{nomSsP:'active',typeSsP:'boolean'}], valeurs:{'*':{couleur:'red',intensite:50,active:true},'inst1':{couleur:'blue',intensite:80,active:false},'inst2':{couleur:'green',intensite:20,active:false}} }\n        ]\n    };\n    global.set('enrichedVars', enriched, 'file');\n}\nflow.set('varSelected','DemoVar');\n// reset selected property state\nflow.set('propSelected', null);\nmsg.topic = 'newVarSelected';\nmsg.info = 'DemoVar initialisé (si absent) et sélectionné.';\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 210,
+        "y": 1060,
+        "wires": [
+            [
+                "cf229462b91b7b51"
+            ]
+        ]
+    },
+    {
+        "id": "cf229462b91b7b51",
+        "type": "function",
+        "z": "61d8f8019f224437",
+        "name": "prepareTableauProprietes",
+        "func": "// Prépare l'objet envoyé au template principal (tableau)\n// - si msg.topic indique une nouvelle sélection de variable, on reset flow.propSelected\n// - construit msg.payload.proprietes (liste) et msg.payload.instances (sans '*')\n\nlet varSelected = flow.get('varSelected') || null;\nlet propSelected = flow.get('propSelected') || null;\nlet enriched = global.get('enrichedVars','file') || {};\nlet variable = enriched[varSelected] || {};\n\n// Reset selected property when explicitly asked (ex: newVarSelected / selectVariable / refresh)\nif (msg.topic === 'newVarSelected' || msg.topic === 'selectVariable' || msg.topic === 'refresh') {\n    flow.set('propSelected', null);\n    propSelected = null;\n}\n\nlet proprietes = (variable.proprietes || []).map(p => ({\n    nomP: p.nomP,\n    abbrP: p.abbrP,\n    typeP: p.typeP,\n    schema: p.schema || null,\n    valeurs: p.valeurs || {},\n    defaut: (p.valeurs && p.valeurs['*'] !== undefined) ? p.valeurs['*'] : null,\n    _locked: p._locked || false\n}));\n\n// Add a transient 'NouvelleP' placeholder row (not persisted)\nproprietes.push({ nomP: 'NouvelleP', abbrP: 'New', typeP: null, schema: null, valeurs: {'*':null}, defaut: null, _isNew: true });\n\nlet instances = (variable.instances || []).filter(i => i !== '*'); // don't display '*' as a column\n\nmsg.payload = { proprietes: proprietes, instances: instances, variable: { nomVarG: variable.nomVarG || '' } };\nmsg.info = propSelected ? `Propriété sélectionnée : ${propSelected}` : 'Aucune propriété sélectionnée';\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 470,
+        "y": 1260,
+        "wires": [
+            [
+                "581c3e8c835dd07f",
+                "80b5fac4ff99274d"
+            ]
+        ]
+    },
+    {
+        "id": "581c3e8c835dd07f",
+        "type": "ui-template",
+        "z": "61d8f8019f224437",
+        "group": "grp1",
+        "page": "",
+        "ui": "",
+        "name": "Tableau Propriétés (template Vue3)",
+        "order": 1,
+        "width": "6",
+        "height": "auto",
+        "format": "<template>\n  <div>\n    <h3 style=\"margin:6px 0\">Propriétés — {{ msg.payload.variable.nomVarG || '' }}</h3>\n\n    <table style=\"width:100%;border-collapse:collapse;border:1px solid #ccc;\">\n      <thead>\n        <tr style=\"background:#f8f9fa\">\n          <th style=\"border:1px solid #ccc;padding:6px\">Nom</th>\n          <th style=\"border:1px solid #ccc;padding:6px\">Action</th>\n          <th style=\"border:1px solid #ccc;padding:6px\">Type</th>\n          <th style=\"border:1px solid #ccc;padding:6px\">Défaut (*)</th>\n          <th v-for=\"inst in msg.payload.instances\" :key=\"inst\" style=\"border:1px solid #ccc;padding:6px\">{{inst}}</th>\n        </tr>\n      </thead>\n      <tbody>\n        <tr v-for=\"(p, idx) in msg.payload.proprietes\" :key=\"idx\" :style=\"p._isNew ? 'background:#fff8e1' : ''\">\n          <td style=\"border:1px solid #ccc;padding:6px\">{{p.nomP}}</td>\n\n          <!-- Actions : column just after Name -->\n          <td style=\"border:1px solid #ccc;padding:6px;white-space:nowrap;text-align:center\">\n            <button class=\"icon-btn\" title=\"Définir\" v-if=\"p._isNew\" @click=\"openBase(p)\">➕ Définir</button>\n            <template v-else>\n              <button class=\"icon-btn\" title=\"Modifier valeurs\" @click=\"openValues(p)\">💾 Valeurs</button>\n              <button class=\"icon-btn delete\" title=\"Supprimer\" @click=\"askDelete(p)\">🗑</button>\n            </template>\n          </td>\n\n          <td style=\"border:1px solid #ccc;padding:6px\">{{ p.typeP || '-' }}</td>\n          <td style=\"border:1px solid #ccc;padding:6px\">{{ formatVal(p.defaut) }}</td>\n\n          <td v-for=\"inst in msg.payload.instances\" :key=\"inst\" style=\"border:1px solid #ccc;padding:6px\">{{ formatVal(p.valeurs && p.valeurs[inst]) }}</td>\n        </tr>\n      </tbody>\n    </table>\n\n    <div style=\"margin-top:8px;color:#333;font-size:0.95em\">{{ msg.info }}</div>\n  </div>\n</template>\n\n<script>\nexport default {\n  methods: {\n    formatVal(v){ if (v===null||v===undefined) return 'null'; if (typeof v === 'object') return JSON.stringify(v); return v; },\n    openBase(prop){ this.send({ action:'base', prop: prop }); },\n    openValues(prop){ this.send({ action:'valeurs', prop: prop }); },\n    askDelete(prop){ if (confirm('Confirmer suppression de \"'+prop.nomP+'\" ?')) this.send({ action:'delete', prop: prop }); }\n  }\n}\n</script>\n\n<style>\n.icon-btn{ border:0;background:#eef2f6;border-radius:6px;padding:6px;margin:2px;cursor:pointer }\n.icon-btn.delete{ color:#b30000 }\n</style>\n",
+        "storeOutMessages": true,
+        "passthru": true,
+        "resendOnRefresh": true,
+        "templateScope": "local",
+        "className": "",
+        "x": 800,
+        "y": 1260,
+        "wires": [
+            [
+                "cf26b1b8599bccb1"
+            ]
+        ],
+        "info": "Template principal (Vue3) — affiche les propriétés et leurs instances.\n- Colonne ACTION placée immédiatement après le nom.\n- Bouton Définir pour la ligne NouvelleP; Valeurs + Supprimer pour propriétés existantes.\n- Envoie {action:'base'|'valeurs'|'delete', prop} au router."
+    },
+    {
+        "id": "cf26b1b8599bccb1",
+        "type": "function",
+        "z": "61d8f8019f224437",
+        "name": "routerAction (set flow.propSelected + dispatch)",
+        "func": "// Route les actions venant du tableau\n// - met à jour flow.propSelected\n// - envoie seulement la propriété et les instances nécessaires aux éditeurs\n\nlet action = msg.action;\nlet prop = msg.prop || {};\nlet varSelected = flow.get('varSelected');\nlet enriched = global.get('enrichedVars','file') || {};\nlet variable = enriched[varSelected] || {};\nlet instances = (variable.instances || []).filter(i => i !== '*'); // instances visibles (sans '*')\n\nif (action) {\n    // set selected property for continuity\n    flow.set('propSelected', prop && prop.nomP ? prop.nomP : null);\n}\n\nif (action === 'base') {\n    // Forward to base editor (for define). include originalName if editing existing\n    let out = { topic: 'openEditor', editor: 'base', prop: prop, instances: instances, originalName: prop && prop._isNew ? null : (prop && prop.nomP ? prop.nomP : null) };\n    return [out, null, null];\n}\nelse if (action === 'valeurs') {\n    // forward minimal payload to values editor\n    let out = { topic: 'openEditor', editor: 'valeurs', prop: prop, instances: instances, originalName: prop && prop.nomP ? prop.nomP : null };\n    return [null, out, null];\n}\nelse if (action === 'delete') {\n    // forward to delete handler\n    let out = { topic: 'delete', prop: prop };\n    return [null, null, out];\n}\nreturn null;",
+        "outputs": 3,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1180,
+        "y": 1260,
+        "wires": [
+            [
+                "9bf886ddcab30a14"
+            ],
+            [
+                "00bdfa8cb1647f81"
+            ],
+            [
+                "78f63a4170811417"
+            ]
+        ],
+        "info": "Router des actions provenant du template principal.\n- Met flow.propSelected = prop.nomP.\n- Envoie un message minimal (prop + instances) uniquement à l'éditeur correspondant (pas la variable globale entière) pour éviter les boucles."
+    },
+    {
+        "id": "9bf886ddcab30a14",
+        "type": "ui-template",
+        "z": "61d8f8019f224437",
+        "group": "grp1",
+        "page": "",
+        "ui": "",
+        "name": "Éditeur Base (inclut Schéma pour object/array)",
+        "order": 2,
+        "width": "6",
+        "height": "auto",
+        "format": "<template>\n  <div v-if=\"msg && msg.topic==='openEditor' && (msg.editor==='base')\" style=\"border:1px solid #ddd;padding:10px;background:#fff;margin-top:12px\">\n    <h4>✏️ Définir / Base {{ originalName ? '(édition)' : '(nouvelle propriété)' }}</h4>\n\n    <table style=\"width:100%;border-collapse:collapse;border:1px solid #ccc;\">\n      <tr><td style=\"border:1px solid #ccc;padding:6px;width:160px\">Nom</td><td style=\"border:1px solid #ccc;padding:6px\"><input v-model=\"local.nomP\" /></td></tr>\n      <tr><td style=\"border:1px solid #ccc;padding:6px\">Abréviation</td><td style=\"border:1px solid #ccc;padding:6px\"><input v-model=\"local.abbrP\" /></td></tr>\n      <tr><td style=\"border:1px solid #ccc;padding:6px\">Type</td><td style=\"border:1px solid #ccc;padding:6px\">\n        <select v-model=\"local.typeP\">\n          <option value=\"string\">string</option>\n          <option value=\"number\">number</option>\n          <option value=\"boolean\">boolean</option>\n          <option value=\"array\">array</option>\n          <option value=\"object\">object</option>\n        </select>\n      </td></tr>\n    </table>\n\n    <!-- Schéma inline : affiché si type object|array OR if incoming prop already has schema (editing existing object) -->\n    <div v-if=\"showSchemaEditor\" style=\"margin-top:10px;border:1px solid #ccc;padding:8px\">\n      <h5>📑 Schéma (sous-propriétés)</h5>\n      <table style=\"width:100%;border-collapse:collapse;border:1px solid #eee;margin-top:6px\">\n        <thead><tr><th style=\"border:1px solid #ccc;padding:6px\">nomSsP</th><th style=\"border:1px solid #ccc;padding:6px\">typeSsP</th><th style=\"border:1px solid #ccc;padding:6px\">Action</th></tr></thead>\n        <tbody>\n          <tr v-for=\"(sp,i) in local.schemaArr\" :key=\"i\">\n            <td style=\"border:1px solid #ccc;padding:6px\"><input v-model=\"sp.nomSsP\" /></td>\n            <td style=\"border:1px solid #ccc;padding:6px\">\n              <select v-model=\"sp.typeSsP\"><option>string</option><option>number</option><option>boolean</option></select>\n            </td>\n            <td style=\"border:1px solid #ccc;padding:6px;text-align:center\"><button @click=\"removeSchema(i)\">🗑</button></td>\n          </tr>\n        </tbody>\n      </table>\n      <div style=\"margin-top:8px\"><button @click=\"addSchema\">➕ Ajouter sous-propriété</button></div>\n    </div>\n\n    <div style=\"margin-top:10px\">\n      <button :disabled=\"!canSave\" @click=\"onSave\">💾 Enregistrer</button>\n      <button @click=\"onCancel\">↩ Annuler</button>\n    </div>\n\n    <div style=\"margin-top:8px;color:#b33\" v-if=\"lockedWarning\">⚠️ Cette propriété est verrouillée et ne peut pas être modifiée ici.</div>\n  </div>\n</template>\n\n<script>\nexport default {\n  data(){ return { local: null, schemaArr: [], originalName: null, lockedWarning:false }; },\n  computed: {\n    showSchemaEditor(){ return this.local && (this.local.typeP === 'object' || this.local.typeP === 'array'); },\n    canSave(){\n      if(!this.local || !this.local.nomP || !this.local.abbrP || !this.local.typeP) return false;\n      if(this.showSchemaEditor) return (this.local.schemaArr && this.local.schemaArr.length>0 && this.local.schemaArr.every(s=>s.nomSsP));\n      return true;\n    }\n  },\n  mounted(){\n    this.$watch('msg', (m)=>{\n      if(!m) return;\n      if(m.topic==='openEditor' && m.editor==='base'){\n        // init local copy once per opening (avoid resetting during edits)\n        this.originalName = m.originalName || null;\n        // if incoming prop exists (editing existing), clone it; otherwise create blank for new\n        let p = m.prop || {};\n        this.local = JSON.parse(JSON.stringify(p || { nomP:'', abbrP:'', typeP:null, schema:null }));\n        // transform schema into schemaArr for editing\n        this.local.schemaArr = Array.isArray(this.local.schema) ? JSON.parse(JSON.stringify(this.local.schema)) : [];\n        // locked: if prop exists and has _locked true, show warning and prevent changing of base (backend will also block)\n        this.lockedWarning = !!(p && p._locked);\n      }\n    }, { immediate:true });\n  },\n  methods: {\n    addSchema(){ if(!this.local.schemaArr) this.local.schemaArr = []; this.local.schemaArr.push({ nomSsP:'', typeSsP:'string' }); },\n    removeSchema(i){ this.local.schemaArr.splice(i,1); },\n    onSave(){\n      // prepare prop payload\n      let propOut = {\n        nomP: this.local.nomP,\n        abbrP: this.local.abbrP,\n        typeP: this.local.typeP\n      };\n      if(this.showSchemaEditor){\n        // attach schema\n        propOut.schema = this.local.schemaArr.map(s=>({ nomSsP: s.nomSsP, typeSsP: s.typeSsP }));\n        this.send({ topic:'saveBaseWithSchema', prop: propOut, originalName: this.originalName });\n      } else {\n        this.send({ topic:'saveBase', prop: propOut, originalName: this.originalName });\n      }\n    },\n    onCancel(){ this.send({ topic:'cancel' }); }\n  }\n}\n</script>\n\n<style>\n/* styles for inline editor */\n</style>\n",
+        "storeOutMessages": true,
+        "passthru": true,
+        "resendOnRefresh": true,
+        "templateScope": "local",
+        "className": "",
+        "x": 1480,
+        "y": 1140,
+        "wires": [
+            [
+                "c3e0ef8999c66f5d"
+            ]
+        ],
+        "info": "Éditeur Base (inclut la partie Schéma lorsque type = object|array).\n- Utilise une copie locale (this.local) pour éviter la perte lors d'updates.\n- Envoie topic 'saveBase' pour types simples, 'saveBaseWithSchema' pour object/array (avec schema dans prop.schema)."
+    },
+    {
+        "id": "00bdfa8cb1647f81",
+        "type": "ui-template",
+        "z": "61d8f8019f224437",
+        "group": "grp1",
+        "page": "",
+        "ui": "",
+        "name": "Éditeur Valeurs (instances)",
+        "order": 3,
+        "width": "6",
+        "height": "auto",
+        "format": "<template>\n  <div v-if=\"msg && msg.topic==='openEditor' && msg.editor==='valeurs'\" style=\"border:1px solid #ddd;padding:10px;background:#fff;margin-top:12px\">\n    <h4>💾 Valeurs pour : {{origName}}</h4>\n    <p style=\"font-size:12px;color:#666\">La valeur '*' (défaut) est éditable ici et s'appliquera aux nouvelles instances.</p>\n\n    <div style=\"border:1px solid #ccc;padding:8px;margin-top:8px\">\n      <strong>Défaut (*)</strong>\n      <div v-if=\"isComplex\">\n        <div v-if=\"schema && schema.length\">\n          <div v-for=\"(ssp,i) in schema\" :key=\"i\" style=\"margin-bottom:6px\">\n            <label>{{ssp.nomSsP}} ({{ssp.typeSsP}})</label>\n            <input v-if=\"ssp.typeSsP!=='boolean'\" v-model=\"local.valeurs['*'][ssp.nomSsP]\" style=\"width:100%\" />\n            <input v-else type=\"checkbox\" v-model=\"local.valeurs['*'][ssp.nomSsP]\" />\n          </div>\n        </div>\n        <div v-else>\n          <textarea v-model=\"localStr['*']\" rows=\"4\" style=\"width:100%\"></textarea>\n        </div>\n      </div>\n      <div v-else>\n        <input v-model=\"local.valeurs['*']\" style=\"width:100%\" />\n      </div>\n    </div>\n\n    <div style=\"margin-top:8px\">\n      <strong>Instances</strong>\n      <div v-for=\"inst in instances\" :key=\"inst\" style=\"margin-top:8px;border:1px solid #eee;padding:6px\">\n        <div><strong>{{inst}}</strong></div>\n        <div v-if=\"isComplex\">\n          <div v-if=\"schema && schema.length\">\n            <div v-for=\"(ssp,i) in schema\" :key=\"i\" style=\"margin-bottom:6px\">\n              <label>{{ssp.nomSsP}} ({{ssp.typeSsP}})</label>\n              <input v-if=\"ssp.typeSsP!=='boolean'\" v-model=\"local.valeurs[inst][ssp.nomSsP]\" style=\"width:100%\" />\n              <input v-else type=\"checkbox\" v-model=\"local.valeurs[inst][ssp.nomSsP]\" />\n            </div>\n          </div>\n          <div v-else>\n            <textarea v-model=\"localStr[inst]\" rows=\"3\" style=\"width:100%\"></textarea>\n          </div>\n        </div>\n        <div v-else>\n          <input v-model=\"local.valeurs[inst]\" style=\"width:100%\" />\n        </div>\n      </div>\n    </div>\n\n    <div style=\"margin-top:10px\">\n      <button @click=\"onSave\">💾 Enregistrer</button>\n      <button @click=\"onCancel\">↩ Annuler</button>\n    </div>\n  </div>\n</template>\n\n<script>\nexport default {\n  data(){ return { local:{ valeurs:{} }, localStr:{}, schema:[], isComplex:false, instances:[], origName:null } },\n  mounted(){\n    this.$watch('msg',(m)=>{\n      if(!m) return;\n      if(m.topic==='openEditor' && m.editor==='valeurs'){\n        this.origName = (m.originalName) || (m.prop && m.prop.nomP) || '';\n        this.schema = (m.prop && m.prop.schema) ? JSON.parse(JSON.stringify(m.prop.schema)) : [];\n        this.isComplex = (m.prop && (m.prop.typeP === 'object' || m.prop.typeP === 'array')) || false;\n        this.instances = (m.instances || []);\n        this.local = { valeurs: {} };\n        this.localStr = {};\n\n        if(this.isComplex && this.schema && this.schema.length){\n          // build object defaults for '*'\n          let def = {};\n          this.schema.forEach(s => def[s.nomSsP] = (m.prop && m.prop.valeurs && m.prop.valeurs['*'] && m.prop.valeurs['*'][s.nomSsP] !== undefined) ? m.prop.valeurs['*'][s.nomSsP] : null);\n          this.local.valeurs['*'] = JSON.parse(JSON.stringify(def));\n          this.instances.forEach(inst => {\n            let instVal = {};\n            this.schema.forEach(s => instVal[s.nomSsP] = (m.prop && m.prop.valeurs && m.prop.valeurs[inst] && m.prop.valeurs[inst][s.nomSsP] !== undefined) ? m.prop.valeurs[inst][s.nomSsP] : null);\n            this.local.valeurs[inst] = instVal;\n          });\n        }\n        else if(this.isComplex){\n          // complex but no schema: use JSON textareas\n          this.localStr['*'] = (m.prop && m.prop.valeurs && m.prop.valeurs['*']) ? JSON.stringify(m.prop.valeurs['*'],null,2) : '';\n          this.instances.forEach(inst => this.localStr[inst] = (m.prop && m.prop.valeurs && m.prop.valeurs[inst]) ? JSON.stringify(m.prop.valeurs[inst],null,2) : '');\n        }\n        else {\n          // simple types\n          this.local.valeurs['*'] = (m.prop && m.prop.valeurs && m.prop.valeurs['*'] !== undefined) ? m.prop.valeurs['*'] : null;\n          this.instances.forEach(inst => this.local.valeurs[inst] = (m.prop && m.prop.valeurs && m.prop.valeurs[inst] !== undefined) ? m.prop.valeurs[inst] : null);\n        }\n      }\n    }, { immediate:true });\n  },\n  methods:{\n    onSave(){\n      let valeurs = {};\n      if(this.isComplex && this.schema && this.schema.length){\n        valeurs['*'] = this.local.valeurs['*'];\n        this.instances.forEach(i => valeurs[i] = this.local.valeurs[i]);\n      }\n      else if(this.isComplex){\n        try{ valeurs['*'] = this.localStr['*'] ? JSON.parse(this.localStr['*']) : null; } catch(e){ alert('Erreur JSON pour *: '+e.message); return }\n        for(let i of this.instances){ try{ valeurs[i] = this.localStr[i] ? JSON.parse(this.localStr[i]) : null } catch(e){ alert('Erreur JSON pour '+i+': '+e.message); return } }\n      }\n      else {\n        valeurs['*'] = this.local.valeurs['*'];\n        this.instances.forEach(i => valeurs[i] = this.local.valeurs[i]);\n      }\n\n      this.send({ topic:'saveValues', prop:{ nomP: this.origName, valeurs: valeurs }, originalName: this.origName });\n    },\n    onCancel(){ this.send({ topic:'cancel' }); }\n  }\n}\n</script>\n",
+        "storeOutMessages": true,
+        "passthru": true,
+        "resendOnRefresh": true,
+        "templateScope": "local",
+        "className": "",
+        "x": 1560,
+        "y": 1180,
+        "wires": [
+            [
+                "c3e0ef8999c66f5d"
+            ]
+        ],
+        "info": "Éditeur valeurs (Vue3) :\n- affiche la valeur '*' (défaut) en premier puis toutes les instances.\n- si object+schema => génère un mini-formulaire par sous-propriété.\n- si array sans schema => textarea JSON pour robustesse."
+    },
+    {
+        "id": "c3e0ef8999c66f5d",
+        "type": "function",
+        "z": "61d8f8019f224437",
+        "name": "routerEditeurs (save / cancel)",
+        "func": "// Reçoit les messages de tpl_base et tpl_values\n// route selon msg.topic\n// outputs: [saveProperty, saveValues, refreshTable]\n\nif(!msg || !msg.topic) return null;\nif(msg.topic === 'saveBase' || msg.topic === 'saveBaseWithSchema'){\n    // forward to saveProperty\n    msg.saveKind = (msg.topic === 'saveBaseWithSchema') ? 'baseWithSchema' : 'base';\n    return [msg, null, null];\n}\nif(msg.topic === 'saveValues'){\n    return [null, msg, null];\n}\nif(msg.topic === 'cancel'){\n    // reset selected prop\n    flow.set('propSelected', null);\n    // request refresh\n    let out = { topic: 'refresh' };\n    return [null, null, out];\n}\nreturn null;",
+        "outputs": 3,
+        "x": 1920,
+        "y": 1160,
+        "wires": [
+            [
+                "4403a98fc4694037"
+            ],
+            [
+                "52162859e72107d1"
+            ],
+            [
+                "cf229462b91b7b51"
+            ]
+        ],
+        "info": "Route les messages sortant des éditeurs :\n- saveBase / saveBaseWithSchema -> save_property\n- saveValues -> save_values\n- cancel -> refresh prepareTableau"
+    },
+    {
+        "id": "4403a98fc4694037",
+        "type": "function",
+        "z": "61d8f8019f224437",
+        "name": "saveProperty (base + baseWithSchema)",
+        "func": "// Sauvegarde d'une propriété (base simple ou baseWithSchema)\n// gère création ou mise à jour, verrouillage après schema\n\nfunction defaultValForType(t){ if(t==='number') return 0; if(t==='boolean') return false; return ''; }\n\nlet varSelected = flow.get('varSelected');\nlet enriched = global.get('enrichedVars','file') || {};\nlet variable = enriched[varSelected] || { instances: ['*'] };\nlet prop = msg.prop || {};\nlet original = msg.originalName || null;\nlet saveKind = msg.saveKind || msg.topic;\n\n// Backup\nlet backups = global.get('enrichedVars_backups','file') || [];\nbackups.push({ ts: new Date().toISOString(), snapshot: JSON.parse(JSON.stringify(enriched)) });\nglobal.set('enrichedVars_backups', backups, 'file');\n\nlet idx = (variable.proprietes||[]).findIndex(p => p.nomP === original);\n\nif(saveKind === 'base'){\n    // simple type base (string/number/boolean)\n    if(idx >= 0){\n        // if locked -> refuse\n        if(variable.proprietes[idx]._locked){ msg.info = '⚠️ Propriété verrouillée — modification de base interdite.'; return { topic:'refresh', info: msg.info }; }\n        variable.proprietes[idx].nomP = prop.nomP || variable.proprietes[idx].nomP;\n        variable.proprietes[idx].abbrP = prop.abbrP || variable.proprietes[idx].abbrP;\n        variable.proprietes[idx].typeP = prop.typeP || variable.proprietes[idx].typeP;\n        variable.proprietes[idx].schema = null;\n    } else {\n        // create new property simple\n        let newp = { nomP: prop.nomP, abbrP: prop.abbrP||'', typeP: prop.typeP||'string', schema:null, valeurs:{} , _locked:false };\n        (variable.instances || ['*']).forEach(i => newp.valeurs[i] = null);\n        variable.proprietes = variable.proprietes || [];\n        variable.proprietes.push(newp);\n    }\n}\nelse if(saveKind === 'baseWithSchema'){\n    // object/array with schema -> set schema and LOCK definition\n    let schema = prop.schema || [];\n    if(idx >= 0){\n        if(variable.proprietes[idx]._locked){ msg.info = '⚠️ Propriété verrouillée — modification du schéma interdite.'; return { topic:'refresh', info: msg.info }; }\n        variable.proprietes[idx].nomP = prop.nomP || variable.proprietes[idx].nomP;\n        variable.proprietes[idx].abbrP = prop.abbrP || variable.proprietes[idx].abbrP;\n        variable.proprietes[idx].typeP = prop.typeP || variable.proprietes[idx].typeP;\n        variable.proprietes[idx].schema = schema;\n        variable.proprietes[idx]._locked = true;\n        // initialize valeurs structure if missing\n        let def = {};\n        schema.forEach(s => def[s.nomSsP] = defaultValForType(s.typeSsP));\n        variable.proprietes[idx].valeurs = variable.proprietes[idx].valeurs || {};\n        (variable.instances || ['*']).forEach(i => { if(variable.proprietes[idx].valeurs[i] === undefined) variable.proprietes[idx].valeurs[i] = JSON.parse(JSON.stringify(def)); });\n        variable.proprietes[idx].valeurs['*'] = JSON.parse(JSON.stringify(def));\n    } else {\n        // create new prop and lock\n        let def = {};\n        schema.forEach(s => def[s.nomSsP] = defaultValForType(s.typeSsP));\n        let newp = { nomP: prop.nomP, abbrP: prop.abbrP||'', typeP: prop.typeP||'object', schema: schema, _locked:true, valeurs: {} };\n        (variable.instances || ['*']).forEach(i => newp.valeurs[i] = JSON.parse(JSON.stringify(def)));\n        newp.valeurs['*'] = JSON.parse(JSON.stringify(def));\n        variable.proprietes = variable.proprietes || [];\n        variable.proprietes.push(newp);\n    }\n}\n\n// persist\nenriched[varSelected] = variable;\nglobal.set('enrichedVars', enriched, 'file');\nflow.set('propSelected', (prop && prop.nomP) ? prop.nomP : null);\nmsg.info = `✅ Propriété enregistrée (${saveKind}).`;\n// trigger refresh of table\nreturn { topic:'refresh', view:'tableau', info: msg.info };",
+        "outputs": 1,
+        "x": 2320,
+        "y": 1180,
+        "wires": [
+            [
+                "cf229462b91b7b51"
+            ]
+        ],
+        "info": "Gère la sauvegarde des propriétés : création / mise à jour.\n- saveKind = 'base' (types simples) ou 'baseWithSchema' (object/array + schema).\n- Verrouille la définition après enregistrement du schéma (._locked = true).\n- Effectue un backup avant modifications."
+    },
+    {
+        "id": "52162859e72107d1",
+        "type": "function",
+        "z": "61d8f8019f224437",
+        "name": "saveValues",
+        "func": "// Sauvegarde des valeurs par instance pour une propriété donnée\nlet varSelected = flow.get('varSelected');\nlet enriched = global.get('enrichedVars','file') || {};\nlet variable = enriched[varSelected] || {};\nlet prop = msg.prop || {};\nif(!prop.nomP){ msg.info = '❌ Données incomplètes pour la sauvegarde des valeurs.'; return { topic:'refresh', info: msg.info }; }\nlet idx = (variable.proprietes||[]).findIndex(p => p.nomP === prop.nomP);\nif(idx === -1){ msg.info='❌ Propriété introuvable.'; return { topic:'refresh', info: msg.info }; }\n\n// backup\nlet backups = global.get('enrichedVars_backups','file') || [];\nbackups.push({ ts:new Date().toISOString(), snapshot: JSON.parse(JSON.stringify(enriched)) });\nglobal.set('enrichedVars_backups', backups, 'file');\n\nvariable.proprietes[idx].valeurs = prop.valeurs || variable.proprietes[idx].valeurs || {};\n\nglobal.set('enrichedVars', enriched, 'file');\nflow.set('propSelected', prop.nomP);\nmsg.info = `✅ Valeurs mises à jour pour ${prop.nomP}`;\nreturn { topic:'refresh', view:'tableau', info: msg.info };",
+        "outputs": 1,
+        "x": 2350,
+        "y": 1440,
+        "wires": [
+            [
+                "cf229462b91b7b51"
+            ]
+        ],
+        "info": "Met à jour les valeurs (mapping instance -> valeur) dans enrichedVars. Sauvegarde un backup avant modification."
+    },
+    {
+        "id": "78f63a4170811417",
+        "type": "function",
+        "z": "61d8f8019f224437",
+        "name": "deleteProperty (with backup)",
+        "func": "// Supprime une propriété, création d'un backup\nlet varSelected = flow.get('varSelected');\nlet enriched = global.get('enrichedVars','file') || {};\nlet variable = enriched[varSelected] || {};\nlet prop = msg.prop || {};\nif(!prop.nomP){ msg.info='❌ Propriété non fournie.'; return { topic:'refresh', info: msg.info }; }\n// backup\nlet backups = global.get('enrichedVars_backups','file') || [];\nbackups.push({ ts:new Date().toISOString(), snapshot: JSON.parse(JSON.stringify(enriched)) });\nglobal.set('enrichedVars_backups', backups, 'file');\n\nvariable.proprietes = (variable.proprietes||[]).filter(p => p.nomP !== prop.nomP);\nenriched[varSelected] = variable;\nglobal.set('enrichedVars', enriched, 'file');\nflow.set('propSelected', null);\nmsg.info = `✅ Propriété supprimée : ${prop.nomP}`;\nreturn { topic:'refresh', view:'tableau', info: msg.info };",
+        "outputs": 1,
+        "x": 1820,
+        "y": 1340,
+        "wires": [
+            [
+                "cf229462b91b7b51"
+            ]
+        ],
+        "info": "Supprime une propriété et sauvegarde un snapshot avant suppression.\n- Après suppression, rafraîchit le tableau."
+    },
+    {
+        "id": "grp1",
+        "type": "ui-group",
+        "name": "Grpe_Propriete",
+        "page": "page-1",
+        "width": 6,
+        "height": 1,
+        "order": 4,
+        "showTitle": false,
+        "className": "",
+        "visible": "true",
+        "disabled": "false",
+        "groupType": "default"
+    },
+    {
+        "id": "page-1",
+        "type": "ui-page",
+        "name": "P_admin-VarG",
+        "ui": "930a8a5e70986346",
+        "path": "/admin_varG",
+        "icon": "dashboard",
+        "layout": "notebook",
+        "theme": "1050ebb74976e9e1",
+        "breakpoints": [
+            {
+                "name": "Default",
+                "px": "0",
+                "cols": "3"
+            },
+            {
+                "name": "Tablet",
+                "px": "576",
+                "cols": "6"
+            },
+            {
+                "name": "Small Desktop",
+                "px": "768",
+                "cols": "9"
+            },
+            {
+                "name": "Desktop",
+                "px": "1024",
+                "cols": "12"
+            }
+        ],
+        "order": 4,
+        "className": "",
+        "visible": "true",
+        "disabled": "false"
+    },
+    {
+        "id": "930a8a5e70986346",
+        "type": "ui-base",
+        "name": "My Dashboard",
+        "path": "/dashboard",
+        "appIcon": "",
+        "includeClientData": true,
+        "acceptsClientConfig": [],
+        "showPathInSidebar": false,
+        "headerContent": "page",
+        "navigationStyle": "default",
+        "titleBarStyle": "default",
+        "showReconnectNotification": true,
+        "notificationDisplayTime": 1,
+        "showDisconnectNotification": true,
+        "allowInstall": true
+    },
+    {
+        "id": "1050ebb74976e9e1",
+        "type": "ui-theme",
+        "name": "Default Theme",
+        "colors": {
+            "surface": "#ffffff",
+            "primary": "#0094ce",
+            "bgPage": "#eeeeee",
+            "groupBg": "#ffffff",
+            "groupOutline": "#cccccc"
+        },
+        "sizes": {
+            "density": "default",
+            "pagePadding": "12px",
+            "groupGap": "4px",
+            "groupBorderRadius": "4px",
+            "widgetGap": "10px"
+        }
+    }
+]

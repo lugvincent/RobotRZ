@@ -1,0 +1,1554 @@
+{
+    "CfgS": {
+        "nomVarG": "CfgS",
+        "nomCpletVarG": "Config Système",
+        "instances": [
+            "*"
+        ],
+        "descriptionVarG": " Var centrale : choix du mode de fonctionnement, du type de pilotage,...",
+        "dateUpdateVarG": "2026-03-27T07:35:14.000Z",
+        "proprietes": [
+            {
+                "nomP": "modeRZ",
+                "nomCpletP": "",
+                "descriptionP": "Mode de fonctionnement - Config",
+                "typeP": "enum",
+                "valeurs": {
+                    "*": "2"
+                },
+                "optionsP": [
+                    {
+                        "value": "0",
+                        "label": "ARRET"
+                    },
+                    {
+                        "value": "1",
+                        "label": "VEILLE"
+                    },
+                    {
+                        "value": "2",
+                        "label": "FIXE"
+                    },
+                    {
+                        "value": "3",
+                        "label": "DEPLACEMENT"
+                    },
+                    {
+                        "value": "4",
+                        "label": "AUTONOME"
+                    },
+                    {
+                        "value": "5",
+                        "label": "ERREUR"
+                    }
+                ]
+            },
+            {
+                "nomP": "typePtge",
+                "nomCpletP": "",
+                "descriptionP": "Type de Pilotage - Config -> influe les boucles (optimisation suivant le pilotage et change les options exemple pas de STT si pas vocale\nblocage cmdes motrices laisse (=3 ou 4),\ndéclenchement URG_SENSOR_FAIL caméra (=0 ou 2), contexte STT..",
+                "typeP": "string",
+                "optionsP": [
+                    {
+                        "value": "0",
+                        "label": "ECRAN"
+                    },
+                    {
+                        "value": "1",
+                        "label": "VOCALE"
+                    },
+                    {
+                        "value": "2",
+                        "label": "JOYSTICK"
+                    },
+                    {
+                        "value": "3",
+                        "label": "LAISSE"
+                    },
+                    {
+                        "value": "4",
+                        "label": "LAISSE+VOCALE"
+                    }
+                ],
+                "valeurs": {
+                    "*": "3"
+                }
+            },
+            {
+                "nomP": "reset",
+                "nomCpletP": "",
+                "descriptionP": "Reset Logiciel - Event : Réinitialisation complète. Refusé si urgence active.\n→ retour $I:COM:error:SE:\"urgence active, clear first\"#",
+                "typeP": "boolean",
+                "optionsP": [],
+                "valeurs": {
+                    "*": "0"
+                }
+            },
+            {
+                "nomP": "emg",
+                "nomCpletP": "",
+                "descriptionP": "emg - Arduino - levé d'urgence",
+                "typeP": "string",
+                "optionsP": [
+                    {
+                        "value": "clear",
+                        "label": "clear"
+                    }
+                ],
+                "valeurs": {
+                    "*": null
+                }
+            },
+            {
+                "nomP": "typeReseau",
+                "nomCpletP": "",
+                "descriptionP": "Type de réseau - Config\n4K=SIM dédiée SE. Wifi4KSP=Wi-Fi sur partage SP.\nWifiSPSsI=Wi-Fi SP sans Internet. WifiInternetBox=box Internet.",
+                "typeP": "enum",
+                "optionsP": [
+                    {
+                        "value": "4K",
+                        "label": "4K"
+                    },
+                    {
+                        "value": "Wifi4KSP",
+                        "label": "Wifi4KSP"
+                    },
+                    {
+                        "value": "WifiSPSsI",
+                        "label": "WifiSPSsI"
+                    },
+                    {
+                        "value": "WifiInternetBox",
+                        "label": "WifiInternetBox"
+                    }
+                ],
+                "valeurs": {
+                    "*": "WifiInternetBox"
+                }
+            },
+            {
+                "nomP": "boot",
+                "nomCpletP": "",
+                "descriptionP": "Quand Arduino est prèt il renvoie vrai 1 traitementy par RZlibrairiesPersoNew.ccp - (init de tout les modules)",
+                "typeP": "boolean",
+                "optionsP": [],
+                "valeurs": {
+                    "*": "0"
+                }
+            }
+        ]
+    },
+    "Urg": {
+        "nomVarG": "Urg",
+        "nomCpletVarG": "Urgence v",
+        "instances": [
+            "*"
+        ],
+        "descriptionVarG": "Supervise les urgences : Toute urgence déclenche un blocage complet des commandes VPIV (sauf CfgS:emg et Urg:clear) - état réflexe, jamais commandé",
+        "dateUpdateVarG": "2026-03-27T12:46:05.323Z",
+        "proprietes": [
+            {
+                "nomP": "statut",
+                "nomCpletP": "",
+                "descriptionP": "État Urgence - Statut - Reflète l'état courant urgence côté SE.\nglobal.json : .Urg.statut",
+                "typeP": "string",
+                "optionsP": [
+                    {
+                        "value": "cleared",
+                        "label": "cleared"
+                    },
+                    {
+                        "value": "active",
+                        "label": "active"
+                    }
+                ],
+                "valeurs": {
+                    "*": "cleared"
+                }
+            },
+            {
+                "nomP": "niveau",
+                "nomCpletP": "",
+                "descriptionP": "Niveau Alerte - Chaque métrique dispose de deux seuils dans paraSys.thresholds (SE):\n-  seuil_warn : dépassé 10s → $I:COM:warn:SE:\"...\"#   (informatif, SP affiche la source de l'urgence)\n-   seuil_urg  : dépassé 10s → $E:Urg:source:SE:URG#   (SE arrête émissions)",
+                "typeP": "string",
+                "optionsP": [
+                    {
+                        "value": "warn",
+                        "label": "warn"
+                    },
+                    {
+                        "value": "danger",
+                        "label": "danger"
+                    }
+                ],
+                "valeurs": {
+                    "*": null
+                }
+            },
+            {
+                "nomP": "source",
+                "nomCpletP": "",
+                "descriptionP": "Émis par trigger_urgence() (urgence.sh) ou safety_stop.sh (URG_DANGER).\nCodes validés dans URG_CODES_VALIDES[] — fallback URG_UNKNOWN si inconnu.\nSP décide du niveau (warn/danger) et orchestre la réponse.\nglobal.json : .Urg.source",
+                "typeP": "enum",
+                "optionsP": [
+                    {
+                        "value": "URG_NONE",
+                        "label": "URG_NONE - pas d'urgence"
+                    },
+                    {
+                        "value": "URG_LOOP_TOO_SLOW",
+                        "label": "URG_LOOP_TOO_SLOW - Boucle trop lente"
+                    },
+                    {
+                        "value": "URG_BUFFER_OVERFLOW URG_BUFFER_OVERFLOW",
+                        "label": "URG_BUFFER_OVERFLOW URG_BUFFER_OVERFLOW - Dépassement mémoire"
+                    },
+                    {
+                        "value": "URG_CPU_CHARGE",
+                        "label": "URG_CPU_CHARGE"
+                    },
+                    {
+                        "value": "URG_OVERHEAT",
+                        "label": "URG_OVERHEAT - Surchauffe détecté - SE"
+                    },
+                    {
+                        "value": "URG_LOW_BAT",
+                        "label": "URG_LOW_BAT - Batterie faible"
+                    },
+                    {
+                        "value": "URG_MOTOR_STAL",
+                        "label": "URG_MOTOR_STAL moteur bloqué"
+                    },
+                    {
+                        "value": "URG_SENSOR_FAIL",
+                        "label": "URG_SENSOR_FAIL défaillance de capteur"
+                    },
+                    {
+                        "value": "URG_PARSING_ERROR",
+                        "label": "URG_PARSING_ERROR     Erreur de parsing"
+                    },
+                    {
+                        "value": "URG_APPLI_FAIL",
+                        "label": "URG_APPLI_FAIL        Échec application"
+                    },
+                    {
+                        "value": "URG_UNKNOWN",
+                        "label": "URG_UNKNOWN - Urgence inconnue (fallback)"
+                    },
+                    {
+                        "value": "URG _ US_DANGER",
+                        "label": "URG_US_DANGER (Arduino à valider)"
+                    },
+                    {
+                        "value": "URG_ MVT_DANGER",
+                        "label": "URG_ MVT_DANGER (Arduino à valider)"
+                    }
+                ],
+                "valeurs": {
+                    "*": "URG_NONE"
+                }
+            },
+            {
+                "nomP": "clear",
+                "nomCpletP": "",
+                "descriptionP": "Urgence / Arduino - commande d'effacement de l'urgence (voir dispatch_Urg.cpp) 1 effacé -> engendre différents signaux",
+                "typeP": "boolean",
+                "optionsP": [],
+                "valeurs": {
+                    "*": "1"
+                }
+            },
+            {
+                "nomP": "etat",
+                "nomCpletP": "",
+                "descriptionP": "État Urgence - Status",
+                "typeP": "string",
+                "optionsP": [
+                    {
+                        "value": "active",
+                        "label": "active"
+                    }
+                ],
+                "valeurs": {
+                    "*": null
+                }
+            }
+        ]
+    },
+    "Mtr": {
+        "nomVarG": "Mtr",
+        "nomCpletVarG": "Moteurs Propulsion",
+        "instances": [
+            "*"
+        ],
+        "descriptionVarG": "Moteurs Propulsion (x2) : fichiers mtr. dispatch_Mtr\n    • vitesse linéaire v\n    • vitesse angulaire ω\n    • niveau d’accélération a",
+        "dateUpdateVarG": "2026-03-27T13:28:09.919Z",
+        "proprietes": [
+            {
+                "nomP": "cmd",
+                "nomCpletP": "",
+                "descriptionP": "- Consigne (VitL,VitR,Acc) - - format : \"v,omega,a\"\n- Valeurs :  v∈[-100..100], omega∈[-100..100], a∈[0..4].\n- Format : \"v,omega,a\" -\n- VPIV :  $V:Mtr:*:cmd:80,0,2#\n - Rque : Bloqué si urgence active.",
+                "typeP": "string",
+                "optionsP": [],
+                "valeurs": {
+                    "*": "\"0,0,0\""
+                }
+            },
+            {
+                "nomP": "scale",
+                "nomCpletP": "",
+                "descriptionP": "Facteur réduction vitesses (config des transitions de vitesse)\nencodé ×1000. -> 750=0.750, \n1000=pleine vitesse. 0= arrêt\n Converti en float interne par dispatch_Mtr.cpp.\nPermet d'éviter les float dans les vpiv.\n- ",
+                "typeP": "number",
+                "optionsP": [],
+                "valeurs": {
+                    "*": "750"
+                }
+            },
+            {
+                "nomP": "kturn",
+                "nomCpletP": "",
+                "descriptionP": "Coeff Rotation (x1000) - Config\nCoefficient rotation encodé ×1000. 500=doux, 800=confort, 1000=standard, 1500=franc. Converti en float interne.",
+                "typeP": "number",
+                "optionsP": [],
+                "valeurs": {
+                    "*": "800"
+                }
+            },
+            {
+                "nomP": "act",
+                "nomCpletP": "",
+                "descriptionP": "Activationdes moteurs -  Mtr - Config",
+                "typeP": "boolean",
+                "optionsP": [],
+                "valeurs": {
+                    "*": "0"
+                }
+            }
+        ]
+    },
+    "US": {
+        "nomVarG": "US",
+        "nomCpletVarG": "Capteurs Ultrasons (x9) - Arduino",
+        "instances": [
+            "*",
+            "ArG",
+            "ArC",
+            "ArD",
+            "AvD",
+            "AvC",
+            "AvG",
+            "TtG",
+            "TtD",
+            "TtC"
+        ],
+        "descriptionVarG": "Ultra-Sons (9 capteurs) -> principal outil d'évitement des obstacles, utilisé également pour l'odométrie, la laisse,...\n- Instances : ArG (arrière Gauche),... AvD (avant Droit).. TtC (Tête centre)... Sources src/config/config. ...\n#define US_PING_CYCLE_MS_DEFAULT 200\n#define US_DELTA_THRESHOLD_DEFAULT 5\n#define US_SUSPECT_TIMEOUT_MS_DEFAULT 1000\n#define US_MAX_DISTANCE_CM 400",
+        "dateUpdateVarG": "2026-03-27T14:38:28.931Z",
+        "proprietes": [
+            {
+                "nomP": "thd",
+                "nomCpletP": "",
+                "descriptionP": "Seuil Alerte (cm) - Config\nDeux seuils : danger et alerte géré par un multiplicateur\nMultiplicateur (x1) changement",
+                "typeP": "number",
+                "optionsP": [],
+                "valeurs": {
+                    "*": "",
+                    "ArG": "20",
+                    "ArC": "15",
+                    "ArD": "20",
+                    "AvD": "15",
+                    "AvC": "10",
+                    "AvG": "15",
+                    "TtG": "20",
+                    "TtD": "20",
+                    "TtC": "20"
+                }
+            },
+            {
+                "nomP": "freq",
+                "nomCpletP": "",
+                "descriptionP": "Fréquence Mesure (ms) - Config",
+                "typeP": "number",
+                "valeurs": {
+                    "*": "100",
+                    "ArG": null,
+                    "ArC": null,
+                    "ArD": null,
+                    "AvD": null,
+                    "AvC": null,
+                    "AvG": null,
+                    "TtG": null,
+                    "TtD": null,
+                    "TtC": null
+                }
+            },
+            {
+                "nomP": "delta",
+                "nomCpletP": "",
+                "descriptionP": "Seuil Publication (cm) - Config\nSi la différence absolue entre la valeur courante et la dernière valeur envoyée dépasse un seuil configurable - delta (cfg_us_delta_threshold), alors on envoie la nouvelle valeur",
+                "typeP": "number",
+                "optionsP": [],
+                "valeurs": {
+                    "*": "5",
+                    "ArG": null,
+                    "ArC": null,
+                    "ArD": null,
+                    "AvD": null,
+                    "AvC": null,
+                    "AvG": null,
+                    "TtG": null,
+                    "TtD": null,
+                    "TtC": null
+                }
+            },
+            {
+                "nomP": "act",
+                "nomCpletP": "",
+                "descriptionP": "Activation US - Config",
+                "typeP": "boolean",
+                "valeurs": {
+                    "*": "1",
+                    "ArG": null,
+                    "ArC": null,
+                    "ArD": null,
+                    "AvD": null,
+                    "AvC": null,
+                    "AvG": null,
+                    "TtG": null,
+                    "TtD": null,
+                    "TtC": null
+                }
+            }
+        ]
+    },
+    "Odom": {
+        "nomVarG": "Odom",
+        "nomCpletVarG": "Odométrie -> Arduino (encodeurs) - Dossier : navigation",
+        "instances": [
+            "*"
+        ],
+        "descriptionVarG": "Odométrie -> Calcul basé sur MTR (pas IMU). Peut recevoir des données complémentaires par le système embarqué SE (via SP) -> donnée de Gyro.\nRque : doit être étalonné. (A faire) -> utile pour modeRZ autonome.",
+        "dateUpdateVarG": "2026-03-27T15:38:20.431Z",
+        "proprietes": [
+            {
+                "nomP": "pos",
+                "nomCpletP": "",
+                "descriptionP": "Position (mm/mrad) - Flux\nlong x_mm = (long)(x * 1000.0);       /* m  → mm    */\nlong y_mm = (long)(y * 1000.0);       /* m  → mm    */\nlong theta_mrad = (long)(t * 1000.0); /* rad → mrad */",
+                "typeP": "string",
+                "optionsP": [],
+                "valeurs": {
+                    "*": "\"0,0,0\""
+                }
+            },
+            {
+                "nomP": "vel",
+                "nomCpletP": "",
+                "descriptionP": "Vitesse linéaire(mm/s) et Vitesse angulaire (mrad/s)    .Flux\nVitesse robot. Entiers ×1000. v_mm_s=vitesse_linéaire×1000(mm/s), omega_mrad_s=vitesse_angulaire×1000(mrad/s). Envoi périodique selon freqVel_ms.\nVPIV exple : $I:Odom:vel:*:250,12#",
+                "typeP": "string",
+                "optionsP": [],
+                "valeurs": {
+                    "*": "\"0,0\""
+                }
+            },
+            {
+                "nomP": "reset",
+                "nomCpletP": "",
+                "descriptionP": "Reset Odom - Event\nRemet pose à zéro (x=0,y=0,theta=0). Déclenche un report one-shot.",
+                "typeP": "boolean",
+                "optionsP": [],
+                "valeurs": {
+                    "*": null
+                }
+            },
+            {
+                "nomP": "paraOdom",
+                "nomCpletP": "",
+                "descriptionP": "Paramètres Physiques - Config\n- paraOdom — configuration physique complète en une seule trame :: wheel_mm,track_mm,cpr[,gainG,gainD,fCalc,fPos,fVel]\n - Les 3 premiers sont obligatoires. Les 5 suivants optionnels.\n -  Passer 0 pour un paramètre optionnel = garder valeur actuelle.\n-  Appelle odom_setPhysical() qui recalcule les coefficients  et renvoie une trame de confirmation avec toutes les valeurs (8).\n{0, 0, 0, -> Wheel_mm, track_mm, cpr -> les 3 obligatoires\n    ODO_LEFT_GAIN_X1000_DEFAULT,   /* gainG  */\n    ODO_RIGHT_GAIN_X1000_DEFAULT,  /* gainD  */\n    (int)ODO_FREQ_CALC_MS_DEFAULT, /* fCalc  */\n     (int)ODO_FREQ_POS_MS_DEFAULT,  /* fPos   */\n     (int)ODO_FREQ_VEL_MS_DEFAULT}; /* fVel   */",
+                "typeP": "string",
+                "optionsP": [],
+                "valeurs": {
+                    "*": "\"65,200,256,1000,1000,50,200,40\""
+                }
+            },
+            {
+                "nomP": "act",
+                "nomCpletP": "",
+                "descriptionP": "Activation Odom ",
+                "typeP": "boolean",
+                "optionsP": [],
+                "valeurs": {
+                    "*": "0"
+                }
+            }
+        ]
+    },
+    "SecMvt": {
+        "nomVarG": "SecMvt",
+        "nomCpletVarG": "Sécurité des mouvement - Dossier : Arduino safety /mvt_safe.",
+        "instances": [
+            "*"
+        ],
+        "descriptionVarG": "* FICHIER : src/safety/mvt_safe.h\n * ROLE  : Superviseur de sécurité anti-collision (mvtSafe)\n * Buts : Surveiller les distances ultrasoniques (via us_peekCurrValue())\n  - Détecter warn / danger en fonction de seuils configurables\n  - En mode \"soft\" réduire la consigne moteurs (ralentir)\n  - En mode \"hard\" arrêter les moteurs et déclencher urgence si nécessaire\nRque : attention certains paramètres ds Arduino peuvent fortement impacter le volume de vpiv (fréquence,...)",
+        "dateUpdateVarG": "2026-03-27T15:49:39.343Z",
+        "proprietes": [
+            {
+                "nomP": "thd",
+                "nomCpletP": "",
+                "descriptionP": "Seuils (warn,danger) - Config\nPremière valeur distance d'alerte en cm seconde danger\nVPIV exemple $V:SecMvt:*:thd:40,20#",
+                "typeP": "string",
+                "optionsP": [],
+                "valeurs": {
+                    "*": "\"20,10\""
+                }
+            },
+            {
+                "nomP": "mode",
+                "nomCpletP": "",
+                "descriptionP": "Mode Réaction - Config\nMode\tEffet\t Action\t    URG\nidle\t    rien\t     aucune\t      ❌\nsoft\t    ralentit\t  scaling\t      ❌\nhard\t stop\t  arrêt total\t   ✅\n",
+                "typeP": "string",
+                "optionsP": [
+                    {
+                        "value": "soft",
+                        "label": "soft"
+                    },
+                    {
+                        "value": "hard",
+                        "label": "hard"
+                    },
+                    {
+                        "value": "idle",
+                        "label": "idle"
+                    }
+                ],
+                "valeurs": {
+                    "*": "soft"
+                }
+            },
+            {
+                "nomP": "scale",
+                "nomCpletP": "",
+                "descriptionP": "coefficient multiplicatif appliqué à la vitesse moteur - Config\n1.0\tvitesse normale (aucune limitation)\n0.5\tvitesse divisée par 2\nAttention j'ai utilisé un facteur multiplicateur pour éviter les float : \nx1000 Pour 0,5 je note 500 (arduino fait la conversion)",
+                "typeP": "number",
+                "optionsP": [],
+                "valeurs": {
+                    "*": "500"
+                }
+            },
+            {
+                "nomP": "act",
+                "nomCpletP": "",
+                "descriptionP": "Activation Sécu - Config",
+                "typeP": "boolean",
+                "valeurs": {
+                    "*": "1"
+                }
+            }
+        ]
+    },
+    "Lring": {
+        "nomVarG": "Lring",
+        "nomCpletVarG": "Cercle de led (x12) -> pour expresssion faciale et avertissement",
+        "instances": [
+            "*",
+            "\"rg0",
+            "rg1",
+            "rg2",
+            "rg3",
+            "rg4",
+            "rg5",
+            "rg6",
+            "rg7",
+            "rg8",
+            "rg9",
+            "rg10",
+            "rg11\""
+        ],
+        "descriptionVarG": "Anneau LEDs \n- timeOut\n- Rque : peut aussi être utilisé pour des fonctions exp programmées ",
+        "dateUpdateVarG": "2026-03-27T18:10:57.145Z",
+        "proprietes": [
+            {
+                "nomP": "rgb",
+                "nomCpletP": "",
+                "descriptionP": "Couleur RGB - Commande\n-> force mode EXTERN",
+                "typeP": "string",
+                "optionsP": [],
+                "valeurs": {
+                    "*": "",
+                    "\"rg0": "0,0,0",
+                    "rg1": "0,0,0",
+                    "rg2": "0,0,0",
+                    "rg3": "0,0,0",
+                    "rg4": "0,0,0",
+                    "rg5": "0,0,0",
+                    "rg6": "0,0,0",
+                    "rg7": "0,0,0",
+                    "rg8": "0,0,0",
+                    "rg9": "0,0,0",
+                    "rg10": "0,0,0",
+                    "rg11\"": "0,0,0"
+                }
+            },
+            {
+                "nomP": "expr",
+                "nomCpletP": "",
+                "descriptionP": "Expression           - Commande\nForce le mode EXP (propriété mode non visible ici)",
+                "typeP": "string",
+                "optionsP": [
+                    {
+                        "value": "LRING_EXPR_NEUTRE",
+                        "label": "LRING_EXPR_NEUTRE"
+                    },
+                    {
+                        "value": "LRING_EXPR_VOYANT",
+                        "label": "LRING_EXPR_VOYANT"
+                    },
+                    {
+                        "value": "LRING_EXPR_ECLAIRAGE",
+                        "label": "LRING_EXPR_ECLAIRAGE"
+                    },
+                    {
+                        "value": "LRING_EXPR_SOURIRE",
+                        "label": "LRING_EXPR_SOURIRE"
+                    },
+                    {
+                        "value": "LRING_EXPR_TRISTE",
+                        "label": "LRING_EXPR_TRISTE"
+                    },
+                    {
+                        "value": "LRING_EXPR_URGENCE",
+                        "label": "LRING_EXPR_URGENCE"
+                    }
+                ],
+                "valeurs": {
+                    "*": "LRING_EXPR_NEUTRE",
+                    "\"rg0": "",
+                    "rg1": "",
+                    "rg2": "",
+                    "rg3": "",
+                    "rg4": "",
+                    "rg5": "",
+                    "rg6": "",
+                    "rg7": "",
+                    "rg8": "",
+                    "rg9": "",
+                    "rg10": "",
+                    "rg11\"": ""
+                }
+            },
+            {
+                "nomP": "lumin",
+                "nomCpletP": "",
+                "descriptionP": "Intensité (0-255) - Config",
+                "typeP": "number",
+                "valeurs": {
+                    "1": null,
+                    "2": null,
+                    "3": null,
+                    "4": null,
+                    "*": "128"
+                }
+            },
+            {
+                "nomP": "timeout",
+                "nomCpletP": "",
+                "descriptionP": "Délai extinction d'une expression  (ms) - Config",
+                "typeP": "number",
+                "optionsP": [],
+                "valeurs": {
+                    "*": "2000",
+                    "\"rg0": "null",
+                    "rg1": "null",
+                    "rg2": "null",
+                    "rg3": "null",
+                    "rg4": "null",
+                    "rg5": "null",
+                    "rg6": "null",
+                    "rg7": "null",
+                    "rg8": "null",
+                    "rg9": "null",
+                    "rg10": "null",
+                    "rg11\"": "null"
+                }
+            },
+            {
+                "nomP": "act",
+                "nomCpletP": "",
+                "descriptionP": "Activation Anneau - Config",
+                "typeP": "boolean",
+                "valeurs": {
+                    "1": null,
+                    "2": null,
+                    "3": null,
+                    "4": null,
+                    "*": "1"
+                }
+            }
+        ]
+    },
+    "Lrub": {
+        "nomVarG": "Lrub",
+        "nomCpletVarG": "Ruban LEDs (x15)",
+        "instances": [
+            "*",
+            "\"ar_gd0",
+            "ar_gd1",
+            "ar_gd2",
+            "ar_gd3",
+            "ar_gd4",
+            "ar_gd5",
+            "ar_gd6",
+            "av_dg7",
+            "av_dg8",
+            "av_dg9",
+            "av_dg10",
+            "av_dg11",
+            "cg12",
+            "cd13",
+            "cci14"
+        ],
+        "descriptionVarG": "- code instance g gauche d droit ar arrière av avant, ...\n- mode STATIC/EXTERN : couleur fixe sur tout le ruban ou indices\n- lumin : intensité lum  \n- init : remise à val par defaut \n *   - act 0/1 : on/off\n *   - Effet \"fuite\" : alternance pairs/impairs\n *   - Timeout : extinction automatique après délai (géré par processTimeout)",
+        "dateUpdateVarG": "2026-03-27T17:29:14.338Z",
+        "proprietes": [
+            {
+                "nomP": "rgb",
+                "nomCpletP": "",
+                "descriptionP": "Couleur RGB - Commande",
+                "typeP": "string",
+                "valeurs": {
+                    "*": "255,255,255",
+                    "\"ar_gd0": "255,255,255",
+                    "ar_gd1": "255,255,255",
+                    "ar_gd2": "255,255,255",
+                    "ar_gd3": "255,255,255",
+                    "ar_gd4": "255,255,255",
+                    "ar_gd5": "255,255,255",
+                    "ar_gd6": "255,255,255",
+                    "av_dg7": "255,255,255",
+                    "av_dg8": "255,255,255",
+                    "av_dg9": "255,255,255",
+                    "av_dg10": "255,255,255",
+                    "av_dg11": "255,255,255",
+                    "cg12": "255,255,255",
+                    "cd13": "255,255,255",
+                    "cci14": "255,255,255"
+                }
+            },
+            {
+                "nomP": "init",
+                "nomCpletP": "",
+                "descriptionP": "Initialisation - remet les leds du ruban à la valeur par defaut -  Event",
+                "typeP": "boolean",
+                "optionsP": [],
+                "valeurs": {
+                    "*": "500",
+                    "\"ar_gd0": "null",
+                    "ar_gd1": "null",
+                    "ar_gd2": "null",
+                    "ar_gd3": "null",
+                    "ar_gd4": "null",
+                    "ar_gd5": "null",
+                    "ar_gd6": "null",
+                    "av_dg7": "null",
+                    "av_dg8": "null",
+                    "av_dg9": "null",
+                    "av_dg10": "null",
+                    "av_dg11": "null",
+                    "cg12": "null",
+                    "cd13": "null",
+                    "cci14": "null"
+                }
+            },
+            {
+                "nomP": "lumin",
+                "nomCpletP": "",
+                "descriptionP": "Luminosité - Config\nformat : 0 à 255",
+                "typeP": "number",
+                "optionsP": [],
+                "valeurs": {
+                    "*": "100",
+                    "\"ar_gd0": "100",
+                    "ar_gd1": "100",
+                    "ar_gd2": "100",
+                    "ar_gd3": "100",
+                    "ar_gd4": "100",
+                    "ar_gd5": "100",
+                    "ar_gd6": "100",
+                    "av_dg7": "100",
+                    "av_dg8": "100",
+                    "av_dg9": "100",
+                    "av_dg10": "100",
+                    "av_dg11": "100",
+                    "cg12": "100",
+                    "cd13": "100",
+                    "cci14": "100"
+                }
+            },
+            {
+                "nomP": "timeout",
+                "nomCpletP": "",
+                "descriptionP": "Extinction auto      - Config\nextinction automatique après N millisecondes\n *  valeur = durée en ms (ex : \"5000\" = 5 secondes)\n *  valeur = \"0\" pour annuler un timeout en cours",
+                "typeP": "number",
+                "optionsP": [],
+                "valeurs": {
+                    "*": "5000",
+                    "\"ar_gd0": "null",
+                    "ar_gd1": "null",
+                    "ar_gd2": "null",
+                    "ar_gd3": "null",
+                    "ar_gd4": "null",
+                    "ar_gd5": "null",
+                    "ar_gd6": "null",
+                    "av_dg7": "null",
+                    "av_dg8": "null",
+                    "av_dg9": "null",
+                    "av_dg10": "null",
+                    "av_dg11": "null",
+                    "cg12": "null",
+                    "cd13": "null",
+                    "cci14": "null"
+                }
+            }
+        ]
+    },
+    "Ctrl_L": {
+        "nomVarG": "Ctrl_L",
+        "nomCpletVarG": "Contrôle Laisse",
+        "instances": [
+            "*"
+        ],
+        "descriptionVarG": "Le module Ctrl_L permet au robot de suivre un utilisateur via une laisse instrumentée :\n    • Maintien d’une distance cible (capteurs US avant)\n    • Orientation par capteur de force (traction gauche/droite)\nRque : le contrôle de la force max via le module FS : cfg_fs_threshold × 1.5\nRque2 : contrôle VtKO /vitesse excessive utilisateur, status non implémenté pour l'instant",
+        "dateUpdateVarG": "2026-03-29T08:29:34.545Z",
+        "proprietes": [
+            {
+                "nomP": "act",
+                "nomCpletP": "",
+                "descriptionP": "Activation Laisse - Config\nRque :  sous condition CfgS:typePtge=3|4.(ceux avec laisse)",
+                "typeP": "boolean",
+                "optionsP": [],
+                "valeurs": {
+                    "*": "0"
+                }
+            },
+            {
+                "nomP": "dist",
+                "nomCpletP": "",
+                "descriptionP": "Distance cible défini pour la laisse en mm -  config ",
+                "typeP": "number",
+                "optionsP": [],
+                "valeurs": {
+                    "*": "500"
+                }
+            },
+            {
+                "nomP": "dead",
+                "nomCpletP": "",
+                "descriptionP": "Zone morte mm. Pas de correction si delta < dead - config",
+                "typeP": "number",
+                "optionsP": [],
+                "valeurs": {
+                    "*": "100"
+                }
+            },
+            {
+                "nomP": "vmax",
+                "nomCpletP": "",
+                "descriptionP": "Vitesse longitudinale max correction laisse",
+                "typeP": "number",
+                "optionsP": [],
+                "valeurs": {
+                    "*": "50"
+                }
+            }
+        ]
+    },
+    "FS": {
+        "nomVarG": "FS",
+        "nomCpletVarG": "Capteur de Force",
+        "instances": [
+            "*"
+        ],
+        "descriptionVarG": "Capteur analogique de Force (HX711) monter pour fonctionner dans les deux sens (valeur négative et positive. Utiliser pour Ctrl_L (tension laisse / direction).",
+        "dateUpdateVarG": "2026-03-30T09:00:32.807Z",
+        "proprietes": [
+            {
+                "nomP": "freq",
+                "nomCpletP": "",
+                "descriptionP": "Fréquence - config\n *  freq  : fréquence de publication périodique (ms)\n *  Ex : $V:FS:*:freq:200#     → confirme $I:FS:freq:*:OK#valeur en ms.",
+                "typeP": "number",
+                "optionsP": [],
+                "valeurs": {
+                    "*": "100"
+                }
+            },
+            {
+                "nomP": "thd",
+                "nomCpletP": "",
+                "descriptionP": "Seuil Détection - Config",
+                "typeP": "number",
+                "valeurs": {
+                    "*": "80"
+                }
+            },
+            {
+                "nomP": "act",
+                "nomCpletP": "",
+                "descriptionP": "Activation FS - Config",
+                "typeP": "boolean",
+                "valeurs": {
+                    "*": "0"
+                }
+            },
+            {
+                "nomP": "cal",
+                "nomCpletP": "",
+                "descriptionP": " *   cal   : facteur de calibration (entier, stocké x1000 dans Table A)\n *   Ex : $V:FS:*:cal:950#      → confirme $I:FS:cal:*:OK#",
+                "typeP": "number",
+                "optionsP": [],
+                "valeurs": {
+                    "*": "950"
+                }
+            }
+        ]
+    },
+    "IRmvt": {
+        "nomVarG": "IRmvt",
+        "nomCpletVarG": "Détecteur de mouvement Infra-rouge",
+        "instances": [
+            "*"
+        ],
+        "descriptionVarG": "Détecteur IR : peut utiliser des modes pour définir rapidement des var de fréquences et seuil .\nIR → capteur logique → info + alerte\nMode : idle -  inactif (IR  à \"OFF\"), lecture immédiate et surveillance.\n * Fonctionnalités :\n *   - read          -> lecture immédiate\n *   - valeur périodique\n *   - alert si nombre de détections successives > seuil (thd)\n *   - act           -> activer/désactiver\n *   - freq          -> période\n *   - mode          -> idle (inactif)/ monitor / surveillance",
+        "dateUpdateVarG": "2026-03-30T09:29:43.248Z",
+        "proprietes": [
+            {
+                "nomP": "freq",
+                "nomCpletP": "",
+                "descriptionP": "Période en ms  ( pas de multiple)- Config\nRque : Initialement 150 ms /defaut",
+                "typeP": "number",
+                "optionsP": [],
+                "valeurs": {
+                    "*": "500"
+                }
+            },
+            {
+                "nomP": "act",
+                "nomCpletP": "",
+                "descriptionP": "Activation IR - Config",
+                "typeP": "boolean",
+                "valeurs": {
+                    "*": "0"
+                }
+            },
+            {
+                "nomP": "thd",
+                "nomCpletP": "",
+                "descriptionP": "Seuil pour le déclenchement d'une alerte - config\nSi le nombre de détections successives > seuil (thd) \n- Deux seuils :\n  1 :  pour mode monitor  freq 150 ms -> pour chger freq aller dans  mvt_ir.cpp\n  2 : pour mode surveillance freq 80 ms",
+                "typeP": "number",
+                "optionsP": [
+                    {
+                        "value": "1",
+                        "label": "seuil mode monitor"
+                    },
+                    {
+                        "value": "2",
+                        "label": "seuil mode surveillance  (freq  plus forte)"
+                    }
+                ],
+                "valeurs": {
+                    "*": "1"
+                }
+            },
+            {
+                "nomP": "Mode",
+                "nomCpletP": "",
+                "descriptionP": "Mode de fonctionnement de l'IRmvt\nmode : idle (inactif), monitor, surveillance",
+                "typeP": "string",
+                "optionsP": [
+                    {
+                        "value": "Idle",
+                        "label": "idle (inactif)"
+                    },
+                    {
+                        "value": "monitor",
+                        "label": "monitor (freq faible)"
+                    },
+                    {
+                        "value": "surveillance",
+                        "label": "surveillance (freq forte)"
+                    }
+                ],
+                "valeurs": {
+                    "*": "Idle"
+                }
+            }
+        ]
+    },
+    "Srv": {
+        "nomVarG": "Srv",
+        "nomCpletVarG": "",
+        "instances": [
+            "*",
+            "TGD",
+            "THB",
+            "BASE"
+        ],
+        "descriptionVarG": "Servomoteurs\nTGD  servo Tête Gauche droite\nTHB servo Tête Haut-Bas\nBase servo articulation du corps (position conduite couchée et verticale)",
+        "dateUpdateVarG": "2026-03-30T13:36:31.227Z",
+        "proprietes": [
+            {
+                "nomP": "act",
+                "nomCpletP": "",
+                "descriptionP": "Activation) - Commande",
+                "typeP": "boolean",
+                "optionsP": [],
+                "valeurs": {
+                    "*": "0",
+                    "TGD": "",
+                    "THB": "",
+                    "BASE": ""
+                }
+            },
+            {
+                "nomP": "ang",
+                "nomCpletP": "",
+                "descriptionP": "angle (degrés) - Commande : attention il faudra prévoir max par servo",
+                "typeP": "number",
+                "optionsP": [],
+                "valeurs": {
+                    "*": "",
+                    "TGD": "0",
+                    "THB": "0",
+                    "BASE": "90"
+                }
+            },
+            {
+                "nomP": "speed",
+                "nomCpletP": "",
+                "descriptionP": "Srv\tspeed\tnumber\tVitesse servo\t≥1\n* Changer la vitesse d’un servo\n *   speed = 1 → rapide\n *   speed = 5 → moyen\n *   speed = 10 → très lent",
+                "typeP": "number",
+                "optionsP": [],
+                "valeurs": {
+                    "*": "",
+                    "TGD": "10",
+                    "THB": "10",
+                    "BASE": "10"
+                }
+            }
+        ]
+    },
+    "Sys": {
+        "nomVarG": "Sys",
+        "nomCpletVarG": "",
+        "instances": [
+            "*"
+        ],
+        "descriptionVarG": "Monitoring SE",
+        "dateUpdateVarG": "2026-03-27T07:35:14.000Z",
+        "proprietes": [
+            {
+                "nomP": "batt",
+                "nomCpletP": "",
+                "descriptionP": "Batterie SE (%) - Flux",
+                "typeP": "number",
+                "valeurs": {
+                    "*": null
+                }
+            },
+            {
+                "nomP": "temp",
+                "nomCpletP": "",
+                "descriptionP": "Température CPU - Flux",
+                "typeP": "number",
+                "valeurs": {
+                    "*": null
+                }
+            },
+            {
+                "nomP": "cpu",
+                "nomCpletP": "",
+                "descriptionP": "Charge CPU (%) - Flux",
+                "typeP": "number",
+                "valeurs": {
+                    "*": null
+                }
+            },
+            {
+                "nomP": "freqCont",
+                "nomCpletP": "",
+                "descriptionP": "Intervalle (sec) - Config",
+                "typeP": "number",
+                "valeurs": {
+                    "*": null
+                }
+            }
+        ]
+    },
+    "STT": {
+        "nomVarG": "STT",
+        "nomCpletVarG": "",
+        "instances": [
+            "*"
+        ],
+        "descriptionVarG": "Module Vocal",
+        "dateUpdateVarG": "2026-03-27T07:35:14.000Z",
+        "proprietes": [
+            {
+                "nomP": "intent",
+                "nomCpletP": "",
+                "descriptionP": "Intention - Event",
+                "typeP": "event",
+                "valeurs": {
+                    "*": null
+                }
+            },
+            {
+                "nomP": "context",
+                "nomCpletP": "",
+                "descriptionP": "Contexte Vocal - Status",
+                "typeP": "enum",
+                "valeurs": {
+                    "*": null
+                },
+                "optionsP": [
+                    {
+                        "value": "Inactif",
+                        "label": "Inactif"
+                    },
+                    {
+                        "value": "Cmde",
+                        "label": "Cmde"
+                    },
+                    {
+                        "value": "Conv",
+                        "label": "Conv"
+                    },
+                    {
+                        "value": "Mixte",
+                        "label": "Mixte"
+                    }
+                ]
+            },
+            {
+                "nomP": "state",
+                "nomCpletP": "",
+                "descriptionP": "Microphone Actif - Status",
+                "typeP": "boolean",
+                "valeurs": {
+                    "*": null
+                }
+            }
+        ]
+    },
+    "Gyro": {
+        "nomVarG": "Gyro",
+        "nomCpletVarG": "",
+        "instances": [
+            "*"
+        ],
+        "descriptionVarG": "Gyroscope SE",
+        "dateUpdateVarG": "2026-03-27T07:35:14.000Z",
+        "proprietes": [
+            {
+                "nomP": "val",
+                "nomCpletP": "",
+                "descriptionP": "Valeurs (x,y,z) - Flux",
+                "typeP": "string",
+                "valeurs": {
+                    "*": null
+                }
+            },
+            {
+                "nomP": "mode",
+                "nomCpletP": "",
+                "descriptionP": "Mode Gyro - Config",
+                "typeP": "enum",
+                "valeurs": {
+                    "*": "DATACont"
+                },
+                "optionsP": [
+                    {
+                        "value": "OFF",
+                        "label": "OFF"
+                    },
+                    {
+                        "value": "DATACont",
+                        "label": "DATACont"
+                    },
+                    {
+                        "value": "DATAMoy",
+                        "label": "DATAMoy"
+                    },
+                    {
+                        "value": "ALERTE",
+                        "label": "ALERTE"
+                    }
+                ]
+            },
+            {
+                "nomP": "freqCont",
+                "nomCpletP": "",
+                "descriptionP": "Fréquence (Hz) - Config",
+                "typeP": "number",
+                "valeurs": {
+                    "*": null
+                }
+            }
+        ]
+    },
+    "Mag": {
+        "nomVarG": "Mag",
+        "nomCpletVarG": "",
+        "instances": [
+            "*"
+        ],
+        "descriptionVarG": "Magnétomètre SE",
+        "dateUpdateVarG": "2026-03-27T07:35:14.000Z",
+        "proprietes": [
+            {
+                "nomP": "val",
+                "nomCpletP": "",
+                "descriptionP": "Valeurs (x,y,z) - Flux",
+                "typeP": "number",
+                "valeurs": {
+                    "*": null
+                }
+            },
+            {
+                "nomP": "mode",
+                "nomCpletP": "",
+                "descriptionP": "Mode Mag - Config",
+                "typeP": "enum",
+                "valeurs": {
+                    "*": "DATAMgCont"
+                },
+                "optionsP": [
+                    {
+                        "value": "OFF",
+                        "label": "OFF"
+                    },
+                    {
+                        "value": "DATABrutCont",
+                        "label": "DATABrutCont"
+                    },
+                    {
+                        "value": "DATAGeoCont",
+                        "label": "DATAGeoCont"
+                    },
+                    {
+                        "value": "DATAGeoMoy",
+                        "label": "DATAGeoMoy"
+                    },
+                    {
+                        "value": "DATAMgCont",
+                        "label": "DATAMgCont"
+                    },
+                    {
+                        "value": "DATAMgMoy",
+                        "label": "DATAMgMoy"
+                    }
+                ]
+            }
+        ]
+    },
+    "CamSE": {
+        "nomVarG": "CamSE",
+        "nomCpletVarG": "",
+        "instances": [
+            "*"
+        ],
+        "descriptionVarG": "Caméra Smartphone",
+        "dateUpdateVarG": "2026-03-27T07:35:14.000Z",
+        "proprietes": [
+            {
+                "nomP": "modeCam",
+                "nomCpletP": "",
+                "descriptionP": "Mode Caméra - Config",
+                "typeP": "enum",
+                "valeurs": {
+                    "*": "stream"
+                },
+                "optionsP": [
+                    {
+                        "value": "off",
+                        "label": "off"
+                    },
+                    {
+                        "value": "stream",
+                        "label": "stream"
+                    },
+                    {
+                        "value": "snapshot",
+                        "label": "snapshot"
+                    }
+                ]
+            },
+            {
+                "nomP": "snap",
+                "nomCpletP": "",
+                "descriptionP": "Capture Image - Event",
+                "typeP": "event",
+                "valeurs": {
+                    "*": null
+                }
+            },
+            {
+                "nomP": "error",
+                "nomCpletP": "",
+                "descriptionP": "Erreur Caméra - Status",
+                "typeP": "enum",
+                "valeurs": {
+                    "*": null
+                },
+                "optionsP": [
+                    {
+                        "value": "CAM_START_FAIL",
+                        "label": "CAM_START_FAIL"
+                    },
+                    {
+                        "value": "CAM_IP_FAIL",
+                        "label": "CAM_IP_FAIL"
+                    },
+                    {
+                        "value": "CAM_CONFIG_FAIL",
+                        "label": "CAM_CONFIG_FAIL"
+                    }
+                ]
+            }
+        ]
+    },
+    "MicroSE": {
+        "nomVarG": "MicroSE",
+        "nomCpletVarG": "",
+        "instances": [
+            "*"
+        ],
+        "descriptionVarG": "Microphone Ambiance",
+        "dateUpdateVarG": "2026-03-27T07:35:14.000Z",
+        "proprietes": [
+            {
+                "nomP": "rms",
+                "nomCpletP": "",
+                "descriptionP": "Niveau RMS - Flux",
+                "typeP": "number",
+                "valeurs": {
+                    "*": null
+                }
+            },
+            {
+                "nomP": "dir",
+                "nomCpletP": "",
+                "descriptionP": "Direction (deg x 10) - Flux",
+                "typeP": "number",
+                "valeurs": {
+                    "*": null
+                }
+            },
+            {
+                "nomP": "modeMicro",
+                "nomCpletP": "",
+                "descriptionP": "Mode Micro - Config",
+                "typeP": "enum",
+                "valeurs": {
+                    "*": "intensite"
+                },
+                "optionsP": [
+                    {
+                        "value": "off",
+                        "label": "off"
+                    },
+                    {
+                        "value": "normal",
+                        "label": "normal"
+                    },
+                    {
+                        "value": "intensite",
+                        "label": "intensite"
+                    },
+                    {
+                        "value": "orientation",
+                        "label": "orientation"
+                    },
+                    {
+                        "value": "surveillance",
+                        "label": "surveillance"
+                    }
+                ]
+            }
+        ]
+    },
+    "Voice": {
+        "nomVarG": "Voice",
+        "nomCpletVarG": "",
+        "instances": [
+            "*"
+        ],
+        "descriptionVarG": "Synthèse Vocale",
+        "dateUpdateVarG": "2026-03-27T07:35:14.000Z",
+        "proprietes": [
+            {
+                "nomP": "tts",
+                "nomCpletP": "",
+                "descriptionP": "Phrase - Commande",
+                "typeP": "string",
+                "valeurs": {
+                    "*": null
+                }
+            },
+            {
+                "nomP": "vol",
+                "nomCpletP": "",
+                "descriptionP": "Volume (%) - Config",
+                "typeP": "number",
+                "valeurs": {
+                    "*": null
+                }
+            }
+        ]
+    },
+    "Appli": {
+        "nomVarG": "Appli",
+        "nomCpletVarG": "",
+        "instances": [
+            "*"
+        ],
+        "descriptionVarG": "Gestionnaire Apps",
+        "dateUpdateVarG": "2026-03-27T07:35:14.000Z",
+        "proprietes": [
+            {
+                "nomP": "launch",
+                "nomCpletP": "",
+                "descriptionP": "Lancer App - Commande",
+                "typeP": "string",
+                "valeurs": {
+                    "*": null
+                }
+            },
+            {
+                "nomP": "close",
+                "nomCpletP": "",
+                "descriptionP": "Fermer App - Commande",
+                "typeP": "string",
+                "valeurs": {
+                    "*": null
+                }
+            }
+        ]
+    },
+    "TorchSE": {
+        "nomVarG": "TorchSE",
+        "nomCpletVarG": "",
+        "instances": [
+            "*"
+        ],
+        "descriptionVarG": "Torche Smartphone",
+        "dateUpdateVarG": "2026-03-27T07:35:14.000Z",
+        "proprietes": [
+            {
+                "nomP": "act",
+                "nomCpletP": "",
+                "descriptionP": "Flash ON/OFF - Config",
+                "typeP": "boolean",
+                "valeurs": {
+                    "*": null
+                }
+            },
+            {
+                "nomP": "level",
+                "nomCpletP": "",
+                "descriptionP": "Intensité Flash - Config",
+                "typeP": "number",
+                "valeurs": {
+                    "*": null
+                }
+            }
+        ]
+    },
+    "COM": {
+        "nomVarG": "COM",
+        "nomCpletVarG": "",
+        "instances": [
+            "*"
+        ],
+        "descriptionVarG": "Communication Hub",
+        "dateUpdateVarG": "2026-03-27T07:35:14.000Z",
+        "proprietes": [
+            {
+                "nomP": "info",
+                "nomCpletP": "",
+                "descriptionP": "Debug Info - Status",
+                "typeP": "string",
+                "valeurs": {
+                    "*": null
+                }
+            },
+            {
+                "nomP": "ping",
+                "nomCpletP": "",
+                "descriptionP": "Latence MQTT - Flux",
+                "typeP": "number",
+                "valeurs": {
+                    "*": null
+                }
+            }
+        ]
+    },
+    "Mic": {
+        "nomVarG": "Mic",
+        "nomCpletVarG": "Micros Arduino (x3)",
+        "instances": [
+            "*"
+        ],
+        "descriptionVarG": "3 Micros identiques (avant, gauche, droite) avec deux familles de modes indépendantes (on peut prendre 1 de chaque en même temps :\n    • Flux : publication périodique de données (niveau moyen, angle, crête)\n    • Événements : détection de bruit par niveaux (InfoNuisce) ou présence sonore (DetectPresence)",
+        "dateUpdateVarG": "2026-04-02T07:06:21.494Z",
+        "proprietes": [
+            {
+                "nomP": "modeMicsF",
+                "nomCpletP": "",
+                "descriptionP": "Mode Flux Arduino (à opposé au mode Événement)",
+                "typeP": "string",
+                "optionsP": [
+                    {
+                        "value": "OFF",
+                        "label": "OFF (flux)"
+                    },
+                    {
+                        "value": "MOY",
+                        "label": "Moy"
+                    },
+                    {
+                        "value": "ANGLE",
+                        "label": "ANGLE"
+                    },
+                    {
+                        "value": "PIC",
+                        "label": "PIC"
+                    }
+                ],
+                "valeurs": {
+                    "*": "OFF"
+                }
+            },
+            {
+                "nomP": "modeMicsl",
+                "nomCpletP": "",
+                "descriptionP": "Mode détection événements sonores Arduino",
+                "typeP": "string",
+                "optionsP": [
+                    {
+                        "value": "OFF",
+                        "label": "OFF (événement sonore)"
+                    },
+                    {
+                        "value": "InfoNuisce",
+                        "label": "InfoNuisce"
+                    },
+                    {
+                        "value": "DetectePresence",
+                        "label": "DetectePresence"
+                    }
+                ],
+                "valeurs": {
+                    "*": "OFF"
+                }
+            }
+        ]
+    }
+}

@@ -1,0 +1,85 @@
+[
+  {
+    "id": "5939069230f330d1",
+    "type": "ui-table",
+    "z": "50ce8e26cb19560e",
+    "group": "e197d4821334d0c0",
+    "name": "Basic Table",
+    "label": "text",
+    "order": 4,
+    "width": 0,
+    "height": 0,
+    "maxrows": 0,
+    "passthru": false,
+    "autocols": true,
+    "showSearch": false,
+    "selectionType": "none",
+    "columns": [],
+    "x": 100,
+    "y": 40,
+    "wires": [
+      []
+    ]
+  },
+  {
+    "id": "e197d4821334d0c0",
+    "type": "ui-group",
+    "name": "Basic Table",
+    "page": "fe17aaa264cca45a",
+    "width": "6",
+    "height": "1",
+    "order": 2,
+    "showTitle": false,
+    "className": "",
+    "visible": "true",
+    "disabled": "false"
+  },
+  {
+    "id": "fe17aaa264cca45a",
+    "type": "ui-page",
+    "name": "Table",
+    "ui": "72c1e5a9ec204878",
+    "path": "/table",
+    "icon": "table",
+    "layout": "notebook",
+    "theme": "5075a7d8e4947586",
+    "order": 13,
+    "className": "",
+    "visible": "true",
+    "disabled": "false"
+  },
+  {
+    "id": "72c1e5a9ec204878",
+    "type": "ui-base",
+    "name": "My Dashboard",
+    "path": "/dashboard",
+    "includeClientData": true,
+    "acceptsClientConfig": [
+      "ui-notification",
+      "ui-control",
+      "ui-chart"
+    ],
+    "showPathInSidebar": false,
+    "showPageTitle": true,
+    "navigationStyle": "default",
+    "titleBarStyle": "default"
+  },
+  {
+    "id": "5075a7d8e4947586",
+    "type": "ui-theme",
+    "name": "Default Theme",
+    "colors": {
+      "surface": "#ffffff",
+      "primary": "#0094CE",
+      "bgPage": "#eeeeee",
+      "groupBg": "#ffffff",
+      "groupOutline": "#cccccc"
+    },
+    "sizes": {
+      "pagePadding": "12px",
+      "groupGap": "12px",
+      "groupBorderRadius": "4px",
+      "widgetGap": "12px"
+    }
+  }
+]

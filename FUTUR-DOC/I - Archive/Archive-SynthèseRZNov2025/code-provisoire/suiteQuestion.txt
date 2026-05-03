@@ -1,0 +1,17 @@
+Actuellement si j'ai une variable, je lui donne :
+un nom qui me sert aussi de kley, une abréviation, un type (via un menu), une propriété, une description
+rque 1 : je ne suis pas sur que l'on ai besoin d'un champ "type" pour la variable, ceux sont toutes des objets. J'avais prévue ce type pour enregistrer des variables simples venant de memory only. 
+Mais dans ce cas on pourra enregistré leur type directement dans la propriété associée, et ainsi reconstruire la variable memory correctement.
+
+Gestion des champs des variables :
+si la variable n'a pas d'instance pour l'instant, je met "*" ce qui génère une instance par defaut (un tableau des instances avec une seule instance), pour pouvoir lui donner une valeur (je peut également faire évoluer cette variable en ajoutant ultérieurement des instances).
+si la variable à plusieurs instances  je saisie un tableau des instances. 
+si une variable n'a pas de propriété, elle ne peut avoir de valeur, aussi de la même façon, la création d'une variable devrait générer automatiquement une propriété par défaut "*" . Remarque 2 : c'est peut-être de ne pas avoir créé une propriété par défaut qui nous génére des bugs
+si une variable à une propriété et on a vu que ce serait nécessaire, même une propriété par defaut, il faut que cette propriété ai un type, on peut prendre un type simple string et une valeur ND rque : ou ce qui te semblera pertinent. Rque 3 si la variable a été généré par synchronisation (elle n'existait pas avant dans le fichier), on complétera avec les mêmes règles les champs (il faudra revérifier la fonction synchronisation)
+Dans l'organisation proposée toutes les variables ont une instance, une propriété qui a un type et une valeur (même indéfini).
+Partant d'ici on veut pouvoir ajouter des propriétés, des instances. On doit pouvoir ajouter des instances. En sachant une régle absolu toutes les instances d'une propriété sont de même type et de même schéma.
+le template du flow actuel gère bien l'implémentation des propriétés simple (string, date, integer, boolean). 
+Je pense qu'en ajoutant à toutes les propriétés un champ DefautVal qui est la structure de ce que j'appelais schéma pour les objets et tableaux.
+Ainsi toutes les variables auraient une structure commune : Nom, Abreviation,Instance(s),Propriété(s),Abreviation de propriété(s), TypePropriété, ValeurPardefaut, Valeur(s)ParInstance(s)
+
+Ton avis sur ce schéma ?

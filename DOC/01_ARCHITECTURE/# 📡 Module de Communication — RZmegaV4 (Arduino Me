@@ -1,0 +1,13 @@
+# 📡 Module de Communication — RZmegaV4 (Arduino Mega + SE + Node-RED)
+
+## 🔍 Objectif du module
+
+Ce module gère la **communication série bidirectionnelle** entre l’Arduino Mega et le **Smartphone Embarqué (SE)**.  
+Il décode les messages structurés au format **VPIV**, exécute les traitements associés et renvoie des **accusés** ou **erreurs**.
+
+L’Arduino est connecté en USB au SE (via un switch d’alimentation) et les messages sont ensuite relayés vers le **Smartphone Pilote (SP)** via **MQTT** et **Node-RED**.
+
+---
+
+## 🧱 Architecture du projet
+

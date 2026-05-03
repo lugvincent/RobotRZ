@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Synthèse Session 27-28 Avril 2026 — RobotRZ</title>
+<style>
+:root{--bg:#0d1117;--bg2:#161b22;--bg3:#21262d;--text:#e6edf3;--text2:#8b949e;--text3:#484f58;--green:#3fb950;--orange:#d29922;--blue:#58a6ff;--purple:#bc8cff;--red:#f85149;--coral:#ff7b72;--border:rgba(240,246,252,0.1)}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;font-size:14px;line-height:1.7;padding:32px 16px 80px}
+.page{max-width:900px;margin:0 auto}
+h1{font-size:24px;font-weight:600;border-bottom:1px solid var(--border);padding-bottom:16px;margin-bottom:8px}
+h2{font-size:16px;font-weight:600;color:var(--blue);margin:28px 0 12px;display:flex;align-items:center;gap:8px}
+h2::before{content:'';display:inline-block;width:4px;height:16px;background:var(--blue);border-radius:2px}
+h3{font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.8px;color:var(--text2);margin:16px 0 8px;padding-bottom:6px;border-bottom:1px solid var(--border)}
+.sub{color:var(--text2);font-size:13px;margin-bottom:28px}
+.sec{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:20px 24px;margin-bottom:18px}
+code{font-family:'Courier New',monospace;font-size:12px;background:var(--bg3);color:var(--orange);padding:2px 6px;border-radius:4px}
+pre{font-family:'Courier New',monospace;font-size:12px;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:14px 16px;margin:10px 0;overflow-x:auto;line-height:1.6;color:#c9d1d9;white-space:pre-wrap}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:10px 0}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin:10px 0}
+.card{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:14px}
+.card-title{font-size:11px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px}
+table{width:100%;border-collapse:collapse;font-size:12.5px;margin:10px 0}
+th{background:var(--bg3);color:var(--text2);font-weight:600;padding:8px 12px;text-align:left;border-bottom:1px solid var(--border)}
+td{padding:7px 12px;border-bottom:1px solid var(--border);color:var(--text2)}
+tr:last-child td{border-bottom:none}
+.al{border-radius:8px;padding:10px 14px;font-size:13px;margin:10px 0;display:flex;gap:8px;align-items:flex-start}
+.al-ok{background:rgba(63,185,80,.08);border:1px solid rgba(63,185,80,.25);color:var(--green)}
+.al-warn{background:rgba(210,153,34,.08);border:1px solid rgba(210,153,34,.25);color:var(--orange)}
+.al-red{background:rgba(248,81,73,.08);border:1px solid rgba(248,81,73,.25);color:var(--red)}
+.cl{list-style:none;margin:8px 0}
+.cl li{padding:4px 0;font-size:13px;display:flex;align-items:flex-start;gap:8px;color:var(--text2)}
+.cl li::before{content:'✅';flex-shrink:0}
+.cl li.warn::before{content:'⚠️'}
+.cl li.todo::before{content:'📋'}
+.cl li.red::before{content:'🔴'}
+.step{display:flex;gap:12px;margin:8px 0}
+.sn{width:24px;height:24px;background:#1f6feb;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;color:white;min-width:24px}
+.sc{flex:1;padding-top:2px;font-size:13px;color:var(--text2)}
+p{margin:6px 0;color:var(--text2);font-size:13px}
+ul{padding-left:18px;margin:6px 0}
+ul li{font-size:13px;color:var(--text2);margin:3px 0}
+strong{color:var(--text)}
+hr{border:none;border-top:1px solid var(--border);margin:28px 0}
+.badge{display:inline-block;padding:2px 10px;border-radius:20px;font-size:11px;font-weight:600;margin-left:8px;vertical-align:middle}
+.b-ok{background:rgba(63,185,80,.15);color:var(--green);border:1px solid rgba(63,185,80,.3)}
+.b-wip{background:rgba(210,153,34,.15);color:var(--orange);border:1px solid rgba(210,153,34,.3)}
+.b-todo{background:rgba(88,166,255,.15);color:var(--blue);border:1px solid rgba(88,166,255,.3)}
+@media(max-width:600px){.g2,.g3{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="page">
+<h1>Synthèse Session 27-28 Avril 2026 — RobotRZ</h1>
+<p class="sub">État des lieux complet, travaux réalisés, sécurité, prochaines étapes</p>
+
+<h2>1. Bilan des 7 étapes réalisées</h2>
+<div class="sec">
+<table>
+<tr><th>Étape</th><th>Module</th><th>Résultat</th><th>Statut</th></tr>
+<tr><td>1</td><td>SE/statut Sys</td><td>Réception et parsing Node-RED validés. Dashboard CPU/RAM/Temp/Stockage/Batt fonctionnel.</td><td><span class="badge b-ok">✅</span></td></tr>
+<tr><td>2</td><td>Gyro LSM6DS3C</td><td>Flux dataContGyro reçu. Parsing Gx/Gy/Gz. Dashboard rad/s validé.</td><td><span class="badge b-ok">✅</span></td></tr>
+<tr><td>3</td><td>Mag MMC3630KJ</td><td>Flux DataContMg reçu. Cap en degrés et point cardinal validés.</td><td><span class="badge b-ok">✅</span></td></tr>
+<tr><td>4</td><td>Flux SP→SE</td><td>Commande modeRZ validée bout en bout. global.json mis à jour sur SE.</td><td><span class="badge b-ok">✅</span></td></tr>
+<tr><td>5</td><td>error_handler + mqtt_bridge</td><td>Architecture FIFO appliquée. Credentials keys.json. VPIV natif Arduino.</td><td><span class="badge b-ok">✅</span></td></tr>
+<tr><td>6</td><td>rz_start.sh</td><td>Script de démarrage automatique v1.0 avec --stop et --status.</td><td><span class="badge b-ok">✅</span></td></tr>
+<tr><td>7</td><td>CamSE</td><td>rz_camera_manager.sh v3.0. Délégation Tasker. Test serveur HTTP validé.</td><td><span class="badge b-wip">⏳</span></td></tr>
+</table>
+</div>
+
+<h2>2. Nouveaux fichiers créés / modifiés</h2>
+<div class="sec">
+<div class="g2">
+<div class="card">
+<div class="card-title">SE — Termux</div>
+<ul>
+<li><code>scripts/core/rz_start.sh</code> v1.0 — nouveau</li>
+<li><code>scripts/core/rz_vpiv_parser.sh</code> v2.1 — routage CamSE</li>
+<li><code>scripts/core/mqtt_bridge.py</code> v2.0 — credentials keys.json</li>
+<li><code>scripts/utils/error_handler.sh</code> v2.0 — architecture FIFO</li>
+<li><code>scripts/sensors/cam/rz_camera_manager.sh</code> v3.0 — délégation Tasker</li>
+<li><code>config/courant_init.json</code> v5.1 — config complète SE</li>
+<li><code>config/keys.json</code> — credentials (non versionné)</li>
+</ul>
+</div>
+<div class="card">
+<div class="card-title">SP — Node-RED</div>
+<ul>
+<li>Flux <code>Diag_SE_Statut</code> v3.0 — Sys+Gyro+Mag</li>
+<li>Flux <code>RZ_GestionFlux_V3</code> — bus VPIV refait</li>
+<li>Suppression <code>RZ_GestionFlux_V2</code></li>
+<li>Links <code>EVT_RAW_IN</code> et <code>CMD_FROM_BRAIN</code> rebanchés</li>
+</ul>
+</div>
+</div>
+</div>
+
+<h2>3. Corrections architecturales importantes</h2>
+<div class="sec">
+<ul class="cl">
+<li>Format VPIV canonique corrigé : <code>$CAT:VAR:PROP:INST:VAL#</code> (PROP avant INST)</li>
+<li>Topics MQTT réels appliqués partout : <code>SE/statut</code> et <code>SE/commande</code></li>
+<li>Contexte global Node-RED <code>global.RZ_&lt;VAR&gt;</code> alimenté par RZ_GestionFlux_V3</li>
+<li>Filtre CAT=V/A dans l'encodeur (stoppe la boucle de rétroaction ACK)</li>
+<li>COM et Urg ajoutés dans VARS_SE (routage correct vers SE/commande)</li>
+<li>fn_extract_sys_v2 : flow.get/set pour conserver les métriques entre trames</li>
+<li>fn_dispatch_* : messages séparés par métrique (corrige [object Object])</li>
+</ul>
+</div>
+
+<h2>4. Incident sécurité</h2>
+<div class="sec">
+<div class="al al-red">
+    <span>🔴</span>
+    <span><strong>Flux malveillant détecté et supprimé.</strong> Un flux Node-RED créant un utilisateur système (<code>jim</code>) a été injecté via l'interface Node-RED accessible sans authentification depuis internet (DuckDNS). La commande a échoué (user non créé). Le flux a été supprimé immédiatement.</span>
+</div>
+<h3>Actions correctives réalisées</h3>
+<ul class="cl">
+<li>adminAuth activé dans settings.js — Node-RED protégé par mot de passe</li>
+<li>Clé API Gemini révoquée et régénérée</li>
+<li>keys.json retiré de l'historique Git (git filter-branch)</li>
+<li>keys.json ajouté au .gitignore</li>
+<li>Aucune connexion SSH suspecte confirmée (logs vérifiés)</li>
+</ul>
+<div class="al al-warn">
+    <span>⚠️</span>
+    <span>Node-RED accessible via DuckDNS sur internet. L'authentification est maintenant active. Envisager également de restreindre l'accès par IP dans settings.js si le pilotage distant n'est pas nécessaire.</span>
+</div>
+</div>
+
+<h2>5. Synchronisation Git</h2>
+<div class="sec">
+<pre>Dépôt : https://github.com/lugvincent/RobotRZ
+Branche : main
+Dernier commit : Session 28 avril — CamSE v3.0 + rz_start.sh v1.0
+
+Fichiers exclus du versionnage (.gitignore) :
+  termux/config/keys.json        ← credentials sensibles
+  termux/config/*_runtime.json   ← générés par check_config.sh
+  termux/logs/                   ← logs runtime
+  termux/config/sensors/*.json   ← générés par check_config.sh
+  termux/scripts/sensors/stt/lib_pocketsphinx/  ← modèle STT lourd
+  .env                           ← variables d'environnement</pre>
+<div class="al al-warn">
+    <span>⚠️</span>
+    <span>Après chaque clone ou nouvelle installation, créer manuellement <code>termux/config/keys.json</code> avec GEMINI_API_KEY, MQTT_USER, MQTT_PASS, MQTT_HOST.</span>
+</div>
+</div>
+
+<h2>6. Architecture globale confirmée</h2>
+<div class="sec">
+<table>
+<tr><th>Composant</th><th>Rôle</th><th>Topics / FIFOs</th></tr>
+<tr><td>SP Node-RED (RPI)</td><td>Pilote maître — règles métier, dashboard, init</td><td>SE/statut (IN), SE/commande (OUT)</td></tr>
+<tr><td>Broker MQTT (RPI)</td><td>192.168.1.40:1883 — routage messages</td><td>SE/statut, SE/commande, SE/arduino/data</td></tr>
+<tr><td>SE Termux (Doro)</td><td>Cerveau embarqué — capteurs, bridge Arduino</td><td>fifo_termux_in, fifo_tasker_in, fifo_voice_in...</td></tr>
+<tr><td>SE Tasker (Doro)</td><td>Apps Android — caméra, expressions, TTS</td><td>Via Termux:Tasker (CAT=A)</td></tr>
+<tr><td>Arduino Mega</td><td>Actionneurs — moteurs, LEDs, capteurs US</td><td>USB-C → SE → SE/arduino/data</td></tr>
+</table>
+</div>
+
+<h2>7. Prochaines sessions</h2>
+<div class="sec">
+<div class="step"><div class="sn">A</div><div class="sc"><strong>Projet Tasker</strong> — Créer RZ_CamStart/Stop, expressions faciales, gestion apps. Structurer en projet XML propre.</div></div>
+<div class="step"><div class="sn">B</div><div class="sc"><strong>Modules SE restants</strong> — Torch, Voice, Mic, STT. Tests et validation un par un.</div></div>
+<div class="step"><div class="sn">C</div><div class="sc"><strong>SF_Init_SE dans Gtion_Init</strong> — Envoi automatique config SP→SE après SE_READY (enrichedVars → trames VPIV).</div></div>
+<div class="step"><div class="sn">D</div><div class="sc"><strong>Relais Odom</strong> — Gz (Gyro) et cap géo (Mag) vers Arduino via Node-RED.</div></div>
+<div class="step"><div class="sn">E</div><div class="sc"><strong>Bridge Arduino</strong> — Test mqtt_bridge.py avec connexion USB-C Arduino Mega réelle.</div></div>
+<div class="step"><div class="sn">F</div><div class="sc"><strong>ui_Accueil_v3</strong> — Finaliser les liens non complétés et tester l'initialisation complète du système.</div></div>
+</div>
+
+<hr>
+<p style="text-align:center;color:var(--text3);font-size:12px;margin-top:24px">Projet RobotRZ — Synthèse session 27-28 avril 2026 — Vincent Philippe</p>
+</div>
+</body>
+</html>

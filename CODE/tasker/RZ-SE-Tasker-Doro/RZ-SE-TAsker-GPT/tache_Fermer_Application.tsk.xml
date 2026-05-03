@@ -1,0 +1,11 @@
+<Task sr="task0" ve="2">
+	<Name>Tache_Fermer_Application</Name>
+	<Action sr="act0" ve="7">
+		<code>130</code>
+		<Str sr="arg0">am force-stop com.termux</Str>
+	</Action>
+	<Action sr="act1" ve="7">
+		<code>130</code>
+		<Str sr="arg0">input keyevent 3</Str>
+	</Action>
+</Task>

@@ -1,0 +1,25 @@
+╔══════════════════════════════════════════════════════╗
+║                    NANO (AZERTY FR)                  ║
+╠══════════════════════════════════════════════════════╣
+║ Sauver fichier        :  Ctrl + O   (puis Entrée)     ║
+║ Quitter               :  Ctrl + X                    ║
+║ Aide                  :  Ctrl + G                    ║
+║                                                          ║
+║ Couper une ligne      :  Ctrl + K                    ║
+║ Coller                :  Ctrl + U                    ║
+║ Sélectionner (marquer):  Ctrl + Maj + 6              ║
+║ Supprimer sélection   :  Ctrl + K                    ║
+║                                                          ║
+║ Début de ligne        :  Ctrl + A                    ║
+║ Fin de ligne          :  Ctrl + E                    ║
+║ Page précédente       :  Ctrl + Y                    ║
+║ Page suivante         :  Ctrl + V                    ║
+║ Aller à ligne/colonne :  Ctrl + _   (ex: 1,1)        ║
+║                                                          ║
+║ Rechercher            :  Ctrl + W                    ║
+║ Rechercher suivant    :  Ctrl + W puis Ctrl + W      ║
+║ Rechercher/Remplacer  :  Ctrl + \                    ║
+║                                                          ║
+║ Annuler               :  Alt  + U                    ║
+║ Rétablir              :  Alt  + E                    ║
+╚══════════════════════════════════════════════════════╝

@@ -1,0 +1,1260 @@
+{
+    "enrichedVars": {
+        "CfgS": {
+            "nomVarG": "CfgS",
+            "nomCpletVarG": "Config Système",
+            "instances": [
+                "*"
+            ],
+            "descriptionVarG": " Var centrale : choix du mode de fonctionnement, du type de pilotage,...",
+            "dateUpdateVarG": "2026-03-27T07:35:14.000Z",
+            "proprietes": [
+                {
+                    "nomP": "modeRZ",
+                    "nomCpletP": "",
+                    "descriptionP": "Mode de fonctionnement - Config",
+                    "typeP": "enum",
+                    "valeurs": {
+                        "*": "2"
+                    },
+                    "optionsP": [
+                        {
+                            "value": "0",
+                            "label": "ARRET"
+                        },
+                        {
+                            "value": "1",
+                            "label": "VEILLE"
+                        },
+                        {
+                            "value": "2",
+                            "label": "FIXE"
+                        },
+                        {
+                            "value": "3",
+                            "label": "DEPLACEMENT"
+                        },
+                        {
+                            "value": "4",
+                            "label": "AUTONOME"
+                        },
+                        {
+                            "value": "5",
+                            "label": "ERREUR"
+                        }
+                    ]
+                },
+                {
+                    "nomP": "typePtge",
+                    "nomCpletP": "",
+                    "descriptionP": "Type de Pilotage - Config",
+                    "typeP": "enum",
+                    "valeurs": {
+                        "*": "3"
+                    },
+                    "optionsP": [
+                        {
+                            "value": "0",
+                            "label": "ECRAN"
+                        },
+                        {
+                            "value": "1",
+                            "label": "VOCALE"
+                        },
+                        {
+                            "value": "2",
+                            "label": "JOYSTICK"
+                        },
+                        {
+                            "value": "3",
+                            "label": "LAISSE"
+                        },
+                        {
+                            "value": "4",
+                            "label": "LAISSE+VOCALE"
+                        }
+                    ]
+                },
+                {
+                    "nomP": "reset",
+                    "nomCpletP": "",
+                    "descriptionP": "Reset Logiciel - Event",
+                    "typeP": "event",
+                    "valeurs": {
+                        "*": null
+                    }
+                },
+                {
+                    "nomP": "emg",
+                    "nomCpletP": "",
+                    "descriptionP": "Urgence Logicielle - Event",
+                    "typeP": "enum",
+                    "valeurs": {
+                        "*": null
+                    },
+                    "optionsP": [
+                        {
+                            "value": "clear",
+                            "label": "clear"
+                        }
+                    ]
+                },
+                {
+                    "nomP": "typeReseau",
+                    "nomCpletP": "",
+                    "descriptionP": "Type de réseau - Config",
+                    "typeP": "enum",
+                    "valeurs": {
+                        "*": "WifiInternetBox"
+                    },
+                    "optionsP": [
+                        {
+                            "value": "4K",
+                            "label": "4K"
+                        },
+                        {
+                            "value": "Wifi4KSP",
+                            "label": "Wifi4KSP"
+                        },
+                        {
+                            "value": "WifiSPSsI",
+                            "label": "WifiSPSsI"
+                        },
+                        {
+                            "value": "WifiInternetBox",
+                            "label": "WifiInternetBox"
+                        }
+                    ]
+                }
+            ]
+        },
+        "Urg": {
+            "nomVarG": "Urg",
+            "nomCpletVarG": "Urgence v",
+            "instances": [
+                "*"
+            ],
+            "descriptionVarG": "Supervise les urgences : Toute urgence déclenche un blocage complet des commandes VPIV (sauf CfgS:emg et Urg:clear)",
+            "dateUpdateVarG": "2026-03-27T07:35:14.000Z",
+            "proprietes": [
+                {
+                    "nomP": "statut",
+                    "nomCpletP": "",
+                    "descriptionP": "État Urgence - Status",
+                    "typeP": "enum",
+                    "valeurs": {
+                        "*": null
+                    },
+                    "optionsP": [
+                        {
+                            "value": "cleared",
+                            "label": "cleared"
+                        },
+                        {
+                            "value": "active",
+                            "label": "active"
+                        }
+                    ]
+                },
+                {
+                    "nomP": "niveau",
+                    "nomCpletP": "",
+                    "descriptionP": "Niveau Alerte - Status",
+                    "typeP": "enum",
+                    "valeurs": {
+                        "*": null
+                    },
+                    "optionsP": [
+                        {
+                            "value": "warn",
+                            "label": "warn"
+                        },
+                        {
+                            "value": "danger",
+                            "label": "danger"
+                        }
+                    ]
+                },
+                {
+                    "nomP": "source",
+                    "nomCpletP": "",
+                    "descriptionP": "Origine Alerte - Status",
+                    "typeP": "enum",
+                    "valeurs": {
+                        "*": null
+                    },
+                    "optionsP": [
+                        {
+                            "value": "loop_slow",
+                            "label": "loop_slow"
+                        },
+                        {
+                            "value": "us_danger",
+                            "label": "us_danger"
+                        },
+                        {
+                            "value": "mvt_danger",
+                            "label": "mvt_danger"
+                        },
+                        {
+                            "value": "...",
+                            "label": "..."
+                        }
+                    ]
+                },
+                {
+                    "nomP": "clear",
+                    "nomCpletP": "",
+                    "descriptionP": "Acquitter Urgence - Event",
+                    "typeP": "boolean",
+                    "valeurs": {
+                        "*": null
+                    }
+                },
+                {
+                    "nomP": "etat",
+                    "nomCpletP": "",
+                    "descriptionP": "État Urgence - Status",
+                    "typeP": "enum",
+                    "valeurs": {
+                        "*": null
+                    },
+                    "optionsP": [
+                        {
+                            "value": "active",
+                            "label": "active"
+                        }
+                    ]
+                }
+            ]
+        },
+        "Mtr": {
+            "nomVarG": "Mtr",
+            "nomCpletVarG": "",
+            "instances": [
+                "*"
+            ],
+            "descriptionVarG": "Moteurs Propulsion",
+            "dateUpdateVarG": "2026-03-27T07:35:14.000Z",
+            "proprietes": [
+                {
+                    "nomP": "cmd",
+                    "nomCpletP": "",
+                    "descriptionP": "Consigne (VitL,VitR,Acc) - Commande",
+                    "typeP": "string",
+                    "valeurs": {
+                        "*": null
+                    }
+                },
+                {
+                    "nomP": "scale",
+                    "nomCpletP": "",
+                    "descriptionP": "Echelle Vitesse (x1000) - Config",
+                    "typeP": "number",
+                    "valeurs": {
+                        "*": "750"
+                    }
+                },
+                {
+                    "nomP": "kturn",
+                    "nomCpletP": "",
+                    "descriptionP": "Coeff Rotation (x1000) - Config",
+                    "typeP": "number",
+                    "valeurs": {
+                        "*": "800"
+                    }
+                },
+                {
+                    "nomP": "act",
+                    "nomCpletP": "",
+                    "descriptionP": "Activation Mtr - Config",
+                    "typeP": "boolean",
+                    "valeurs": {
+                        "*": "1"
+                    }
+                }
+            ]
+        },
+        "US": {
+            "nomVarG": "US",
+            "nomCpletVarG": "Ultrasons ",
+            "instances": [
+                "*",
+                "ArG",
+                "ArC",
+                "ArD",
+                "AvD",
+                "AvC",
+                "AvG",
+                "TtG",
+                "TtD",
+                "TtC"
+            ],
+            "descriptionVarG": "Ultra-Sons (9 capteurs) ",
+            "dateUpdateVarG": "2026-03-27T07:35:14.000Z",
+            "proprietes": [
+                {
+                    "nomP": "thd",
+                    "nomCpletP": "",
+                    "descriptionP": "Seuil Alerte (cm) - Config",
+                    "typeP": "number",
+                    "valeurs": {
+                        "*": "4",
+                        "ArG": "3",
+                        "ArC": "",
+                        "ArD": "",
+                        "AvD": "",
+                        "AvC": "",
+                        "AvG": "",
+                        "TtG": "",
+                        "TtD": "",
+                        "TtC": ""
+                    }
+                },
+                {
+                    "nomP": "freq",
+                    "nomCpletP": "",
+                    "descriptionP": "Fréquence Mesure (ms) - Config",
+                    "typeP": "number",
+                    "valeurs": {
+                        "*": "100",
+                        "ArG": null,
+                        "ArC": null,
+                        "ArD": null,
+                        "AvD": null,
+                        "AvC": null,
+                        "AvG": null,
+                        "TtG": null,
+                        "TtD": null,
+                        "TtC": null
+                    }
+                },
+                {
+                    "nomP": "delta",
+                    "nomCpletP": "",
+                    "descriptionP": "Seuil Publication (cm) - Config",
+                    "typeP": "number",
+                    "valeurs": {
+                        "*": "5",
+                        "ArG": null,
+                        "ArC": null,
+                        "ArD": null,
+                        "AvD": null,
+                        "AvC": null,
+                        "AvG": null,
+                        "TtG": null,
+                        "TtD": null,
+                        "TtC": null
+                    }
+                },
+                {
+                    "nomP": "act",
+                    "nomCpletP": "",
+                    "descriptionP": "Activation US - Config",
+                    "typeP": "boolean",
+                    "valeurs": {
+                        "*": "1",
+                        "ArG": null,
+                        "ArC": null,
+                        "ArD": null,
+                        "AvD": null,
+                        "AvC": null,
+                        "AvG": null,
+                        "TtG": null,
+                        "TtD": null,
+                        "TtC": null
+                    }
+                }
+            ]
+        },
+        "Odom": {
+            "nomVarG": "Odom",
+            "nomCpletVarG": "",
+            "instances": [
+                "*"
+            ],
+            "descriptionVarG": "Odométrie",
+            "dateUpdateVarG": "2026-03-27T07:35:14.000Z",
+            "proprietes": [
+                {
+                    "nomP": "pos",
+                    "nomCpletP": "",
+                    "descriptionP": "Position (mm/mrad) - Flux",
+                    "typeP": "string",
+                    "valeurs": {
+                        "*": null
+                    }
+                },
+                {
+                    "nomP": "vel",
+                    "nomCpletP": "",
+                    "descriptionP": "Vitesse (mm/s) - Flux",
+                    "typeP": "string",
+                    "valeurs": {
+                        "*": null
+                    }
+                },
+                {
+                    "nomP": "reset",
+                    "nomCpletP": "",
+                    "descriptionP": "Reset Odom - Event",
+                    "typeP": "event",
+                    "valeurs": {
+                        "*": null
+                    }
+                },
+                {
+                    "nomP": "paraOdom",
+                    "nomCpletP": "",
+                    "descriptionP": "Paramètres Physiques - Config",
+                    "typeP": "string",
+                    "valeurs": {
+                        "*": null
+                    }
+                },
+                {
+                    "nomP": "act",
+                    "nomCpletP": "",
+                    "descriptionP": "Activation Odom - Config",
+                    "typeP": "boolean",
+                    "valeurs": {
+                        "*": null
+                    }
+                }
+            ]
+        },
+        "SecMvt": {
+            "nomVarG": "SecMvt",
+            "nomCpletVarG": "",
+            "instances": [
+                "*"
+            ],
+            "descriptionVarG": "Sécurité Mouvement",
+            "dateUpdateVarG": "2026-03-27T07:35:14.000Z",
+            "proprietes": [
+                {
+                    "nomP": "thd",
+                    "nomCpletP": "",
+                    "descriptionP": "Seuils (warn,danger) - Config",
+                    "typeP": "string",
+                    "valeurs": {
+                        "*": null
+                    }
+                },
+                {
+                    "nomP": "mode",
+                    "nomCpletP": "",
+                    "descriptionP": "Mode Réaction - Config",
+                    "typeP": "enum",
+                    "valeurs": {
+                        "*": "soft"
+                    },
+                    "optionsP": [
+                        {
+                            "value": "soft",
+                            "label": "soft"
+                        },
+                        {
+                            "value": "hard",
+                            "label": "hard"
+                        },
+                        {
+                            "value": "idle",
+                            "label": "idle"
+                        }
+                    ]
+                },
+                {
+                    "nomP": "scale",
+                    "nomCpletP": "",
+                    "descriptionP": "Vitesse Max Sécu - Config",
+                    "typeP": "number",
+                    "valeurs": {
+                        "*": "500"
+                    }
+                },
+                {
+                    "nomP": "act",
+                    "nomCpletP": "",
+                    "descriptionP": "Activation Sécu - Config",
+                    "typeP": "boolean",
+                    "valeurs": {
+                        "*": "1"
+                    }
+                }
+            ]
+        },
+        "Lring": {
+            "nomVarG": "Lring",
+            "nomCpletVarG": "",
+            "instances": [
+                "*",
+                "1",
+                "2",
+                "3",
+                "4"
+            ],
+            "descriptionVarG": "Anneau LEDs",
+            "dateUpdateVarG": "2026-03-27T07:35:14.000Z",
+            "proprietes": [
+                {
+                    "nomP": "rgb",
+                    "nomCpletP": "",
+                    "descriptionP": "Couleur RGB - Commande",
+                    "typeP": "string",
+                    "valeurs": {
+                        "1": "6",
+                        "2": "6",
+                        "3": "6",
+                        "4": "6",
+                        "*": "6"
+                    }
+                },
+                {
+                    "nomP": "expr",
+                    "nomCpletP": "",
+                    "descriptionP": "Expression Tasker - Commande",
+                    "typeP": "string",
+                    "valeurs": {
+                        "*": null,
+                        "1": null,
+                        "2": null,
+                        "3": null,
+                        "4": null
+                    }
+                },
+                {
+                    "nomP": "lumin",
+                    "nomCpletP": "",
+                    "descriptionP": "Intensité (0-255) - Config",
+                    "typeP": "number",
+                    "valeurs": {
+                        "*": "128",
+                        "1": null,
+                        "2": null,
+                        "3": null,
+                        "4": null
+                    }
+                },
+                {
+                    "nomP": "timeout",
+                    "nomCpletP": "",
+                    "descriptionP": "Délai extinction (ms) - Config",
+                    "typeP": "number",
+                    "valeurs": {
+                        "*": null,
+                        "1": null,
+                        "2": null,
+                        "3": null,
+                        "4": null
+                    }
+                },
+                {
+                    "nomP": "act",
+                    "nomCpletP": "",
+                    "descriptionP": "Activation Anneau - Config",
+                    "typeP": "boolean",
+                    "valeurs": {
+                        "*": "1",
+                        "1": null,
+                        "2": null,
+                        "3": null,
+                        "4": null
+                    }
+                }
+            ]
+        },
+        "Lrub": {
+            "nomVarG": "Lrub",
+            "nomCpletVarG": "",
+            "instances": [
+                "*",
+                "1",
+                "2",
+                "3",
+                "4"
+            ],
+            "descriptionVarG": "Ruban LEDs",
+            "dateUpdateVarG": "2026-03-27T07:35:14.000Z",
+            "proprietes": [
+                {
+                    "nomP": "rgb",
+                    "nomCpletP": "",
+                    "descriptionP": "Couleur RGB - Commande",
+                    "typeP": "string",
+                    "valeurs": {
+                        "*": null,
+                        "1": null,
+                        "2": null,
+                        "3": null,
+                        "4": null
+                    }
+                },
+                {
+                    "nomP": "init",
+                    "nomCpletP": "",
+                    "descriptionP": "Initialisation - Event",
+                    "typeP": "event",
+                    "valeurs": {
+                        "*": null,
+                        "1": null,
+                        "2": null,
+                        "3": null,
+                        "4": null
+                    },
+                    "optionsP": [
+                        {
+                            "value": "1",
+                            "label": "1"
+                        }
+                    ]
+                },
+                {
+                    "nomP": "lumin",
+                    "nomCpletP": "",
+                    "descriptionP": "Luminosité - Config",
+                    "typeP": "number",
+                    "valeurs": {
+                        "1": "3",
+                        "2": "4",
+                        "3": "5",
+                        "4": "6",
+                        "*": "4"
+                    }
+                },
+                {
+                    "nomP": "timeout",
+                    "nomCpletP": "",
+                    "descriptionP": "Extinction auto - Config",
+                    "typeP": "number",
+                    "valeurs": {
+                        "*": null,
+                        "1": null,
+                        "2": null,
+                        "3": null,
+                        "4": null
+                    }
+                }
+            ]
+        },
+        "Ctrl_L": {
+            "nomVarG": "Ctrl_L",
+            "nomCpletVarG": "",
+            "instances": [
+                "*"
+            ],
+            "descriptionVarG": "Contrôle Laisse",
+            "dateUpdateVarG": "2026-03-27T07:35:14.000Z",
+            "proprietes": [
+                {
+                    "nomP": "act",
+                    "nomCpletP": "",
+                    "descriptionP": "Activation Laisse - Config",
+                    "typeP": "boolean",
+                    "valeurs": {
+                        "*": "1"
+                    }
+                },
+                {
+                    "nomP": "force",
+                    "nomCpletP": "",
+                    "descriptionP": "Tension mesurée - Flux",
+                    "typeP": "number",
+                    "valeurs": {
+                        "*": null
+                    }
+                },
+                {
+                    "nomP": "dist",
+                    "nomCpletP": "",
+                    "descriptionP": "Distance Laisse - Flux",
+                    "typeP": "number",
+                    "valeurs": {
+                        "*": "500"
+                    }
+                }
+            ]
+        },
+        "FS": {
+            "nomVarG": "FS",
+            "nomCpletVarG": "",
+            "instances": [
+                "*"
+            ],
+            "descriptionVarG": "Capteur de Force",
+            "dateUpdateVarG": "2026-03-27T07:35:14.000Z",
+            "proprietes": [
+                {
+                    "nomP": "val",
+                    "nomCpletP": "",
+                    "descriptionP": "Valeur Force - Flux",
+                    "typeP": "number",
+                    "valeurs": {
+                        "*": null
+                    }
+                },
+                {
+                    "nomP": "thd",
+                    "nomCpletP": "",
+                    "descriptionP": "Seuil Détection - Config",
+                    "typeP": "number",
+                    "valeurs": {
+                        "*": "80"
+                    }
+                },
+                {
+                    "nomP": "act",
+                    "nomCpletP": "",
+                    "descriptionP": "Activation FS - Config",
+                    "typeP": "boolean",
+                    "valeurs": {
+                        "*": "1"
+                    }
+                }
+            ]
+        },
+        "IRmvt": {
+            "nomVarG": "IRmvt",
+            "nomCpletVarG": "",
+            "instances": [
+                "*"
+            ],
+            "descriptionVarG": "Détecteur IR",
+            "dateUpdateVarG": "2026-03-27T07:35:14.000Z",
+            "proprietes": [
+                {
+                    "nomP": "val",
+                    "nomCpletP": "",
+                    "descriptionP": "Mouvement Détecté - Status",
+                    "typeP": "number",
+                    "valeurs": {
+                        "*": null
+                    }
+                },
+                {
+                    "nomP": "act",
+                    "nomCpletP": "",
+                    "descriptionP": "Activation IR - Config",
+                    "typeP": "boolean",
+                    "valeurs": {
+                        "*": "1"
+                    }
+                }
+            ]
+        },
+        "Srv": {
+            "nomVarG": "Srv",
+            "nomCpletVarG": "",
+            "instances": [
+                "*"
+            ],
+            "descriptionVarG": "Servomoteurs",
+            "dateUpdateVarG": "2026-03-27T07:35:14.000Z",
+            "proprietes": [
+                {
+                    "nomP": "ang",
+                    "nomCpletP": "",
+                    "descriptionP": "Angle (degrés) - Commande",
+                    "typeP": "number",
+                    "valeurs": {
+                        "*": null
+                    }
+                },
+                {
+                    "nomP": "act",
+                    "nomCpletP": "",
+                    "descriptionP": "Activation Servo - Config",
+                    "typeP": "boolean",
+                    "valeurs": {
+                        "*": "1"
+                    }
+                }
+            ]
+        },
+        "Sys": {
+            "nomVarG": "Sys",
+            "nomCpletVarG": "",
+            "instances": [
+                "*"
+            ],
+            "descriptionVarG": "Monitoring SE",
+            "dateUpdateVarG": "2026-03-27T07:35:14.000Z",
+            "proprietes": [
+                {
+                    "nomP": "batt",
+                    "nomCpletP": "",
+                    "descriptionP": "Batterie SE (%) - Flux",
+                    "typeP": "number",
+                    "valeurs": {
+                        "*": null
+                    }
+                },
+                {
+                    "nomP": "temp",
+                    "nomCpletP": "",
+                    "descriptionP": "Température CPU - Flux",
+                    "typeP": "number",
+                    "valeurs": {
+                        "*": null
+                    }
+                },
+                {
+                    "nomP": "cpu",
+                    "nomCpletP": "",
+                    "descriptionP": "Charge CPU (%) - Flux",
+                    "typeP": "number",
+                    "valeurs": {
+                        "*": null
+                    }
+                },
+                {
+                    "nomP": "freqCont",
+                    "nomCpletP": "",
+                    "descriptionP": "Intervalle (sec) - Config",
+                    "typeP": "number",
+                    "valeurs": {
+                        "*": null
+                    }
+                }
+            ]
+        },
+        "STT": {
+            "nomVarG": "STT",
+            "nomCpletVarG": "",
+            "instances": [
+                "*"
+            ],
+            "descriptionVarG": "Module Vocal",
+            "dateUpdateVarG": "2026-03-27T07:35:14.000Z",
+            "proprietes": [
+                {
+                    "nomP": "intent",
+                    "nomCpletP": "",
+                    "descriptionP": "Intention - Event",
+                    "typeP": "event",
+                    "valeurs": {
+                        "*": null
+                    }
+                },
+                {
+                    "nomP": "context",
+                    "nomCpletP": "",
+                    "descriptionP": "Contexte Vocal - Status",
+                    "typeP": "enum",
+                    "valeurs": {
+                        "*": null
+                    },
+                    "optionsP": [
+                        {
+                            "value": "Inactif",
+                            "label": "Inactif"
+                        },
+                        {
+                            "value": "Cmde",
+                            "label": "Cmde"
+                        },
+                        {
+                            "value": "Conv",
+                            "label": "Conv"
+                        },
+                        {
+                            "value": "Mixte",
+                            "label": "Mixte"
+                        }
+                    ]
+                },
+                {
+                    "nomP": "state",
+                    "nomCpletP": "",
+                    "descriptionP": "Microphone Actif - Status",
+                    "typeP": "boolean",
+                    "valeurs": {
+                        "*": null
+                    }
+                }
+            ]
+        },
+        "Gyro": {
+            "nomVarG": "Gyro",
+            "nomCpletVarG": "",
+            "instances": [
+                "*"
+            ],
+            "descriptionVarG": "Gyroscope SE",
+            "dateUpdateVarG": "2026-03-27T07:35:14.000Z",
+            "proprietes": [
+                {
+                    "nomP": "val",
+                    "nomCpletP": "",
+                    "descriptionP": "Valeurs (x,y,z) - Flux",
+                    "typeP": "string",
+                    "valeurs": {
+                        "*": null
+                    }
+                },
+                {
+                    "nomP": "mode",
+                    "nomCpletP": "",
+                    "descriptionP": "Mode Gyro - Config",
+                    "typeP": "enum",
+                    "valeurs": {
+                        "*": "DATACont"
+                    },
+                    "optionsP": [
+                        {
+                            "value": "OFF",
+                            "label": "OFF"
+                        },
+                        {
+                            "value": "DATACont",
+                            "label": "DATACont"
+                        },
+                        {
+                            "value": "DATAMoy",
+                            "label": "DATAMoy"
+                        },
+                        {
+                            "value": "ALERTE",
+                            "label": "ALERTE"
+                        }
+                    ]
+                },
+                {
+                    "nomP": "freqCont",
+                    "nomCpletP": "",
+                    "descriptionP": "Fréquence (Hz) - Config",
+                    "typeP": "number",
+                    "valeurs": {
+                        "*": null
+                    }
+                }
+            ]
+        },
+        "Mag": {
+            "nomVarG": "Mag",
+            "nomCpletVarG": "",
+            "instances": [
+                "*"
+            ],
+            "descriptionVarG": "Magnétomètre SE",
+            "dateUpdateVarG": "2026-03-27T07:35:14.000Z",
+            "proprietes": [
+                {
+                    "nomP": "val",
+                    "nomCpletP": "",
+                    "descriptionP": "Valeurs (x,y,z) - Flux",
+                    "typeP": "number",
+                    "valeurs": {
+                        "*": null
+                    }
+                },
+                {
+                    "nomP": "mode",
+                    "nomCpletP": "",
+                    "descriptionP": "Mode Mag - Config",
+                    "typeP": "enum",
+                    "valeurs": {
+                        "*": "DATAMgCont"
+                    },
+                    "optionsP": [
+                        {
+                            "value": "OFF",
+                            "label": "OFF"
+                        },
+                        {
+                            "value": "DATABrutCont",
+                            "label": "DATABrutCont"
+                        },
+                        {
+                            "value": "DATAGeoCont",
+                            "label": "DATAGeoCont"
+                        },
+                        {
+                            "value": "DATAGeoMoy",
+                            "label": "DATAGeoMoy"
+                        },
+                        {
+                            "value": "DATAMgCont",
+                            "label": "DATAMgCont"
+                        },
+                        {
+                            "value": "DATAMgMoy",
+                            "label": "DATAMgMoy"
+                        }
+                    ]
+                }
+            ]
+        },
+        "CamSE": {
+            "nomVarG": "CamSE",
+            "nomCpletVarG": "",
+            "instances": [
+                "*"
+            ],
+            "descriptionVarG": "Caméra Smartphone",
+            "dateUpdateVarG": "2026-03-27T07:35:14.000Z",
+            "proprietes": [
+                {
+                    "nomP": "modeCam",
+                    "nomCpletP": "",
+                    "descriptionP": "Mode Caméra - Config",
+                    "typeP": "enum",
+                    "valeurs": {
+                        "*": "stream"
+                    },
+                    "optionsP": [
+                        {
+                            "value": "off",
+                            "label": "off"
+                        },
+                        {
+                            "value": "stream",
+                            "label": "stream"
+                        },
+                        {
+                            "value": "snapshot",
+                            "label": "snapshot"
+                        }
+                    ]
+                },
+                {
+                    "nomP": "snap",
+                    "nomCpletP": "",
+                    "descriptionP": "Capture Image - Event",
+                    "typeP": "event",
+                    "valeurs": {
+                        "*": null
+                    }
+                },
+                {
+                    "nomP": "error",
+                    "nomCpletP": "",
+                    "descriptionP": "Erreur Caméra - Status",
+                    "typeP": "enum",
+                    "valeurs": {
+                        "*": null
+                    },
+                    "optionsP": [
+                        {
+                            "value": "CAM_START_FAIL",
+                            "label": "CAM_START_FAIL"
+                        },
+                        {
+                            "value": "CAM_IP_FAIL",
+                            "label": "CAM_IP_FAIL"
+                        },
+                        {
+                            "value": "CAM_CONFIG_FAIL",
+                            "label": "CAM_CONFIG_FAIL"
+                        }
+                    ]
+                }
+            ]
+        },
+        "MicroSE": {
+            "nomVarG": "MicroSE",
+            "nomCpletVarG": "",
+            "instances": [
+                "*"
+            ],
+            "descriptionVarG": "Microphone Ambiance",
+            "dateUpdateVarG": "2026-03-27T07:35:14.000Z",
+            "proprietes": [
+                {
+                    "nomP": "rms",
+                    "nomCpletP": "",
+                    "descriptionP": "Niveau RMS - Flux",
+                    "typeP": "number",
+                    "valeurs": {
+                        "*": null
+                    }
+                },
+                {
+                    "nomP": "dir",
+                    "nomCpletP": "",
+                    "descriptionP": "Direction (deg x 10) - Flux",
+                    "typeP": "number",
+                    "valeurs": {
+                        "*": null
+                    }
+                },
+                {
+                    "nomP": "modeMicro",
+                    "nomCpletP": "",
+                    "descriptionP": "Mode Micro - Config",
+                    "typeP": "enum",
+                    "valeurs": {
+                        "*": "intensite"
+                    },
+                    "optionsP": [
+                        {
+                            "value": "off",
+                            "label": "off"
+                        },
+                        {
+                            "value": "normal",
+                            "label": "normal"
+                        },
+                        {
+                            "value": "intensite",
+                            "label": "intensite"
+                        },
+                        {
+                            "value": "orientation",
+                            "label": "orientation"
+                        },
+                        {
+                            "value": "surveillance",
+                            "label": "surveillance"
+                        }
+                    ]
+                }
+            ]
+        },
+        "Voice": {
+            "nomVarG": "Voice",
+            "nomCpletVarG": "",
+            "instances": [
+                "*"
+            ],
+            "descriptionVarG": "Synthèse Vocale",
+            "dateUpdateVarG": "2026-03-27T07:35:14.000Z",
+            "proprietes": [
+                {
+                    "nomP": "tts",
+                    "nomCpletP": "",
+                    "descriptionP": "Phrase - Commande",
+                    "typeP": "string",
+                    "valeurs": {
+                        "*": null
+                    }
+                },
+                {
+                    "nomP": "vol",
+                    "nomCpletP": "",
+                    "descriptionP": "Volume (%) - Config",
+                    "typeP": "number",
+                    "valeurs": {
+                        "*": null
+                    }
+                }
+            ]
+        },
+        "Appli": {
+            "nomVarG": "Appli",
+            "nomCpletVarG": "",
+            "instances": [
+                "*"
+            ],
+            "descriptionVarG": "Gestionnaire Apps",
+            "dateUpdateVarG": "2026-03-27T07:35:14.000Z",
+            "proprietes": [
+                {
+                    "nomP": "launch",
+                    "nomCpletP": "",
+                    "descriptionP": "Lancer App - Commande",
+                    "typeP": "string",
+                    "valeurs": {
+                        "*": null
+                    }
+                },
+                {
+                    "nomP": "close",
+                    "nomCpletP": "",
+                    "descriptionP": "Fermer App - Commande",
+                    "typeP": "string",
+                    "valeurs": {
+                        "*": null
+                    }
+                }
+            ]
+        },
+        "TorchSE": {
+            "nomVarG": "TorchSE",
+            "nomCpletVarG": "",
+            "instances": [
+                "*"
+            ],
+            "descriptionVarG": "Torche Smartphone",
+            "dateUpdateVarG": "2026-03-27T07:35:14.000Z",
+            "proprietes": [
+                {
+                    "nomP": "act",
+                    "nomCpletP": "",
+                    "descriptionP": "Flash ON/OFF - Config",
+                    "typeP": "boolean",
+                    "valeurs": {
+                        "*": null
+                    }
+                },
+                {
+                    "nomP": "level",
+                    "nomCpletP": "",
+                    "descriptionP": "Intensité Flash - Config",
+                    "typeP": "number",
+                    "valeurs": {
+                        "*": null
+                    }
+                }
+            ]
+        },
+        "COM": {
+            "nomVarG": "COM",
+            "nomCpletVarG": "",
+            "instances": [
+                "*"
+            ],
+            "descriptionVarG": "Communication Hub",
+            "dateUpdateVarG": "2026-03-27T07:35:14.000Z",
+            "proprietes": [
+                {
+                    "nomP": "info",
+                    "nomCpletP": "",
+                    "descriptionP": "Debug Info - Status",
+                    "typeP": "string",
+                    "valeurs": {
+                        "*": null
+                    }
+                },
+                {
+                    "nomP": "ping",
+                    "nomCpletP": "",
+                    "descriptionP": "Latence MQTT - Flux",
+                    "typeP": "number",
+                    "valeurs": {
+                        "*": null
+                    }
+                }
+            ]
+        }
+    },
+    "ipListe": [
+        {
+            "id": "SmartP_IP_Direct",
+            "ip": "192.168.48.xx",
+            "description": "Adresse IP : 192.168.48.xx - Cas : SmartP_IP_Direct - Smartphone (partage de connexion)",
+            "etat": "indéfini"
+        },
+        {
+            "id": "RPI_IP_Wifi",
+            "ip": "192.168.1.40",
+            "description": "Adresse IP : 192.168.1.40 - Cas : RPI_IP_Wifi - Serveur RPI sur réseau local",
+            "etat": "non défini"
+        },
+        {
+            "id": "SmartPiloteViaBox",
+            "ip": "192.168.1.13",
+            "description": "Adresse IP : 192.168.1.13 - Cas : SmartPiloteViaBox - Le smartphone pilote utilise une adresse fourni par la box",
+            "etat": "indéfini"
+        }
+    ],
+    "lastUpdate": "2026-03-27T07:35:14.000Z",
+    "_meta": {
+        "generatedBy": "gen_globalSave.py v1.0",
+        "generatedAt": "2026-03-27T07:35:14.000Z",
+        "sources": [
+            "/mnt/user-data/uploads/New_globalSave.json",
+            "/mnt/user-data/uploads/TableVarSyntheseV2_sans_doublons.csv"
+        ]
+    }
+}

@@ -1,0 +1,42 @@
+---
+**Demande de résumé structuré pour intégration thématique**
+
+**Nom du chat original** :
+[Titre original du chat]
+
+**Thème associé (provisoire)** :
+[Choisir parmi : [Arduino], [Node-RED], [Tasker], [Application Tiers], [Robot Z], [Échanges de données]]
+Version proposée : [V1] ou [V1a] si variante
+
+**Nouveau titre proposé pour le chat thématique** :
+[Proposer un titre clair et précis, ex: "[Arduino] - Gestion des capteurs IR et ultrason (V1)"]
+
+**Contexte/Objectif de ce chat** :
+[En 1-2 phrases, rappeler le contexte ou l’objectif principal du chat, si nécessaire]
+
+**Consignes pour le résumé** :
+1. **Résumé partie générale** :
+   - Extraire les informations contextuelles, définitions, concepts clés, ou références utiles pour d’autres projets ou compréhension générale.
+   - Mentionner les outils, technologies ou protocoles abordés (ex: MQTT, Tasker, Arduino Mega, etc.).
+
+2. **Résumé partie spécifique au projet** :
+   - Se concentrer sur les détails techniques liés à mon projet de robot (code, schémas, décisions, problèmes/solutions, intégration avec d’autres composants).
+   - Indiquer les fichiers ou dossiers GitHub concernés (ex: `02_ARDUINO/Capteurs/IR_V1.ino`).
+   - Lister les actions ou décisions prises, ainsi que les évolutions possibles.
+
+3. **Liens et références** :
+   - Si ce chat est lié à d’autres thèmes ou chats, les mentionner explicitement (ex: "Voir aussi : [Échanges de données] - Format JSON pour MQTT (V1)").
+   - Indiquer les versions des outils ou bibliothèques utilisées, si pertinent.
+
+4. **Proposition de répartition** :
+   - Si ce chat couvre plusieurs thèmes, proposer une répartition claire des informations (ex: 60% [Arduino], 40% [Node-RED]).
+
+5. **Format de sortie** :
+   - Utiliser des titres clairs et des listes à puces pour faciliter la lecture.
+   - Inclure un encadré "Changelog" si des mises à jour sont nécessaires (ex: "Ajout de la gestion des capteurs IR en V1a").
+
+---
+**Remarque** :
+Ce résumé servira à alimenter le chat thématique "[Thème] - (Version)". Merci de respecter la structure pour une intégration fluide.
+---
+

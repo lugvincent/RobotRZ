@@ -1,0 +1,53 @@
+trace  mauvaise dir fichier global : $ cat /data/data/com.termux/files/home/node_red_data/context/global/global.json
+le bon : ~ $ nano /data/data/com.termux/files/home/.node-red/context/global/global.json
+
+Structure des fichiers Xiaomy :
+
+***********************
+~ $ dir
+600         Mes_Scripts     downloads      package-lock.json  storage          usb-serial-for-android
+Install-RZ  current_ip.txt  node_red_data  package.json       test_arduino.py
+*****************
+
+~ $ cd node_red_data
+~/node_red_data $ dir
+		context  sujets_mqtt.csv
+			~/node_red_data $ cd context
+			~/node_red_data/context $ dir
+					global
+~/node_red_data/context $ cd global
+~/.../context/global $ dir
+					global.json  global_backup.json
+~/.../context/global $
+
+****************************************
+~/600 $ dir
+rien
+*****************************************************************************
+
+****************
+~/Install-RZ $ dir
+Autres-Composants  Documentation  Node-RED  Scripts
+***************
+
+*******************
+~/Install-RZ/Node-RED $ dir
+rien
+*********************
+
+*******************************
+~/storage $ dir
+dcim  downloads  external-1  movies  music  pictures  shared
+****************
+
+***************************************
+~/storage/shared $ dir
+Android     DCIM      MIUI    Music    Pictures  Tasker    Xiaomi     mipush
+AudioBeats  Download  Movies  Musique  ReadEra   WhatsApp  keuwlsoft  myMqtt
+*************************************
+
+**********
+~/storage $ cd external-1
+~/storage/external-1 $ dir
+deblaque_usb_serial.py
+~/storage/external-1 $

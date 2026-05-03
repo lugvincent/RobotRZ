@@ -1,0 +1,129 @@
+{
+    "enrichedVars": {
+        "detectMouv": {
+            "nomVarG": "detectMouv",
+            "abbrVarG": "DMv",
+            "typeVarG": "object",
+            "instances": ["*"],
+            "descriptionVarG": "Détection de mouvement IR",
+            "dateUpdateVarG": "2025-09-02T13:51:09.275Z",
+            "proprietesByInstance": {
+                "proprietes": [
+                    {
+                        "nom": "actif",
+                        "abbr": "IrO",
+                        "type": "boolean",
+                        "defautVal": {
+                            "actif": {
+                                "typeP": "boolean",
+                                "defaut": false
+                            }
+                        },
+                        "valeurs": {
+                            "actif": false
+                        }
+                    },
+                    {
+                        "nom": "seuil",
+                        "abbr": "IrS",
+                        "type": "int",
+                        "defautVal": {
+                            "seuil": {
+                                "typeP": "int",
+                                "defaut": 20
+                            }
+                        },
+                        "valeurs": {
+                            "seuil": 20
+                        }
+                    }
+                ]
+            }
+        },
+        "leds_Ruban": {
+            "nomVarG": "leds_Ruban",
+            "abbrVarG": "LR",
+            "typeVarG": "object",
+            "instances": ["ARG0", "ARG1"],
+            "descriptionVarG": "Détection de mouvement IR",
+            "dateUpdateVarG": "2025-09-02T13:51:10.275Z",
+            "proprietesByInstance": {
+                "proprietes": [
+                    {
+                        "nom": "params",
+                        "abbr": "prm",
+                        "type": "object",
+                        "defautVal": {
+                            "active": {
+                                "typeP": "boolean",
+                                "defaut": false
+                            },
+                            "intensite": {
+                                "typeP": "int",
+                                "defaut": 50
+                            }
+                        },
+                        "valeurs": {
+                            "ARG0": {
+                                "active": true,
+                                "intensite": 80
+                            },
+                            "ARG1": {
+                                "active": false,
+                                "intensite": 50
+                            }
+                        }
+                    }
+                ]
+            }
+        }
+    },
+    "ipListe": [
+        {
+            "id": "SmartP_IP_Direct",
+            "ip": "192.168.48.xx",
+            "description": "Smartphone (partage de connexion)",
+            "etat": "indéfini"
+        },
+        {
+            "id": "RPI_IP_Wifi",
+            "ip": "192.168.1.38",
+            "description": "Serveur RPI sur réseau local",
+            "etat": "indéfini"
+        },
+        {
+            "id": "SmartPiloteViaBox",
+            "ip": "192.168.1.13",
+            "description": "Smartphone pilote via box",
+            "etat": "connecté"
+        },
+        {
+            "id": "RPI_IP_Serveur",
+            "ip": "",
+            "description": "Serveur RPI distant (nécessite SIM)",
+            "etat": "indisponible"
+        }
+    ],
+    "reglesVars": [
+        {
+            "var1": "us",
+            "val1": "*",
+            "var2": "ModeF",
+            "val2": "danger",
+            "var3": "led",
+            "val3": "*",
+            "action": "⚠️ Obstacle détecté",
+            "type": "affichage"
+        },
+        {
+            "var1": "servo",
+            "val1": "T:90",
+            "var2": "*",
+            "val2": "*",
+            "var3": "ModeF",
+            "val3": "auto",
+            "action": "Positionner la tête au centre",
+            "type": "mqtt"
+        }
+    ]
+}

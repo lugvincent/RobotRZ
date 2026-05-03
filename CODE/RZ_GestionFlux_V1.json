@@ -1,0 +1,167 @@
+[
+    {
+        "id": "c0a1f1d9a1f00101",
+        "type": "tab",
+        "label": "RZ_GestionFlux_V1",
+        "disabled": false,
+        "info": "Bus de transport logique – Aucun raisonnement métier\r\n✅ 1 seul point de sortie logique : EVT_RAW_IN\r\n\r\n✅ Aucune règle métier\r\n\r\n✅ Aucun blocage\r\n\r\n✅ Encodage VPIV\r\n\r\n✅ Choix du topic\r\n\r\n✅ Publication MQTT\r\n\r\n✅ Mise à jour des variables techniques\r\n\r\n✅ Commentaires d’entête et de sections\r\n\r\n✅ Code clair, lisible, extensible\r\n\r\n📌 Rôle rappelé (entête du flow)\r\n\r\nRZ_GestionFlux_V1 est le bus de transport logique du projet.\r\n\r\nIl :\r\n\r\nreçoit tous les événements bruts\r\n\r\nles normalise\r\n\r\nles encode VPIV\r\n\r\nles publie\r\n\r\nles redirige vers Gtion_EtatGlobal\r\n\r\nsans jamais décider\r\n\r\n🔗 Contrat de sortie UNIQUE\r\nmsg = {\r\n  source: \"UI\" | \"SYSTEM\" | \"VPIV\" | \"VAR_CHANGED\" | \"JOYSTICK\",\r\n  intent: \"REQUEST\" | \"UPDATE\" | \"STATUS\",\r\n  vpiv: { code, value },\r\n  topic: \"PtoA\" | \"PtoSE\" | \"AtoSP\" | \"SEtoSP\",\r\n  payload,\r\n  priority,\r\n  timestamp\r\n}\r\n****\r\n✅ Points clés validés\r\n\r\n✔ 1 seul point d’entrée logique vers Gtion_EtatGlobal\r\n\r\n✔ SF_Dispatcher devient le cerveau\r\n\r\n✔ RZ_GestionFlux est neutre, déterministe, sûr\r\n\r\n✔ Compatible Arduino / SE / UI / Tasker\r\n\r\n✔ Évolutif (joystick, capteurs, logs, replay…)"
+    },
+    {
+        "id": "c0a1f1d9a1f00102",
+        "type": "comment",
+        "z": "c0a1f1d9a1f00101",
+        "name": "RZ_GestionFlux_V1Rôle :- Centralise tous les événements bruts- Encode VPIV- Choisit le topic MQTT- Publie MQTT- Met à jour les variables techniques- Transmet à Gtion_EtatGlobal via EVT_RAW_IN⚠️ Ne bloque jamais⚠️ N’interprète aucune règle métier",
+        "info": "",
+        "x": 340,
+        "y": 40,
+        "wires": []
+    },
+    {
+        "id": "rz_evt_ui",
+        "type": "link in",
+        "z": "c0a1f1d9a1f00101",
+        "name": "EVT_UI",
+        "links": [],
+        "x": 60,
+        "y": 120,
+        "wires": [
+            [
+                "rz_normalize"
+            ]
+        ]
+    },
+    {
+        "id": "rz_evt_system",
+        "type": "link in",
+        "z": "c0a1f1d9a1f00101",
+        "name": "EVT_SYSTEM",
+        "links": [],
+        "x": 60,
+        "y": 160,
+        "wires": [
+            [
+                "rz_normalize"
+            ]
+        ]
+    },
+    {
+        "id": "rz_evt_vpiv",
+        "type": "link in",
+        "z": "c0a1f1d9a1f00101",
+        "name": "EVT_VPIV",
+        "links": [],
+        "x": 60,
+        "y": 200,
+        "wires": [
+            [
+                "rz_normalize"
+            ]
+        ]
+    },
+    {
+        "id": "rz_evt_var",
+        "type": "link in",
+        "z": "c0a1f1d9a1f00101",
+        "name": "EVT_VAR_CHANGED",
+        "links": [],
+        "x": 60,
+        "y": 240,
+        "wires": [
+            [
+                "rz_normalize"
+            ]
+        ]
+    },
+    {
+        "id": "rz_normalize",
+        "type": "function",
+        "z": "c0a1f1d9a1f00101",
+        "name": "Normalisation événement",
+        "func": "// Normalisation stricte – aucune décision\nmsg.timestamp = Date.now();\nmsg.priority = msg.priority || \"NORMAL\";\n\nif (!msg.source) {\n    if (msg.ui_event) msg.source = \"UI\";\n    else if (msg.system_event) msg.source = \"SYSTEM\";\n    else if (msg.vpiv) msg.source = \"VPIV\";\n    else msg.source = \"UNKNOWN\";\n}\n\nmsg.intent = msg.intent || \"REQUEST\";\nreturn msg;",
+        "outputs": 1,
+        "x": 350,
+        "y": 180,
+        "wires": [
+            [
+                "rz_encode_vpiv"
+            ]
+        ]
+    },
+    {
+        "id": "rz_encode_vpiv",
+        "type": "function",
+        "z": "c0a1f1d9a1f00101",
+        "name": "Encodage VPIV",
+        "func": "// Encode VPIV si absent\nif (!msg.vpiv && msg.var && msg.value !== undefined) {\n    msg.vpiv = {\n        code: msg.var,\n        value: msg.value\n    };\n}\nreturn msg;",
+        "outputs": 1,
+        "x": 600,
+        "y": 180,
+        "wires": [
+            [
+                "rz_choose_topic"
+            ]
+        ]
+    },
+    {
+        "id": "rz_choose_topic",
+        "type": "function",
+        "z": "c0a1f1d9a1f00101",
+        "name": "Choix Topic MQTT",
+        "func": "// Routage purement technique\nif (msg.source === \"UI\") msg.topic = \"PtoA\";\nelse if (msg.source === \"SYSTEM\") msg.topic = \"PtoA\";\nelse if (msg.source === \"VPIV\") msg.topic = \"AtoSP\";\nelse msg.topic = \"PtoSE\";\n\nreturn msg;",
+        "outputs": 1,
+        "x": 850,
+        "y": 180,
+        "wires": [
+            [
+                "rz_mqtt_out",
+                "rz_evt_raw_out"
+            ]
+        ]
+    },
+    {
+        "id": "rz_mqtt_out",
+        "type": "mqtt out",
+        "z": "c0a1f1d9a1f00101",
+        "name": "MQTT OUT",
+        "topic": "",
+        "qos": "1",
+        "retain": "",
+        "broker": "MQTT_BROKER_ID",
+        "x": 1080,
+        "y": 140,
+        "wires": []
+    },
+    {
+        "id": "rz_evt_raw_out",
+        "type": "link out",
+        "z": "c0a1f1d9a1f00101",
+        "name": "EVT_RAW_IN",
+        "mode": "link",
+        "links": [
+            "df8ba8c4d83a29ee"
+        ],
+        "x": 1080,
+        "y": 220,
+        "wires": []
+    },
+    {
+        "id": "086159b711ed4b1c",
+        "type": "comment",
+        "z": "c0a1f1d9a1f00101",
+        "name": "",
+        "info": "",
+        "x": 330,
+        "y": 80,
+        "wires": []
+    },
+    {
+        "id": "a8130976d6ae1685",
+        "type": "comment",
+        "z": "c0a1f1d9a1f00101",
+        "name": "Audit conformité",
+        "info": "🧩 Audit complet de la chaîne décisionnelle (V1)\n0️⃣ Périmètre audité\n\nChaîne complète :\n\nEntrées brutes (UI / MQTT / SYSTEM / VAR / JOYSTICK)\n        ↓\nRZ_GestionFlux_V1\n        ↓  (link out : EVT_RAW_IN)\nGtion_EtatGlobal\n        ↓\nSous-flows internes\n        ↓\nDécisions validées\n        ↓\nRetour vers RZ_GestionFlux (publication)\n\n1️⃣ RZ_GestionFlux_V1 — conformité au rôle défini\n✅ Ce qui est correct et validé\n\n✔ Centralisation de toutes les entrées\n\n✔ Normalisation des messages\n\n✔ Encodage VPIV\n\n✔ Choix des topics MQTT\n\n✔ Publication MQTT\n\n✔ Transmission sans filtrage métier vers EVT_RAW_IN\n\n✔ Un seul point de sortie logique vers l’intelligence\n\n👉 RZ_GestionFlux respecte parfaitement son contrat\n👉 Aucun risque de double décision ou de divergence\n\n⚠️ Point de vigilance (acceptable en V1)\n\nLes variables techniques (latence, dernier ping, état MQTT)\n→ non encore enrichies, mais c’est volontaire à ce stade",
+        "x": 720,
+        "y": 260,
+        "wires": []
+    }
+]

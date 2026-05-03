@@ -1,0 +1,249 @@
+<mxGraphModel dx="1422" dy="762" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1654" pageHeight="1169" math="0" shadow="0">
+  <root>
+    <mxCell id="0" />
+    <mxCell id="1" parent="0" />
+
+    <!-- TITRE -->
+    <mxCell id="titre" value="Navigation UI — Flows / Pages / Éléments — Projet RZ SP — v1.0 Mars 2026&#xa;(⚠ État actuel — zones à revoir annotées)"
+      style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontSize=13;fontStyle=1;"
+      vertex="1" parent="1">
+      <mxGeometry x="200" y="10" width="1050" height="35" as="geometry" />
+    </mxCell>
+
+    <!-- ============================================================ -->
+    <!-- LEGENDE EN HAUT -->
+    <!-- ============================================================ -->
+    <mxCell id="leg_flow" value="Flow Node-RED" style="rounded=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=10;fontStyle=1;" vertex="1" parent="1"><mxGeometry x="30" y="15" width="140" height="28" as="geometry" /></mxCell>
+    <mxCell id="leg_page" value="Page UI (tableau de bord)" style="rounded=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=10;fontStyle=1;" vertex="1" parent="1"><mxGeometry x="30" y="50" width="140" height="28" as="geometry" /></mxCell>
+    <mxCell id="leg_menu" value="Élément / bouton / menu" style="rounded=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=10;fontStyle=1;" vertex="1" parent="1"><mxGeometry x="30" y="85" width="140" height="28" as="geometry" /></mxCell>
+    <mxCell id="leg_revoir" value="⚠ À revoir / ambigu" style="rounded=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=10;fontStyle=1;dashed=1;" vertex="1" parent="1"><mxGeometry x="30" y="120" width="140" height="28" as="geometry" /></mxCell>
+    <mxCell id="leg_todo" value="À définir / à créer" style="rounded=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=10;fontStyle=1;dashed=1;" vertex="1" parent="1"><mxGeometry x="30" y="155" width="140" height="28" as="geometry" /></mxCell>
+
+    <!-- ============================================================ -->
+    <!-- DÉMARRAGE -->
+    <!-- ============================================================ -->
+    <mxCell id="start" value="Démarrage Node-RED"
+      style="ellipse;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=11;fontStyle=1;"
+      vertex="1" parent="1">
+      <mxGeometry x="490" y="60" width="160" height="44" as="geometry" />
+    </mxCell>
+
+    <!-- ============================================================ -->
+    <!-- FLOW + PAGE ACCUEIL -->
+    <!-- ============================================================ -->
+    <mxCell id="flow_accueil" value="flow : ui_OldAccueil"
+      style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;fontStyle=1;"
+      vertex="1" parent="1">
+      <mxGeometry x="470" y="140" width="200" height="38" as="geometry" />
+    </mxCell>
+
+    <mxCell id="page_accueil" value="Page : P_Accueil"
+      style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;fontStyle=1;"
+      vertex="1" parent="1">
+      <mxGeometry x="470" y="210" width="200" height="38" as="geometry" />
+    </mxCell>
+
+    <!-- Menu accueil -->
+    <mxCell id="menu_accueil" value="Menu principal"
+      style="swimlane;startSize=22;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;fontStyle=1;"
+      vertex="1" parent="1">
+      <mxGeometry x="330" y="280" width="480" height="60" as="geometry" />
+    </mxCell>
+    <mxCell id="btn_on" value="ON / Pilotage" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=10;fontStyle=1;" vertex="1" parent="menu_accueil"><mxGeometry x="10" y="25" width="85" height="25" as="geometry" /></mxCell>
+    <mxCell id="btn_stop" value="STOP / OFF" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=10;" vertex="1" parent="menu_accueil"><mxGeometry x="105" y="25" width="80" height="25" as="geometry" /></mxCell>
+    <mxCell id="btn_cnx" value="Connexion IP" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=10;" vertex="1" parent="menu_accueil"><mxGeometry x="195" y="25" width="90" height="25" as="geometry" /></mxCell>
+    <mxCell id="btn_reset" value="Reset" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=10;" vertex="1" parent="menu_accueil"><mxGeometry x="295" y="25" width="60" height="25" as="geometry" /></mxCell>
+    <mxCell id="btn_admin" value="Admin" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=10;fontStyle=1;" vertex="1" parent="menu_accueil"><mxGeometry x="365" y="25" width="60" height="25" as="geometry" /></mxCell>
+
+    <!-- Flèches démarrage → flow → page → menu -->
+    <mxCell id="s1" style="edgeStyle=orthogonalEdgeStyle;endArrow=block;endFill=1;" edge="1" source="start" target="flow_accueil" parent="1"><mxGeometry relative="1" as="geometry" /></mxCell>
+    <mxCell id="s2" style="edgeStyle=orthogonalEdgeStyle;endArrow=block;endFill=1;" edge="1" source="flow_accueil" target="page_accueil" parent="1"><mxGeometry relative="1" as="geometry" /></mxCell>
+    <mxCell id="s3" style="edgeStyle=orthogonalEdgeStyle;endArrow=block;endFill=1;" edge="1" source="page_accueil" target="menu_accueil" parent="1"><mxGeometry relative="1" as="geometry" /></mxCell>
+
+    <!-- ============================================================ -->
+    <!-- BRANCHE CONNEXION IP -->
+    <!-- ============================================================ -->
+    <mxCell id="cnx_panel" value="Panneau choix IP (sur P_Accueil)&#xa;Liste ipListe[] depuis global&#xa;→ sélection + test ping"
+      style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=10;align=left;"
+      vertex="1" parent="1">
+      <mxGeometry x="800" y="310" width="220" height="60" as="geometry" />
+    </mxCell>
+    <mxCell id="cnx_arrow" value="Connexion" style="edgeStyle=elbowEdgeStyle;endArrow=block;endFill=1;fontSize=9;" edge="1" source="btn_cnx" target="cnx_panel" parent="1"><mxGeometry relative="1" as="geometry" /></mxCell>
+
+    <!-- ============================================================ -->
+    <!-- BRANCHE STOP -->
+    <!-- ============================================================ -->
+    <mxCell id="stop_note" value="Arrêt sans réinit&#xa;→ reste sur P_Accueil&#xa;(modeRZ = ARRET)"
+      style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=10;align=left;"
+      vertex="1" parent="1">
+      <mxGeometry x="800" y="395" width="180" height="50" as="geometry" />
+    </mxCell>
+    <mxCell id="stop_arrow" value="OFF" style="edgeStyle=elbowEdgeStyle;endArrow=block;endFill=1;fontSize=9;" edge="1" source="btn_stop" target="stop_note" parent="1"><mxGeometry relative="1" as="geometry" /></mxCell>
+
+    <!-- ============================================================ -->
+    <!-- BRANCHE ADMIN -->
+    <!-- ============================================================ -->
+    <mxCell id="flow_admin" value="flow : ui_Admin"
+      style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;fontStyle=1;"
+      vertex="1" parent="1">
+      <mxGeometry x="200" y="410" width="180" height="38" as="geometry" />
+    </mxCell>
+    <mxCell id="page_admin_menu" value="Page : admin-Accueil_Menu"
+      style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;fontStyle=1;"
+      vertex="1" parent="1">
+      <mxGeometry x="190" y="480" width="200" height="38" as="geometry" />
+    </mxCell>
+    <mxCell id="admin_arrow" value="Admin" style="edgeStyle=elbowEdgeStyle;endArrow=block;endFill=1;fontSize=9;strokeColor=#6c8ebf;" edge="1" source="btn_admin" target="flow_admin" parent="1"><mxGeometry relative="1" as="geometry" /></mxCell>
+    <mxCell id="admin_arrow2" style="edgeStyle=orthogonalEdgeStyle;endArrow=block;endFill=1;" edge="1" source="flow_admin" target="page_admin_menu" parent="1"><mxGeometry relative="1" as="geometry" /></mxCell>
+
+    <!-- Menu admin -->
+    <mxCell id="menu_admin" value="Menu admin"
+      style="swimlane;startSize=22;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;fontStyle=1;"
+      vertex="1" parent="1">
+      <mxGeometry x="30" y="550" width="430" height="60" as="geometry" />
+    </mxCell>
+    <mxCell id="btn_varg" value="Variables globales" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=10;" vertex="1" parent="menu_admin"><mxGeometry x="8" y="25" width="115" height="25" as="geometry" /></mxCell>
+    <mxCell id="btn_regles" value="Règles" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=10;" vertex="1" parent="menu_admin"><mxGeometry x="133" y="25" width="70" height="25" as="geometry" /></mxCell>
+    <mxCell id="btn_suivi" value="Suivi échanges" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=10;dashed=1;" vertex="1" parent="menu_admin"><mxGeometry x="213" y="25" width="100" height="25" as="geometry" /></mxCell>
+    <mxCell id="btn_mqtt" value="Admin MQTT" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=10;" vertex="1" parent="menu_admin"><mxGeometry x="323" y="25" width="95" height="25" as="geometry" /></mxCell>
+
+    <mxCell id="admin_menu_arrow" style="edgeStyle=orthogonalEdgeStyle;endArrow=block;endFill=1;" edge="1" source="page_admin_menu" target="menu_admin" parent="1"><mxGeometry relative="1" as="geometry" /></mxCell>
+
+    <!-- ---- Sous-branche Variables Globales ---- -->
+    <mxCell id="flow_varg" value="flow : ui_VarG"
+      style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=10;fontStyle=1;"
+      vertex="1" parent="1">
+      <mxGeometry x="30" y="660" width="130" height="35" as="geometry" />
+    </mxCell>
+    <mxCell id="page_varg" value="Page : Variables&#xa;(liste vars + props)"
+      style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=10;"
+      vertex="1" parent="1">
+      <mxGeometry x="30" y="730" width="130" height="45" as="geometry" />
+    </mxCell>
+    <mxCell id="varg_src" value="Source : SP global.json&#xa;(enrichedVars, store: file)&#xa;→ lecture ET modification"
+      style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=10;align=left;"
+      vertex="1" parent="1">
+      <mxGeometry x="30" y="810" width="180" height="55" as="geometry" />
+    </mxCell>
+    <mxCell id="vg1" style="edgeStyle=orthogonalEdgeStyle;endArrow=block;endFill=1;" edge="1" source="btn_varg" target="flow_varg" parent="1"><mxGeometry relative="1" as="geometry" /></mxCell>
+    <mxCell id="vg2" style="edgeStyle=orthogonalEdgeStyle;endArrow=block;endFill=1;" edge="1" source="flow_varg" target="page_varg" parent="1"><mxGeometry relative="1" as="geometry" /></mxCell>
+    <mxCell id="vg3" style="edgeStyle=orthogonalEdgeStyle;endArrow=open;startArrow=open;dashed=1;strokeColor=#d6b656;" edge="1" source="page_varg" target="varg_src" parent="1"><mxGeometry relative="1" as="geometry" /></mxCell>
+
+    <!-- ---- Sous-branche Règles ---- -->
+    <mxCell id="flow_rules" value="flow : ui_Rules&#xa;+ ui_VarRegles"
+      style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=10;fontStyle=1;"
+      vertex="1" parent="1">
+      <mxGeometry x="185" y="660" width="130" height="35" as="geometry" />
+    </mxCell>
+    <mxCell id="page_regles" value="Page : P_admin-regles&#xa;(admin-Regles)"
+      style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=10;"
+      vertex="1" parent="1">
+      <mxGeometry x="185" y="730" width="130" height="45" as="geometry" />
+    </mxCell>
+    <mxCell id="regles_detail" value="Voir règles actives&#xa;Créer / modifier règle&#xa;(condition → action)&#xa;Sauvegarder rules.json"
+      style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=10;align=left;"
+      vertex="1" parent="1">
+      <mxGeometry x="185" y="810" width="165" height="65" as="geometry" />
+    </mxCell>
+    <mxCell id="reg1" style="edgeStyle=orthogonalEdgeStyle;endArrow=block;endFill=1;" edge="1" source="btn_regles" target="flow_rules" parent="1"><mxGeometry relative="1" as="geometry" /></mxCell>
+    <mxCell id="reg2" style="edgeStyle=orthogonalEdgeStyle;endArrow=block;endFill=1;" edge="1" source="flow_rules" target="page_regles" parent="1"><mxGeometry relative="1" as="geometry" /></mxCell>
+    <mxCell id="reg3" style="edgeStyle=orthogonalEdgeStyle;endArrow=block;endFill=1;" edge="1" source="page_regles" target="regles_detail" parent="1"><mxGeometry relative="1" as="geometry" /></mxCell>
+
+    <!-- ---- Sous-branche Suivi (à confirmer) ---- -->
+    <mxCell id="flow_suivi" value="flow : ui_Admin&#xa;(section suivi)"
+      style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=10;dashed=1;"
+      vertex="1" parent="1">
+      <mxGeometry x="340" y="660" width="120" height="35" as="geometry" />
+    </mxCell>
+    <mxCell id="page_suivi" value="Page : P-admin-suivi&#xa;(admin_suivi)"
+      style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=10;dashed=1;"
+      vertex="1" parent="1">
+      <mxGeometry x="340" y="730" width="120" height="45" as="geometry" />
+    </mxCell>
+    <mxCell id="suivi_note" value="⚠ Intérêt à confirmer&#xa;Affichage : état robot,&#xa;échanges VPIV en cours ?"
+      style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=10;align=left;dashed=1;"
+      vertex="1" parent="1">
+      <mxGeometry x="340" y="810" width="155" height="55" as="geometry" />
+    </mxCell>
+    <mxCell id="sv1" style="edgeStyle=orthogonalEdgeStyle;endArrow=block;endFill=1;dashed=1;" edge="1" source="btn_suivi" target="flow_suivi" parent="1"><mxGeometry relative="1" as="geometry" /></mxCell>
+    <mxCell id="sv2" style="edgeStyle=orthogonalEdgeStyle;endArrow=block;endFill=1;dashed=1;" edge="1" source="flow_suivi" target="page_suivi" parent="1"><mxGeometry relative="1" as="geometry" /></mxCell>
+    <mxCell id="sv3" style="edgeStyle=orthogonalEdgeStyle;endArrow=block;endFill=1;dashed=1;" edge="1" source="page_suivi" target="suivi_note" parent="1"><mxGeometry relative="1" as="geometry" /></mxCell>
+
+    <!-- ---- Sous-branche Admin MQTT ---- -->
+    <mxCell id="flow_mqtt_adm" value="flow : ui_Admin&#xa;(section MQTT)"
+      style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=10;"
+      vertex="1" parent="1">
+      <mxGeometry x="490" y="660" width="120" height="35" as="geometry" />
+    </mxCell>
+    <mxCell id="page_mqtt_adm" value="Page : P-admin-MQTT"
+      style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=10;"
+      vertex="1" parent="1">
+      <mxGeometry x="490" y="730" width="120" height="45" as="geometry" />
+    </mxCell>
+    <mxCell id="mqtt_detail" value="Info broker MQTT&#xa;Modification adresse IP&#xa;Test connexion&#xa;(depuis ipListe[])"
+      style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=10;align=left;"
+      vertex="1" parent="1">
+      <mxGeometry x="490" y="810" width="155" height="60" as="geometry" />
+    </mxCell>
+    <mxCell id="mq1" style="edgeStyle=orthogonalEdgeStyle;endArrow=block;endFill=1;" edge="1" source="btn_mqtt" target="flow_mqtt_adm" parent="1"><mxGeometry relative="1" as="geometry" /></mxCell>
+    <mxCell id="mq2" style="edgeStyle=orthogonalEdgeStyle;endArrow=block;endFill=1;" edge="1" source="flow_mqtt_adm" target="page_mqtt_adm" parent="1"><mxGeometry relative="1" as="geometry" /></mxCell>
+    <mxCell id="mq3" style="edgeStyle=orthogonalEdgeStyle;endArrow=block;endFill=1;" edge="1" source="page_mqtt_adm" target="mqtt_detail" parent="1"><mxGeometry relative="1" as="geometry" /></mxCell>
+
+    <!-- ============================================================ -->
+    <!-- BRANCHE PILOTAGE (ON) -->
+    <!-- ============================================================ -->
+    <mxCell id="flow_pilotage_old" value="flow : rz_GestionFluxOld&#xa;⚠ À revoir / renommer"
+      style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;fontStyle=1;dashed=1;"
+      vertex="1" parent="1">
+      <mxGeometry x="680" y="410" width="210" height="45" as="geometry" />
+    </mxCell>
+    <mxCell id="page_pil_opts" value="Page : Pilotage-options&#xa;⚠ Intitulés ambigus à revoir"
+      style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;dashed=1;"
+      vertex="1" parent="1">
+      <mxGeometry x="680" y="490" width="210" height="45" as="geometry" />
+    </mxCell>
+    <mxCell id="on_arrow" value="ON" style="edgeStyle=elbowEdgeStyle;endArrow=block;endFill=1;fontSize=9;strokeColor=#b85450;" edge="1" source="btn_on" target="flow_pilotage_old" parent="1"><mxGeometry relative="1" as="geometry" /></mxCell>
+    <mxCell id="pil1" style="edgeStyle=orthogonalEdgeStyle;endArrow=block;endFill=1;dashed=1;" edge="1" source="flow_pilotage_old" target="page_pil_opts" parent="1"><mxGeometry relative="1" as="geometry" /></mxCell>
+
+    <!-- Menu options pilotage (ambigu) -->
+    <mxCell id="menu_pil" value="Options pilotage — ⚠ À restructurer"
+      style="swimlane;startSize=22;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;fontStyle=1;dashed=1;"
+      vertex="1" parent="1">
+      <mxGeometry x="640" y="575" width="430" height="60" as="geometry" />
+    </mxCell>
+    <mxCell id="opt_moderz" value="⚠ modeRZ ?&#xa;(libellé trompeur)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=10;dashed=1;" vertex="1" parent="menu_pil"><mxGeometry x="8" y="22" width="115" height="28" as="geometry" /></mxCell>
+    <mxCell id="opt_ptge" value="⚠ typePtge ?&#xa;(2ème menu confondu)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=10;dashed=1;" vertex="1" parent="menu_pil"><mxGeometry x="133" y="22" width="120" height="28" as="geometry" /></mxCell>
+    <mxCell id="opt_autres" value="Autres options&#xa;(à définir)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=10;dashed=1;" vertex="1" parent="menu_pil"><mxGeometry x="263" y="22" width="100" height="28" as="geometry" /></mxCell>
+    <mxCell id="opt_pilot" value="→ Pilotage effectif&#xa;(à définir)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=10;dashed=1;" vertex="1" parent="menu_pil"><mxGeometry x="373" y="22" width="48" height="28" as="geometry" /></mxCell>
+
+    <mxCell id="pil2" style="edgeStyle=orthogonalEdgeStyle;endArrow=block;endFill=1;dashed=1;" edge="1" source="page_pil_opts" target="menu_pil" parent="1"><mxGeometry relative="1" as="geometry" /></mxCell>
+
+    <!-- Note restructuration pilotage -->
+    <mxCell id="note_pil" value="⚠ À restructurer :&#xa;1. Page choix modeRZ (VEILLE/DEPLACEMENT/AUTONOME)&#xa;2. Page choix typePtge (ECRAN/JOYSTICK/VOCALE/LAISSE)&#xa;3. Page pilotage effectif selon typePtge&#xa;→ flow Gtion_CfgS + ui_Pilotage (existant)"
+      style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=10;align=left;dashed=1;"
+      vertex="1" parent="1">
+      <mxGeometry x="640" y="670" width="380" height="90" as="geometry" />
+    </mxCell>
+    <mxCell id="note_pil_arrow" style="edgeStyle=orthogonalEdgeStyle;endArrow=open;dashed=1;strokeColor=#b85450;" edge="1" source="menu_pil" target="note_pil" parent="1"><mxGeometry relative="1" as="geometry" /></mxCell>
+
+    <!-- ============================================================ -->
+    <!-- FLOWS CIBLES PILOTAGE (ce que ça devrait être) -->
+    <!-- ============================================================ -->
+    <mxCell id="target_pil" value="Cible : ui_Pilotage (existant, à compléter)&#xa;+ flow Gtion_CfgS (à créer)&#xa;→ Envoie $V:CfgS:mode:*:X# + $V:CfgS:typePtge:*:Y#"
+      style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=10;align=left;dashed=1;"
+      vertex="1" parent="1">
+      <mxGeometry x="640" y="800" width="380" height="60" as="geometry" />
+    </mxCell>
+    <mxCell id="t1" style="edgeStyle=orthogonalEdgeStyle;endArrow=block;endFill=1;dashed=1;strokeColor=#82b366;" edge="1" source="note_pil" target="target_pil" parent="1"><mxGeometry relative="1" as="geometry" /></mxCell>
+
+    <!-- ============================================================ -->
+    <!-- ANNOTATION GLOBALE RESTRUCTURATION -->
+    <!-- ============================================================ -->
+    <mxCell id="global_note" value="Questions ouvertes à trancher avant développement :&#xa;1. Renommer ui_OldAccueil → ui_Accueil ? Ou garder le préfixe Old comme marqueur ?&#xa;2. Renommer rz_GestionFluxOld → Gtion_Pilotage ?&#xa;3. Séparer clairement : page choix modeRZ / page choix typePtge / page pilotage effectif&#xa;4. Confirmer utilité P-admin-suivi ou la fusionner avec ui_admin ?&#xa;5. ui_admin = flow unique gérant 3 pages (MQTT + suivi + menu) → valider cette organisation"
+      style="text;html=1;strokeColor=#d79b00;fillColor=#ffe6cc;align=left;verticalAlign=top;whiteSpace=wrap;rounded=1;fontSize=10;"
+      vertex="1" parent="1">
+      <mxGeometry x="200" y="900" width="900" height="90" as="geometry" />
+    </mxCell>
+
+  </root>
+</mxGraphModel>

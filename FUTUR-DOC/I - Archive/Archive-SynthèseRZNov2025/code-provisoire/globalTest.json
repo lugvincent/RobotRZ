@@ -1,0 +1,254 @@
+{
+    "enrichedVars": {
+        "DemoVar": {
+            "nomVarG": "DemoVar",
+            "abbrVarG": "DVar",
+            "instances": [
+                "*",
+                "inst1",
+                "inst2"
+            ],
+            "descriptionVarG": "Variable de démo avec différents types de propriétés",
+            "dateUpdateVarG": "2025-09-23T15:00:00.000Z",
+            "proprietes": [
+                {
+                    "nomP": "nom",
+                    "abbrP": "nm",
+                    "typeP": "string",
+                    "schema": null,
+                    "valeurs": {
+                        "*": "Inconnu",
+                        "inst1": "Alice",
+                        "inst2": "Bob"
+                    }
+                },
+                {
+                    "nomP": "age",
+                    "abbrP": "ag",
+                    "typeP": "number",
+                    "schema": null,
+                    "valeurs": {
+                        "*": 0,
+                        "inst1": 30,
+                        "inst2": 25
+                    }
+                },
+                {
+                    "nomP": "actif",
+                    "abbrP": "act",
+                    "typeP": "boolean",
+                    "schema": null,
+                    "valeurs": {
+                        "*": true,
+                        "inst1": false,
+                        "inst2": true
+                    }
+                },
+                {
+                    "nomP": "adresse",
+                    "abbrP": "adr",
+                    "typeP": "object",
+                    "schema": [
+                        {
+                            "nomSsP": "rue",
+                            "typeSsP": "string"
+                        },
+                        {
+                            "nomSsP": "ville",
+                            "typeSsP": "string"
+                        }
+                    ],
+                    "valeurs": {
+                        "*": {
+                            "rue": "?",
+                            "ville": "?"
+                        },
+                        "inst1": {
+                            "rue": "12 rue A",
+                            "ville": "Paris"
+                        },
+                        "inst2": {
+                            "rue": "34 rue B",
+                            "ville": "Lyon"
+                        }
+                    }
+                },
+                {
+                    "nom": "ages",
+                    "abbr": "ag",
+                    "type": "number",
+                    "valeurs": {
+                        "*": null
+                    }
+                },
+                {
+                    "nomP": "",
+                    "abbrP": "",
+                    "typeP": "string",
+                    "schema": null,
+                    "valeurs": {
+                        "*": null,
+                        "inst1": null,
+                        "inst2": null
+                    }
+                }
+            ]
+        },
+        "SensorConfig": {
+            "nomVarG": "SensorConfig",
+            "abbrVarG": "SCfg",
+            "instances": [
+                "*",
+                "capteur1",
+                "capteur2",
+                "capteur3"
+            ],
+            "descriptionVarG": "Configuration des capteurs avec seuils et unités",
+            "dateUpdateVarG": "2025-09-20T09:12:00.000Z",
+            "proprietes": [
+                {
+                    "nomP": "unite",
+                    "abbrP": "u",
+                    "typeP": "string",
+                    "schema": null,
+                    "valeurs": {
+                        "*": "°C",
+                        "capteur1": "°C",
+                        "capteur2": "°C",
+                        "capteur3": "%"
+                    }
+                },
+                {
+                    "nomP": "seuil",
+                    "abbrP": "s",
+                    "typeP": "number",
+                    "schema": null,
+                    "valeurs": {
+                        "*": 0,
+                        "capteur1": 25,
+                        "capteur2": 50,
+                        "capteur3": 70
+                    }
+                },
+                {
+                    "nomP": "actif",
+                    "abbrP": "act",
+                    "typeP": "boolean",
+                    "schema": null,
+                    "valeurs": {
+                        "*": true,
+                        "capteur1": true,
+                        "capteur2": false,
+                        "capteur3": true
+                    }
+                }
+            ]
+        },
+        "UserProfile": {
+            "nomVarG": "UserProfile",
+            "abbrVarG": "UProf",
+            "instances": [
+                "*",
+                "user1",
+                "user2"
+            ],
+            "descriptionVarG": "Profils utilisateurs avec préférences",
+            "dateUpdateVarG": "2025-09-15T18:30:00.000Z",
+            "proprietes": [
+                {
+                    "nomP": "theme",
+                    "abbrP": "thm",
+                    "typeP": "string",
+                    "schema": null,
+                    "valeurs": {
+                        "*": "light",
+                        "user1": "dark",
+                        "user2": "light"
+                    }
+                },
+                {
+                    "nomP": "notifications",
+                    "abbrP": "not",
+                    "typeP": "boolean",
+                    "schema": null,
+                    "valeurs": {
+                        "*": true,
+                        "user1": true,
+                        "user2": false
+                    }
+                },
+                {
+                    "nomP": "roles",
+                    "abbrP": "rls",
+                    "typeP": "array",
+                    "schema": [
+                        {
+                            "nomSsP": "role",
+                            "typeSsP": "string"
+                        }
+                    ],
+                    "valeurs": {
+                        "*": [
+                            "guest"
+                        ],
+                        "user1": [
+                            "admin",
+                            "editor"
+                        ],
+                        "user2": [
+                            "viewer"
+                        ]
+                    }
+                }
+            ]
+        }
+    },
+    "ipListe": [
+        {
+            "id": "SmartP_IP_Direct",
+            "ip": "192.168.48.xx",
+            "description": "Adresse IP : 192.168.48.xx - Cas : SmartP_IP_Direct - Smartphone (partage de connexion) - Activez le partage de connexion sur le smartphone embarqué ",
+            "etat": "indéfini"
+        },
+        {
+            "id": "RPI_IP_Wifi",
+            "ip": "192.168.1.38",
+            "description": "Adresse IP : 192.168.1.38 - Cas : RPI_IP_Wifi - Serveur RPI sur réseau local (connecté à la box maison) ",
+            "etat": "non défini"
+        },
+        {
+            "id": "SmartPiloteViaBox",
+            "ip": "192.168.1.13",
+            "description": "Adresse IP : 192.168.1.13 - Cas : SmartPiloteViaBox - Le smartphone pilote utilise une adresse fourni par la box ",
+            "etat": "connecté"
+        },
+        {
+            "id": "RPI_IP_Serveur",
+            "ip": "",
+            "description": "Adresse IP :  - Cas : RPI_IP_Serveur - Serveur RPI distant exposé Internet - (Nécessite une carte SIM sur le Smartphone embarqué) ",
+            "etat": "indisponible"
+        }
+    ],
+    "reglesVars": [
+        {
+            "var1": "us",
+            "val1": "*",
+            "var2": "ModeF",
+            "val2": "danger",
+            "var3": "led",
+            "val3": "*",
+            "action": "⚠️ Obstacle détecté",
+            "type": "affichage"
+        },
+        {
+            "var1": "servo",
+            "val1": "T:90",
+            "var2": "*",
+            "val2": "*",
+            "var3": "ModeF",
+            "val3": "auto",
+            "action": "Positionner la tête au centre",
+            "type": "mqtt"
+        }
+    ]
+}

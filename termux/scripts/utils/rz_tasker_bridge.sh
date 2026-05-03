@@ -116,10 +116,10 @@ fi
 TRIGGER_DIR=$(dirname "$TRIGGER_FILE")
 if [ ! -d "$TRIGGER_DIR" ]; then
     mkdir -p "$TRIGGER_DIR"
-    if [ $? -ne 0 ]; then
-        log_bridge "ERREUR : impossible de créer $TRIGGER_DIR"
-        exit 1
-    fi
+ if ! mkdir -p "$TRIGGER_DIR"; then
+    log_bridge "ERREUR : impossible de créer $TRIGGER_DIR"
+    exit 1
+fi
     log_bridge "Dossier trigger créé : $TRIGGER_DIR"
 fi
 
@@ -139,7 +139,11 @@ printf '{"task":"%s","param":"%s","ts":"%s"}' \
     > "$TRIGGER_FILE"
 
 # Vérifier que l'écriture a réussi
-if [ $? -ne 0 ]; then
+if ! printf '{"task":"%s","param":"%s","ts":"%s"}' \
+    "$TASK_NAME" \
+    "$PARAM" \
+    "$TS" \
+    > "$TRIGGER_FILE"; then
     log_bridge "ERREUR : écriture trigger échouée pour $TASK_NAME"
     exit 1
 fi

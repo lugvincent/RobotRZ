@@ -540,7 +540,8 @@ cat > "$GLOBAL_JSON" <<EOF
   "CfgS": {
     "modeRZ":   1,
     "typePtge": 0,
-    "reset":    false
+    "reset":      false,
+    "typeReseau": "WifiInternetBox"
   },
   "Urg": {
     "source": "URG_NONE",

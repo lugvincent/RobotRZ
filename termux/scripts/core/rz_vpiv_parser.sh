@@ -63,8 +63,8 @@
 #   safety_stop.sh, rz_camera_manager.sh
 #
 # AUTEUR  : Vincent Philippe
-# VERSION : 2.1  (ajout boucle FIFO→MQTT SE→SP)
-# DATE    : 2026-04-27
+# VERSION : 2.2  (fix $INST transmis à rz_camera_manager.sh)
+# DATE    : 2026-05-03
 # =============================================================================
 
 # =============================================================================
@@ -239,7 +239,7 @@ process_command() {
                 # Caméra → gestionnaire dédié
                 "CamSE")
                     bash "$BASE_DIR/scripts/sensors/cam/rz_camera_manager.sh" \
-                         "$PROP" "$VAL"
+                        "$PROP" "$VAL" "$INST"
                     ;;
 
                 # Apps Android UI (Zoom dans mode non-Appli, TTS Tasker)

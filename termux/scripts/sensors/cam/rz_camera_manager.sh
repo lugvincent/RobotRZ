@@ -6,49 +6,46 @@
 # OBJECTIF
 # --------
 # Gestionnaire de la caméra du smartphone embarqué (SE).
-# Pilotage hybride : Tasker lance/arrête IP Webcam Pro,
-# ce script gère les paramètres, URLs et remontées VPIV vers SP.
+# Pilotage via Tasker (rz_tasker_bridge.sh → RZ_CamStart/RZ_CamStop).
+# Gère deux instances : front (caméra avant) et rear (caméra arrière).
 #
 # DESCRIPTION FONCTIONNELLE
 # -------------------------
-# Ce script est appelé à la demande par rz_vpiv_parser.sh (one-shot).
+# Ce script est appelé à la demande par rz_vpiv_parser.sh (one-shot, pas daemon).
 # Arguments : $1 = propriété VPIV (modeCam | paraCam | snap)
 #             $2 = valeur
-#             $3 = instance (front | rear)  [défaut : rear]
+#             $3 = instance (front | rear | *)  [défaut : rear]
 #
-# ARCHITECTURE (v3.0)
-# -------------------
-# Le lancement et l'arrêt d'IP Webcam Pro sont délégués à Tasker :
-#   modeCam:stream|snapshot → fifo_tasker_in → Tasker RZ_CamStart
-#   modeCam:off             → fifo_tasker_in → Tasker RZ_CamStop
+# MODES CAMÉRA
+# ------------
+#   off      : arrêt IP Webcam via Tasker (RZ_CamStop)
+#   stream   : démarrage flux vidéo continu via Tasker (RZ_CamStart)
+#   snapshot : URL photo instantanée (IP Webcam déjà actif)
+#   error    : état interne positionné automatiquement sur erreur non critique
 #
-# Ce script intervient APRÈS que Tasker a lancé IP Webcam :
-#   1. Attend que le serveur HTTP soit disponible (port 8080)
-#   2. Récupère l'IP WiFi locale
-#   3. Construit et publie l'URL stream/snapshot vers SP
-#   4. Met à jour cam_config.json
-#
-# MODES CAMÉRA (Table A)
-# ----------------------
-#   stream   : flux vidéo continu   → URL : http://<ip>:8080/video
-#   snapshot : photo unique         → URL : http://<ip>:8080/shot.jpg
-#   off      : arrêt IP Webcam Pro  → via Tasker RZ_CamStop
-#   error    : état interne sur erreur non critique
+# URL STREAM DYNAMIQUE SELON typeReseau
+# -------------------------------------
+# L'URL publiée vers SP dépend de CfgS.typeReseau dans global.json :
+#   WifiInternetBox : http://{ip_se}:8080/video  (réseau box locale)
+#   Wifi4KSP        : http://{ip_se}:8080/video  (hotspot SP smartphone)
+#   WifiSPSSI       : http://{ip_se}:8080/video  (réseau SP SSID connu)
+#   4K              : rtmp://{duckdns}/live/rz    (SIM dédiée SE — RTMP)
+# L'IP SE est détectée dynamiquement via wlan0 — valide quel que soit le réseau.
 #
 # LOGIQUE DE PROFIL CPU
 # ---------------------
 # get_optimal_params() adapte res/fps si CPU > 70% :
-#   normal    : paramètres issus de paraCam (valeurs SP)
+#   normal    : res et fps issus de paraCam (valeurs SP)
 #   optimized : res "low", fps 10 (profil dégradé cam_config.json)
+# Le profil CPU prend le dessus sur paraCam en cas de surcharge.
 #
 # GESTION ERREURS (Table A)
 # -------------------------
-#   CAM_START_FAIL  : serveur IP Webcam ne répond pas après timeout
-#   CAM_IP_FAIL     : IP wlan0 non lisible
-#   CAM_CONFIG_FAIL : cam_config.json illisible ou absent
-# Selon CfgS.typePtge :
-#   typePtge 0 ou 2 → attente urgDelay s → URG_SENSOR_FAIL
-#   autres          → COM:error uniquement
+# Sur erreur : envoi $E:CamSE:(error):<side>:<CODE>#
+#              + passage mode:error via send_mode_error()
+# Selon CfgS.typePtge dans global.json :
+#   typePtge 0 (Ecran) ou 2 (Joystick) → attente urgDelay s → URG_SENSOR_FAIL
+#   Autres typePtge                     → COM:error uniquement
 #
 # TABLE A — VPIV PRODUITS
 # -----------------------
@@ -69,33 +66,43 @@
 #   $I:COM:error:SE:"CamSE <side> : ..."# Erreur non critique
 #   $E:Urg:source:SE:URG_SENSOR_FAIL#     Urgence (typePtge 0 ou 2)
 #
+# CODES ERREUR
+# ------------
+#   CAM_START_FAIL  : échec démarrage IP Webcam (Tasker bridge timeout)
+#   CAM_IP_FAIL     : IP wlan0 non lisible
+#   CAM_CONFIG_FAIL : cam_config.json illisible ou absent
+#
 # INTERACTIONS
 # ------------
-#   Appelé par  : rz_vpiv_parser.sh
-#   Coordonne   : Tasker (RZ_CamStart / RZ_CamStop) via fifo_tasker_in
-#   Lit         : config/sensors/cam_config.json
-#   Lit         : config/global.json (.Sys.cpu, .CfgS.typePtge)
-#   Écrit dans  : config/sensors/cam_config.json
+#   Appelé par  : rz_vpiv_parser.sh ($PROP $VAL $INST)
+#   Lit         : config/sensors/cam_config.json (paramètres et état instances)
+#   Lit         : config/global.json (.Sys.cpu, .CfgS.typePtge, .CfgS.typeReseau)
+#   Écrit dans  : config/sensors/cam_config.json (mise à jour mode/streamURL)
 #   Écrit dans  : fifo/fifo_termux_in → rz_vpiv_parser.sh → MQTT → SP
+#   Appelle     : scripts/utils/rz_tasker_bridge.sh (RZ_CamStart / RZ_CamStop)
 #
 # PRÉCAUTIONS
 # -----------
-# - IP Webcam Pro (com.pas.webcam.pro) doit être installée sur SE.
-# - Le lancement est délégué à Tasker — ce script n'appelle pas am/termux-am.
-# - Timeout d'attente serveur : 15s (TIMEOUT_SERVER_S).
-# - urgDelay est lu dans cam_config.json par instance.
-# - ⚠️ Les trames VPIV commencent par \$ (dollar échappé).
+# - IP Webcam Pro doit être installée : com.pas.webcam.pro
+# - Tasker doit être actif en arrière-plan avec RZ_CamStart et RZ_CamStop
+# - rz_tasker_bridge.sh doit être exécutable
+# - ifconfig wlan0 : fallback ip addr si absent
+# - urgDelay est lu dans cam_config.json par instance (paraCam)
+# - ⚠️ Les trames VPIV commencent par \$ (dollar échappé)
+# - Pour typeReseau=4K (SIM), le streaming RTMP n'est pas encore implémenté
+#   → fallback sur URL locale en attendant
 #
 # DÉPENDANCES
 # -----------
-#   jq     : lecture/écriture JSON
-#   curl   : vérification disponibilité serveur HTTP
-#   ifconfig/ip : lecture IP locale
-#   fifo_termux_in : créé par fifo_manager.sh
+#   jq                  : lecture/écriture JSON
+#   curl                : vérification port 8080 après démarrage Tasker
+#   rz_tasker_bridge.sh : déclenchement tâches Tasker
+#   ifconfig / ip addr  : lecture IP wlan0
+#   fifo_termux_in      : créé par fifo_manager.sh
 #
 # AUTEUR  : Vincent Philippe
-# VERSION : 3.0  (délégation lancement/arrêt à Tasker)
-# DATE    : 2026-04-28
+# VERSION : 3.0  (Tasker bridge, URL dynamique typeReseau, fix $INST depuis parser)
+# DATE    : 2026-05-03
 # =============================================================================
 
 # =============================================================================
@@ -112,12 +119,16 @@ CONFIG_CAM="$BASE_DIR/config/sensors/cam_config.json"
 GLOBAL_JSON="$BASE_DIR/config/global.json"
 FIFO_OUT="$BASE_DIR/fifo/fifo_termux_in"
 LOG_FILE="$BASE_DIR/logs/camera.log"
+BRIDGE_SCRIPT="$BASE_DIR/scripts/utils/rz_tasker_bridge.sh"
 
-# Port IP Webcam Pro (défaut 8080)
+# URL RTMP pour streaming distant (typeReseau=4K)
+#RTMP_URL="rtmp://robotz-vincent.duckdns.org/live/rz"
+
+# Délai attente démarrage IP Webcam après appel Tasker (secondes)
+CAM_START_TIMEOUT=8
+
+# Port IP Webcam
 CAM_PORT=8080
-
-# Timeout attente démarrage serveur (secondes)
-TIMEOUT_SERVER_S=15
 
 # =============================================================================
 # UTILITAIRES
@@ -140,71 +151,89 @@ send_vpiv() {
     wait "$pid_write" 2>/dev/null
 }
 
-# Lecture IP locale WiFi (ifconfig puis fallback ip addr)
+# Lecture IP locale (ifconfig puis fallback ip addr)
 get_ip() {
     local ip
     ip=$(ifconfig wlan0 2>/dev/null | awk '/inet /{print $2}')
     if [ -z "$ip" ]; then
-        ip=$(ip addr show wlan0 2>/dev/null | \
-             awk '/inet /{gsub(/\/.*/, "", $2); print $2}')
+        ip=$(ip addr show wlan0 2>/dev/null | awk '/inet /{gsub(/\/.*/, "", $2); print $2}')
     fi
     echo "$ip"
 }
 
-# Attente que le serveur HTTP soit disponible
-# $1 = IP, $2 = timeout (s)
-# Retourne 0 si disponible, 1 si timeout
-wait_server() {
-    local ip="$1"
-    local timeout="$2"
-    local elapsed=0
+# Construction URL stream selon typeReseau
+# $1 = mode (stream|snapshot)
+# $2 = ip_addr
+get_stream_url() {
+    local mode="$1"
+    local ip_addr="$2"
+    local type_reseau
 
-    log_cam "Attente serveur http://${ip}:${CAM_PORT}/ (timeout ${timeout}s)..."
+    type_reseau=$(jq -r '.CfgS.typeReseau // "WifiInternetBox"' "$GLOBAL_JSON" 2>/dev/null)
 
-    while [ $elapsed -lt $timeout ]; do
-        if curl -s --max-time 2 "http://${ip}:${CAM_PORT}/" > /dev/null 2>&1; then
-            log_cam "Serveur disponible après ${elapsed}s"
-            return 0
-        fi
-        sleep 1
-        elapsed=$((elapsed + 1))
-    done
-
-    log_cam "ERREUR : serveur non disponible après ${timeout}s"
-    return 1
+    case "$type_reseau" in
+        "4K")
+            # SIM dédiée SE — streaming RTMP vers serveur distant
+            # ⚠️ RTMP non encore implémenté côté serveur → fallback URL locale
+            if [ "$mode" == "snapshot" ]; then
+                echo "http://${ip_addr}:${CAM_PORT}/shot.jpg"
+            else
+                log_cam "typeReseau=4K : RTMP pas encore implémenté, fallback URL locale"
+                echo "http://${ip_addr}:${CAM_PORT}/video"
+            fi
+            ;;
+        *)
+            # Tous les modes WiFi (WifiInternetBox, Wifi4KSP, WifiSPSSI)
+            # → URL locale avec IP courante du Doro (détectée dynamiquement)
+            if [ "$mode" == "snapshot" ]; then
+                echo "http://${ip_addr}:${CAM_PORT}/shot.jpg"
+            else
+                echo "http://${ip_addr}:${CAM_PORT}/video"
+            fi
+            ;;
+    esac
 }
 
 # =============================================================================
 # GESTION ERREURS
+# Envoie error + modeCam:error + URG ou COM:error selon typePtge
 # $1 = instance (front|rear)
-# $2 = code erreur
+# $2 = code erreur (CAM_START_FAIL | CAM_IP_FAIL | CAM_CONFIG_FAIL)
 # =============================================================================
 
 handle_error() {
     local side="$1"
     local code="$2"
-    local type_ptge urg_delay
+    local type_ptge
+    local urg_delay
 
     log_cam "ERREUR [$side] : $code"
 
+    # Événement erreur caméra → SP
     send_vpiv "\$E:CamSE:error:${side}:${code}#"
+
+    # Passage modeCam:error dans cam_config.json
     send_mode_state "$side" "error"
 
+    # Lecture typePtge dans global.json
     type_ptge=$(jq -r '.CfgS.typePtge // 0' "$GLOBAL_JSON" 2>/dev/null || echo "0")
 
     if [[ "$type_ptge" == "0" || "$type_ptge" == "2" ]]; then
+        # typePtge Ecran (0) ou Joystick (2) : perte caméra = perte contrôle visuel
         urg_delay=$(jq -r ".${side}.urgDelay // 5" "$CONFIG_CAM" 2>/dev/null || echo "5")
-        log_cam "typePtge=$type_ptge : URG_SENSOR_FAIL dans ${urg_delay}s"
+        log_cam "typePtge=$type_ptge : URG dans ${urg_delay}s (perte contrôle visuel)"
         sleep "$urg_delay"
         send_vpiv "\$E:Urg:source:SE:URG_SENSOR_FAIL#"
     else
+        # Autres typePtge : erreur non critique → COM:error
         send_vpiv "\$I:COM:error:SE:\"CamSE ${side} : ${code}\"#"
     fi
 }
 
 # =============================================================================
-# MISE À JOUR MODE DANS cam_config.json
-# $1 = instance, $2 = mode
+# MISE À JOUR mode DANS cam_config.json (par instance)
+# $1 = instance (front|rear)
+# $2 = mode (off|stream|snapshot|error)
 # =============================================================================
 
 send_mode_state() {
@@ -216,13 +245,14 @@ send_mode_state() {
        "$CONFIG_CAM" > "${CONFIG_CAM}.tmp" \
     && mv "${CONFIG_CAM}.tmp" "$CONFIG_CAM"
 
+    # ACK modeCam → SP
     send_vpiv "\$I:CamSE:modeCam:${side}:${mode_val}#"
     log_cam "modeCam[$side] → $mode_val"
 }
 
 # =============================================================================
 # FONCTION : notify_system_stop
-# Signal priorité caméra aux autres modules SE
+# Informe les autres modules SE que la caméra prend la priorité ressources
 # =============================================================================
 
 notify_system_stop() {
@@ -231,11 +261,12 @@ notify_system_stop() {
 
 # =============================================================================
 # FONCTION : get_optimal_params
-# Adapte res/fps selon charge CPU
+# Adapte res/fps selon la charge CPU (profil normal ou optimized)
+# $1 = instance (front|rear)
+# Retourne : "normal" ou "optimized"
 # =============================================================================
 
 get_optimal_params() {
-    local side="$1"
     local cpu_load
     cpu_load=$(jq -r '.Sys.cpu // 0' "$GLOBAL_JSON" 2>/dev/null | cut -d. -f1)
 
@@ -248,42 +279,80 @@ get_optimal_params() {
 }
 
 # =============================================================================
-# FONCTION : setup_stream
-# Appelée APRÈS que Tasker a lancé IP Webcam.
-# Attend que le serveur soit prêt, construit et publie l'URL.
+# FONCTION : start_webcam
+# Démarre IP Webcam via Tasker (RZ_CamStart) et publie l'URL stream vers SP
 # $1 = instance (front|rear)
 # $2 = mode (stream|snapshot)
 # =============================================================================
 
-setup_stream() {
+start_webcam() {
     local side="$1"
     local target_mode="$2"
+    local profile
+    local res
+    local fps
     local ip_addr
+    local stream_url
 
-    # Vérification cam_config.json
+    # Vérification cam_config.json accessible
     if [ ! -f "$CONFIG_CAM" ]; then
         handle_error "$side" "CAM_CONFIG_FAIL"
         return 1
     fi
 
-    # Récupération IP locale
+    # Profil CPU : normal ou optimized
+    profile=$(get_optimal_params "$side")
+
+    # Paramètres : priorité profil CPU, sinon paraCam de l'instance
+    if [ "$profile" == "optimized" ]; then
+        res=$(jq -r '.profiles.optimized.res' "$CONFIG_CAM")
+        fps=$(jq -r '.profiles.optimized.fps' "$CONFIG_CAM")
+    else
+        res=$(jq -r ".${side}.res // \"720p\"" "$CONFIG_CAM")
+        fps=$(jq -r ".${side}.fps // 30"       "$CONFIG_CAM")
+    fi
+
+    # Signal priorité aux autres modules
+    notify_system_stop
+    sleep 1
+
+    log_cam "Démarrage IP Webcam : $side mode=$target_mode res=$res fps=$fps (profil=$profile)"
+
+    # -------------------------------------------------------------------------
+    # DÉLÉGATION À TASKER via rz_tasker_bridge.sh
+    # RZ_CamStart reçoit l'instance (rear/front) en paramètre
+    # Tasker lance IP Webcam Pro et active le serveur en arrière-plan
+    # -------------------------------------------------------------------------
+    if [ ! -f "$BRIDGE_SCRIPT" ]; then
+        log_cam "ERREUR : rz_tasker_bridge.sh introuvable ($BRIDGE_SCRIPT)"
+        handle_error "$side" "CAM_START_FAIL"
+        return 1
+    fi
+
+    bash "$BRIDGE_SCRIPT" "RZ_CamStart" "$side"
+    log_cam "Tasker RZ_CamStart déclenché pour $side — attente ${CAM_START_TIMEOUT}s"
+
+    # -------------------------------------------------------------------------
+    # VÉRIFICATION DÉMARRAGE : attente puis test port 8080
+    # Si IP absente → CAM_IP_FAIL
+    # Si port muet après timeout → CAM_START_FAIL
+    # -------------------------------------------------------------------------
+    sleep "$CAM_START_TIMEOUT"
+
     ip_addr=$(get_ip)
     if [ -z "$ip_addr" ]; then
         handle_error "$side" "CAM_IP_FAIL"
         return 1
     fi
 
-    # Signal priorité aux autres modules
-    notify_system_stop
-
-    # Attente que le serveur IP Webcam soit prêt
-    # (Tasker l'a lancé juste avant via fifo_tasker_in)
-    if ! wait_server "$ip_addr" "$TIMEOUT_SERVER_S"; then
+    if ! curl -s --max-time 2 "http://${ip_addr}:${CAM_PORT}/" > /dev/null 2>&1; then
         handle_error "$side" "CAM_START_FAIL"
         return 1
     fi
 
-    # Mise à jour last_ip et current_side
+    # -------------------------------------------------------------------------
+    # MISE À JOUR cam_config.json
+    # -------------------------------------------------------------------------
     jq --arg ip "$ip_addr" '.status.last_ip = $ip' \
        "$CONFIG_CAM" > "${CONFIG_CAM}.tmp" \
     && mv "${CONFIG_CAM}.tmp" "$CONFIG_CAM"
@@ -292,13 +361,10 @@ setup_stream() {
        "$CONFIG_CAM" > "${CONFIG_CAM}.tmp" \
     && mv "${CONFIG_CAM}.tmp" "$CONFIG_CAM"
 
-    # Construction URL selon mode
-    local stream_url
-    if [ "$target_mode" == "snapshot" ]; then
-        stream_url="http://${ip_addr}:${CAM_PORT}/shot.jpg"
-    else
-        stream_url="http://${ip_addr}:${CAM_PORT}/video"
-    fi
+    # -------------------------------------------------------------------------
+    # CONSTRUCTION URL DYNAMIQUE selon typeReseau
+    # -------------------------------------------------------------------------
+    stream_url=$(get_stream_url "$target_mode" "$ip_addr")
 
     # Mise à jour streamURL dans l'instance
     jq --arg side "$side" --arg url "$stream_url" \
@@ -308,25 +374,28 @@ setup_stream() {
 
     # ACK StreamURL → SP
     send_vpiv "\$I:CamSE:StreamURL:${side}:${stream_url}#"
+    log_cam "StreamURL[$side] → $stream_url"
 
     # ACK mode → SP
     send_mode_state "$side" "$target_mode"
-
-    log_cam "[$side] $target_mode prêt → $stream_url"
 }
 
 # =============================================================================
-# FONCTION : stop_cam
-# Mise à jour état après arrêt par Tasker
-# $1 = instance (front|rear|*)
+# FONCTION : stop_webcam
+# Arrête IP Webcam via Tasker (RZ_CamStop) et remet mode à "off" sur l'instance
+# $1 = instance (front|rear|*) — si "*" : arrêt global
 # =============================================================================
 
-stop_cam() {
+stop_webcam() {
     local side="$1"
 
-    log_cam "Arrêt caméra [$side] — IP Webcam arrêtée par Tasker"
+    log_cam "Arrêt IP Webcam [$side] via Tasker RZ_CamStop"
+
+    # Délégation à Tasker
+    bash "$BRIDGE_SCRIPT" "RZ_CamStop" "$side"
 
     if [ "$side" == "*" ]; then
+        # Arrêt global : les deux instances passent en off
         jq '.front.mode = "off" | .rear.mode = "off"' \
            "$CONFIG_CAM" > "${CONFIG_CAM}.tmp" \
         && mv "${CONFIG_CAM}.tmp" "$CONFIG_CAM"
@@ -339,7 +408,7 @@ stop_cam() {
 
 # =============================================================================
 # FONCTION : take_snapshot
-# Génère l'URL snapshot depuis IP Webcam en cours
+# Génère l'URL snapshot immédiate depuis IP Webcam en cours
 # $1 = instance (front|rear)
 # =============================================================================
 
@@ -348,66 +417,68 @@ take_snapshot() {
     local ip_addr
 
     ip_addr=$(get_ip)
+
     if [ -z "$ip_addr" ]; then
         handle_error "$side" "CAM_IP_FAIL"
         return 1
     fi
 
-    # Vérifier que le serveur tourne
-    if ! curl -s --max-time 2 "http://${ip_addr}:${CAM_PORT}/" > /dev/null 2>&1; then
-        log_cam "WARN : serveur non disponible pour snapshot [$side]"
-        handle_error "$side" "CAM_START_FAIL"
-        return 1
-    fi
-
-    local snap_url="http://${ip_addr}:${CAM_PORT}/shot.jpg"
+    local snap_url
+    snap_url=$(get_stream_url "snapshot" "$ip_addr")
     log_cam "Snapshot [$side] : $snap_url"
 
+    # Mise à jour streamURL dans l'instance
     jq --arg side "$side" --arg url "$snap_url" \
        '.[$side].streamURL = $url' \
        "$CONFIG_CAM" > "${CONFIG_CAM}.tmp" \
     && mv "${CONFIG_CAM}.tmp" "$CONFIG_CAM"
 
+    # Retour URL → SP via StreamURL
     send_vpiv "\$I:CamSE:StreamURL:${side}:${snap_url}#"
 }
 
 # =============================================================================
 # FONCTION : apply_para_cam
-# Applique les paramètres paraCam reçus de SP
-# $1 = instance, $2 = JSON paramètres
+# Applique les paramètres paraCam reçus de SP pour une instance
+# $1 = instance (front|rear)
+# $2 = JSON paramètres : {"res":"720p","fps":30,"quality":80,"urgDelay":5}
 # =============================================================================
 
 apply_para_cam() {
     local side="$1"
     local params="$2"
 
+    # Validation JSON minimal
     if ! echo "$params" | jq '.' > /dev/null 2>&1; then
         log_cam "ERREUR : paraCam JSON invalide pour $side : $params"
         send_vpiv "\$I:COM:error:SE:\"CamSE ${side} : paraCam JSON invalide\"#"
         return 1
     fi
 
+    # Extraction des champs (valeurs existantes conservées si champ absent)
     local res fps quality urg_delay
-    res=$(      echo "$params" | jq -r '.res      // empty')
-    fps=$(      echo "$params" | jq -r '.fps      // empty')
-    quality=$(  echo "$params" | jq -r '.quality  // empty')
-    urg_delay=$(echo "$params" | jq -r '.urgDelay // empty')
+    res=$(      echo "$params" | jq -r '.res       // empty')
+    fps=$(      echo "$params" | jq -r '.fps       // empty')
+    quality=$(  echo "$params" | jq -r '.quality   // empty')
+    urg_delay=$(echo "$params" | jq -r '.urgDelay  // empty')
 
+    # Mise à jour sélective dans cam_config.json
     local tmp
-    tmp=$(jq --arg side      "$side" \
-             --arg res       "${res:-null}" \
-             --arg fps       "${fps:-null}" \
-             --arg quality   "${quality:-null}" \
-             --arg urgDelay  "${urg_delay:-null}" \
+    tmp=$(jq --arg side "$side" \
+             --arg res      "${res:-null}" \
+             --arg fps      "${fps:-null}" \
+             --arg quality  "${quality:-null}" \
+             --arg urgDelay "${urg_delay:-null}" \
           '
-          if $res      != "null" then .[$side].res      = ($res|tonumber? // $res) else . end |
-          if $fps      != "null" then .[$side].fps      = ($fps|tonumber)           else . end |
-          if $quality  != "null" then .[$side].quality  = ($quality|tonumber)       else . end |
-          if $urgDelay != "null" then .[$side].urgDelay = ($urgDelay|tonumber)      else . end
+          if $res      != "null" then .[$side].res       = ($res|tonumber? // $res)  else . end |
+          if $fps      != "null" then .[$side].fps       = ($fps|tonumber)           else . end |
+          if $quality  != "null" then .[$side].quality   = ($quality|tonumber)       else . end |
+          if $urgDelay != "null" then .[$side].urgDelay  = ($urgDelay|tonumber)      else . end
           ' "$CONFIG_CAM")
 
     echo "$tmp" > "$CONFIG_CAM"
 
+    # ACK paraCam → SP avec les valeurs finales de l'instance
     local ack
     ack=$(jq -c ".${side} | {res,fps,quality,urgDelay}" "$CONFIG_CAM")
     send_vpiv "\$I:CamSE:paraCam:${side}:${ack}#"
@@ -416,50 +487,64 @@ apply_para_cam() {
 
 # =============================================================================
 # AIGUILLAGE PROPRIÉTÉS VPIV
+# $1 = propriété VPIV (modeCam | paraCam | snap)
+# $2 = valeur
+# $3 = instance (front | rear | *)  [défaut : rear]
+# ⚠️ $3 est transmis depuis rz_vpiv_parser.sh — corrigé en v3.0
 # =============================================================================
 
 PROP="$1"
 VAL="$2"
-SIDE="${3:-rear}"
+SIDE="${3:-rear}"    # Instance par défaut : rear
 
 # Validation instance
 if [[ "$SIDE" != "front" && "$SIDE" != "rear" && "$SIDE" != "*" ]]; then
-    log_cam "ERREUR : instance inconnue '$SIDE'"
+    log_cam "ERREUR : instance inconnue '$SIDE' (attendu : front|rear|*)"
     exit 1
 fi
 
+log_cam "Appel : PROP=$PROP VAL=$VAL SIDE=$SIDE"
+
 case "$PROP" in
 
+    # -----------------------------------------------------------------------
+    # modeCam : commande principale (off | stream | snapshot)
+    # -----------------------------------------------------------------------
     "modeCam")
         case "$VAL" in
             "off")
-                # Tasker a déjà arrêté IP Webcam via fifo_tasker_in
-                # Ce script met juste à jour l'état
-                stop_cam "$SIDE"
+                stop_webcam "$SIDE"
                 ;;
             "stream"|"snapshot")
-                # Tasker a lancé IP Webcam via fifo_tasker_in
-                # Ce script attend que le serveur soit prêt et publie l'URL
-                setup_stream "$SIDE" "$VAL" &
+                start_webcam "$SIDE" "$VAL" &
                 ;;
             *)
-                log_cam "ERREUR : modeCam '$VAL' inconnu"
+                log_cam "ERREUR : modeCam '$VAL' inconnu (attendu : off|stream|snapshot)"
                 send_vpiv "\$I:COM:error:SE:\"CamSE ${SIDE} : modeCam inconnu '${VAL}'\"#"
                 exit 1
                 ;;
         esac
         ;;
 
+    # -----------------------------------------------------------------------
+    # paraCam : mise à jour paramètres d'une instance
+    # -----------------------------------------------------------------------
     "paraCam")
         apply_para_cam "$SIDE" "$VAL"
         ;;
 
+    # -----------------------------------------------------------------------
+    # snap : capture snapshot immédiate — répond via StreamURL
+    # -----------------------------------------------------------------------
     "snap")
         take_snapshot "$SIDE"
         ;;
 
+    # -----------------------------------------------------------------------
+    # Propriété inconnue
+    # -----------------------------------------------------------------------
     *)
-        log_cam "Propriété inconnue : '$PROP'"
+        log_cam "Propriété inconnue ou non supportée : '$PROP'"
         send_vpiv "\$I:COM:error:SE:\"CamSE : propriété inconnue '${PROP}'\"#"
         exit 1
         ;;

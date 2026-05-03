@@ -14,7 +14,8 @@ log() {
 
 test_broker_connection() {
   local ip="$1"
-  local test_msg="ping_$(date +%s)"
+ local test_msg
+ test_msg="ping_$(date +%s)"
 
   echo "$test_msg" | mosquitto_pub -h "$ip" -p 1883 \
                  -t "SE/ping" -I "SE_Test" -q 1 -W 3 >/dev/null 2>&1
@@ -23,21 +24,26 @@ test_broker_connection() {
 
 receive_large_config() {
   local ip="$1"
-  local chunk_size=100
   local config_json=""
+  local tmp_file
+  tmp_file=$(mktemp)
 
   mosquitto_pub -h "$ip" -p 1883 \
                 -t "SE/config/request" \
                 -m "\$A:CfgS:request:*:init#" >/dev/null 2>&1
 
+  # Lire dans un fichier temporaire pour éviter le sous-shell pipeline
   mosquitto_sub -h "$ip" -p 1883 \
                 -t "SE/config/chunk" \
-                -W 10 | while read -r line; do
+                -W 10 > "$tmp_file"
+
+  while read -r line; do
     if [[ $line =~ ^\$F:CfgS:chunk:([0-9]+):(.*)#$ ]]; then
       config_json+="${BASH_REMATCH[2]}"
     fi
-  done
+  done < "$tmp_file"
 
+  rm -f "$tmp_file"
   echo "$config_json" | jq .
 }
 

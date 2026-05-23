@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TaskerData sr="" dvi="1" tv="6.6.20">
+	<Task sr="task14">
+		<cdate>1778300000030</cdate>
+		<edate>1778755341159</edate>
+		<id>14</id>
+		<nme>RZ_OuvreMenu</nme>
+		<Action sr="act0" ve="7">
+			<code>47</code>
+			<label>Afficher scène RZ_Menu en overlay</label>
+			<Str sr="arg0" ve="3">RZ_Menu</Str>
+			<Int sr="arg1" val="6" />
+			<Int sr="arg10" val="1" />
+			<Int sr="arg2" val="100" />
+			<Int sr="arg3" val="100" />
+			<Int sr="arg4" val="0" />
+			<Int sr="arg5" val="1" />
+			<Int sr="arg6" val="1" />
+			<Int sr="arg7" val="1" />
+			<Int sr="arg8" val="1" />
+			<Int sr="arg9" val="1" />
+		</Action>
+	</Task>
+</TaskerData>

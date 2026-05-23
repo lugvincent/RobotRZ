@@ -61,10 +61,21 @@
 # -----------
 #   mosquitto_sub, mosquitto_pub, jq, termux-tts-speak
 #   safety_stop.sh, rz_camera_manager.sh
+#   inotify-tools (optionnel) : inotifywait pour le watcher vpiv_out.txt
+#                               fallback polling 300ms si absent
 #
 # AUTEUR  : Vincent Philippe
-# VERSION : 2.2  (fix $INST transmis à rz_camera_manager.sh)
-# DATE    : 2026-05-03
+# VERSION : 2.3  (ajout watcher vpiv_out.txt — canal Tasker→SP)
+# DATE    : 2026-05-09
+#
+# NOUVEAUTÉS v2.3
+# ---------------
+# - Ajout constante VPIV_OUT_FILE : /storage/emulated/0/Tasker/RobotRZ/vpiv_out.txt
+# - Ajout fonction watch_vpiv_out() : surveille vpiv_out.txt écrit par Tasker
+#   (scènes menu, boutons user) et injecte la trame dans fifo_termux_in
+#   → mosquitto_pub SE/statut → SP.
+#   Mode inotifywait si inotify-tools installé, sinon polling 300ms.
+# - Ajout VPIV_WATCHER_PID : arrêt propre du watcher dans le trap EXIT.
 # =============================================================================
 
 # =============================================================================
@@ -86,6 +97,7 @@ FIFO_TERMUX="$FIFO_DIR/fifo_termux_in"
 FIFO_APPLI="$FIFO_DIR/fifo_appli_in"      # ← Ajout : CAT=A Applications
 FIFO_VOICE="$FIFO_DIR/fifo_voice_in"   # module Voice (TTS, vol, output)
 FIFO_RETURN="$FIFO_DIR/fifo_return"
+VPIV_OUT_FILE="/storage/emulated/0/Tasker/RobotRZ/vpiv_out.txt"
 LOG_FILE="$LOG_DIR/vpiv_parser.log"
 
 MQTT_BROKER="robotz-vincent.duckdns.org"
@@ -122,6 +134,51 @@ write_fifo() {
     ( sleep 1 && kill "$pid_w" 2>/dev/null ) &
     wait "$pid_w" 2>/dev/null
     return $?
+}
+# =============================================================================
+# WATCHER vpiv_out.txt — Tasker → MQTT (SE→SP)
+# Surveille le fichier écrit par Tasker (scènes menu, boutons user).
+# Chaque modification → contenu injecté dans fifo_termux_in → mosquitto_pub SE/statut
+#
+# Utilise inotifywait si disponible (pkg install inotify-tools),
+# sinon bascule sur polling toutes les 300ms (latence acceptable — non critique).
+# =============================================================================
+
+watch_vpiv_out() {
+    log "Watcher vpiv_out.txt démarré : $VPIV_OUT_FILE"
+
+    # Créer le fichier s'il n'existe pas (évite erreur inotifywait)
+    mkdir -p "$(dirname "$VPIV_OUT_FILE")"
+    touch "$VPIV_OUT_FILE"
+
+    if command -v inotifywait &>/dev/null; then
+        # ── Mode inotifywait (réactif, sans polling) ──
+        log "Watcher mode : inotifywait"
+        while true; do
+            inotifywait -e close_write -e modify \
+                "$VPIV_OUT_FILE" 2>/dev/null
+            local trame
+            trame=$(tr -d '\n' < "$VPIV_OUT_FILE" 2>/dev/null)
+            if [ -n "$trame" ]; then
+                log "Tasker→FIFO→MQTT : $trame"
+                write_fifo "$FIFO_TERMUX" "$trame"
+            fi
+        done
+    else
+        # ── Mode polling (fallback si inotify-tools absent) ──
+        log "Watcher mode : polling 300ms (installer inotify-tools recommandé)"
+        local last=""
+        while true; do
+            local trame
+            trame=$(tr -d '\n' < "$VPIV_OUT_FILE" 2>/dev/null)
+            if [ -n "$trame" ] && [ "$trame" != "$last" ]; then
+                last="$trame"
+                log "Tasker→FIFO→MQTT : $trame"
+                write_fifo "$FIFO_TERMUX" "$trame"
+            fi
+            sleep 0.3
+        done
+    fi
 }
 
 # =============================================================================
@@ -350,6 +407,11 @@ main() {
     fi
 done ) &
 FIFO_READER_PID=$!
+
+    # Watcher vpiv_out.txt — commandes Tasker → SP
+    watch_vpiv_out &
+    VPIV_WATCHER_PID=$!
+    log "Watcher vpiv_out.txt démarré (PID $VPIV_WATCHER_PID)"
     
     # Boucle de reconnexion : mosquitto_sub -C 1 lit un message puis sort,
     # ce qui permet de relancer proprement en cas de coupure réseau.
@@ -375,6 +437,5 @@ FIFO_READER_PID=$!
 }
 
 # Nettoyage propre sur Ctrl+C ou kill
-trap 'log "Arrêt du parser VPIV." ; kill "$FIFO_READER_PID" 2>/dev/null' EXIT
-
+trap 'log "Arrêt du parser VPIV." ; kill "$FIFO_READER_PID" "$VPIV_WATCHER_PID" 2>/dev/null' EXIT
 main

@@ -1,158 +1,200 @@
 #!/bin/bash
 # =============================================================================
-# SCRIPT: rz_state-manager.sh
-# CHEMIN: ~/robotRZ-smartSE/termux/scripts/core/rz_state-manager.sh
-# DESCRIPTION:
-#   - Gestion centralisée des états du système
-#   - Intercepte les commandes de pilotage (MQTT).
-#   - Calcule le contexte STT (Commande / Conversation / Mixte).
-#   - Maintient la cohérence de global.json.
-#   - Assure la passerelle vers les FIFO locaux.
+# SCRIPT  : rz_appli_manager.sh
+# CHEMIN  : ~/robotRZ-smartSE/termux/scripts/appli/rz_appli_manager.sh
 #
-# DEPENDANCES:
-#   - mosquitto_pub, mosquitto_sub (pour MQTT)
-#   - jq (pour JSON)
-#   - keys.json (credentials MQTT)
-#   - typeReseau (global.json doit contenir un champ typeReseau pour différencier les réseaux)
+# OBJECTIF
+# --------
+# Daemon de gestion des applications Android côté SE.
+# Lit fifo_appli_in en continu, décode les trames VPIV CAT=A MODULE=Appli
+# et déclenche la tâche Tasker correspondante via rz_tasker_bridge.sh.
 #
-# AUTEUR: Vincent Philippe
-# VERSION: 1.4  (ajout credentials MQTT depuis keys.json et de typeReseau)
-# DATE: 2026-04-27
+# DESCRIPTION FONCTIONNELLE
+# -------------------------
+# 1. Lit fifo_appli_in (trames écrites par rz_vpiv_parser.sh)
+# 2. Parse la trame VPIV : $A:Appli:PROP:INST:VAL#
+# 3. Mappe PROP+VAL vers une tâche Tasker + paramètre
+# 4. Appelle rz_tasker_bridge.sh NOM_TACHE PARAM
+# 5. Le ACK retour est géré par Tasker (écrit dans vpiv_out.txt)
+#
+# TABLE DE ROUTAGE
+# ----------------
+#   PROP=BabyCam    VAL=On/Off  → RZ_Baby     On|Off
+#   PROP=zoom       VAL=On/Off  → RZ_Zoom     On|Off
+#   PROP=NavGPS     VAL=On/Off  → RZ_NavGPS   On|Off
+#   PROP=ExprTasker VAL=*       → RZ_Expression <VAL>  (pas d'ACK)
+#   PROP=tasker     VAL=On      → RZ_OuvreMenu
+#
+# VPIV ENTRANTS (depuis fifo_appli_in)
+# -------------------------------------
+#   $A:Appli:BabyCam:*:On#
+#   $A:Appli:BabyCam:*:Off#
+#   $A:Appli:zoom:*:On#
+#   $A:Appli:zoom:*:Off#
+#   $A:Appli:NavGPS:*:On#
+#   $A:Appli:NavGPS:*:Off#
+#   $A:Appli:ExprTasker:Expression:sourire#
+#   $A:Appli:tasker:*:On#
+#
+# ARTICULATION
+# ------------
+#   Lit     : fifo/fifo_appli_in  (écrit par rz_vpiv_parser.sh)
+#   Appelle : rz_tasker_bridge.sh (déclenche trigger.txt → Tasker)
+#   Log     : logs/appli_manager.log
+#
+# PRÉCAUTIONS
+# -----------
+# - fifo_appli_in doit exister (créé par fifo_manager.sh create)
+# - rz_tasker_bridge.sh doit être accessible et exécutable
+# - Tasker doit être actif en arrière-plan (profil 222 actif)
+# - Les ACK retour sont gérés par Tasker via vpiv_out.txt
+#   → ne pas attendre de retour dans ce script
+#
+# DÉPENDANCES
+# -----------
+#   rz_tasker_bridge.sh
+#
+# AUTEUR  : Vincent Philippe
+# VERSION : 1.0  (création — routage CAT=A MODULE=Appli vers Tasker)
+# DATE    : 2026-05-09
 # =============================================================================
 
-# --- CONFIGURATION DES CHEMINS ---
-BASE_DIR="/data/data/com.termux/files/home/robotRZ-smartSE/termux"
-GLOBAL_CONFIG="$BASE_DIR/config/global.json"
-LOG_FILE="$BASE_DIR/logs/state_manager.log"
-FIFO_IN="$BASE_DIR/fifo/fifo_termux_in"
+# =============================================================================
+# CONFIGURATION
+# =============================================================================
 
-# --- CREDENTIALS MQTT depuis keys.json ---
-KEYS_FILE="$BASE_DIR/config/keys.json"
-MQTT_USER=$(jq -r '.MQTT_USER // empty' "$KEYS_FILE" 2>/dev/null)
-MQTT_PASS=$(jq -r '.MQTT_PASS // empty' "$KEYS_FILE" 2>/dev/null)
-MQTT_HOST=$(jq -r '.MQTT_HOST // empty' "$KEYS_FILE" 2>/dev/null)
-# Fallback si keys.json absent
-MQTT_HOST="${MQTT_HOST:-robotz-vincent.duckdns.org}"
+if [ -d "/data/data/com.termux/files" ]; then
+    BASE_DIR="/data/data/com.termux/files/home/robotRZ-smartSE/termux"
+else
+    BASE_DIR="$(cd "$(dirname "$0")/../.." && pwd)"
+fi
 
-# --- INITIALISATION ---
-mkdir -p "$(dirname "$LOG_FILE")"
+FIFO_APPLI="$BASE_DIR/fifo/fifo_appli_in"
+BRIDGE="$BASE_DIR/scripts/utils/rz_tasker_bridge.sh"
+LOG_FILE="$BASE_DIR/logs/appli_manager.log"
+
+# =============================================================================
+# UTILITAIRES
+# =============================================================================
 
 log() {
-    local level="INFO"
-    [[ -n "$2" ]] && level="$2"
-    echo "[$(date '+%Y-%m-%d %H:%M:%S')] [$level] $1" >> "$LOG_FILE"
+    echo "[$(date '+%Y-%m-%d %H:%M:%S')] [APPLI] $1" | tee -a "$LOG_FILE"
 }
 
 # =============================================================================
-# FONCTION : calculate_stt_context
+# ROUTAGE — Mappe une trame VPIV vers tâche Tasker + paramètre
+#
+# Paramètres : $1=PROP  $2=INST  $3=VAL
+# Retourne via variables globales : TASK_NAME et TASK_PARAM
 # =============================================================================
-calculate_stt_context() {
-    local modeRZ
-    modeRZ=$(jq -r '.CfgS.modeRZ // 0' "$GLOBAL_CONFIG")
-    local modePtge
-    modePtge=$(jq -r '.CfgS.typePtge // 0' "$GLOBAL_CONFIG")
-    local speed
-    speed=$(jq -r '.Robot.speed // 0' "$GLOBAL_CONFIG")
-    local context="Inactif"
 
-    log "Calcul contexte STT (RZ:$modeRZ, Ptge:$modePtge, Spd:$speed)"
+route_appli() {
+    local PROP="$1"
+    local INST="$2"
+    local VAL="$3"
+    TASK_NAME=""
+    TASK_PARAM=""
 
-    if [[ "$modeRZ" == "0" || "$modeRZ" == "5" ]]; then
-        context="Inactif"
-    elif [[ "$modePtge" != "1" && "$modePtge" != "4" ]]; then
-        context="Inactif"
-    elif [[ "$speed" != "0" ]]; then
-        context="Cmde"
-    else
-        case "$modeRZ" in
-            1)   context="Conv"   ;;
-            4)   context="Mixte"  ;;
-            2|3) context="Mixte"  ;;
-            *)   context="Inactif" ;;
-        esac
+    case "$PROP" in
+
+        # ── BabyCam ──────────────────────────────────────────────────────────
+        "BabyCam"|"Baby")
+            TASK_NAME="RZ_Baby"
+            TASK_PARAM="$VAL"
+            ;;
+
+        # ── Zoom ─────────────────────────────────────────────────────────────
+        "zoom"|"Zoom")
+            TASK_NAME="RZ_Zoom"
+            TASK_PARAM="$VAL"
+            ;;
+
+        # ── Navigation GPS ───────────────────────────────────────────────────
+        "NavGPS")
+            TASK_NAME="RZ_NavGPS"
+            TASK_PARAM="$VAL"
+            ;;
+
+        # ── Expression Tasker — VAL = nom expression ──────────────────────
+        # INST contient "Expression" (champ VPIV utilisé comme contexte)
+        # Pas d'ACK — l'expression revient à neutre automatiquement
+        "ExprTasker")
+            TASK_NAME="RZ_Expression"
+            TASK_PARAM="$VAL"   # ex: sourire, colere, triste...
+            ;;
+
+        # ── Lancer/afficher Tasker (menu principal) ───────────────────────
+        "tasker")
+            if [[ "$VAL" == "On" ]]; then
+                TASK_NAME="RZ_OuvreMenu"
+                TASK_PARAM=""
+            fi
+            ;;
+
+        # ── PROP inconnue ─────────────────────────────────────────────────
+        *)
+            log "WARN : PROP inconnue '$PROP' — trame ignorée"
+            return 1
+            ;;
+    esac
+
+    return 0
+}
+
+# =============================================================================
+# PROCESS — Traite une trame VPIV reçue de fifo_appli_in
+# =============================================================================
+
+process_trame() {
+    local trame="$1"
+
+    # Validation format VPIV : $A:Appli:PROP:INST:VAL#
+    if [[ ! "$trame" =~ ^\$A:Appli:([^:]+):([^:]+):(.*)#$ ]]; then
+        log "WARN : trame ignorée (format inattendu) : $trame"
+        return
     fi
 
-    jq --arg ctx "$context" '.STT.context=$ctx' "$GLOBAL_CONFIG" > "${GLOBAL_CONFIG}.tmp" \
-    && mv "${GLOBAL_CONFIG}.tmp" "$GLOBAL_CONFIG"
+    local PROP="${BASH_REMATCH[1]}"
+    local INST="${BASH_REMATCH[2]}"
+    local VAL="${BASH_REMATCH[3]}"
 
-    log "STT.context défini sur : $context"
-}
+    log "Reçu : PROP=$PROP INST=$INST VAL=$VAL"
 
-# =============================================================================
-# FONCTION : handle_state_transition
-# =============================================================================
-handle_state_transition() {
-    local key="$1"
-    local value="$2"
-
-    log "Transition demandée : $key -> $value" "UPDATE"
-
-    jq --arg val "$value" ".CfgS.$key=(\$val|tonumber)" "$GLOBAL_CONFIG" > "${GLOBAL_CONFIG}.tmp" \
-    && mv "${GLOBAL_CONFIG}.tmp" "$GLOBAL_CONFIG"
-
-    mosquitto_pub -h "$MQTT_HOST" -p 1883 \
-        -u "$MQTT_USER" -P "$MQTT_PASS" \
-        -t "SE/statut" -m "\$I:CfgS:$key:*:$value#"
-
-    calculate_stt_context
-}
-
-# =============================================================================
-# FONCTION : process_mqtt_command
-# =============================================================================
-process_mqtt_command() {
-    local msg="$1"
-
-    if [[ $msg =~ ^\$(.):([^:]+):([^:]+):([^:]+):(.*)#$ ]]; then
-        local TYPE="${BASH_REMATCH[1]}"
-        local MODULE="${BASH_REMATCH[2]}"
-        local PROP="${BASH_REMATCH[3]}"
-        local VALUE="${BASH_REMATCH[5]}"
-
-        log "Parsing MQTT: [$TYPE] $MODULE.$PROP = $VALUE"
-
-        case "$MODULE" in
-            "CfgS")
-                [[ "$PROP" == "modeRZ" || "$PROP" == "typePtge" || "$PROP" == "typeReseau" ]] \
-                    && handle_state_transition "$PROP" "$VALUE"
-                ;;
-            "Mtr")
-                if [[ "$PROP" == "speed" ]]; then
-                    jq --arg v "$VALUE" '.Robot.speed=($v|tonumber)' "$GLOBAL_CONFIG" \
-                        > "${GLOBAL_CONFIG}.tmp" \
-                    && mv "${GLOBAL_CONFIG}.tmp" "$GLOBAL_CONFIG"
-                    calculate_stt_context
-                fi
-                ;;
-            "Gyro"|"MG")
-                echo "$msg" > "$FIFO_IN"
-                ;;
-            *)
-                log "Module inconnu ou ignoré : $MODULE" "DEBUG"
-                ;;
-        esac
-    else
-        log "Trame invalide reçue : $msg" "ERROR"
+    # Routage vers tâche Tasker
+    if route_appli "$PROP" "$INST" "$VAL"; then
+        if [ -n "$TASK_NAME" ]; then
+            log "→ Tasker : $TASK_NAME ($TASK_PARAM)"
+            bash "$BRIDGE" "$TASK_NAME" "$TASK_PARAM"
+        fi
     fi
 }
 
 # =============================================================================
-# BOUCLE PRINCIPALE
+# BOUCLE PRINCIPALE — Daemon lecture fifo_appli_in
 # =============================================================================
+
 main() {
-    log "=== Démarrage du Gestionnaire d'État (SE) ==="
+    log "=========================================="
+    log "Démarrage rz_appli_manager.sh v1.0"
+    log "=========================================="
 
-    if [[ ! -f "$GLOBAL_CONFIG" ]]; then
-        log "Global config absente. Création d'une structure de base." "WARN"
-        echo '{"CfgS":{"modeRZ":1,"typePtge":0},"Robot":{"speed":0},"STT":{"context":"Inactif"},"Sys":{}}' \
-            > "$GLOBAL_CONFIG"
+    # Vérifications
+    if [ ! -f "$BRIDGE" ]; then
+        log "ERREUR : bridge introuvable ($BRIDGE)"
+        exit 1
     fi
 
-    log "En attente de commandes sur SE/commande..."
-    mosquitto_sub -h "$MQTT_HOST" -p 1883 \
-        -u "$MQTT_USER" -P "$MQTT_PASS" \
-        -t "SE/commande" | while read -r msg; do
-        process_mqtt_command "$msg"
+    # Créer la FIFO si absente
+    [ -p "$FIFO_APPLI" ] || mkfifo "$FIFO_APPLI"
+
+    log "En écoute sur fifo_appli_in..."
+
+    # Boucle infinie — lit une trame à la fois
+    while true; do
+        if read -r trame < "$FIFO_APPLI"; then
+            [ -n "$trame" ] && process_trame "$trame"
+        fi
     done
 }
+
 main

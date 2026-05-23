@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TaskerData sr="" dvi="1" tv="6.6.20">
+	<Task sr="task15">
+		<cdate>1778944564508</cdate>
+		<edate>1778945201744</edate>
+		<id>15</id>
+		<nme>RZ_Maps</nme>
+		<Action sr="act0" ve="7">
+			<code>20</code>
+			<App sr="arg0">
+				<appClass>com.google.android.maps.MapsActivity</appClass>
+				<appPkg>com.google.android.apps.maps</appPkg>
+				<label>Maps</label>
+			</App>
+			<Str sr="arg1" ve="3" />
+			<Int sr="arg2" val="0" />
+			<Int sr="arg3" val="0" />
+			<ConditionList sr="if">
+				<Condition sr="c0" ve="3">
+					<lhs>%RZparam</lhs>
+					<op>2</op>
+					<rhs>On</rhs>
+				</Condition>
+			</ConditionList>
+		</Action>
+		<Action sr="act1" ve="7">
+			<code>18</code>
+			<App sr="arg0">
+				<appClass>com.google.android.maps.MapsActivity</appClass>
+				<appPkg>com.google.android.apps.maps</appPkg>
+				<label>Maps</label>
+			</App>
+			<Int sr="arg1" val="0" />
+			<ConditionList sr="if">
+				<Condition sr="c0" ve="3">
+					<lhs>%RZparam</lhs>
+					<op>2</op>
+					<rhs>Off</rhs>
+				</Condition>
+			</ConditionList>
+		</Action>
+	</Task>
+</TaskerData>

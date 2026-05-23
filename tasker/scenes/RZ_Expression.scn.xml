@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TaskerData sr="" dvi="1" tv="6.6.20">
+	<Scene sr="sceneRZ_Expression">
+		<cdate>1777842601993</cdate>
+		<edate>1779146704475</edate>
+		<heightLand>-1</heightLand>
+		<heightPort>759</heightPort>
+		<nme>RZ_Expression</nme>
+		<widthLand>-1</widthLand>
+		<widthPort>467</widthPort>
+		<TextElement sr="elements0" ve="3">
+			<flags>4</flags>
+			<geom>0,0,465,601,-1,-1,-1,-1</geom>
+			<Str sr="arg0" ve="3">emoji_expression</Str>
+			<Str sr="arg1" ve="3">😐</Str>
+			<Int sr="arg2" val="160" />
+			<Int sr="arg3" val="100" />
+			<Str sr="arg4" ve="3">#FFFAF2F2</Str>
+			<Str sr="arg5" ve="3" />
+			<Int sr="arg6" val="0" />
+			<Int sr="arg7" val="0" />
+			<Int sr="arg8" val="0" />
+		</TextElement>
+		<ButtonElement sr="elements1" ve="3">
+			<clickTask>20</clickTask>
+			<flags>4</flags>
+			<geom>381,626,50,50,-1,-1,-1,-1</geom>
+			<Str sr="arg0" ve="3">btn_menu</Str>
+			<Str sr="arg1" ve="3">📃</Str>
+			<Int sr="arg2" val="16" />
+			<Int sr="arg3" val="100" />
+			<Str sr="arg4" ve="3">#FF000000</Str>
+			<Str sr="arg5" ve="3" />
+			<Int sr="arg6" val="0" />
+			<Img sr="arg7" ve="2" />
+		</ButtonElement>
+		<PropertiesElement sr="props">
+			<Int sr="arg0" val="2" />
+			<Int sr="arg1" val="2" />
+			<Str sr="arg2" ve="3">#000000</Str>
+			<Int sr="arg3" val="0" />
+			<Str sr="arg4" ve="3">RZ_Expression</Str>
+			<Str sr="arg5" ve="3" />
+			<Img sr="arg6" ve="2" />
+			<Str sr="arg7" ve="3" />
+		</PropertiesElement>
+	</Scene>
+</TaskerData>

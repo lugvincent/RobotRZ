@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TaskerData sr="" dvi="1" tv="6.6.20">
+	<Scene sr="sceneRZ_Menu">
+		<cdate>1778675933602</cdate>
+		<edate>1779146735020</edate>
+		<heightLand>-1</heightLand>
+		<heightPort>759</heightPort>
+		<nme>RZ_Menu</nme>
+		<widthLand>-1</widthLand>
+		<widthPort>467</widthPort>
+		<TextElement sr="elements0" ve="3">
+			<flags>4</flags>
+			<geom>35,33,395,75,-1,-1,-1,-1</geom>
+			<Str sr="arg0" ve="3">titre_menu</Str>
+			<Str sr="arg1" ve="3">MENU RZ</Str>
+			<Int sr="arg2" val="22" />
+			<Int sr="arg3" val="100" />
+			<Str sr="arg4" ve="3">#FFFFFFFF</Str>
+			<Str sr="arg5" ve="3" />
+			<Int sr="arg6" val="0" />
+			<Int sr="arg7" val="0" />
+			<Int sr="arg8" val="0" />
+		</TextElement>
+		<RectElement sr="elements1">
+			<flags>4</flags>
+			<geom>35,132,395,173,0,70,-1,-1</geom>
+			<Str sr="arg0" ve="3">pave_Mode</Str>
+			<Int sr="arg1" val="0" />
+			<Str sr="arg2" ve="3">#FF2A2A2A</Str>
+			<Str sr="arg3" ve="3" />
+			<Int sr="arg4" val="2" />
+			<Str sr="arg5" ve="3">#FFCBE91D</Str>
+			<Int sr="arg6" val="16" />
+			<Int sr="arg7" val="0" />
+		</RectElement>
+		<TextElement sr="elements10" ve="3">
+			<clickTask>55</clickTask>
+			<flags>4</flags>
+			<geom>35,478,198,50,-1,-1,-1,-1</geom>
+			<Str sr="arg0" ve="3">Appli_Zoom</Str>
+			<Str sr="arg1" ve="3">👥  Zoom-Visio</Str>
+			<Int sr="arg2" val="10" />
+			<Int sr="arg3" val="100" />
+			<Str sr="arg4" ve="3">#FFEEF8EE</Str>
+			<Str sr="arg5" ve="3" />
+			<Int sr="arg6" val="3" />
+			<Int sr="arg7" val="0" />
+			<Int sr="arg8" val="0" />
+		</TextElement>
+		<TextElement sr="elements11" ve="3">
+			<clickTask>56</clickTask>
+			<flags>4</flags>
+			<geom>35,428,198,50,-1,-1,-1,-1</geom>
+			<Str sr="arg0" ve="3">Appli_Camera</Str>
+			<Str sr="arg1" ve="3">📹 Camera</Str>
+			<Int sr="arg2" val="10" />
+			<Int sr="arg3" val="100" />
+			<Str sr="arg4" ve="3">#FFEEF8EE</Str>
+			<Str sr="arg5" ve="3" />
+			<Int sr="arg6" val="3" />
+			<Int sr="arg7" val="0" />
+			<Int sr="arg8" val="2" />
+		</TextElement>
+		<TextElement sr="elements12" ve="3">
+			<clickTask>44</clickTask>
+			<flags>4</flags>
+			<geom>233,379,198,50,-1,-1,-1,-1</geom>
+			<Str sr="arg0" ve="3">Appli_Torche</Str>
+			<Str sr="arg1" ve="3">🔦 Torche (api)</Str>
+			<Int sr="arg2" val="10" />
+			<Int sr="arg3" val="100" />
+			<Str sr="arg4" ve="3">#FFEEF8EE</Str>
+			<Str sr="arg5" ve="3" />
+			<Int sr="arg6" val="3" />
+			<Int sr="arg7" val="0" />
+			<Int sr="arg8" val="2" />
+		</TextElement>
+		<RectElement sr="elements13">
+			<flags>4</flags>
+			<geom>35,577,396,124,0,70,-1,-1</geom>
+			<Str sr="arg0" ve="3">pave_divers</Str>
+			<Int sr="arg1" val="0" />
+			<Str sr="arg2" ve="3">#FF2A2C23</Str>
+			<Str sr="arg3" ve="3" />
+			<Int sr="arg4" val="2" />
+			<Str sr="arg5" ve="3">#FF000000</Str>
+			<Int sr="arg6" val="16" />
+			<Int sr="arg7" val="0" />
+		</RectElement>
+		<TextElement sr="elements14" ve="3">
+			<clickTask>45</clickTask>
+			<flags>4</flags>
+			<geom>35,577,148,50,-1,-1,-1,-1</geom>
+			<Str sr="arg0" ve="3">Fction_EtatRZ</Str>
+			<Str sr="arg1" ve="3">📋 État RZ</Str>
+			<Int sr="arg2" val="10" />
+			<Int sr="arg3" val="100" />
+			<Str sr="arg4" ve="3">#FFCBE91D</Str>
+			<Str sr="arg5" ve="3" />
+			<Int sr="arg6" val="3" />
+			<Int sr="arg7" val="0" />
+			<Int sr="arg8" val="2" />
+		</TextElement>
+		<TextElement sr="elements15" ve="3">
+			<clickTask>46</clickTask>
+			<flags>4</flags>
+			<geom>208,577,222,50,-1,-1,-1,-1</geom>
+			<Str sr="arg0" ve="3">Fction_CommandesVocales</Str>
+			<Str sr="arg1" ve="3">🎙️ Cmde Vocales</Str>
+			<Int sr="arg2" val="10" />
+			<Int sr="arg3" val="100" />
+			<Str sr="arg4" ve="3">#FFCBE91D</Str>
+			<Str sr="arg5" ve="3" />
+			<Int sr="arg6" val="3" />
+			<Int sr="arg7" val="0" />
+			<Int sr="arg8" val="2" />
+		</TextElement>
+		<TextElement sr="elements16" ve="3">
+			<clickTask>47</clickTask>
+			<flags>4</flags>
+			<geom>35,626,148,50,-1,-1,-1,-1</geom>
+			<Str sr="arg0" ve="3">Doc-Aide</Str>
+			<Str sr="arg1" ve="3">📄  Aide</Str>
+			<Int sr="arg2" val="10" />
+			<Int sr="arg3" val="100" />
+			<Str sr="arg4" ve="3">#FFCBE91D</Str>
+			<Str sr="arg5" ve="3" />
+			<Int sr="arg6" val="3" />
+			<Int sr="arg7" val="0" />
+			<Int sr="arg8" val="2" />
+		</TextElement>
+		<TextElement sr="elements17" ve="3">
+			<clickTask>48</clickTask>
+			<flags>4</flags>
+			<geom>208,626,222,50,-1,-1,-1,-1</geom>
+			<Str sr="arg0" ve="3">FermerX</Str>
+			<Str sr="arg1" ve="3">🛑 FERMER</Str>
+			<Int sr="arg2" val="10" />
+			<Int sr="arg3" val="100" />
+			<Str sr="arg4" ve="3">#FFE91D1D</Str>
+			<Str sr="arg5" ve="3" />
+			<Int sr="arg6" val="3" />
+			<Int sr="arg7" val="0" />
+			<Int sr="arg8" val="2" />
+		</TextElement>
+		<TextElement sr="elements2" ve="3">
+			<clickTask>50</clickTask>
+			<flags>4</flags>
+			<geom>60,181,148,50,-1,-1,-1,-1</geom>
+			<Str sr="arg0" ve="3">ModeRZ_Veille</Str>
+			<Str sr="arg1" ve="3">&lt;font color="green"&gt;●&lt;/font&gt; &lt;font color="White "&gt;VEILLE&lt;/font&gt;</Str>
+			<Int sr="arg2" val="10" />
+			<Int sr="arg3" val="100" />
+			<Str sr="arg4" ve="3">#FFEEF8EE</Str>
+			<Str sr="arg5" ve="3">Tasker/fonts/Font Awesome 6 Free-Solid-900.otf</Str>
+			<Int sr="arg6" val="3" />
+			<Int sr="arg7" val="0" />
+			<Int sr="arg8" val="2" />
+		</TextElement>
+		<TextElement sr="elements3" ve="3">
+			<flags>4</flags>
+			<geom>35,132,148,50,-1,-1,-1,-1</geom>
+			<Str sr="arg0" ve="3">TitreBloc</Str>
+			<Str sr="arg1" ve="3">ModeRZ</Str>
+			<Int sr="arg2" val="13" />
+			<Int sr="arg3" val="100" />
+			<Str sr="arg4" ve="3">#FFCBE91D</Str>
+			<Str sr="arg5" ve="3" />
+			<Int sr="arg6" val="0" />
+			<Int sr="arg7" val="0" />
+			<Int sr="arg8" val="0" />
+		</TextElement>
+		<TextElement sr="elements4" ve="3">
+			<clickTask>49</clickTask>
+			<flags>4</flags>
+			<geom>257,181,148,50,-1,-1,-1,-1</geom>
+			<Str sr="arg0" ve="3">ModeRZ_Arret</Str>
+			<Str sr="arg1" ve="3">&lt;font color="red"&gt;●&lt;/font&gt; &lt;font color="White "&gt;ARRET&lt;/font&gt;</Str>
+			<Int sr="arg2" val="10" />
+			<Int sr="arg3" val="100" />
+			<Str sr="arg4" ve="3">#FFEEF8EE</Str>
+			<Str sr="arg5" ve="3">Tasker/fonts/Font Awesome 6 Free-Solid-900.otf</Str>
+			<Int sr="arg6" val="3" />
+			<Int sr="arg7" val="0" />
+			<Int sr="arg8" val="2" />
+		</TextElement>
+		<TextElement sr="elements5" ve="3">
+			<clickTask>51</clickTask>
+			<flags>4</flags>
+			<geom>257,231,148,50,-1,-1,-1,-1</geom>
+			<Str sr="arg0" ve="3">ModeRZ_Mvt</Str>
+			<Str sr="arg1" ve="3">&lt;font color="yellow"&gt;●&lt;/font&gt; &lt;font color="White "&gt;MOUVE&lt;/font&gt;</Str>
+			<Int sr="arg2" val="10" />
+			<Int sr="arg3" val="100" />
+			<Str sr="arg4" ve="3">#FFEEF8EE</Str>
+			<Str sr="arg5" ve="3">Tasker/fonts/Font Awesome 6 Free-Solid-900.otf</Str>
+			<Int sr="arg6" val="3" />
+			<Int sr="arg7" val="0" />
+			<Int sr="arg8" val="2" />
+		</TextElement>
+		<TextElement sr="elements6" ve="3">
+			<clickTask>52</clickTask>
+			<flags>4</flags>
+			<geom>60,231,148,50,-1,-1,-1,-1</geom>
+			<Str sr="arg0" ve="3">ModeRZ_Fixe</Str>
+			<Str sr="arg1" ve="3">&lt;font color="blue"&gt;●&lt;/font&gt; &lt;font color="White "&gt;FIXE&lt;/font&gt;</Str>
+			<Int sr="arg2" val="10" />
+			<Int sr="arg3" val="100" />
+			<Str sr="arg4" ve="3">#FFEEF8EE</Str>
+			<Str sr="arg5" ve="3">Tasker/fonts/Font Awesome 6 Free-Solid-900.otf</Str>
+			<Int sr="arg6" val="3" />
+			<Int sr="arg7" val="0" />
+			<Int sr="arg8" val="2" />
+		</TextElement>
+		<RectElement sr="elements7">
+			<flags>4</flags>
+			<geom>35,330,395,222,0,70,-1,-1</geom>
+			<Str sr="arg0" ve="3">pave_Appli</Str>
+			<Int sr="arg1" val="0" />
+			<Str sr="arg2" ve="3">#FF2A2C23</Str>
+			<Str sr="arg3" ve="3" />
+			<Int sr="arg4" val="2" />
+			<Str sr="arg5" ve="3">#FF000000</Str>
+			<Int sr="arg6" val="16" />
+			<Int sr="arg7" val="0" />
+		</RectElement>
+		<TextElement sr="elements8" ve="3">
+			<flags>4</flags>
+			<geom>35,330,197,50,-1,-1,-1,-1</geom>
+			<Str sr="arg0" ve="3">TitreBlocAppli</Str>
+			<Str sr="arg1" ve="3">Appli</Str>
+			<Int sr="arg2" val="13" />
+			<Int sr="arg3" val="100" />
+			<Str sr="arg4" ve="3">#FFCBE91D</Str>
+			<Str sr="arg5" ve="3" />
+			<Int sr="arg6" val="5" />
+			<Int sr="arg7" val="0" />
+			<Int sr="arg8" val="0" />
+		</TextElement>
+		<TextElement sr="elements9" ve="3">
+			<clickTask>54</clickTask>
+			<flags>4</flags>
+			<geom>233,428,198,50,-1,-1,-1,-1</geom>
+			<Str sr="arg0" ve="3">Appli_Maps</Str>
+			<Str sr="arg1" ve="3">🚘 Maps</Str>
+			<Int sr="arg2" val="10" />
+			<Int sr="arg3" val="100" />
+			<Str sr="arg4" ve="3">#FFEEF8EE</Str>
+			<Str sr="arg5" ve="3" />
+			<Int sr="arg6" val="3" />
+			<Int sr="arg7" val="0" />
+			<Int sr="arg8" val="2" />
+		</TextElement>
+		<PropertiesElement sr="props">
+			<Int sr="arg0" val="1" />
+			<Int sr="arg1" val="4" />
+			<Str sr="arg2" ve="3">#FF000000</Str>
+			<Int sr="arg3" val="0" />
+			<Str sr="arg4" ve="3">RZ_Menu</Str>
+			<Str sr="arg5" ve="3" />
+			<Img sr="arg6" ve="2" />
+			<Str sr="arg7" ve="3" />
+		</PropertiesElement>
+	</Scene>
+</TaskerData>

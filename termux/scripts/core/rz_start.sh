@@ -114,7 +114,7 @@ kill_process() {
     local pids
     pids=$(pgrep -f "$pattern" 2>/dev/null)
     if [ -n "$pids" ]; then
-        kill $pids 2>/dev/null
+      echo "$pids" | xargs kill 2>/dev/null
         sleep 0.5
         ok "Processus '$pattern' arrêté (PID $pids)"
     fi
@@ -156,6 +156,7 @@ cmd_stop() {
     kill_process "rz_camera_manager"
     kill_process "rz_stt_manager"
     kill_process "rz_voice_manager"
+    kill_process "rz_tasker_out"
     log "Arrêt terminé."
 }
 
@@ -279,6 +280,9 @@ start_core() {
     # State-manager — gestion état global (global.json)
     start_bg "state_manager" "$SCRIPTS_DIR/core/rz_state-manager.sh"
     sleep 1
+    # Tasker output watcher — vpiv_out.txt → MQTT → SP
+    kill_process "rz_tasker_out"
+    start_bg "tasker_out" "$SCRIPTS_DIR/core/rz_tasker_out.sh"
 }
 
 # =============================================================================

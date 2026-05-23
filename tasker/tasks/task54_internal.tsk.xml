@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TaskerData sr="" dvi="1" tv="6.6.20">
+	<Task sr="task54">
+		<cdate>1778677179992</cdate>
+		<edate>1778900000001</edate>
+		<id>54</id>
+		<pri>104</pri>
+		<Action sr="act0" ve="7">
+			<code>547</code>
+			<Str sr="arg0" ve="3">%RZparam</Str>
+			<Str sr="arg1" ve="3">On</Str>
+			<Int sr="arg2" val="0" />
+			<Int sr="arg3" val="0" />
+			<Int sr="arg4" val="0" />
+			<Int sr="arg5" val="3" />
+			<Int sr="arg6" val="1" />
+		</Action>
+		<Action sr="act1" ve="7">
+			<code>547</code>
+			<Str sr="arg0" ve="3">%RZappliTask</Str>
+			<Str sr="arg1" ve="3">RZ_Maps</Str>
+			<Int sr="arg2" val="0" />
+			<Int sr="arg3" val="0" />
+			<Int sr="arg4" val="0" />
+			<Int sr="arg5" val="3" />
+			<Int sr="arg6" val="1" />
+		</Action>
+		<Action sr="act2" ve="7">
+			<code>547</code>
+			<Str sr="arg0" ve="3">%RZappliNom</Str>
+			<Str sr="arg1" ve="3">Maps</Str>
+			<Int sr="arg2" val="0" />
+			<Int sr="arg3" val="0" />
+			<Int sr="arg4" val="0" />
+			<Int sr="arg5" val="3" />
+			<Int sr="arg6" val="1" />
+		</Action>
+		<Action sr="act3" ve="7">
+			<code>49</code>
+			<Str sr="arg0" ve="3">RZ_Menu</Str>
+		</Action>
+		<Action sr="act4" ve="7">
+			<code>130</code>
+			<Str sr="arg0" ve="3">RZ_AppStart</Str>
+			<Int sr="arg1" val="0" />
+			<Int sr="arg10" val="1" />
+			<Str sr="arg2" ve="3" />
+			<Str sr="arg3" ve="3" />
+			<Str sr="arg4" ve="3" />
+			<Int sr="arg5" val="0" />
+			<Int sr="arg6" val="0" />
+			<Str sr="arg7" ve="3" />
+			<Int sr="arg8" val="0" />
+			<Int sr="arg9" val="0" />
+		</Action>
+	</Task>
+</TaskerData>

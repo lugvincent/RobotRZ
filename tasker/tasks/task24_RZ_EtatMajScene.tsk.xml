@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TaskerData sr="" dvi="1" tv="6.6.20">
+	<Task sr="task24">
+		<cdate>1779171155064</cdate>
+		<edate>1779176271435</edate>
+		<id>24</id>
+		<nme>RZ_EtatMajScene</nme>
+		<Action sr="act0" ve="7">
+			<code>51</code>
+			<Str sr="arg0" ve="3">RZ_Etat</Str>
+			<Str sr="arg1" ve="3">val_mode</Str>
+			<Int sr="arg2" val="0" />
+			<Str sr="arg3" ve="3">%RZetatMode</Str>
+			<Str sr="arg4" ve="3" />
+		</Action>
+		<Action sr="act1" ve="7">
+			<code>51</code>
+			<Str sr="arg0" ve="3">RZ_Etat</Str>
+			<Str sr="arg1" ve="3">val_ptge</Str>
+			<Int sr="arg2" val="0" />
+			<Str sr="arg3" ve="3">%RZetatPtge</Str>
+			<Str sr="arg4" ve="3" />
+		</Action>
+		<Action sr="act2" ve="7">
+			<code>51</code>
+			<Str sr="arg0" ve="3">RZ_Etat</Str>
+			<Str sr="arg1" ve="3">val_reseau</Str>
+			<Int sr="arg2" val="0" />
+			<Str sr="arg3" ve="3">%RZetatReseau</Str>
+			<Str sr="arg4" ve="3" />
+		</Action>
+		<Action sr="act3" ve="7">
+			<code>51</code>
+			<Str sr="arg0" ve="3">RZ_Etat</Str>
+			<Str sr="arg1" ve="3">val_ip_se</Str>
+			<Int sr="arg2" val="0" />
+			<Str sr="arg3" ve="3">%RZetatIpSE</Str>
+			<Str sr="arg4" ve="3" />
+		</Action>
+		<Action sr="act4" ve="7">
+			<code>51</code>
+			<Str sr="arg0" ve="3">RZ_Etat</Str>
+			<Str sr="arg1" ve="3">val_ip_sp</Str>
+			<Int sr="arg2" val="0" />
+			<Str sr="arg3" ve="3">%RZetatIpSP</Str>
+			<Str sr="arg4" ve="3" />
+		</Action>
+		<Action sr="act5" ve="7">
+			<code>51</code>
+			<Str sr="arg0" ve="3">RZ_Etat</Str>
+			<Str sr="arg1" ve="3">val_ctx_reseau</Str>
+			<Int sr="arg2" val="0" />
+			<Str sr="arg3" ve="3">%RZetatCtxReseau</Str>
+			<Str sr="arg4" ve="3" />
+		</Action>
+		<Action sr="act6" ve="7">
+			<code>51</code>
+			<Str sr="arg0" ve="3">RZ_Etat</Str>
+			<Str sr="arg1" ve="3">Val_ts</Str>
+			<Int sr="arg2" val="0" />
+			<Str sr="arg3" ve="3">%RZetatTs</Str>
+			<Str sr="arg4" ve="3" />
+		</Action>
+	</Task>
+</TaskerData>

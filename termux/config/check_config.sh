@@ -1,7 +1,7 @@
 #!/bin/bash
 # =============================================================================
 # SCRIPT  : check_config.sh
-# CHEMIN  : ~/robotRZ-smartSE/termux/config/check_config.sh
+# CHEMIN  : ~/scripts_RZ_SE/termux/config/check_config.sh
 #
 # OBJECTIF
 # --------
@@ -18,7 +18,6 @@
 #   config/sensors/mic_config.json    : config microphone
 #   config/appli_config.json          : config applications Tasker
 #   config/sensors/stt_config.json    : config reconnaissance vocale PocketSphinx
-#   config/sensors/voice_config.json  : config sortie audio (vol, output, ttsRate)
 #
 # NON TRAITÉ ICI
 # --------------
@@ -92,7 +91,7 @@
 # =============================================================================
 
 if [ -d "/data/data/com.termux/files" ]; then
-    BASE_DIR="/data/data/com.termux/files/home/robotRZ-smartSE/termux"
+    BASE_DIR="/data/data/com.termux/files/home/scripts_RZ_SE/termux"
 else
     BASE_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 fi
@@ -105,7 +104,7 @@ CAM_CONFIG="$BASE_DIR/config/sensors/cam_config.json"
 MIC_CONFIG="$BASE_DIR/config/sensors/mic_config.json"
 APPLI_CONFIG="$BASE_DIR/config/appli_config.json"
 STT_CONFIG="$BASE_DIR/config/sensors/stt_config.json"
-VOICE_CONFIG="$BASE_DIR/config/sensors/voice_config.json"
+
 # Chemin vers le dossier du script STT (lib_path est relatif à ce dossier)
 STT_SCRIPT_DIR="$BASE_DIR/scripts/sensors/stt"
 
@@ -692,8 +691,11 @@ else
     log "  fr.dict présent  ✓"
 fi
 
-$stt_lib_ok && log "  Tous les fichiers PocketSphinx présents  ✓" || \
+if $stt_lib_ok; then
+    log "  Tous les fichiers PocketSphinx présents  ✓"
+else
     log "  WARN : STT potentiellement inopérant — voir avertissements ci-dessus"
+fi
 
 log "--- Section STT : VALIDÉE ---"
 
@@ -713,66 +715,6 @@ if ! jq '.' "$STT_CONFIG" > /dev/null 2>&1; then erreur "stt_config.json invalid
 log "stt_config.json généré et validé  ✓"
 
 # =============================================================================
-# SECTION VOICE — Lecture, validation et génération de voice_config.json
-# =============================================================================
-# ⚠ Voice est INDÉPENDANT du modeSTT.
-#   rz_voice_manager.sh reste actif même si la reconnaissance vocale est
-#   désactivée — il gère toute la sortie audio SE (TTS, musique, alertes).
-#
-# vol    : volume initial 0-100%
-# output : sortie audio (internal|jack|bt)
-# ttsRate: vitesse TTS (float positif, 1.0 = normale)
-# =============================================================================
-
-log "--- Validation section Voice ---"
-
-if ! jq -e '.voice' "$INPUT_JSON" > /dev/null 2>&1; then
-    log "  WARN : Bloc '.voice' absent de courant_init.json"
-    log "         voice_config.json non généré — rz_voice_manager.sh utilisera les défauts"
-else
-
-    voice_vol=$(    lire_json '.voice.vol'     '80')
-    voice_output=$( lire_json '.voice.output'  'internal')
-    voice_ttsRate=$(lire_json '.voice.ttsRate' '1.0')
-
-    # Validation vol (entier 0-100)
-    if ! [[ "$voice_vol" =~ ^[0-9]+$ ]] || [ "$voice_vol" -lt 0 ] || [ "$voice_vol" -gt 100 ]; then
-        erreur "voice.vol invalide : '$voice_vol' (attendu : entier 0-100)"
-    fi
-    log "  vol = ${voice_vol}%  ✓"
-
-    # Validation output (enum)
-    case "$voice_output" in
-        internal|jack|bt) log "  output = $voice_output  ✓" ;;
-        *) erreur "voice.output invalide : '$voice_output' (attendu : internal|jack|bt)" ;;
-    esac
-
-    # Validation ttsRate (float positif)
-    if ! [[ "$voice_ttsRate" =~ ^[0-9]+([.][0-9]+)?$ ]]; then
-        erreur "voice.ttsRate invalide : '$voice_ttsRate' (attendu : float > 0, ex: 1.0)"
-    fi
-    log "  ttsRate = $voice_ttsRate  ✓"
-
-    log "--- Section Voice : VALIDÉE ---"
-
-    mkdir -p "$(dirname "$VOICE_CONFIG")"
-    cat > "$VOICE_CONFIG" <<EOF
-{
-  "voice": {
-    "vol":     $voice_vol,
-    "output":  "$voice_output",
-    "ttsRate": $voice_ttsRate
-  }
-}
-EOF
-    if ! jq '.' "$VOICE_CONFIG" > /dev/null 2>&1; then
-        erreur "voice_config.json généré est invalide"
-    fi
-    log "voice_config.json généré et validé  ✓"
-
-fi
-
-# =============================================================================
 # RÉSUMÉ FINAL
 # =============================================================================
 
@@ -785,7 +727,6 @@ log "  → $CAM_CONFIG"
 log "  → $APPLI_CONFIG"
 log "  → $MIC_CONFIG"
 log "  → $STT_CONFIG"
-log "  → $VOICE_CONFIG"
 log ""
 log "  Non traité (lecture directe courant_init.json) :"
 log "  → bloc 'mtr'  : lu par rz_stt_handler.sh"

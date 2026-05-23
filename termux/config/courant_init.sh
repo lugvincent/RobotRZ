@@ -26,6 +26,7 @@
 #   [x] Mic   : modeMicro, paraMicro (seuils, balayage orientation)
 #   [x] Appli : états initiaux, tâches Tasker, packages Android
 #   [x] STT   : modeSTT, keyphrase, threshold, lib_path
+#   [x] Voice : vol, output, ttsRate
 #   [x] Mtr   : speed_cruise, scales, kturn  (lu directement par rz_stt_handler.sh)
 #
 # ARTICULATION
@@ -267,6 +268,22 @@ stt_lang="fr"
 stt_lib_path="lib_pocketsphinx"
 
 # =============================================================================
+# SECTION VOICE — Propriétés SP → SE  (Table A : module Voice)
+# =============================================================================
+# vol      : volume initial (0-100, normalisé vers plage Android native au boot)
+#            rz_voice_manager.sh convertit en 0-maxVolume Android (détecté dynamiquement)
+# output   : sortie audio par défaut (internal|jack|bt)
+#            Android commute automatiquement — ce paramètre n'est qu'un état initial publié.
+#            jack/BT pris en charge par Android ; BT forcé = V2 (hors scope V1)
+# ttsRate  : vitesse de synthèse vocale (0.5=lent … 1.0=normal … 2.0=rapide)
+#            Passé à termux-tts-speak si supporté par le moteur TTS Android.
+#            Valeur recommandée pour robot compagnon : 1.0
+
+voice_vol=80
+voice_output="internal"
+voice_ttsRate="1.0"
+
+# =============================================================================
 # SECTION MTR — Propriétés de référence moteur  (Table A : module Mtr)
 # =============================================================================
 # Paramètres de référence du module moteur Arduino.
@@ -412,6 +429,11 @@ cat > "$OUTPUT_JSON" <<EOF
     "keyphrase": "$stt_keyphrase",
     "lang":      "$stt_lang",
     "lib_path":  "$stt_lib_path"
+  },
+  "voice": {
+    "vol":     $voice_vol,
+    "output":  "$voice_output",
+    "ttsRate": "$voice_ttsRate"
   },
   "mtr": {
     "speed_cruise":  $mtr_speed_cruise,

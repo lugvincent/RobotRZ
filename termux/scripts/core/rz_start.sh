@@ -23,7 +23,8 @@
 #    - rz_mg_manager.sh    si modeMg != OFF
 #    - rz_microSe_manager.sh si modeMicro != off
 #    - rz_camera_manager.sh  si cam.rear.mode ou cam.front.mode != off
-#    - rz_stt_manager.sh     si modeSTT != OFF
+#    - rz_voice_manager.sh   toujours (TTS requis avant STT)
+#    - rz_stt_manager.sh     si modeSTT != OFF  (après voice — TTS "prêt" doit sortir)
 # 6. Envoi trame d'annonce vers SP : $I:COM:info:SE:SE_READY#
 # 7. Attente infinie (les daemons tournent en arrière-plan)
 #
@@ -54,9 +55,11 @@
 #   jq, mosquitto_sub, mosquitto_pub
 #   rz_vpiv_parser.sh, rz_state-manager.sh
 #   rz_sys_monitor.sh, rz_gyro_manager.sh, rz_mg_manager.sh
+#   rz_voice_manager.sh, rz_stt_manager.sh
 #
 # AUTEUR  : Vincent Philippe
-# VERSION : 1.0 - 2026-04-28
+# VERSION : 1.1  (ajout rz_voice_manager — démarrage avant STT)
+# DATE    : 2026-05-20
 # =============================================================================
 
 # =============================================================================
@@ -108,15 +111,16 @@ cfg() {
     jq -r "$1 // empty" "$COURANT_INIT" 2>/dev/null
 }
 
-# Tuer proprement un processus par pattern
+# Tuer proprement un ou plusieurs processus par pattern
+# mapfile stocke les PIDs dans un tableau → évite le word splitting non quoté
 kill_process() {
     local pattern="$1"
-    local pids
-    pids=$(pgrep -f "$pattern" 2>/dev/null)
-    if [ -n "$pids" ]; then
-      echo "$pids" | xargs kill 2>/dev/null
+    local -a pids
+    mapfile -t pids < <(pgrep -f "$pattern" 2>/dev/null)
+    if [ "${#pids[@]}" -gt 0 ]; then
+        kill "${pids[@]}" 2>/dev/null
         sleep 0.5
-        ok "Processus '$pattern' arrêté (PID $pids)"
+        ok "Processus '$pattern' arrêté (PID ${pids[*]})"
     fi
 }
 
@@ -156,7 +160,6 @@ cmd_stop() {
     kill_process "rz_camera_manager"
     kill_process "rz_stt_manager"
     kill_process "rz_voice_manager"
-    kill_process "rz_tasker_out"
     log "Arrêt terminé."
 }
 
@@ -174,6 +177,7 @@ cmd_status() {
         "rz_mg_manager"
         "rz_microSe_manager"
         "rz_camera_manager"
+        "rz_voice_manager"
         "rz_stt_manager"
     )
     for proc in "${procs[@]}"; do
@@ -280,9 +284,6 @@ start_core() {
     # State-manager — gestion état global (global.json)
     start_bg "state_manager" "$SCRIPTS_DIR/core/rz_state-manager.sh"
     sleep 1
-    # Tasker output watcher — vpiv_out.txt → MQTT → SP
-    kill_process "rz_tasker_out"
-    start_bg "tasker_out" "$SCRIPTS_DIR/core/rz_tasker_out.sh"
 }
 
 # =============================================================================
@@ -343,6 +344,14 @@ start_sensors() {
         warn "Camera manager : mode rear=$mode_cam_rear front=$mode_cam_front — non démarré"
     fi
 
+    # --- Voice manager ---
+    # Toujours démarré : TTS requis pour les feedbacks vocaux de tous les managers.
+    # Doit être actif AVANT STT (le TTS "STT prêt" doit pouvoir sortir).
+    # Lit voice_config.json généré par check_config.sh depuis courant_init.json.
+    kill_process "rz_voice_manager"
+    start_bg "voice_manager" "$SCRIPTS_DIR/sensors/voice/rz_voice_manager.sh"
+    sleep 1  # Laisser fifo_voice_in s'ouvrir avant de lancer STT
+
     # --- STT ---
     local mode_stt
     mode_stt=$(cfg '.stt.modeSTT')
@@ -374,7 +383,7 @@ announce_ready() {
 
 main() {
     log "=========================================="
-    log "Démarrage rz_start.sh v1.0"
+    log "Démarrage rz_start.sh v1.1"
     log "=========================================="
 
     case "${1:-}" in

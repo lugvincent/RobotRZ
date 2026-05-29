@@ -9,14 +9,14 @@
 #      3. Déploie les trames VPIV vers le circuit FIFO.
 #      4. Gère le code de retour pour la bascule IA (exit 1 = non trouvé).
 #
-# VERSION: 2.5 (Intégration capsule_trame pour validation SP)
+# VERSION: 2.6 (fix chemin CATALOGUE : config/sensors → scripts/sensors/stt)
 # DATE: 2026-02-16
 # =============================================================================
 
 # --- 1. DÉFINITION DES CHEMINS ---
 BASE_DIR="/data/data/com.termux/files/home/robotRZ-smartSE/termux"
 CONFIG_GLOBAL="$BASE_DIR/config/global.json"
-CATALOGUE="$BASE_DIR/config/sensors/stt_catalog.json"
+CATALOGUE="$BASE_DIR/scripts/sensors/stt/stt_catalog.json"
 LOG_FILE="$BASE_DIR/logs/stt_handler.log"
 FIFO_IN="$BASE_DIR/fifo/fifo_termux_in"
 

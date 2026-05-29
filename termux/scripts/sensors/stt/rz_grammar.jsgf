@@ -1,0 +1,170 @@
+#JSGF V1.0 UTF-8 fr;
+// Grammaire générée automatiquement par rz_build_grammar.py
+// Source : tableD_catalogueV2.csv
+// Ne pas modifier manuellement — relancer rz_build_grammar.py
+
+grammar rz_commands;
+
+// Toute commande commence par le wake word "rz"
+public <command> = rz <action>;
+
+<action> =
+    écoute d'où vient le son |
+    tourne la tête à droite |
+    tourne la tête à gauche |
+    expression étonnement |
+    arrête la navigation |
+    lance la navigation |
+    active les moteurs |
+    désactive le micro |
+    expression normale |
+    expression sourire |
+    incline la tête de |
+    niveau de batterie |
+    allume la lumière |
+    démarre la caméra |
+    expression colère |
+    expression neutre |
+    expression triste |
+    quel est ton état |
+    surveillance bébé |
+    tourne la tête de |
+    éteins la lumière |
+    allume la caméra |
+    arrête la caméra |
+    efface l'urgence |
+    mode déplacement |
+    prends une photo |
+    regarde à droite |
+    regarde à gauche |
+    éteins la caméra |
+    active le micro |
+    allume l'anneau |
+    allume le micro |
+    allume les leds |
+    annule l'alerte |
+    bascule arrière |
+    commande vocale |
+    fais un sourire |
+    localise le son |
+    regarde en haut |
+    tourne à droite |
+    tourne à gauche |
+    à la vitesse de |
+    éteins l'anneau |
+    éteins les leds |
+    baisse la tête |
+    caméra arrière |
+    comment tu vas |
+    coupe le micro |
+    coupe le phare |
+    démarre tasker |
+    fais une pause |
+    marche arrière |
+    mise en veille |
+    pilotage vocal |
+    pilotage écran |
+    regarde devant |
+    regarde en bas |
+    arrête tasker |
+    bascule avant |
+    mode autonome |
+    position fixe |
+    retour neutre |
+    souris tasker |
+    tourne droite |
+    tourne gauche |
+    virage droite |
+    virage gauche |
+    visage neutre |
+    visage normal |
+    caméra avant |
+    démarre zoom |
+    ferme tasker |
+    lance tasker |
+    lève la tête |
+    réinitialise |
+    réunion zoom |
+    réveille-toi |
+    état système |
+    arrête baby |
+    arrête tout |
+    arrête zoom |
+    dis bonjour |
+    déplacement |
+    mode laisse |
+    mode veille |
+    sois triste |
+    ton énergie |
+    vue arrière |
+    vue de face |
+    active-toi |
+    caméra off |
+    en arrière |
+    ferme zoom |
+    lance baby |
+    lance zoom |
+    luminosité |
+    navigation |
+    torche off |
+    tout droit |
+    autonomie |
+    avance de |
+    caméra on |
+    doucement |
+    en colère |
+    intensité |
+    lentement |
+    mode fixe |
+    mode nuit |
+    plus vite |
+    stop bébé |
+    tourne de |
+    va dormir |
+    éclairage |
+    accélère |
+    autonome |
+    batterie |
+    en avant |
+    immobile |
+    ralentis |
+    snapshot |
+    stop gps |
+    tourne à |
+    bonjour |
+    capture |
+    surpris |
+    urgence |
+    vitesse |
+    arrête |
+    avance |
+    centre |
+    coucou |
+    debout |
+    freine |
+    laisse |
+    neutre |
+    rapide |
+    recule |
+    souris |
+    torche |
+    triste |
+    veille |
+    étonné |
+    fâché |
+    halte |
+    pause |
+    phare |
+    repos |
+    reset |
+    salut |
+    vas-y |
+    écran |
+    auto |
+    dors |
+    fixe |
+    haut |
+    stop |
+    vite |
+    bas |
+    gps ;

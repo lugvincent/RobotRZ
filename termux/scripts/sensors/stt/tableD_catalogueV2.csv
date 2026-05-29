@@ -1,0 +1,71 @@
+ID;Traitement;CAT;Destinataire;moteurActif;Alias;ID_fils;VAR;PROP;INSTANCE;VALEUR;Prepa_Encodage;Alias-TTS;Statut;Note_technique
+URGENCY_STOP;SIMPLE;V;A;0;stop|arrête tout|urgence|freine;;Mtr;cmd;*;0,0,2;;Je m'arrête.|Arrêt d'urgence.;OK;Priorité absolue. Seule commande acceptée si modeRZ=0 ou 5.
+MTR_FORWARD;SIMPLE;V;A;1;avance|tout droit|vas-y|en avant;;Mtr;cmd;*;50,0,2;;Je fonce.|C'est parti.;OK;val=vitesse,angle,accél. Vitesse 50 = compromis sécurité/couple.
+MTR_BACKWARD;SIMPLE;V;A;1;recule|en arrière|marche arrière;;Mtr;cmd;*;-50,0,2;;Je recule.;OK;Vitesse négative = marche arrière.
+MTR_STOP;SIMPLE;V;A;1;stop|arrête|freine|immobile|halte;;Mtr;cmd;*;0,0,0;;Arrêt.;OK;Arrêt moteur simple (hors urgence). moteurActif=1 → filtré si laisse active.
+MTR_SLOW;SIMPLE;V;A;1;lentement|doucement|ralentis;;Mtr;cmd;*;20,0,1;;Je ralentis.;OK;Vitesse réduite avec accélération douce.
+MTR_FAST;SIMPLE;V;A;1;vite|accélère|plus vite|rapide;;Mtr;cmd;*;80,0,3;;À toute vitesse !;OK;Vérifier terrain avant usage vitesse élevée.
+MTR_TURN_RIGHT;PLAN;V;A;1;tourne à droite|tourne droite|virage droite;;Mtr;cmd;*;[calculé];angle->NUM_DIR;Je tourne à droite.;OK;Handler extrait angle du discours. val=vitesse,+angle,acc. Défaut 45°.
+MTR_TURN_LEFT;PLAN;V;A;1;tourne à gauche|tourne gauche|virage gauche;;Mtr;cmd;*;[calculé];angle->NUM_DIR;Je tourne à gauche.;OK;Idem MTR_TURN_RIGHT côté gauche. val=vitesse,-angle,acc.
+MTR_TURN_ANGLE;PLAN;V;A;1;tourne de|tourne à;;Mtr;cmd;*;[calculé];angle->NUM_DIR;Je tourne.;OK;Commande générique. Sens déterminé par gauche/droite dans le discours.
+MTR_SPEED_SET;PLAN;V;A;1;vitesse|à la vitesse de;;Mtr;cmd;*;[calculé];speed->NUM;Je règle ma vitesse.;OK;Extrait valeur numérique 0–100. Accélération par défaut : 2.
+MTR_ADVANCE_DIST;PLAN;V;A;1;avance de|avance;;Mtr;cmd;*;[calculé];dist->NUM;Je me déplace.;OK;Extrait distance (cm ou m). Requiert Odom pour contrôle de distance.
+CFG_VEILLE;SIMPLE;V;SE;0;mode veille|veille|repos|mise en veille|dors;;CfgS;modeRZ;*;1;;Mode veille activé.;OK;Coupe moteurs et réduit charge CPU des managers.
+CFG_FIXE;SIMPLE;V;SE;0;mode fixe|fixe|position fixe;;CfgS;modeRZ;*;2;;Mode fixe activé.;OK;Robot immobile mais actif (capteurs, caméra, STT).
+CFG_DEPLACEMENT;SIMPLE;V;SE;0;mode déplacement|déplacement|active les moteurs;;CfgS;modeRZ;*;3;;Prêt à me déplacer.;OK;Active les commandes moteur. Pré-requis moteurActif=1.
+CFG_AUTONOME;SIMPLE;V;SE;0;mode autonome|autonome|auto;;CfgS;modeRZ;*;4;;Mode autonome activé.;OK;Décisions validées localement par state-manager sans ACK SP.
+CFG_PTGE_VOCAL;SIMPLE;V;SE;0;pilotage vocal|commande vocale;;CfgS;typePtge;*;1;;Pilotage vocal activé.;OK;
+CFG_PTGE_ECRAN;SIMPLE;V;SE;0;pilotage écran|écran;;CfgS;typePtge;*;0;;Pilotage écran activé.;OK;
+CFG_PTGE_LAISSE;SIMPLE;V;SE;0;mode laisse|laisse;;CfgS;typePtge;*;3;;Je suis en mode laisse.;OK;
+SYS_SET_PILOT;PLAN;V;SE;0;pilote au|mode pilotage|change pilotage;;CfgS;typePtge;*;[calculé];mode->STR;Mode pilotage changé.;Pro;Handler traduit: 'vocal'→1 'écran'→0 'joystick'→2 'laisse'→3. V2.
+CAM_ON;SIMPLE;V;SE;0;démarre la caméra|allume la caméra|caméra on;;CamSE;modeCam;rear;stream;;Caméra démarrée.;OK;PROP=modeCam (corrigé V2). Démarre flux arrière.
+CAM_OFF;SIMPLE;V;SE;0;arrête la caméra|éteins la caméra|caméra off;;CamSE;modeCam;*;off;;Caméra arrêtée.;OK;Arrête toutes les instances. PROP=modeCam.
+CAM_FRONT;SIMPLE;V;SE;0;caméra avant|vue de face|bascule avant;;CamSE;modeCam;front;stream;;Je bascule sur la caméra avant.;OK;INST=front. Corrigé depuis PROP=mode.
+CAM_REAR;SIMPLE;V;SE;0;caméra arrière|vue arrière|bascule arrière;;CamSE;modeCam;rear;stream;;Je bascule sur la caméra arrière.;OK;INST=rear.
+CAM_SNAP;SIMPLE;V;SE;0;prends une photo|snapshot|capture;;CamSE;snap;*;1;;Photo prise.;OK;PROP=snap (sans parenthèses). URL photo via StreamURL.
+CAM_TORCH_ON;SIMPLE;V;SE;0;allume la lumière|torche|phare|éclairage;;TorchSE;active;*;On;;J'allume la torche.;OK;VAR=TorchSE (corrigé V2). API IP Webcam si stream actif sinon termux-torch.
+CAM_TORCH_OFF;SIMPLE;V;SE;0;éteins la lumière|coupe le phare|torche off;;TorchSE;active;*;Off;;J'éteins la torche.;OK;Symétrique CAM_TORCH_ON.
+LRING_ON;SIMPLE;V;A;0;allume les leds|allume l'anneau;;Lring;act;*;1;;Leds allumées.;OK;VAR=Lring (L minuscule). PROP=act (Table A).
+LRING_OFF;SIMPLE;V;A;0;éteins les leds|éteins l'anneau;;Lring;act;*;0;;Leds éteintes.;OK;
+LRING_SMILE;SIMPLE;V;A;0;souris|fais un sourire|expression sourire;;Lring;expr;*;smile;;Voilà mon plus beau sourire.;OK;Val normalisée en minuscules.
+LRING_SAD;SIMPLE;V;A;0;triste|sois triste|expression triste;;Lring;expr;*;triste;;Je suis triste.;OK;
+LRING_NEUTRAL;SIMPLE;V;A;0;neutre|expression neutre|visage neutre;;Lring;expr;*;neutral;;Expression neutre.;OK;
+LRING_SURPRISED;SIMPLE;V;A;0;étonné|surpris|expression étonnement;;Lring;expr;*;étonnement;;Oh !;OK;
+LRING_ANGRY;SIMPLE;V;A;0;en colère|fâché|expression colère;;Lring;expr;*;colère;;Grrr !;OK;
+LRING_BRIGHTNESS;PLAN;V;A;0;intensité|luminosité;;Lring;lumin;*;[calculé];brightness->NUM;Je règle la luminosité.;OK;PROP=lumin (corrigé V2). Plage 0–255.
+LRUB_SET_RGB;SIMPLE;V;A;0;change de couleur|allume les leds ruban|lumière ruban;;Lrub;mode;*;2;;Couleur changée.;Pro;Passe le ruban en mode fixe (2). V2.
+SRV_HEAD_UP;SIMPLE;V;A;0;lève la tête|regarde en haut|haut;;Srv;angle;THB;120;;Je lève la tête.;OK;INST=THB (Tête Haut-Bas).
+SRV_HEAD_DOWN;SIMPLE;V;A;0;baisse la tête|regarde en bas|bas;;Srv;angle;THB;30;;Je baisse la tête.;OK;
+SRV_HEAD_RIGHT;SIMPLE;V;A;0;regarde à droite|tourne la tête à droite;;Srv;angle;TGD;60;;Je regarde à droite.;OK;INST=TGD (Tête Gauche-Droite).
+SRV_HEAD_LEFT;SIMPLE;V;A;0;regarde à gauche|tourne la tête à gauche;;Srv;angle;TGD;0;;Je regarde à gauche.;OK;
+SRV_HEAD_CENTER;SIMPLE;V;A;0;regarde devant|tout droit|centre;;Srv;angle;TGD;30;;Je regarde devant moi.;OK;Position centrale TGD.
+SRV_HEAD_ANGLE;PLAN;V;A;0;tourne la tête de|incline la tête de;;Srv;angle;TGD;[calculé];angle->NUM;Je tourne la tête.;OK;Angle extrait du discours. Plage : 0–180°.
+APP_TASKER_ON;SIMPLE;V;SE;0;lance tasker|démarre tasker;;Appli;tasker;*;On;;Tasker démarré.;OK;
+APP_TASKER_OFF;SIMPLE;V;SE;0;arrête tasker|ferme tasker;;Appli;tasker;*;Off;;Tasker fermé.;OK;
+APP_ZOOM_ON;SIMPLE;V;SE;0;lance zoom|démarre zoom|réunion zoom;;Appli;zoom;*;On;;Je lance Zoom.;OK;
+APP_ZOOM_OFF;SIMPLE;V;SE;0;arrête zoom|ferme zoom;;Appli;zoom;*;Off;;Zoom fermé.;OK;
+APP_BABY_ON;SIMPLE;V;SE;0;lance baby|surveillance bébé;;Appli;Baby;*;On;;Surveillance bébé démarrée.;OK;
+APP_BABY_OFF;SIMPLE;V;SE;0;arrête baby|stop bébé;;Appli;Baby;*;Off;;Surveillance bébé arrêtée.;OK;
+APP_GPS_ON;SIMPLE;V;SE;0;lance la navigation|gps|navigation;;Appli;NavGPS;*;On;;Navigation démarrée.;OK;
+APP_GPS_OFF;SIMPLE;V;SE;0;arrête la navigation|stop gps;;Appli;NavGPS;*;Off;;Navigation arrêtée.;OK;
+EXPR_SMILE;SIMPLE;V;SE;0;fais un sourire|souris tasker|expression sourire;;Appli;ExprTasker;Expression;sourire;;Voilà !;OK;INST porte le type action (Expression). Différent des autres Appli.
+EXPR_NEUTRAL;SIMPLE;V;SE;0;retour neutre|expression normale|visage normal;;Appli;ExprTasker;Off;*;;D'accord.;OK;Off dans INST. Arrêt ExprTasker.
+MIC_ON;SIMPLE;V;SE;0;active le micro|allume le micro;;MicroSE;modeMicro;*;intensite;;Micro activé.;OK;Mode intensité = flux RMS continu.
+MIC_OFF;SIMPLE;V;SE;0;coupe le micro|désactive le micro;;MicroSE;modeMicro;*;off;;Micro coupé.;OK;
+MIC_ORIENT;SIMPLE;V;SE;0;écoute d'où vient le son|localise le son;;MicroSE;modeMicro;*;orientation;;J'écoute d'où tu viens.;OK;Active balayage servo TGD pour localisation sonore.
+MIC_SURV;SIMPLE;V;SE;0;mode surveillance micro|surveillance sonore;;MicroSE;modeMicro;*;surveillance;;Surveillance sonore activée.;OK;Combine intensité + orientation auto si RMS > seuil.
+SYS_STATUS;LOCAL;I;SE;0;quel est ton état|comment tu vas|état système;;COM;info;SE;status;;Je vais bien.|Je vérifie mon état.;OK;Traitement LOCAL. Handler lit global.json et répond TTS.
+SYS_BATTERY;LOCAL;I;SE;0;batterie|niveau de batterie|autonomie|ton énergie;;Sys;dataContBatt;SE;?;;Je vérifie ma batterie.;OK;PROP=dataContBatt (corrigé V2). Lit global.json.
+SYS_GET_TEMP;LOCAL;I;SE;0;température|tu chauffes|fièvre;;Sys;dataContThermal;SE;?;;Je vérifie ma température.;Pro;Répond rassurant si <50°C alarmiste si >60°C. V2.
+NAV_GET_HEADING;LOCAL;I;SE;0;où est le nord|ton cap|orientation;;Mag;DataContGeo;*;?;;Mon cap est...;Pro;Handler convertit degrés → points cardinaux pour TTS. V2.
+GYRO_GET_PITCH;LOCAL;I;SE;0;inclinaison|tu es droit|équilibre;;Gyro;statusGyro;*;?;;Je suis bien à plat.;Pro;Diagnostic équilibre. V2.
+COM_GET_STATE;LOCAL;I;SE;0;état connexion|es-tu connecté|réseau;;COM;info;SE;state;;Je suis connecté.|Je suis hors ligne.;Pro;Diagnostic réseau MQTT. V2.
+SYS_RESET;SIMPLE;V;SE;0;réinitialise|reset;;CfgS;reset;*;1;;Je me réinitialise.;OK;Commande événement ponctuel. Utiliser avec précaution.
+SYS_URG_CLEAR;SIMPLE;V;SE;0;efface l'urgence|annule l'alerte;;Urg;clear;*;1;;Urgence effacée.;OK;PROP=clear (corrigé V2 : sans parenthèses). Débloque le robot après incident.
+AI_START_CONV;LOCAL;A;SE;0;discute avec moi|on parle|mode discussion;;-;-;-;-;;Je t'écoute.;Pro;Bascule logicielle sans VPIV. Force contexte Conv. V2.
+VOICE_VOL_SET;PLAN;V;SE;0;volume|son|plus fort|moins fort;;Voice;vol;*;[calculé];vol->NUM_OR_ADV;Je règle le volume.;Pro;Handler traduit adverbes (fort→80 doux→30) en 0-100. V2.
+VOICE_SAY_ID;LOCAL;I;SE;0;qui es-tu|identité|ton nom;;Sys;modeSys;*;?;;Je suis RZ ton robot compagnon.;Pro;Identité fixe. Peut être personnalisée. V2.
+MACRO_PAUSE;COMPLEXE;V;A;0;pause|fais une pause;MTR_STOP,LRING_NEUTRAL;;;;;;Je marque une pause.;OK;Enchaîne arrêt moteur + expression neutre.
+MACRO_HELLO;COMPLEXE;V;SE;0;bonjour|salut|coucou|dis bonjour;LRING_SMILE,EXPR_SMILE;;;;;;Bonjour !;OK;dest=SE (mixte SE+A via fils). Séquence accueil visuelle.
+MACRO_SLEEP;COMPLEXE;V;SE;0;dors|va dormir|mode nuit;MTR_STOP,LRING_OFF,CFG_VEILLE;;;;;;Bonne nuit.;OK;Arrêt + extinction LEDs + passage en veille.
+MACRO_WAKE;COMPLEXE;V;SE;0;réveille-toi|debout|active-toi;CFG_DEPLACEMENT,LRING_ON,LRING_SMILE;;;;;;Je me réveille !;OK;Activation mode déplacement + LEDs + expression.

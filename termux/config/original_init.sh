@@ -18,7 +18,7 @@
 #   1. Vérifie la présence des fichiers PocketSphinx (model-fr/, dicts)
 #      → Ne les crée ni ne les écrase JAMAIS.
 #   2. Génère courant_init.json (configuration complète SE + Arduino)
-#   3. Génère table_d_catalogue.csv (catalogue des commandes vocales STT)
+#   3. Génère tableD_catalogueV2.csv (catalogue des commandes vocales STT)
 #   4. Lance rz_build_system.py → stt_catalog.json + rz_words.txt
 #   5. Lance rz_build_dict.py   → fr.dict (dictionnaire PocketSphinx)
 #   6. Lance check_config.sh    → *_runtime.json + *_config.json
@@ -27,7 +27,7 @@
 # ----------------------------------
 #   courant_init.sh : script de développement PC, valeurs de test.
 #   original_init.sh : script de production smartphone, valeurs terrain.
-#   original_init.sh génère EN PLUS le catalogue STT (table_d_catalogue.csv).
+#   original_init.sh génère EN PLUS le catalogue STT (tableD_catalogueV2.csv).
 #   En production, original_init.sh remplace courant_init.sh.
 #
 # MODULES COUVERTS (courant_init.json)
@@ -42,7 +42,7 @@
 #   [x] Voice : vol (volume multimédia global), output (sortie audio), ttsRate
 #   [x] Mtr   : speed_cruise, scales, kturn
 #
-# CATALOGUE STT (table_d_catalogue.csv)
+# CATALOGUE STT (tableD_catalogueV2.csv)
 # ----------------------------------------
 # Section clairement délimitée, facile à repérer pour les mises à jour.
 # ⚠️ CHERCHER LA BALISE : === SECTION CATALOGUE STT ===
@@ -54,7 +54,7 @@
 # ------------
 #   original_init.sh
 #     → courant_init.json       → check_config.sh → *_runtime.json / *_config.json
-#     → table_d_catalogue.csv   → rz_build_system.py → stt_catalog.json + rz_words.txt
+#     → tableD_catalogueV2.csv   → rz_build_system.py → stt_catalog.json + rz_words.txt
 #                                → rz_build_dict.py   → fr.dict
 #
 # PRÉCAUTIONS
@@ -62,7 +62,7 @@
 # - Vérifier que python3 est installé (pkg install python) avant lancement.
 # - Vérifier que model-fr/ et lexique_referent.dict sont installés manuellement
 #   dans scripts/sensors/stt/lib_pocketsphinx/ avant lancement.
-# - Ce script ÉCRASE courant_init.json et table_d_catalogue.csv.
+# - Ce script ÉCRASE courant_init.json et tableD_catalogueV2.csv.
 # - Les fichiers PocketSphinx lourds (model-fr/, lexique_referent.dict) ne sont
 #   jamais écrasés — ce script les vérifie seulement.
 #
@@ -117,7 +117,7 @@ LOG_FILE="$BASE_DIR/logs/original_init.log"
 #   ├── logs/
 #   └── scripts/
 #       └── sensors/
-#           └── stt/          ← table_d_catalogue.csv, stt_catalog.json, rz_words.txt
+#           └── stt/          ← tableD_catalogueV2.csv, stt_catalog.json, rz_words.txt
 #               └── lib_pocketsphinx/   ← model-fr/, lexique_referent.dict (manuels)
 # =============================================================================
 
@@ -604,9 +604,9 @@ log "global.json généré et validé  ✓"
 # #############################################################################
 # #############################################################################
 
-log "--- Génération table_d_catalogue.csv ---"
+log "--- Génération tableD_catalogueV2.csv ---"
 
-CATALOGUE_CSV="$STT_SCRIPT_DIR/table_d_catalogue.csv"
+CATALOGUE_CSV="$STT_SCRIPT_DIR/tableD_catalogueV2.csv"
 mkdir -p "$STT_SCRIPT_DIR"
 
 cat > "$CATALOGUE_CSV" << 'CATALOGUE_EOF'
@@ -686,7 +686,7 @@ MACRO_SLEEP;COMPLEXE;V;SE;0;dors,va dormir,mode nuit;MTR_STOP,LRING_OFF,CFG_VEIL
 MACRO_WAKE;COMPLEXE;V;SE;0;réveille-toi,debout,active-toi;CFG_DEPLACEMENT,LRING_ON,LRING_SMILE;;;;;;;Me revoilà !
 CATALOGUE_EOF
 
-log "table_d_catalogue.csv généré  ✓  ($(grep -c '^[A-Z]' "$CATALOGUE_CSV") commandes)"
+log "tableD_catalogueV2.csv généré  ✓  ($(grep -c '^[A-Z]' "$CATALOGUE_CSV") commandes)"
 
 # #############################################################################
 # ##           === FIN SECTION CATALOGUE STT ===                            ##

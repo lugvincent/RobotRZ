@@ -4,7 +4,6 @@
 		<cdate>1778677179992</cdate>
 		<edate>1778900000001</edate>
 		<id>48</id>
-		<pri>104</pri>
 		<Action sr="act0" ve="7">
 			<code>130</code>
 			<label>Fermer appli si active</label>

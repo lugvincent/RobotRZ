@@ -1,0 +1,41 @@
+<TaskerData sr="" dvi="1" tv="6.6.20">
+	<Task sr="task113">
+		<cdate>1777666684222</cdate>
+		<edate>1778745885171</edate>
+		<id>113</id>
+		<nme>RZ_CamStart</nme>
+		<pri>100</pri>
+		<Action sr="act0" ve="7">
+			<code>20</code>
+			<label>Lancer IP Webcam Pro</label>
+			<App sr="arg0">
+				<appClass>com.pas.webcam.Configuration</appClass>
+				<appPkg>com.pas.webcam.pro</appPkg>
+				<label>IP Webcam Pro</label>
+			</App>
+			<Str sr="arg1" ve="3"/>
+			<Int sr="arg2" val="0"/>
+			<Int sr="arg3" val="0"/>
+		</Action>
+		<Action sr="act1" ve="7">
+			<code>1026948950</code>
+			<label>Démarrer serveur IP Webcam</label>
+			<Bundle sr="arg0">
+				<Vals sr="val">
+					<com.twofortyfouram.locale.intent.extra.BLURB>Démarrer le serveur</com.twofortyfouram.locale.intent.extra.BLURB>
+					<com.twofortyfouram.locale.intent.extra.BLURB-type>java.lang.String</com.twofortyfouram.locale.intent.extra.BLURB-type>
+					<net.dinglisch.android.tasker.subbundled>true</net.dinglisch.android.tasker.subbundled>
+					<net.dinglisch.android.tasker.subbundled-type>java.lang.Boolean</net.dinglisch.android.tasker.subbundled-type>
+					<tasker_event_mode>start_server</tasker_event_mode>
+					<tasker_event_mode-type>java.lang.String</tasker_event_mode-type>
+					<tasker_event_mode_sig>7YA+l9Y481IDuK4chvwP+g==</tasker_event_mode_sig>
+					<tasker_event_mode_sig-type>java.lang.String</tasker_event_mode_sig-type>
+				</Vals>
+			</Bundle>
+			<Str sr="arg1" ve="3">com.pas.webcam.pro</Str>
+			<Str sr="arg2" ve="3">com.pas.webcam.configpages.TaskerServiceControl</Str>
+			<Int sr="arg3" val="0"/>
+			<Int sr="arg4" val="1"/>
+		</Action>
+	</Task>
+</TaskerData>

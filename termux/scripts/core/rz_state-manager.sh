@@ -1,182 +1,253 @@
 #!/bin/bash
 # =============================================================================
-# SCRIPT  : rz_autovoice_bridge.sh
-# CHEMIN  : ~/robotRZ-smartSE/termux/scripts/sensors/stt/rz_autovoice_bridge.sh
+# SCRIPT: rz_state-manager.sh
+# CHEMIN: ~/robotRZ-smartSE/termux/scripts/core/rz_state-manager.sh
 #
 # OBJECTIF
 # --------
-# Pont entre AutoVoice (Tasker) et le handler vocal RZ.
-# Reçoit le texte reconnu par AutoVoice via Termux:Tasker,
-# le passe à rz_stt_handler.sh qui gère tout le reste
-# (catalogue, filtres sécurité, trames VPIV, TTS feedback).
-#
-# RÉPARTITION DES RESPONSABILITÉS
-# --------------------------------
-# TASKER/AUTOVOICE gère :
-#   - Filtrage wake word "RZ" (Command Filter ^RZ, Trigger Word RZ)
-#   - Retrait du préfixe "rz" du texte (%avcommnofilter)
-#   - Sélection mode écoute selon %RZsttContext (multi-contextes profils)
-#   - Bascule Gemini sur No Match (profil RZ_NoMatch → RZ_GeminiConv)
-#   - Gestion échec reconnaissance (profil RZ_RecFailed → RZ_VoiceError)
-#   - Écoute continue (Continuous mode AutoVoice)
-#
-# CE SCRIPT gère :
-#   - Normalisation légère du texte (espaces multiples, casse)
-#   - Préfixe spéciaux : GEMINI: (bascule directe IA) et ERROR: (erreur recog)
-#   - Appel rz_stt_handler.sh (catalogue → VPIV → MQTT)
-#   - Logging pour diagnostic
-#   - Gestion erreurs fatales (handler introuvable)
+# Gestionnaire centralisé des états SE du robot RobotRZ.
+# Lit les trames VPIV depuis MQTT (SE/commande), met à jour global.json,
+# recalcule le contexte STT et synchronise l'état vers Tasker.
 #
 # DESCRIPTION FONCTIONNELLE
 # -------------------------
-# Trois modes selon l'argument reçu :
+#   - Reçoit les trames VPIV via mosquitto_sub (topic SE/commande)
+#   - Traite les modules : CfgS, Mtr, Gyro, MG, STT
+#   - Met à jour global.json après chaque changement d'état (écriture atomique)
+#   - Calcule STT.context selon modeRZ / typePtge / Robot.speed
+#   - Copie global.json vers /sdcard/Tasker/RobotRZ/ après chaque écriture
+#     (requis par la tâche Tasker RZ_OuvreEtat pour lire l'état SE)
+#   - Envoie les ACK VPIV $I:*# sur MQTT SE/statut
 #
-#   1. Texte normal (ex: "stop", "avance", "mode veille")
-#      → Normalisé → rz_stt_handler.sh → catalogue → VPIV
-#      Note : %avcommnofilter ne contient PAS "rz" — AutoVoice l'a retiré
-#
-#   2. Préfixe GEMINI: (ex: "GEMINI:rz discute avec moi")
-#      → Envoyé directement à rz_ai_conversation.py
-#      → Déclenché par profil RZ_NoMatch (Tasker) en contexte Conv/Mixte
-#
-#   3. Préfixe ERROR: (ex: "ERROR:recognition_failed")
-#      → TTS "je n'ai pas compris" + log
-#      → Déclenché par profil RZ_RecFailed (Tasker)
-#
-# PIPELINE COMPLET
-# ----------------
-#   AutoVoice détecte wake word "RZ" + commande
-#   → Tasker profil RZ_EcouteCommandes ou RZ_EcouteConversation
-#   → Tâche RZ_VoiceCmd → Termux:Tasker
-#   → rz_autovoice_bridge.sh "%avcommnofilter"
-#   → rz_stt_handler.sh "commande"
-#   → stt_catalog.json → trame VPIV → fifo_termux_in → MQTT → SP
-#
-#   Si No Match :
-#   → Tasker profil RZ_NoMatch → Tâche RZ_GeminiConv
-#   → rz_autovoice_bridge.sh "GEMINI:%avcomm"
-#   → rz_ai_conversation.py → Gemini API → TTS
-#
-#   Si Recognition Failed :
-#   → Tasker profil RZ_RecFailed → Tâche RZ_VoiceError
-#   → rz_autovoice_bridge.sh "ERROR:recognition_failed"
-#   → TTS "je n'ai pas compris"
-#
-# ARTICULATION
+# INTERACTIONS
 # ------------
-#   Appelé par : RZ_VoiceCmd, RZ_GeminiConv, RZ_VoiceError (via Termux:Tasker)
-#   Appelle    : rz_stt_handler.sh   (catalogue → VPIV)
-#   Appelle    : rz_ai_conversation.py (Gemini, mode GEMINI:)
-#   Log        : logs/autovoice_bridge.log
+#   Lit    : config/global.json                    (état courant)
+#   Écrit  : config/global.json                    (mises à jour état)
+#   Copie  : /sdcard/Tasker/RobotRZ/global.json    (sync Tasker)
+#   Publie : MQTT SE/statut                        (ACK transitions)
+#   Lit    : config/keys.json                      (credentials MQTT)
 #
 # PRÉCAUTIONS
 # -----------
-# - Appelé depuis Tasker — pas depuis rz_start.sh. Pas de PID file.
-# - Termux:API doit être actif (lancé par RZ_Init_Tasker au démarrage).
-# - Le symlink ~/.termux/tasker/rz_autovoice_bridge.sh doit pointer ici.
-# - pip install requests requis pour rz_ai_conversation.py (Gemini).
+# - Écriture atomique via fichier .tmp + mv (évite corruption JSON)
+# - sync_to_tasker() silencieux si /sdcard/Tasker/RobotRZ/ absent
+# - STT.modeSTT=OFF → STT.context forcé à Inactif (Python ignorera à la prochaine détection)
+# - Jamais de pattern A && B || C (SC2015) — utiliser if/then/else
+#
+# DÉPENDANCES
+# -----------
+#   jq, mosquitto_sub, mosquitto_pub
+#   config/keys.json, config/global.json
 #
 # AUTEUR  : Vincent Philippe
-# VERSION : 2.0  (simplification — contexte STT délégué à Tasker/AutoVoice)
-# DATE    : 2026-06-04
+# VERSION : 1.5  (ajout cas STT, sync Tasker après chaque write global.json)
+# DATE    : 2026-05-20
 # =============================================================================
 
-# =============================================================================
-# CONFIGURATION
-# =============================================================================
-
+# --- CONFIGURATION DES CHEMINS ---
 BASE_DIR="/data/data/com.termux/files/home/robotRZ-smartSE/termux"
-STT_DIR="$BASE_DIR/scripts/sensors/stt"
+GLOBAL_CONFIG="$BASE_DIR/config/global.json"
+LOG_FILE="$BASE_DIR/logs/state_manager.log"
+FIFO_IN="$BASE_DIR/fifo/fifo_termux_in"
 
-HANDLER="$STT_DIR/rz_stt_handler.sh"
-AI_CONV="$STT_DIR/rz_ai_conversation.py"
-LOG_FILE="$BASE_DIR/logs/autovoice_bridge.log"
+# Chemin Tasker — requis par RZ_OuvreEtat pour lire l'état SE
+TASKER_GLOBAL="/sdcard/Tasker/RobotRZ/global.json"
 
-# =============================================================================
-# UTILITAIRES
-# =============================================================================
+# --- CREDENTIALS MQTT depuis keys.json ---
+KEYS_FILE="$BASE_DIR/config/keys.json"
+MQTT_USER=$(jq -r '.MQTT_USER // empty' "$KEYS_FILE" 2>/dev/null)
+MQTT_PASS=$(jq -r '.MQTT_PASS // empty' "$KEYS_FILE" 2>/dev/null)
+MQTT_HOST=$(jq -r '.MQTT_HOST // empty' "$KEYS_FILE" 2>/dev/null)
+# Fallback si keys.json absent
+MQTT_HOST="${MQTT_HOST:-robotz-vincent.duckdns.org}"
 
-log_av() {
-    echo "[$(date '+%Y-%m-%d %H:%M:%S')] [AV_BRIDGE] $1" >> "$LOG_FILE"
+# --- INITIALISATION ---
+mkdir -p "$(dirname "$LOG_FILE")"
+
+log() {
+    local level="INFO"
+    [[ -n "$2" ]] && level="$2"
+    echo "[$(date '+%Y-%m-%d %H:%M:%S')] [$level] $1" >> "$LOG_FILE"
 }
 
-tts_say() {
-    termux-tts-speak "$1" 2>/dev/null &
-}
-
 # =============================================================================
-# VÉRIFICATION ARGUMENT
+# FONCTION : sync_to_tasker
+# Copie global.json vers /sdcard/Tasker/RobotRZ/ après chaque écriture.
+# Requis par la tâche Tasker RZ_OuvreEtat pour lire l'état SE.
+# Silencieux si le dossier Tasker est absent (Tasker non installé / SD absent).
+# ⚠ Utilise if/then/else — jamais de pattern A && B || C (SC2015).
 # =============================================================================
-
-if [ -z "$1" ]; then
-    log_av "ERREUR : aucun texte reçu — appel sans argument"
-    exit 1
-fi
-
-ARG_RAW="$1"
-
-# =============================================================================
-# MODE ERROR: — échec de reconnaissance (profil RZ_RecFailed)
-# Tasker appelle ce script avec "ERROR:recognition_failed"
-# =============================================================================
-
-if [[ "$ARG_RAW" == ERROR:* ]]; then
-    ERROR_TYPE="${ARG_RAW#ERROR:}"
-    log_av "Échec reconnaissance : $ERROR_TYPE"
-    tts_say "Je n'ai pas compris."
-    exit 0
-fi
-
-# =============================================================================
-# MODE GEMINI: — bascule directe IA (profil RZ_NoMatch)
-# Tasker appelle ce script avec "GEMINI:texte complet reconnu"
-# Le texte est la phrase complète (%avcomm) car pas de commande matchée
-# =============================================================================
-
-if [[ "$ARG_RAW" == GEMINI:* ]]; then
-    GEMINI_TEXT="${ARG_RAW#GEMINI:}"
-    log_av "Bascule Gemini directe : '$GEMINI_TEXT'"
-    if [ -f "$AI_CONV" ]; then
-        python3 "$AI_CONV" "$GEMINI_TEXT"
-    else
-        log_av "WARN : rz_ai_conversation.py introuvable"
-        tts_say "Je ne peux pas répondre, module IA absent."
+sync_to_tasker() {
+    local tasker_dir
+    tasker_dir="$(dirname "$TASKER_GLOBAL")"
+    if [ -d "$tasker_dir" ]; then
+        if cp "$GLOBAL_CONFIG" "$TASKER_GLOBAL" 2>/dev/null; then
+            log "Sync Tasker ✓" "DEBUG"
+        else
+            log "Sync Tasker échouée" "WARN"
+        fi
     fi
-    exit 0
-fi
+}
 
 # =============================================================================
-# MODE NORMAL — commande vocale standard
-# Reçoit %avcommnofilter : texte SANS le préfixe "rz"
-# AutoVoice a déjà retiré le wake word via Command Filter
-# Normalisation : minuscules + espaces multiples supprimés
+# FONCTION : calculate_stt_context
 # =============================================================================
+calculate_stt_context() {
+    local modeRZ
+    modeRZ=$(jq -r '.CfgS.modeRZ // 0' "$GLOBAL_CONFIG")
+    local modePtge
+    modePtge=$(jq -r '.CfgS.typePtge // 0' "$GLOBAL_CONFIG")
+    local speed
+    speed=$(jq -r '.Robot.speed // 0' "$GLOBAL_CONFIG")
+    local context="Inactif"
 
-# Note : rz_stt_handler.sh fait aussi un sed 's/^rz //g' par sécurité
-# — inoffensif si le texte ne commence pas par "rz"
-TEXT_NORM=$(echo "$ARG_RAW" | tr '[:upper:]' '[:lower:]' | tr -s ' ' | xargs)
+    log "Calcul contexte STT (RZ:$modeRZ, Ptge:$modePtge, Spd:$speed)"
 
-log_av "Commande reçue : '$ARG_RAW' → normalisé : '$TEXT_NORM'"
+    if [[ "$modeRZ" == "0" || "$modeRZ" == "5" ]]; then
+        context="Inactif"
+    elif [[ "$modePtge" != "1" && "$modePtge" != "4" ]]; then
+        context="Inactif"
+    elif [[ "$speed" != "0" ]]; then
+        context="Cmde"
+    else
+        case "$modeRZ" in
+            1)   context="Conv"   ;;
+            4)   context="Mixte"  ;;
+            2|3) context="Mixte"  ;;
+            *)   context="Inactif" ;;
+        esac
+    fi
 
-# Vérification handler
-if [ ! -f "$HANDLER" ]; then
-    log_av "ERREUR : handler introuvable : $HANDLER"
-    tts_say "Erreur système vocal."
-    exit 1
-fi
+    jq --arg ctx "$context" '.STT.context=$ctx' "$GLOBAL_CONFIG" > "${GLOBAL_CONFIG}.tmp" \
+    && mv "${GLOBAL_CONFIG}.tmp" "$GLOBAL_CONFIG"
 
-# Appel handler → catalogue → VPIV → MQTT
-bash "$HANDLER" "$TEXT_NORM"
-EXIT_CODE=$?
+    log "STT.context défini sur : $context"
+    sync_to_tasker
+    # Notifier Tasker du changement de contexte STT
+    # → met à jour %RZsttContext via profil Fichier_ModifieParSE → RZ_Dispatch → RZ_STT_Context
+    local trigger_file="/sdcard/Tasker/RobotRZ/trigger.txt"
+    if [ -d "$(dirname "$trigger_file")" ]; then
+        printf '{"task":"RZ_STT_Context","param":"%s"}' "$context" \
+            > "$trigger_file"
+    fi
+}
 
-log_av "Handler exit=$EXIT_CODE pour '$TEXT_NORM'"
+# =============================================================================
+# FONCTION : handle_state_transition
+# =============================================================================
+handle_state_transition() {
+    local key="$1"
+    local value="$2"
 
-# Exit 1 = commande inconnue du catalogue
-# En mode normal ce cas est géré par Tasker profil RZ_NoMatch
-# qui déclenche RZ_GeminiConv si %RZsttContext = Conv|Mixte
-# Ici on se contente de logger — pas de double bascule Gemini
-if [ $EXIT_CODE -eq 1 ]; then
-    log_av "Commande inconnue '$TEXT_NORM' — RZ_NoMatch Tasker prendra le relais si contexte Conv/Mixte"
-fi
+    log "Transition demandée : $key -> $value" "UPDATE"
 
-exit 0
+    jq --arg val "$value" ".CfgS.$key=(\$val|tonumber)" "$GLOBAL_CONFIG" > "${GLOBAL_CONFIG}.tmp" \
+    && mv "${GLOBAL_CONFIG}.tmp" "$GLOBAL_CONFIG"
+
+    mosquitto_pub -h "$MQTT_HOST" -p 1883 \
+        -u "$MQTT_USER" -P "$MQTT_PASS" \
+        -t "SE/statut" -m "\$I:CfgS:$key:*:$value#"
+
+    calculate_stt_context
+}
+
+# =============================================================================
+# FONCTION : process_mqtt_command
+# =============================================================================
+process_mqtt_command() {
+    local msg="$1"
+
+    if [[ $msg =~ ^\$(.):([^:]+):([^:]+):([^:]+):(.*)#$ ]]; then
+        local TYPE="${BASH_REMATCH[1]}"
+        local MODULE="${BASH_REMATCH[2]}"
+        local PROP="${BASH_REMATCH[3]}"
+        local VALUE="${BASH_REMATCH[5]}"
+
+        log "Parsing MQTT: [$TYPE] $MODULE.$PROP = $VALUE"
+
+        case "$MODULE" in
+            "CfgS")
+                [[ "$PROP" == "modeRZ" || "$PROP" == "typePtge" ]] \
+                    && handle_state_transition "$PROP" "$VALUE"
+                ;;
+            "Mtr")
+                if [[ "$PROP" == "speed" ]]; then
+                    jq --arg v "$VALUE" '.Robot.speed=($v|tonumber)' "$GLOBAL_CONFIG" \
+                        > "${GLOBAL_CONFIG}.tmp" \
+                    && mv "${GLOBAL_CONFIG}.tmp" "$GLOBAL_CONFIG"
+                    calculate_stt_context   # sync_to_tasker appelé en fin de calculate
+                fi
+                ;;
+            "STT")
+                # ----------------------------------------------------------------
+                # Commandes SP → STT
+                # modeSTT : KWS = écoute active | OFF = inactif
+                #   OFF → STT.context forcé Inactif (Python ignorera à la prochaine détection)
+                #   KWS → recalcul contexte selon modeRZ / typePtge
+                # paraSTT : mise à jour paramètres PocketSphinx (objet JSON)
+                # ----------------------------------------------------------------
+                case "$PROP" in
+                    "modeSTT")
+                        jq --arg v "$VALUE" '.STT.modeSTT=$v' "$GLOBAL_CONFIG" \
+                            > "${GLOBAL_CONFIG}.tmp" \
+                        && mv "${GLOBAL_CONFIG}.tmp" "$GLOBAL_CONFIG"
+                        log "STT.modeSTT=$VALUE" "UPDATE"
+                        if [[ "$VALUE" == "OFF" ]]; then
+                            jq '.STT.context="Inactif"' "$GLOBAL_CONFIG" \
+                                > "${GLOBAL_CONFIG}.tmp" \
+                            && mv "${GLOBAL_CONFIG}.tmp" "$GLOBAL_CONFIG"
+                            log "STT.context forcé Inactif (mode OFF)"
+                            sync_to_tasker
+                        else
+                            calculate_stt_context   # sync_to_tasker appelé en fin
+                        fi
+                        mosquitto_pub -h "$MQTT_HOST" -p 1883 \
+                            -u "$MQTT_USER" -P "$MQTT_PASS" \
+                            -t "SE/statut" -m "\$I:STT:modeSTT:SE:${VALUE}#"
+                        ;;
+                    "paraSTT")
+                        # VALUE est un objet JSON : {"threshold":"1e-20","keyphrase":"rz",...}
+                        jq --argjson v "$VALUE" '.STT.paraSTT=$v' "$GLOBAL_CONFIG" \
+                            > "${GLOBAL_CONFIG}.tmp" \
+                        && mv "${GLOBAL_CONFIG}.tmp" "$GLOBAL_CONFIG"
+                        log "STT.paraSTT mis à jour" "UPDATE"
+                        sync_to_tasker
+                        ;;
+                    *)
+                        log "STT.$PROP : propriété inconnue — ignorée" "DEBUG"
+                        ;;
+                esac
+                ;;
+            "Gyro"|"MG")
+                printf '%s\n' "$msg" > "$FIFO_IN"
+                ;;
+            *)
+                log "Module inconnu ou ignoré : $MODULE" "DEBUG"
+                ;;
+        esac
+    else
+        log "Trame invalide reçue : $msg" "ERROR"
+    fi
+}
+
+# =============================================================================
+# BOUCLE PRINCIPALE
+# =============================================================================
+main() {
+    log "=== Démarrage du Gestionnaire d'État (SE) ==="
+
+    if [[ ! -f "$GLOBAL_CONFIG" ]]; then
+        log "Global config absente. Création d'une structure de base." "WARN"
+        echo '{"CfgS":{"modeRZ":1,"typePtge":0},"Robot":{"speed":0},"STT":{"modeSTT":"OFF","context":"Inactif"},"Sys":{}}' \
+            > "$GLOBAL_CONFIG"
+        sync_to_tasker
+    fi
+
+    log "En attente de commandes sur SE/commande..."
+    mosquitto_sub -h "$MQTT_HOST" -p 1883 \
+        -u "$MQTT_USER" -P "$MQTT_PASS" \
+        -t "SE/commande" | while read -r msg; do
+        process_mqtt_command "$msg"
+    done
+}
+main

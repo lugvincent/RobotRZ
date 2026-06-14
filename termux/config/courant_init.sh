@@ -98,6 +98,7 @@ modeGyro="DATACont"
 # Exemple : 150 = 15.0° | 0 = machine parfaitement verticale
 angleVSEBase=150
 
+
 freqCont_gyro=20        # Hz — flux continu (> 0)
 freqMoy_gyro=2          # Hz — flux moyenné (> 0)
 nbValPourMoy_gyro=5     # mesures avant calcul moyenne (> 0)
@@ -214,10 +215,11 @@ mic_timeoutOrientation=15   # secondes — durée max balayage (sécurité)
 # Tasker. Tasker doit être lancé avant Baby, BabyMonitor, NavGPS.
 
 # États initiaux (On|Off) — recommandé : toujours Off au démarrage
-appli_Baby_state="Off"  ;  appli_tasker_state="Off"  ;  appli_zoom_state="Off"
+appli_IA_Conv_state="Off"; appli_Baby_state="Off"  ;  appli_tasker_state="Off"  ;  appli_zoom_state="Off"
 appli_BabyMonitor_state="Off"  ;  appli_NavGPS_state="Off"
 
 # Noms des tâches Tasker (doivent correspondre exactement dans Tasker)
+appli_IA_Conv_task="RZ_IA_Conv"
 appli_Baby_task="RZ_Baby"
 appli_zoom_task="RZ_Zoom"
 appli_BabyMonitor_task="RZ_BabyMonitor"
@@ -402,6 +404,7 @@ cat > "$OUTPUT_JSON" <<EOF
   },
   "appli": {
     "Baby":        { "state": "$appli_Baby_state",        "tasker_task": "$appli_Baby_task",        "package": "",                    "last_change": "" },
+    "IA_Conv":     { "state": "$appli_IA_Conv_state",          "tasker_task": "$appli_IA_Conv_task",     "package": "",                    "last_change": "" },
     "tasker":      { "state": "$appli_tasker_state",      "tasker_task": "",                        "package": "$appli_tasker_pkg",   "last_change": "" },
     "zoom":        { "state": "$appli_zoom_state",        "tasker_task": "$appli_zoom_task",        "package": "$appli_zoom_pkg",     "last_change": "" },
     "BabyMonitor": { "state": "$appli_BabyMonitor_state", "tasker_task": "$appli_BabyMonitor_task", "package": "",                    "last_change": "" },

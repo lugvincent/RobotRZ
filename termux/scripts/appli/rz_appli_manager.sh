@@ -20,6 +20,7 @@
 # TABLE DE ROUTAGE
 # ----------------
 #   PROP=BabyCam    VAL=On/Off  → RZ_Baby     On|Off
+#   PROP=IA_Conv    VAL=On/Off  → RZ_IA_Conv  On|Off
 #   PROP=zoom       VAL=On/Off  → RZ_Zoom     On|Off
 #   PROP=NavGPS     VAL=On/Off  → RZ_NavGPS   On|Off
 #   PROP=ExprTasker VAL=*       → RZ_Expression <VAL>  (pas d'ACK)
@@ -29,8 +30,9 @@
 # -------------------------------------
 #   $A:Appli:BabyCam:*:On#
 #   $A:Appli:BabyCam:*:Off#
+#   $A:Appli:IA_Conv:*:On#
+#   $A:Appli:IA_Conv:*:Off#
 #   $A:Appli:zoom:*:On#
-#   $A:Appli:zoom:*:Off#
 #   $A:Appli:NavGPS:*:On#
 #   $A:Appli:NavGPS:*:Off#
 #   $A:Appli:ExprTasker:Expression:sourire#
@@ -100,6 +102,11 @@ route_appli() {
         # ── BabyCam ──────────────────────────────────────────────────────────
         "BabyCam"|"Baby")
             TASK_NAME="RZ_Baby"
+            TASK_PARAM="$VAL"
+            ;;
+        # ── IA_Conv ──────────────────────────────────────────────────────────
+        "IA_Conv"|"IA")
+            TASK_NAME="RZ_IA_Conv"
             TASK_PARAM="$VAL"
             ;;
 

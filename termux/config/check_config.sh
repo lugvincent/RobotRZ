@@ -466,12 +466,14 @@ log "--- Validation section Appli ---"
 if ! jq -e '.appli' "$INPUT_JSON" > /dev/null 2>&1; then erreur "Bloc '.appli' absent"; fi
 
 appli_Baby_state=$(       lire_json '.appli.Baby.state'        'Off')
+appli_IA_Conv_state=$(          lire_json '.appli.IA_Conv.state'           'Off')
 appli_tasker_state=$(     lire_json '.appli.tasker.state'      'Off')
 appli_zoom_state=$(       lire_json '.appli.zoom.state'        'Off')
 appli_BabyMonitor_state=$(lire_json '.appli.BabyMonitor.state' 'Off')
 appli_NavGPS_state=$(     lire_json '.appli.NavGPS.state'      'Off')
 
 appli_Baby_task=$(        lire_json '.appli.Baby.tasker_task'        'RZ_Baby')
+appli_IA_Conv_task=$(     lire_json '.appli.IA_Conv.tasker_task'     'RZ_IA_Conv')
 appli_zoom_task=$(        lire_json '.appli.zoom.tasker_task'        'RZ_Zoom')
 appli_BabyMonitor_task=$( lire_json '.appli.BabyMonitor.tasker_task' 'RZ_BabyMonitor')
 appli_NavGPS_task=$(      lire_json '.appli.NavGPS.tasker_task'      'RZ_NavGPS')
@@ -483,19 +485,19 @@ appli_expr_task=$(        lire_json '.appli.ExprTasker.expr_task'    'RZ_Express
 appli_info_task=$(        lire_json '.appli.ExprTasker.info_task'    'RZ_Info')
 
 # Validation états initiaux (On|Off)
-for app_state in "$appli_Baby_state" "$appli_tasker_state" "$appli_zoom_state" \
+for app_state in "$appli_Baby_state" "$appli_IA_Conv_state" "$appli_tasker_state" "$appli_zoom_state" \
                  "$appli_BabyMonitor_state" "$appli_NavGPS_state"; do
     case "$app_state" in On|Off) ;; *) erreur "appli : état invalide '$app_state' (attendu : On|Off)";; esac
 done
 
 # Avertissement si un état initial n'est pas Off (sécurité démarrage)
-for app_state in "$appli_Baby_state" "$appli_tasker_state" "$appli_zoom_state" \
+for app_state in "$appli_Baby_state" "$appli_IA_Conv_state" "$appli_tasker_state" "$appli_zoom_state" \
                  "$appli_BabyMonitor_state" "$appli_NavGPS_state"; do
     [ "$app_state" != "Off" ] && log "  WARN : état initial '$app_state' non Off — recommandé Off au démarrage"
 done
 
 # Noms de tâches Tasker non vides
-for task in "$appli_Baby_task" "$appli_zoom_task" "$appli_BabyMonitor_task" "$appli_NavGPS_task"; do
+for task in "$appli_Baby_task" "$appli_IA_Conv_task" "$appli_zoom_task" "$appli_BabyMonitor_task" "$appli_NavGPS_task"; do
     [ -z "$task" ] && erreur "appli : tasker_task vide pour une app Tasker-dépendante"
 done
 [ -z "$appli_expr_task" ] && erreur "appli.ExprTasker.expr_task vide"
@@ -513,6 +515,7 @@ cat > "$APPLI_CONFIG" <<EOF
 {
   "appli": {
     "Baby":        { "state": "$appli_Baby_state",        "tasker_task": "$appli_Baby_task",        "package": "",                  "last_change": "" },
+    "IA_Conv":     { "state": "$appli_IA_Conv_state",     "tasker_task": "$appli_IA_Conv_task",     "package": "",                  "last_change": "" },
     "tasker":      { "state": "$appli_tasker_state",      "tasker_task": "",                        "package": "$appli_tasker_pkg", "last_change": "" },
     "zoom":        { "state": "$appli_zoom_state",        "tasker_task": "$appli_zoom_task",        "package": "$appli_zoom_pkg",   "last_change": "" },
     "BabyMonitor": { "state": "$appli_BabyMonitor_state", "tasker_task": "$appli_BabyMonitor_task", "package": "",                  "last_change": "" },

@@ -50,8 +50,8 @@
 #   rz_stt_manager.py, lib_pocketsphinx/model-fr/, lib_pocketsphinx/fr.dict
 #
 # AUTEUR  : Vincent Philippe
-#   VERSION : 2.2  (fix stdout Python → log, délégation TTS à rz_voice_manager.sh)
-# DATE    : 2026-05-29
+#   VERSION : 2.1  (délégation TTS à rz_voice_manager.sh, suppression run_tts_listener)
+# DATE    : 2026-04-22
 # =============================================================================
 
 # =============================================================================
@@ -139,7 +139,7 @@ run_python_daemon() {
     while true; do
         log_stt "Lancement rz_stt_manager.py (tentative $((restarts+1))/$MAX_RESTARTS) ..."
 
-        python3 "$MANAGER_PY" >> "$LOG_FILE" 2>&1
+        python3 -u "$MANAGER_PY" >> "$LOG_FILE" 2>&1
         local exit_code=$?
 
         log_stt "rz_stt_manager.py terminé (exit=$exit_code)"
@@ -182,7 +182,7 @@ run_python_daemon() {
 
 main() {
     log_stt "=========================================="
-    log_stt "Démarrage rz_stt_manager.sh  v2.2"
+    log_stt "Démarrage rz_stt_manager.sh  v2.0"
     log_stt "=========================================="
 
     # Vérification instance déjà en cours

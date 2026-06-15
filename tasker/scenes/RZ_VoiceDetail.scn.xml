@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TaskerData sr="" dvi="1" tv="6.6.20">
+	<Scene sr="sceneRZ_VoiceDetail">
+		<cdate>1778300000006</cdate>
+		<edate>1778300000006</edate>
+		<heightLand>-1</heightLand>
+		<heightPort>1400</heightPort>
+		<nme>RZ_VoiceDetail</nme>
+		<widthLand>-1</widthLand>
+		<widthPort>467</widthPort>
+		<TextElement sr="elements0" ve="3">
+			<flags>4</flags>
+			<geom>0,0,467,50,-1,-1,-1,-1</geom>
+			<Str sr="arg0" ve="3">txt_titre</Str>
+			<Str sr="arg1" ve="3">Toutes les commandes</Str>
+			<Int sr="arg2" val="18" />
+			<Int sr="arg3" val="100" />
+			<Str sr="arg4" ve="3">#FF1A1A2E</Str>
+			<Str sr="arg5" ve="3" />
+			<Int sr="arg6" val="1" />
+			<Int sr="arg7" val="0" />
+			<Int sr="arg8" val="0" />
+		</TextElement>
+		<TextElement sr="elements1" ve="3">
+			<flags>4</flags>
+			<geom>10,58,447,22,-1,-1,-1,-1</geom>
+			<Str sr="arg0" ve="3">cat1</Str>
+			<Str sr="arg1" ve="3">URGENCE (toujours actif)</Str>
+			<Int sr="arg2" val="13" />
+			<Int sr="arg3" val="100" />
+			<Str sr="arg4" ve="3">#FFC0392B</Str>
+			<Str sr="arg5" ve="3" />
+			<Int sr="arg6" val="0" />
+			<Int sr="arg7" val="0" />
+			<Int sr="arg8" val="0" />
+		</TextElement>
+		<TextElement sr="elements10" ve="3">
+			<flags>4</flags>
+			<geom>10,490,447,70,-1,-1,-1,-1</geom>
+			<Str sr="arg0" ve="3">txt5</Str>
+			<Str sr="arg1" ve="3">demarre la camera | eteins la camera
+camera avant | camera arriere
+prends une photo | snapshot
+allume la lumiere | torche | eteins la lumiere</Str>
+			<Int sr="arg2" val="12" />
+			<Int sr="arg3" val="100" />
+			<Str sr="arg4" ve="3">#FF333333</Str>
+			<Str sr="arg5" ve="3" />
+			<Int sr="arg6" val="0" />
+			<Int sr="arg7" val="0" />
+			<Int sr="arg8" val="0" />
+		</TextElement>
+		<TextElement sr="elements11" ve="3">
+			<flags>4</flags>
+			<geom>10,568,447,22,-1,-1,-1,-1</geom>
+			<Str sr="arg0" ve="3">cat6</Str>
+			<Str sr="arg1" ve="3">MACROS</Str>
+			<Int sr="arg2" val="13" />
+			<Int sr="arg3" val="100" />
+			<Str sr="arg4" ve="3">#FF7B3F00</Str>
+			<Str sr="arg5" ve="3" />
+			<Int sr="arg6" val="0" />
+			<Int sr="arg7" val="0" />
+			<Int sr="arg8" val="0" />
+		</TextElement>
+		<TextElement sr="elements12" ve="3">
+			<flags>4</flags>
+			<geom>10,592,447,54,-1,-1,-1,-1</geom>
+			<Str sr="arg0" ve="3">txt6</Str>
+			<Str sr="arg1" ve="3">bonjour | salut | coucou
+dors | va dormir | mode nuit
+reveille-toi | debout | active-toi</Str>
+			<Int sr="arg2" val="12" />
+			<Int sr="arg3" val="100" />
+			<Str sr="arg4" ve="3">#FF333333</Str>
+			<Str sr="arg5" ve="3" />
+			<Int sr="arg6" val="0" />
+			<Int sr="arg7" val="0" />
+			<Int sr="arg8" val="0" />
+		</TextElement>
+		<TextElement sr="elements13" ve="3">
+			<flags>4</flags>
+			<geom>10,654,447,22,-1,-1,-1,-1</geom>
+			<Str sr="arg0" ve="3">cat7</Str>
+			<Str sr="arg1" ve="3">CONVERSATION IA (mode veille)</Str>
+			<Int sr="arg2" val="13" />
+			<Int sr="arg3" val="100" />
+			<Str sr="arg4" ve="3">#FF8B4513</Str>
+			<Str sr="arg5" ve="3" />
+			<Int sr="arg6" val="0" />
+			<Int sr="arg7" val="0" />
+			<Int sr="arg8" val="0" />
+		</TextElement>
+		<TextElement sr="elements14" ve="3">
+			<flags>4</flags>
+			<geom>10,678,447,36,-1,-1,-1,-1</geom>
+			<Str sr="arg0" ve="3">txt7</Str>
+			<Str sr="arg1" ve="3">discute avec moi | on parle | mode discussion</Str>
+			<Int sr="arg2" val="12" />
+			<Int sr="arg3" val="100" />
+			<Str sr="arg4" ve="3">#FF333333</Str>
+			<Str sr="arg5" ve="3" />
+			<Int sr="arg6" val="0" />
+			<Int sr="arg7" val="0" />
+			<Int sr="arg8" val="0" />
+		</TextElement>
+		<ButtonElement sr="elements15" ve="3">
+			<flags>4</flags>
+			<geom>150,730,167,50,-1,-1,-1,-1</geom>
+			<Str sr="arg0" ve="3">btn_fermer</Str>
+			<Str sr="arg1" ve="3">X Fermer</Str>
+			<Int sr="arg2" val="16" />
+			<Int sr="arg3" val="100" />
+			<Str sr="arg4" ve="3">#FF8B0000</Str>
+			<Str sr="arg5" ve="3">RZ_FermeVoiceDetail</Str>
+			<Int sr="arg6" val="8" />
+			<Img sr="arg7" ve="2" />
+		</ButtonElement>
+		<TextElement sr="elements2" ve="3">
+			<flags>4</flags>
+			<geom>10,82,447,20,-1,-1,-1,-1</geom>
+			<Str sr="arg0" ve="3">txt1</Str>
+			<Str sr="arg1" ve="3">stop | arrete tout | urgence | freine</Str>
+			<Int sr="arg2" val="12" />
+			<Int sr="arg3" val="100" />
+			<Str sr="arg4" ve="3">#FF333333</Str>
+			<Str sr="arg5" ve="3" />
+			<Int sr="arg6" val="0" />
+			<Int sr="arg7" val="0" />
+			<Int sr="arg8" val="0" />
+		</TextElement>
+		<TextElement sr="elements3" ve="3">
+			<flags>4</flags>
+			<geom>10,110,447,22,-1,-1,-1,-1</geom>
+			<Str sr="arg0" ve="3">cat2</Str>
+			<Str sr="arg1" ve="3">DEPLACEMENT</Str>
+			<Int sr="arg2" val="13" />
+			<Int sr="arg3" val="100" />
+			<Str sr="arg4" ve="3">#FF7B5EA7</Str>
+			<Str sr="arg5" ve="3" />
+			<Int sr="arg6" val="0" />
+			<Int sr="arg7" val="0" />
+			<Int sr="arg8" val="0" />
+		</TextElement>
+		<TextElement sr="elements4" ve="3">
+			<flags>4</flags>
+			<geom>10,134,447,100,-1,-1,-1,-1</geom>
+			<Str sr="arg0" ve="3">txt2</Str>
+			<Str sr="arg1" ve="3">avance | tout droit | vas-y | en avant
+recule | en arriere | marche arriere
+stop | arrete | freine | immobile
+lentement | doucement | ralentis
+vite | accelere | plus vite | rapide
+tourne a droite | tourne a gauche
+vitesse (+ valeur) | avance de (+ distance)</Str>
+			<Int sr="arg2" val="12" />
+			<Int sr="arg3" val="100" />
+			<Str sr="arg4" ve="3">#FF333333</Str>
+			<Str sr="arg5" ve="3" />
+			<Int sr="arg6" val="0" />
+			<Int sr="arg7" val="0" />
+			<Int sr="arg8" val="0" />
+		</TextElement>
+		<TextElement sr="elements5" ve="3">
+			<flags>4</flags>
+			<geom>10,242,447,22,-1,-1,-1,-1</geom>
+			<Str sr="arg0" ve="3">cat3</Str>
+			<Str sr="arg1" ve="3">CONFIGURATION</Str>
+			<Int sr="arg2" val="13" />
+			<Int sr="arg3" val="100" />
+			<Str sr="arg4" ve="3">#FF2D6A4F</Str>
+			<Str sr="arg5" ve="3" />
+			<Int sr="arg6" val="0" />
+			<Int sr="arg7" val="0" />
+			<Int sr="arg8" val="0" />
+		</TextElement>
+		<TextElement sr="elements6" ve="3">
+			<flags>4</flags>
+			<geom>10,266,447,90,-1,-1,-1,-1</geom>
+			<Str sr="arg0" ve="3">txt3</Str>
+			<Str sr="arg1" ve="3">mode veille | mode fixe | mode deplacement | mode autonome
+pilotage vocal | pilotage ecran | mode laisse
+efface urgence | annule alerte
+reinitialise | reset</Str>
+			<Int sr="arg2" val="12" />
+			<Int sr="arg3" val="100" />
+			<Str sr="arg4" ve="3">#FF333333</Str>
+			<Str sr="arg5" ve="3" />
+			<Int sr="arg6" val="0" />
+			<Int sr="arg7" val="0" />
+			<Int sr="arg8" val="0" />
+		</TextElement>
+		<TextElement sr="elements7" ve="3">
+			<flags>4</flags>
+			<geom>10,364,447,22,-1,-1,-1,-1</geom>
+			<Str sr="arg0" ve="3">cat4</Str>
+			<Str sr="arg1" ve="3">EXPRESSIONS VISAGE</Str>
+			<Int sr="arg2" val="13" />
+			<Int sr="arg3" val="100" />
+			<Str sr="arg4" ve="3">#FF1D6A8A</Str>
+			<Str sr="arg5" ve="3" />
+			<Int sr="arg6" val="0" />
+			<Int sr="arg7" val="0" />
+			<Int sr="arg8" val="0" />
+		</TextElement>
+		<TextElement sr="elements8" ve="3">
+			<flags>4</flags>
+			<geom>10,388,447,70,-1,-1,-1,-1</geom>
+			<Str sr="arg0" ve="3">txt4</Str>
+			<Str sr="arg1" ve="3">souris | fais un sourire
+triste | sois triste
+etonne | surpris
+en colere | fache
+neutre | visage neutre</Str>
+			<Int sr="arg2" val="12" />
+			<Int sr="arg3" val="100" />
+			<Str sr="arg4" ve="3">#FF333333</Str>
+			<Str sr="arg5" ve="3" />
+			<Int sr="arg6" val="0" />
+			<Int sr="arg7" val="0" />
+			<Int sr="arg8" val="0" />
+		</TextElement>
+		<TextElement sr="elements9" ve="3">
+			<flags>4</flags>
+			<geom>10,466,447,22,-1,-1,-1,-1</geom>
+			<Str sr="arg0" ve="3">cat5</Str>
+			<Str sr="arg1" ve="3">CAMERA / TORCHE</Str>
+			<Int sr="arg2" val="13" />
+			<Int sr="arg3" val="100" />
+			<Str sr="arg4" ve="3">#FF5A3E7A</Str>
+			<Str sr="arg5" ve="3" />
+			<Int sr="arg6" val="0" />
+			<Int sr="arg7" val="0" />
+			<Int sr="arg8" val="0" />
+		</TextElement>
+		<PropertiesElement sr="props">
+			<Int sr="arg0" val="2" />
+			<Int sr="arg1" val="2" />
+			<Str sr="arg2" ve="3">#EEF0F5FF</Str>
+			<Int sr="arg3" val="0" />
+			<Str sr="arg4" ve="3">RZ_VoiceDetail</Str>
+			<Str sr="arg5" ve="3" />
+			<Img sr="arg6" ve="2" />
+			<Str sr="arg7" ve="3" />
+		</PropertiesElement>
+	</Scene>
+</TaskerData>

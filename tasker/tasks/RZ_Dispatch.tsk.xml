@@ -1,0 +1,43 @@
+<TaskerData sr="" dvi="1" tv="6.6.20">
+	<Task sr="task114">
+		<cdate>1777553490788</cdate>
+		<edate>1780482865665</edate>
+		<id>114</id>
+		<nme>RZ_Dispatch</nme>
+		<pri>100</pri>
+		<Action sr="act0" ve="7">
+			<code>417</code>
+			<label>Lire trigger.txt → %RZ_JSON</label>
+			<Str sr="arg0" ve="3">Tasker/RobotRZ/trigger.txt</Str>
+			<Str sr="arg1" ve="3">%RZ_JSON</Str>
+			<Int sr="arg2" val="1"/>
+		</Action>
+		<Action sr="act1" ve="7">
+			<code>129</code>
+			<label>Parse JSON → RZtask + RZparam</label>
+			<se>false</se>
+			<Str sr="arg0" ve="3">var contenu = global('RZ_JSON').trim();
+var j = JSON.parse(contenu);
+setGlobal('RZtask', j.task.trim());
+setGlobal('RZparam', j.param.trim());</Str>
+			<Str sr="arg1" ve="3"/>
+			<Int sr="arg2" val="1"/>
+			<Int sr="arg3" val="5"/>
+		</Action>
+		<Action sr="act2" ve="7">
+			<code>130</code>
+			<label>Appel tâche nommée</label>
+			<Str sr="arg0" ve="3">%RZtask</Str>
+			<Int sr="arg1" val="0"/>
+			<Int sr="arg10" val="1"/>
+			<Str sr="arg2" ve="3">%RZparam</Str>
+			<Str sr="arg3" ve="3"/>
+			<Str sr="arg4" ve="3"/>
+			<Int sr="arg5" val="0"/>
+			<Int sr="arg6" val="0"/>
+			<Str sr="arg7" ve="3"/>
+			<Int sr="arg8" val="0"/>
+			<Int sr="arg9" val="0"/>
+		</Action>
+	</Task>
+</TaskerData>

@@ -1,26 +1,6 @@
 {
     "commandes": [
         {
-            "id": "",
-            "traitement": "",
-            "cat": "",
-            "destinataire": "",
-            "moteurActif": 0,
-            "synonymes": [
-                ""
-            ],
-            "id_fils": [],
-            "vpiv_parts": {
-                "var": "",
-                "prop": "",
-                "inst": "",
-                "val": ""
-            },
-            "alias_tts": [
-                "URGENCE — priorité absolue (toujours traité même modeRZ=0)"
-            ]
-        },
-        {
             "id": "URGENCY_STOP",
             "traitement": "SIMPLE",
             "cat": "V",
@@ -37,31 +17,12 @@
                 "var": "Mtr",
                 "prop": "cmd",
                 "inst": "*",
-                "val": "0,0,0"
+                "val": "0,0,2",
+                "encodage": ""
             },
             "alias_tts": [
                 "Je m'arrête.",
                 "Arrêt d'urgence."
-            ]
-        },
-        {
-            "id": "",
-            "traitement": "",
-            "cat": "",
-            "destinataire": "",
-            "moteurActif": 0,
-            "synonymes": [
-                ""
-            ],
-            "id_fils": [],
-            "vpiv_parts": {
-                "var": "",
-                "prop": "",
-                "inst": "",
-                "val": ""
-            },
-            "alias_tts": [
-                "MOTEUR — déplacements simples"
             ]
         },
         {
@@ -81,7 +42,8 @@
                 "var": "Mtr",
                 "prop": "cmd",
                 "inst": "*",
-                "val": "50,0,2"
+                "val": "50,0,2",
+                "encodage": ""
             },
             "alias_tts": [
                 "Je fonce.",
@@ -104,7 +66,8 @@
                 "var": "Mtr",
                 "prop": "cmd",
                 "inst": "*",
-                "val": "-50,0,2"
+                "val": "-50,0,2",
+                "encodage": ""
             },
             "alias_tts": [
                 "Je recule."
@@ -120,14 +83,16 @@
                 "stop",
                 "arrête",
                 "freine",
-                "immobile"
+                "immobile",
+                "halte"
             ],
             "id_fils": [],
             "vpiv_parts": {
                 "var": "Mtr",
                 "prop": "cmd",
                 "inst": "*",
-                "val": "0,0,0"
+                "val": "0,0,0",
+                "encodage": ""
             },
             "alias_tts": [
                 "Arrêt."
@@ -149,7 +114,8 @@
                 "var": "Mtr",
                 "prop": "cmd",
                 "inst": "*",
-                "val": "20,0,1"
+                "val": "20,0,1",
+                "encodage": ""
             },
             "alias_tts": [
                 "Je ralentis."
@@ -172,30 +138,11 @@
                 "var": "Mtr",
                 "prop": "cmd",
                 "inst": "*",
-                "val": "80,0,3"
+                "val": "80,0,3",
+                "encodage": ""
             },
             "alias_tts": [
                 "À toute vitesse !"
-            ]
-        },
-        {
-            "id": "",
-            "traitement": "",
-            "cat": "",
-            "destinataire": "",
-            "moteurActif": 0,
-            "synonymes": [
-                ""
-            ],
-            "id_fils": [],
-            "vpiv_parts": {
-                "var": "",
-                "prop": "",
-                "inst": "",
-                "val": ""
-            },
-            "alias_tts": [
-                "MOTEUR — déplacements dynamiques (PLAN)"
             ]
         },
         {
@@ -214,7 +161,8 @@
                 "var": "Mtr",
                 "prop": "cmd",
                 "inst": "*",
-                "val": ""
+                "val": "[calculé]",
+                "encodage": "angle->NUM_DIR"
             },
             "alias_tts": [
                 "Je tourne à droite."
@@ -236,7 +184,8 @@
                 "var": "Mtr",
                 "prop": "cmd",
                 "inst": "*",
-                "val": ""
+                "val": "[calculé]",
+                "encodage": "angle->NUM_DIR"
             },
             "alias_tts": [
                 "Je tourne à gauche."
@@ -257,7 +206,8 @@
                 "var": "Mtr",
                 "prop": "cmd",
                 "inst": "*",
-                "val": ""
+                "val": "[calculé]",
+                "encodage": "angle->NUM_DIR"
             },
             "alias_tts": [
                 "Je tourne."
@@ -278,7 +228,8 @@
                 "var": "Mtr",
                 "prop": "cmd",
                 "inst": "*",
-                "val": ""
+                "val": "[calculé]",
+                "encodage": "speed->NUM"
             },
             "alias_tts": [
                 "Je règle ma vitesse."
@@ -292,37 +243,18 @@
             "moteurActif": 1,
             "synonymes": [
                 "avance de",
-                "avance jusqu'à"
+                "avance"
             ],
             "id_fils": [],
             "vpiv_parts": {
                 "var": "Mtr",
                 "prop": "cmd",
                 "inst": "*",
-                "val": ""
+                "val": "[calculé]",
+                "encodage": "dist->NUM"
             },
             "alias_tts": [
                 "Je me déplace."
-            ]
-        },
-        {
-            "id": "",
-            "traitement": "",
-            "cat": "",
-            "destinataire": "",
-            "moteurActif": 0,
-            "synonymes": [
-                ""
-            ],
-            "id_fils": [],
-            "vpiv_parts": {
-                "var": "",
-                "prop": "",
-                "inst": "",
-                "val": ""
-            },
-            "alias_tts": [
-                "CONFIGURATION — modes globaux (modeRZ)"
             ]
         },
         {
@@ -335,14 +267,16 @@
                 "mode veille",
                 "veille",
                 "repos",
-                "mise en veille"
+                "mise en veille",
+                "dors"
             ],
             "id_fils": [],
             "vpiv_parts": {
                 "var": "CfgS",
                 "prop": "modeRZ",
                 "inst": "*",
-                "val": "1"
+                "val": "1",
+                "encodage": ""
             },
             "alias_tts": [
                 "Mode veille activé."
@@ -364,7 +298,8 @@
                 "var": "CfgS",
                 "prop": "modeRZ",
                 "inst": "*",
-                "val": "2"
+                "val": "2",
+                "encodage": ""
             },
             "alias_tts": [
                 "Mode fixe activé."
@@ -378,14 +313,16 @@
             "moteurActif": 0,
             "synonymes": [
                 "mode déplacement",
-                "déplacement"
+                "déplacement",
+                "active les moteurs"
             ],
             "id_fils": [],
             "vpiv_parts": {
                 "var": "CfgS",
                 "prop": "modeRZ",
                 "inst": "*",
-                "val": "3"
+                "val": "3",
+                "encodage": ""
             },
             "alias_tts": [
                 "Prêt à me déplacer."
@@ -407,30 +344,11 @@
                 "var": "CfgS",
                 "prop": "modeRZ",
                 "inst": "*",
-                "val": "4"
+                "val": "4",
+                "encodage": ""
             },
             "alias_tts": [
                 "Mode autonome activé."
-            ]
-        },
-        {
-            "id": "",
-            "traitement": "",
-            "cat": "",
-            "destinataire": "",
-            "moteurActif": 0,
-            "synonymes": [
-                ""
-            ],
-            "id_fils": [],
-            "vpiv_parts": {
-                "var": "",
-                "prop": "",
-                "inst": "",
-                "val": ""
-            },
-            "alias_tts": [
-                "CONFIGURATION — type de pilotage (typePtge)"
             ]
         },
         {
@@ -448,7 +366,8 @@
                 "var": "CfgS",
                 "prop": "typePtge",
                 "inst": "*",
-                "val": "1"
+                "val": "1",
+                "encodage": ""
             },
             "alias_tts": [
                 "Pilotage vocal activé."
@@ -469,7 +388,8 @@
                 "var": "CfgS",
                 "prop": "typePtge",
                 "inst": "*",
-                "val": "0"
+                "val": "0",
+                "encodage": ""
             },
             "alias_tts": [
                 "Pilotage écran activé."
@@ -490,36 +410,40 @@
                 "var": "CfgS",
                 "prop": "typePtge",
                 "inst": "*",
-                "val": "3"
+                "val": "3",
+                "encodage": ""
             },
             "alias_tts": [
                 "Je suis en mode laisse."
             ]
         },
         {
-            "id": "",
-            "traitement": "",
-            "cat": "",
-            "destinataire": "",
+            "id": "SYS_SET_PILOT",
+            "traitement": "PLAN",
+            "cat": "V",
+            "destinataire": "SE",
             "moteurActif": 0,
             "synonymes": [
-                ""
+                "pilote au",
+                "mode pilotage",
+                "change pilotage"
             ],
             "id_fils": [],
             "vpiv_parts": {
-                "var": "",
-                "prop": "",
-                "inst": "",
-                "val": ""
+                "var": "CfgS",
+                "prop": "typePtge",
+                "inst": "*",
+                "val": "[calculé]",
+                "encodage": "mode->STR"
             },
             "alias_tts": [
-                "CAMÉRA"
+                "Mode pilotage changé."
             ]
         },
         {
             "id": "CAM_ON",
             "traitement": "SIMPLE",
-            "cat": "A",
+            "cat": "V",
             "destinataire": "SE",
             "moteurActif": 0,
             "synonymes": [
@@ -530,9 +454,10 @@
             "id_fils": [],
             "vpiv_parts": {
                 "var": "CamSE",
-                "prop": "active",
+                "prop": "modeCam",
                 "inst": "rear",
-                "val": "On"
+                "val": "stream",
+                "encodage": ""
             },
             "alias_tts": [
                 "Caméra démarrée."
@@ -541,7 +466,7 @@
         {
             "id": "CAM_OFF",
             "traitement": "SIMPLE",
-            "cat": "A",
+            "cat": "V",
             "destinataire": "SE",
             "moteurActif": 0,
             "synonymes": [
@@ -552,9 +477,10 @@
             "id_fils": [],
             "vpiv_parts": {
                 "var": "CamSE",
-                "prop": "active",
+                "prop": "modeCam",
                 "inst": "*",
-                "val": "Off"
+                "val": "off",
+                "encodage": ""
             },
             "alias_tts": [
                 "Caméra arrêtée."
@@ -563,19 +489,21 @@
         {
             "id": "CAM_FRONT",
             "traitement": "SIMPLE",
-            "cat": "A",
+            "cat": "V",
             "destinataire": "SE",
             "moteurActif": 0,
             "synonymes": [
                 "caméra avant",
-                "vue de face"
+                "vue de face",
+                "bascule avant"
             ],
             "id_fils": [],
             "vpiv_parts": {
                 "var": "CamSE",
-                "prop": "mode",
-                "inst": "*",
-                "val": "front"
+                "prop": "modeCam",
+                "inst": "front",
+                "val": "stream",
+                "encodage": ""
             },
             "alias_tts": [
                 "Je bascule sur la caméra avant."
@@ -584,19 +512,21 @@
         {
             "id": "CAM_REAR",
             "traitement": "SIMPLE",
-            "cat": "A",
+            "cat": "V",
             "destinataire": "SE",
             "moteurActif": 0,
             "synonymes": [
                 "caméra arrière",
-                "vue arrière"
+                "vue arrière",
+                "bascule arrière"
             ],
             "id_fils": [],
             "vpiv_parts": {
                 "var": "CamSE",
-                "prop": "mode",
-                "inst": "*",
-                "val": "rear"
+                "prop": "modeCam",
+                "inst": "rear",
+                "val": "stream",
+                "encodage": ""
             },
             "alias_tts": [
                 "Je bascule sur la caméra arrière."
@@ -605,7 +535,7 @@
         {
             "id": "CAM_SNAP",
             "traitement": "SIMPLE",
-            "cat": "A",
+            "cat": "V",
             "destinataire": "SE",
             "moteurActif": 0,
             "synonymes": [
@@ -616,32 +546,60 @@
             "id_fils": [],
             "vpiv_parts": {
                 "var": "CamSE",
-                "prop": "(snap)",
+                "prop": "snap",
                 "inst": "*",
-                "val": "1"
+                "val": "1",
+                "encodage": ""
             },
             "alias_tts": [
                 "Photo prise."
             ]
         },
         {
-            "id": "",
-            "traitement": "",
-            "cat": "",
-            "destinataire": "",
+            "id": "CAM_TORCH_ON",
+            "traitement": "SIMPLE",
+            "cat": "V",
+            "destinataire": "SE",
             "moteurActif": 0,
             "synonymes": [
-                ""
+                "allume la lumière",
+                "torche",
+                "phare",
+                "éclairage"
             ],
             "id_fils": [],
             "vpiv_parts": {
-                "var": "",
-                "prop": "",
-                "inst": "",
-                "val": ""
+                "var": "TorchSE",
+                "prop": "active",
+                "inst": "*",
+                "val": "On",
+                "encodage": ""
             },
             "alias_tts": [
-                "LEDS — anneau (LRing)"
+                "J'allume la torche."
+            ]
+        },
+        {
+            "id": "CAM_TORCH_OFF",
+            "traitement": "SIMPLE",
+            "cat": "V",
+            "destinataire": "SE",
+            "moteurActif": 0,
+            "synonymes": [
+                "éteins la lumière",
+                "coupe le phare",
+                "torche off"
+            ],
+            "id_fils": [],
+            "vpiv_parts": {
+                "var": "TorchSE",
+                "prop": "active",
+                "inst": "*",
+                "val": "Off",
+                "encodage": ""
+            },
+            "alias_tts": [
+                "J'éteins la torche."
             ]
         },
         {
@@ -656,10 +614,11 @@
             ],
             "id_fils": [],
             "vpiv_parts": {
-                "var": "LRing",
+                "var": "Lring",
                 "prop": "act",
                 "inst": "*",
-                "val": "1"
+                "val": "1",
+                "encodage": ""
             },
             "alias_tts": [
                 "Leds allumées."
@@ -677,10 +636,11 @@
             ],
             "id_fils": [],
             "vpiv_parts": {
-                "var": "LRing",
+                "var": "Lring",
                 "prop": "act",
                 "inst": "*",
-                "val": "0"
+                "val": "0",
+                "encodage": ""
             },
             "alias_tts": [
                 "Leds éteintes."
@@ -699,10 +659,11 @@
             ],
             "id_fils": [],
             "vpiv_parts": {
-                "var": "LRing",
+                "var": "Lring",
                 "prop": "expr",
                 "inst": "*",
-                "val": "sourire"
+                "val": "smile",
+                "encodage": ""
             },
             "alias_tts": [
                 "Voilà mon plus beau sourire."
@@ -721,10 +682,11 @@
             ],
             "id_fils": [],
             "vpiv_parts": {
-                "var": "LRing",
+                "var": "Lring",
                 "prop": "expr",
                 "inst": "*",
-                "val": "triste"
+                "val": "triste",
+                "encodage": ""
             },
             "alias_tts": [
                 "Je suis triste."
@@ -743,10 +705,11 @@
             ],
             "id_fils": [],
             "vpiv_parts": {
-                "var": "LRing",
+                "var": "Lring",
                 "prop": "expr",
                 "inst": "*",
-                "val": "neutre"
+                "val": "neutral",
+                "encodage": ""
             },
             "alias_tts": [
                 "Expression neutre."
@@ -765,10 +728,11 @@
             ],
             "id_fils": [],
             "vpiv_parts": {
-                "var": "LRing",
+                "var": "Lring",
                 "prop": "expr",
                 "inst": "*",
-                "val": "étonnement"
+                "val": "étonnement",
+                "encodage": ""
             },
             "alias_tts": [
                 "Oh !"
@@ -787,10 +751,11 @@
             ],
             "id_fils": [],
             "vpiv_parts": {
-                "var": "LRing",
+                "var": "Lring",
                 "prop": "expr",
                 "inst": "*",
-                "val": "colère"
+                "val": "colère",
+                "encodage": ""
             },
             "alias_tts": [
                 "Grrr !"
@@ -808,33 +773,37 @@
             ],
             "id_fils": [],
             "vpiv_parts": {
-                "var": "LRing",
-                "prop": "int",
+                "var": "Lring",
+                "prop": "lumin",
                 "inst": "*",
-                "val": ""
+                "val": "[calculé]",
+                "encodage": "brightness->NUM"
             },
             "alias_tts": [
                 "Je règle la luminosité."
             ]
         },
         {
-            "id": "",
-            "traitement": "",
-            "cat": "",
-            "destinataire": "",
+            "id": "LRUB_SET_RGB",
+            "traitement": "SIMPLE",
+            "cat": "V",
+            "destinataire": "A",
             "moteurActif": 0,
             "synonymes": [
-                ""
+                "change de couleur",
+                "allume les leds ruban",
+                "lumière ruban"
             ],
             "id_fils": [],
             "vpiv_parts": {
-                "var": "",
-                "prop": "",
-                "inst": "",
-                "val": ""
+                "var": "Lrub",
+                "prop": "mode",
+                "inst": "*",
+                "val": "2",
+                "encodage": ""
             },
             "alias_tts": [
-                "SERVOS — orientation tête (TGD = gauche-droite, THB = haut-bas)"
+                "Couleur changée."
             ]
         },
         {
@@ -853,7 +822,8 @@
                 "var": "Srv",
                 "prop": "angle",
                 "inst": "THB",
-                "val": "120"
+                "val": "120",
+                "encodage": ""
             },
             "alias_tts": [
                 "Je lève la tête."
@@ -875,7 +845,8 @@
                 "var": "Srv",
                 "prop": "angle",
                 "inst": "THB",
-                "val": "30"
+                "val": "30",
+                "encodage": ""
             },
             "alias_tts": [
                 "Je baisse la tête."
@@ -896,7 +867,8 @@
                 "var": "Srv",
                 "prop": "angle",
                 "inst": "TGD",
-                "val": "60"
+                "val": "60",
+                "encodage": ""
             },
             "alias_tts": [
                 "Je regarde à droite."
@@ -917,7 +889,8 @@
                 "var": "Srv",
                 "prop": "angle",
                 "inst": "TGD",
-                "val": "0"
+                "val": "0",
+                "encodage": ""
             },
             "alias_tts": [
                 "Je regarde à gauche."
@@ -939,78 +912,39 @@
                 "var": "Srv",
                 "prop": "angle",
                 "inst": "TGD",
-                "val": "30"
+                "val": "30",
+                "encodage": ""
             },
             "alias_tts": [
                 "Je regarde devant moi."
             ]
         },
         {
-            "id": "SRV_HEAD_GD_ANGLE",
+            "id": "SRV_HEAD_ANGLE",
             "traitement": "PLAN",
             "cat": "V",
             "destinataire": "A",
             "moteurActif": 0,
             "synonymes": [
                 "tourne la tête de",
-                "oriente la tête de"
+                "incline la tête de"
             ],
             "id_fils": [],
             "vpiv_parts": {
                 "var": "Srv",
                 "prop": "angle",
                 "inst": "TGD",
-                "val": ""
+                "val": "[calculé]",
+                "encodage": "angle->NUM"
             },
             "alias_tts": [
                 "Je tourne la tête."
             ]
         },
         {
-            "id": "SRV_HEAD_HB_ANGLE",
-            "traitement": "PLAN",
-            "cat": "V",
-            "destinataire": "A",
-            "moteurActif": 0,
-            "synonymes": [
-                "incline la tête de",
-                "relève la tête de"
-            ],
-            "id_fils": [],
-            "vpiv_parts": {
-                "var": "Srv",
-                "prop": "angle",
-                "inst": "THB",
-                "val": ""
-            },
-            "alias_tts": [
-                "J'incline la tête."
-            ]
-        },
-        {
-            "id": "",
-            "traitement": "",
-            "cat": "",
-            "destinataire": "",
-            "moteurActif": 0,
-            "synonymes": [
-                ""
-            ],
-            "id_fils": [],
-            "vpiv_parts": {
-                "var": "",
-                "prop": "",
-                "inst": "",
-                "val": ""
-            },
-            "alias_tts": [
-                "APPLICATIONS"
-            ]
-        },
-        {
             "id": "APP_TASKER_ON",
             "traitement": "SIMPLE",
-            "cat": "A",
+            "cat": "V",
             "destinataire": "SE",
             "moteurActif": 0,
             "synonymes": [
@@ -1022,7 +956,8 @@
                 "var": "Appli",
                 "prop": "tasker",
                 "inst": "*",
-                "val": "On"
+                "val": "On",
+                "encodage": ""
             },
             "alias_tts": [
                 "Tasker démarré."
@@ -1031,7 +966,7 @@
         {
             "id": "APP_TASKER_OFF",
             "traitement": "SIMPLE",
-            "cat": "A",
+            "cat": "V",
             "destinataire": "SE",
             "moteurActif": 0,
             "synonymes": [
@@ -1043,7 +978,8 @@
                 "var": "Appli",
                 "prop": "tasker",
                 "inst": "*",
-                "val": "Off"
+                "val": "Off",
+                "encodage": ""
             },
             "alias_tts": [
                 "Tasker fermé."
@@ -1052,7 +988,7 @@
         {
             "id": "APP_ZOOM_ON",
             "traitement": "SIMPLE",
-            "cat": "A",
+            "cat": "V",
             "destinataire": "SE",
             "moteurActif": 0,
             "synonymes": [
@@ -1065,7 +1001,8 @@
                 "var": "Appli",
                 "prop": "zoom",
                 "inst": "*",
-                "val": "On"
+                "val": "On",
+                "encodage": ""
             },
             "alias_tts": [
                 "Je lance Zoom."
@@ -1074,7 +1011,7 @@
         {
             "id": "APP_ZOOM_OFF",
             "traitement": "SIMPLE",
-            "cat": "A",
+            "cat": "V",
             "destinataire": "SE",
             "moteurActif": 0,
             "synonymes": [
@@ -1086,7 +1023,8 @@
                 "var": "Appli",
                 "prop": "zoom",
                 "inst": "*",
-                "val": "Off"
+                "val": "Off",
+                "encodage": ""
             },
             "alias_tts": [
                 "Zoom fermé."
@@ -1095,7 +1033,7 @@
         {
             "id": "APP_BABY_ON",
             "traitement": "SIMPLE",
-            "cat": "A",
+            "cat": "V",
             "destinataire": "SE",
             "moteurActif": 0,
             "synonymes": [
@@ -1107,7 +1045,8 @@
                 "var": "Appli",
                 "prop": "Baby",
                 "inst": "*",
-                "val": "On"
+                "val": "On",
+                "encodage": ""
             },
             "alias_tts": [
                 "Surveillance bébé démarrée."
@@ -1116,7 +1055,7 @@
         {
             "id": "APP_BABY_OFF",
             "traitement": "SIMPLE",
-            "cat": "A",
+            "cat": "V",
             "destinataire": "SE",
             "moteurActif": 0,
             "synonymes": [
@@ -1128,7 +1067,8 @@
                 "var": "Appli",
                 "prop": "Baby",
                 "inst": "*",
-                "val": "Off"
+                "val": "Off",
+                "encodage": ""
             },
             "alias_tts": [
                 "Surveillance bébé arrêtée."
@@ -1137,7 +1077,7 @@
         {
             "id": "APP_GPS_ON",
             "traitement": "SIMPLE",
-            "cat": "A",
+            "cat": "V",
             "destinataire": "SE",
             "moteurActif": 0,
             "synonymes": [
@@ -1150,7 +1090,8 @@
                 "var": "Appli",
                 "prop": "NavGPS",
                 "inst": "*",
-                "val": "On"
+                "val": "On",
+                "encodage": ""
             },
             "alias_tts": [
                 "Navigation démarrée."
@@ -1159,7 +1100,7 @@
         {
             "id": "APP_GPS_OFF",
             "traitement": "SIMPLE",
-            "cat": "A",
+            "cat": "V",
             "destinataire": "SE",
             "moteurActif": 0,
             "synonymes": [
@@ -1171,48 +1112,31 @@
                 "var": "Appli",
                 "prop": "NavGPS",
                 "inst": "*",
-                "val": "Off"
+                "val": "Off",
+                "encodage": ""
             },
             "alias_tts": [
                 "Navigation arrêtée."
             ]
         },
         {
-            "id": "",
-            "traitement": "",
-            "cat": "",
-            "destinataire": "",
-            "moteurActif": 0,
-            "synonymes": [
-                ""
-            ],
-            "id_fils": [],
-            "vpiv_parts": {
-                "var": "",
-                "prop": "",
-                "inst": "",
-                "val": ""
-            },
-            "alias_tts": [
-                "EXPRESSIONS TASKER"
-            ]
-        },
-        {
             "id": "EXPR_SMILE",
             "traitement": "SIMPLE",
-            "cat": "A",
+            "cat": "V",
             "destinataire": "SE",
             "moteurActif": 0,
             "synonymes": [
                 "fais un sourire",
-                "souris tasker"
+                "souris tasker",
+                "expression sourire"
             ],
             "id_fils": [],
             "vpiv_parts": {
                 "var": "Appli",
                 "prop": "ExprTasker",
                 "inst": "Expression",
-                "val": "sourire"
+                "val": "sourire",
+                "encodage": ""
             },
             "alias_tts": [
                 "Voilà !"
@@ -1221,42 +1145,24 @@
         {
             "id": "EXPR_NEUTRAL",
             "traitement": "SIMPLE",
-            "cat": "A",
+            "cat": "V",
             "destinataire": "SE",
             "moteurActif": 0,
             "synonymes": [
                 "retour neutre",
-                "expression normale"
+                "expression normale",
+                "visage normal"
             ],
             "id_fils": [],
             "vpiv_parts": {
                 "var": "Appli",
                 "prop": "ExprTasker",
                 "inst": "Off",
-                "val": "*"
+                "val": "*",
+                "encodage": ""
             },
             "alias_tts": [
                 "D'accord."
-            ]
-        },
-        {
-            "id": "",
-            "traitement": "",
-            "cat": "",
-            "destinataire": "",
-            "moteurActif": 0,
-            "synonymes": [
-                ""
-            ],
-            "id_fils": [],
-            "vpiv_parts": {
-                "var": "",
-                "prop": "",
-                "inst": "",
-                "val": ""
-            },
-            "alias_tts": [
-                "MICRO (smartphone)"
             ]
         },
         {
@@ -1274,7 +1180,8 @@
                 "var": "MicroSE",
                 "prop": "modeMicro",
                 "inst": "*",
-                "val": "intensite"
+                "val": "intensite",
+                "encodage": ""
             },
             "alias_tts": [
                 "Micro activé."
@@ -1295,7 +1202,8 @@
                 "var": "MicroSE",
                 "prop": "modeMicro",
                 "inst": "*",
-                "val": "off"
+                "val": "off",
+                "encodage": ""
             },
             "alias_tts": [
                 "Micro coupé."
@@ -1316,7 +1224,8 @@
                 "var": "MicroSE",
                 "prop": "modeMicro",
                 "inst": "*",
-                "val": "orientation"
+                "val": "orientation",
+                "encodage": ""
             },
             "alias_tts": [
                 "J'écoute d'où tu viens."
@@ -1337,30 +1246,11 @@
                 "var": "MicroSE",
                 "prop": "modeMicro",
                 "inst": "*",
-                "val": "surveillance"
+                "val": "surveillance",
+                "encodage": ""
             },
             "alias_tts": [
                 "Surveillance sonore activée."
-            ]
-        },
-        {
-            "id": "",
-            "traitement": "",
-            "cat": "",
-            "destinataire": "",
-            "moteurActif": 0,
-            "synonymes": [
-                ""
-            ],
-            "id_fils": [],
-            "vpiv_parts": {
-                "var": "",
-                "prop": "",
-                "inst": "",
-                "val": ""
-            },
-            "alias_tts": [
-                "SYSTÈME — état et info"
             ]
         },
         {
@@ -1379,7 +1269,8 @@
                 "var": "COM",
                 "prop": "info",
                 "inst": "SE",
-                "val": "status"
+                "val": "status",
+                "encodage": ""
             },
             "alias_tts": [
                 "Je vais bien.",
@@ -1395,17 +1286,112 @@
             "synonymes": [
                 "batterie",
                 "niveau de batterie",
-                "autonomie"
+                "autonomie",
+                "ton énergie"
+            ],
+            "id_fils": [],
+            "vpiv_parts": {
+                "var": "Sys",
+                "prop": "dataContBatt",
+                "inst": "SE",
+                "val": "?",
+                "encodage": ""
+            },
+            "alias_tts": [
+                "Je vérifie ma batterie."
+            ]
+        },
+        {
+            "id": "SYS_GET_TEMP",
+            "traitement": "LOCAL",
+            "cat": "I",
+            "destinataire": "SE",
+            "moteurActif": 0,
+            "synonymes": [
+                "température",
+                "tu chauffes",
+                "fièvre"
+            ],
+            "id_fils": [],
+            "vpiv_parts": {
+                "var": "Sys",
+                "prop": "dataContThermal",
+                "inst": "SE",
+                "val": "?",
+                "encodage": ""
+            },
+            "alias_tts": [
+                "Je vérifie ma température."
+            ]
+        },
+        {
+            "id": "NAV_GET_HEADING",
+            "traitement": "LOCAL",
+            "cat": "I",
+            "destinataire": "SE",
+            "moteurActif": 0,
+            "synonymes": [
+                "où est le nord",
+                "ton cap",
+                "orientation"
+            ],
+            "id_fils": [],
+            "vpiv_parts": {
+                "var": "Mag",
+                "prop": "DataContGeo",
+                "inst": "*",
+                "val": "?",
+                "encodage": ""
+            },
+            "alias_tts": [
+                "Mon cap est..."
+            ]
+        },
+        {
+            "id": "GYRO_GET_PITCH",
+            "traitement": "LOCAL",
+            "cat": "I",
+            "destinataire": "SE",
+            "moteurActif": 0,
+            "synonymes": [
+                "inclinaison",
+                "tu es droit",
+                "équilibre"
+            ],
+            "id_fils": [],
+            "vpiv_parts": {
+                "var": "Gyro",
+                "prop": "statusGyro",
+                "inst": "*",
+                "val": "?",
+                "encodage": ""
+            },
+            "alias_tts": [
+                "Je suis bien à plat."
+            ]
+        },
+        {
+            "id": "COM_GET_STATE",
+            "traitement": "LOCAL",
+            "cat": "I",
+            "destinataire": "SE",
+            "moteurActif": 0,
+            "synonymes": [
+                "état connexion",
+                "es-tu connecté",
+                "réseau"
             ],
             "id_fils": [],
             "vpiv_parts": {
                 "var": "COM",
                 "prop": "info",
                 "inst": "SE",
-                "val": "battery"
+                "val": "state",
+                "encodage": ""
             },
             "alias_tts": [
-                "Je vérifie ma batterie."
+                "Je suis connecté.",
+                "Je suis hors ligne."
             ]
         },
         {
@@ -1421,9 +1407,10 @@
             "id_fils": [],
             "vpiv_parts": {
                 "var": "CfgS",
-                "prop": "(reset)",
+                "prop": "reset",
                 "inst": "*",
-                "val": "1"
+                "val": "1",
+                "encodage": ""
             },
             "alias_tts": [
                 "Je me réinitialise."
@@ -1442,32 +1429,83 @@
             "id_fils": [],
             "vpiv_parts": {
                 "var": "Urg",
-                "prop": "(clear)",
+                "prop": "clear",
                 "inst": "*",
-                "val": "1"
+                "val": "1",
+                "encodage": ""
             },
             "alias_tts": [
                 "Urgence effacée."
             ]
         },
         {
-            "id": "",
-            "traitement": "",
-            "cat": "",
-            "destinataire": "",
+            "id": "AI_START_CONV",
+            "traitement": "LOCAL",
+            "cat": "A",
+            "destinataire": "SE",
             "moteurActif": 0,
             "synonymes": [
-                ""
+                "discute avec moi",
+                "on parle",
+                "mode discussion"
             ],
             "id_fils": [],
             "vpiv_parts": {
-                "var": "",
-                "prop": "",
-                "inst": "",
-                "val": ""
+                "var": "-",
+                "prop": "-",
+                "inst": "-",
+                "val": "-",
+                "encodage": ""
             },
             "alias_tts": [
-                "MACROS — enchaînements de commandes"
+                "Je t'écoute."
+            ]
+        },
+        {
+            "id": "VOICE_VOL_SET",
+            "traitement": "PLAN",
+            "cat": "V",
+            "destinataire": "SE",
+            "moteurActif": 0,
+            "synonymes": [
+                "volume",
+                "son",
+                "plus fort",
+                "moins fort"
+            ],
+            "id_fils": [],
+            "vpiv_parts": {
+                "var": "Voice",
+                "prop": "vol",
+                "inst": "*",
+                "val": "[calculé]",
+                "encodage": "vol->NUM_OR_ADV"
+            },
+            "alias_tts": [
+                "Je règle le volume."
+            ]
+        },
+        {
+            "id": "VOICE_SAY_ID",
+            "traitement": "LOCAL",
+            "cat": "I",
+            "destinataire": "SE",
+            "moteurActif": 0,
+            "synonymes": [
+                "qui es-tu",
+                "identité",
+                "ton nom"
+            ],
+            "id_fils": [],
+            "vpiv_parts": {
+                "var": "Sys",
+                "prop": "modeSys",
+                "inst": "*",
+                "val": "?",
+                "encodage": ""
+            },
+            "alias_tts": [
+                "Je suis RZ ton robot compagnon."
             ]
         },
         {
@@ -1488,20 +1526,24 @@
                 "var": "",
                 "prop": "",
                 "inst": "",
-                "val": ""
+                "val": "",
+                "encodage": ""
             },
-            "alias_tts": []
+            "alias_tts": [
+                "Je marque une pause."
+            ]
         },
         {
             "id": "MACRO_HELLO",
             "traitement": "COMPLEXE",
             "cat": "V",
-            "destinataire": "A",
+            "destinataire": "SE",
             "moteurActif": 0,
             "synonymes": [
                 "bonjour",
                 "salut",
-                "coucou"
+                "coucou",
+                "dis bonjour"
             ],
             "id_fils": [
                 "LRING_SMILE",
@@ -1511,9 +1553,12 @@
                 "var": "",
                 "prop": "",
                 "inst": "",
-                "val": ""
+                "val": "",
+                "encodage": ""
             },
-            "alias_tts": []
+            "alias_tts": [
+                "Bonjour !"
+            ]
         },
         {
             "id": "MACRO_SLEEP",
@@ -1535,9 +1580,12 @@
                 "var": "",
                 "prop": "",
                 "inst": "",
-                "val": ""
+                "val": "",
+                "encodage": ""
             },
-            "alias_tts": []
+            "alias_tts": [
+                "Bonne nuit."
+            ]
         },
         {
             "id": "MACRO_WAKE",
@@ -1559,9 +1607,12 @@
                 "var": "",
                 "prop": "",
                 "inst": "",
-                "val": ""
+                "val": "",
+                "encodage": ""
             },
-            "alias_tts": []
+            "alias_tts": [
+                "Je me réveille !"
+            ]
         }
     ]
 }

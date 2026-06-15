@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TaskerData sr="" dvi="1" tv="6.6.20">
+	<Scene sr="sceneRZ_VoiceHelp">
+		<cdate>1778300000005</cdate>
+		<edate>1778300000005</edate>
+		<heightLand>-1</heightLand>
+		<heightPort>759</heightPort>
+		<nme>RZ_VoiceHelp</nme>
+		<widthLand>-1</widthLand>
+		<widthPort>467</widthPort>
+		<TextElement sr="elements0" ve="3">
+			<flags>4</flags>
+			<geom>0,0,467,50,-1,-1,-1,-1</geom>
+			<Str sr="arg0" ve="3">txt_titre</Str>
+			<Str sr="arg1" ve="3">Commandes vocales</Str>
+			<Int sr="arg2" val="18" />
+			<Int sr="arg3" val="100" />
+			<Str sr="arg4" ve="3">#FF1A1A2E</Str>
+			<Str sr="arg5" ve="3" />
+			<Int sr="arg6" val="1" />
+			<Int sr="arg7" val="0" />
+			<Int sr="arg8" val="0" />
+		</TextElement>
+		<TextElement sr="elements1" ve="3">
+			<flags>4</flags>
+			<geom>10,56,447,26,-1,-1,-1,-1</geom>
+			<Str sr="arg0" ve="3">lbl_reveil</Str>
+			<Str sr="arg1" ve="3">Mot de réveil : "rz" puis votre commande</Str>
+			<Int sr="arg2" val="13" />
+			<Int sr="arg3" val="100" />
+			<Str sr="arg4" ve="3">#FF7B3F00</Str>
+			<Str sr="arg5" ve="3" />
+			<Int sr="arg6" val="1" />
+			<Int sr="arg7" val="0" />
+			<Int sr="arg8" val="0" />
+		</TextElement>
+		<ButtonElement sr="elements10" ve="3">
+			<flags>4</flags>
+			<geom>10,420,220,46,-1,-1,-1,-1</geom>
+			<Str sr="arg0" ve="3">btn_detail</Str>
+			<Str sr="arg1" ve="3">Liste complete</Str>
+			<Int sr="arg2" val="14" />
+			<Int sr="arg3" val="100" />
+			<Str sr="arg4" ve="3">#FF1A3A5C</Str>
+			<Str sr="arg5" ve="3">RZ_OuvreVoiceDetail</Str>
+			<Int sr="arg6" val="8" />
+			<Img sr="arg7" ve="2" />
+		</ButtonElement>
+		<ButtonElement sr="elements11" ve="3">
+			<flags>4</flags>
+			<geom>237,420,220,46,-1,-1,-1,-1</geom>
+			<Str sr="arg0" ve="3">btn_fermer</Str>
+			<Str sr="arg1" ve="3">X Fermer</Str>
+			<Int sr="arg2" val="16" />
+			<Int sr="arg3" val="100" />
+			<Str sr="arg4" ve="3">#FF8B0000</Str>
+			<Str sr="arg5" ve="3">RZ_FermeVoice</Str>
+			<Int sr="arg6" val="8" />
+			<Img sr="arg7" ve="2" />
+		</ButtonElement>
+		<TextElement sr="elements2" ve="3">
+			<flags>4</flags>
+			<geom>10,90,447,22,-1,-1,-1,-1</geom>
+			<Str sr="arg0" ve="3">lbl_cat1</Str>
+			<Str sr="arg1" ve="3">MODES ROBOT</Str>
+			<Int sr="arg2" val="13" />
+			<Int sr="arg3" val="100" />
+			<Str sr="arg4" ve="3">#FF2D6A4F</Str>
+			<Str sr="arg5" ve="3" />
+			<Int sr="arg6" val="0" />
+			<Int sr="arg7" val="0" />
+			<Int sr="arg8" val="0" />
+		</TextElement>
+		<TextElement sr="elements3" ve="3">
+			<flags>4</flags>
+			<geom>10,114,447,54,-1,-1,-1,-1</geom>
+			<Str sr="arg0" ve="3">txt_cat1</Str>
+			<Str sr="arg1" ve="3">mode veille | mode fixe | mode deplacement | mode autonome
+pilotage vocal | pilotage ecran | mode laisse</Str>
+			<Int sr="arg2" val="12" />
+			<Int sr="arg3" val="100" />
+			<Str sr="arg4" ve="3">#FF333333</Str>
+			<Str sr="arg5" ve="3" />
+			<Int sr="arg6" val="0" />
+			<Int sr="arg7" val="0" />
+			<Int sr="arg8" val="0" />
+		</TextElement>
+		<TextElement sr="elements4" ve="3">
+			<flags>4</flags>
+			<geom>10,176,447,22,-1,-1,-1,-1</geom>
+			<Str sr="arg0" ve="3">lbl_cat2</Str>
+			<Str sr="arg1" ve="3">DEPLACEMENT</Str>
+			<Int sr="arg2" val="13" />
+			<Int sr="arg3" val="100" />
+			<Str sr="arg4" ve="3">#FF7B5EA7</Str>
+			<Str sr="arg5" ve="3" />
+			<Int sr="arg6" val="0" />
+			<Int sr="arg7" val="0" />
+			<Int sr="arg8" val="0" />
+		</TextElement>
+		<TextElement sr="elements5" ve="3">
+			<flags>4</flags>
+			<geom>10,200,447,54,-1,-1,-1,-1</geom>
+			<Str sr="arg0" ve="3">txt_cat2</Str>
+			<Str sr="arg1" ve="3">avance | recule | stop | lentement | vite
+tourne a droite | tourne a gauche | arrête tout</Str>
+			<Int sr="arg2" val="12" />
+			<Int sr="arg3" val="100" />
+			<Str sr="arg4" ve="3">#FF333333</Str>
+			<Str sr="arg5" ve="3" />
+			<Int sr="arg6" val="0" />
+			<Int sr="arg7" val="0" />
+			<Int sr="arg8" val="0" />
+		</TextElement>
+		<TextElement sr="elements6" ve="3">
+			<flags>4</flags>
+			<geom>10,262,447,22,-1,-1,-1,-1</geom>
+			<Str sr="arg0" ve="3">lbl_cat3</Str>
+			<Str sr="arg1" ve="3">EXPRESSIONS</Str>
+			<Int sr="arg2" val="13" />
+			<Int sr="arg3" val="100" />
+			<Str sr="arg4" ve="3">#FF1D6A8A</Str>
+			<Str sr="arg5" ve="3" />
+			<Int sr="arg6" val="0" />
+			<Int sr="arg7" val="0" />
+			<Int sr="arg8" val="0" />
+		</TextElement>
+		<TextElement sr="elements7" ve="3">
+			<flags>4</flags>
+			<geom>10,286,447,36,-1,-1,-1,-1</geom>
+			<Str sr="arg0" ve="3">txt_cat3</Str>
+			<Str sr="arg1" ve="3">souris | triste | etonne | en colere | neutre | bonjour</Str>
+			<Int sr="arg2" val="12" />
+			<Int sr="arg3" val="100" />
+			<Str sr="arg4" ve="3">#FF333333</Str>
+			<Str sr="arg5" ve="3" />
+			<Int sr="arg6" val="0" />
+			<Int sr="arg7" val="0" />
+			<Int sr="arg8" val="0" />
+		</TextElement>
+		<TextElement sr="elements8" ve="3">
+			<flags>4</flags>
+			<geom>10,330,447,22,-1,-1,-1,-1</geom>
+			<Str sr="arg0" ve="3">lbl_cat4</Str>
+			<Str sr="arg1" ve="3">CONVERSATION IA</Str>
+			<Int sr="arg2" val="13" />
+			<Int sr="arg3" val="100" />
+			<Str sr="arg4" ve="3">#FF8B4513</Str>
+			<Str sr="arg5" ve="3" />
+			<Int sr="arg6" val="0" />
+			<Int sr="arg7" val="0" />
+			<Int sr="arg8" val="0" />
+		</TextElement>
+		<TextElement sr="elements9" ve="3">
+			<flags>4</flags>
+			<geom>10,354,447,36,-1,-1,-1,-1</geom>
+			<Str sr="arg0" ve="3">txt_cat4</Str>
+			<Str sr="arg1" ve="3">discute avec moi (mode veille requis)</Str>
+			<Int sr="arg2" val="12" />
+			<Int sr="arg3" val="100" />
+			<Str sr="arg4" ve="3">#FF333333</Str>
+			<Str sr="arg5" ve="3" />
+			<Int sr="arg6" val="0" />
+			<Int sr="arg7" val="0" />
+			<Int sr="arg8" val="0" />
+		</TextElement>
+		<PropertiesElement sr="props">
+			<Int sr="arg0" val="2" />
+			<Int sr="arg1" val="2" />
+			<Str sr="arg2" ve="3">#EEF0F5FF</Str>
+			<Int sr="arg3" val="0" />
+			<Str sr="arg4" ve="3">RZ_VoiceHelp</Str>
+			<Str sr="arg5" ve="3" />
+			<Img sr="arg6" ve="2" />
+			<Str sr="arg7" ve="3" />
+		</PropertiesElement>
+	</Scene>
+</TaskerData>

@@ -1,0 +1,65 @@
+=== Décomposition de : Robotrz_backup.xml ===
+Version Tasker : 6.6.20
+Dossier sortie : tasker\
+
+--- TÂCHES ---
+  task10_RZ_FermeMenu.tsk.xml  ← RZ_FermeMenu
+  task11_RZ_FermeEtat.tsk.xml  ← RZ_FermeEtat
+  task113_RZ_CamStart.tsk.xml  ← RZ_CamStart
+  task114_RZ_Dispatch.tsk.xml  ← RZ_Dispatch
+  task115_RZ_CamStop.tsk.xml  ← RZ_CamStop
+  task12_RZ_FermeVoice.tsk.xml  ← RZ_FermeVoice
+  task13_RZ_FermeVoiceDetail.tsk.xml  ← RZ_FermeVoiceDetail
+  task14_RZ_OuvreMenu.tsk.xml  ← RZ_OuvreMenu
+  task15_RZ_Maps.tsk.xml  ← RZ_Maps
+  task18_RZ_Init_Tasker.tsk.xml  ← RZ_Init_Tasker
+  task19_RZ_AppStart.tsk.xml  ← RZ_AppStart
+  task2_RZ_MenuCmd.tsk.xml  ← RZ_MenuCmd
+  task20_internal.tsk.xml  ← (interne task20)
+  task21_RZ_EtatRefresh.tsk.xml  ← RZ_EtatRefresh
+  task22_internal.tsk.xml  ← (interne task22)
+  task23_RZ_AppStop.tsk.xml  ← RZ_AppStop
+  task24_RZ_EtatMajScene.tsk.xml  ← RZ_EtatMajScene
+  task25_internal.tsk.xml  ← (interne task25)
+  task3_RZ_ExprNeutre.tsk.xml  ← RZ_ExprNeutre
+  task32_RZ_TorchOn.tsk.xml  ← RZ_TorchOn
+  task33_RZ_TorchOff.tsk.xml  ← RZ_TorchOff
+  task4_RZ_MenuSendMode.tsk.xml  ← RZ_MenuSendMode
+  task41_RZ_Aide.tsk.xml  ← RZ_Aide
+  task44_internal.tsk.xml  ← (interne task44)
+  task45_internal.tsk.xml  ← (interne task45)
+  task46_internal.tsk.xml  ← (interne task46)
+  task47_internal.tsk.xml  ← (interne task47)
+  task48_internal.tsk.xml  ← (interne task48)
+  task49_internal.tsk.xml  ← (interne task49)
+  task5_RZ_Expression.tsk.xml  ← RZ_Expression
+  task50_internal.tsk.xml  ← (interne task50)
+  task51_internal.tsk.xml  ← (interne task51)
+  task52_internal.tsk.xml  ← (interne task52)
+  task54_internal.tsk.xml  ← (interne task54)
+  task55_internal.tsk.xml  ← (interne task55)
+  task56_internal.tsk.xml  ← (interne task56)
+  task57_RZ_Baby.tsk.xml  ← RZ_Baby
+  task58_RZ_Zoom.tsk.xml  ← RZ_Zoom
+  task59_RZ_NavGPS.tsk.xml  ← RZ_NavGPS
+  task6_RZ_MenuSendAppli.tsk.xml  ← RZ_MenuSendAppli
+  task7_RZ_OuvreEtat.tsk.xml  ← RZ_OuvreEtat
+  task8_RZ_OuvreVoice.tsk.xml  ← RZ_OuvreVoice
+  task9_RZ_OuvreVoiceDetail.tsk.xml  ← RZ_OuvreVoiceDetail
+  Total : 43 tâches
+
+--- PROFILS ---
+  prof16_Fichier_ModifieParSE.prf.xml  ← Fichier_ModifieParSE
+  prof17_Menu_Commande.prf.xml  ← Menu_Commande
+  Total : 2 profils
+
+--- SCÈNES ---
+  RZ_Etat.scn.xml  ← RZ_Etat
+  RZ_Expression.scn.xml  ← RZ_Expression
+  RZ_FermeOverlay.scn.xml  ← RZ_FermeOverlay
+  RZ_Menu.scn.xml  ← RZ_Menu
+  RZ_VoiceDetail.scn.xml  ← RZ_VoiceDetail
+  RZ_VoiceHelp.scn.xml  ← RZ_VoiceHelp
+  Total : 6 scènes
+
+=== Total : 43 tâches, 2 profils, 6 scènes ===

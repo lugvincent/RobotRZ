@@ -40,8 +40,8 @@
 #   config/keys.json, config/global.json
 #
 # AUTEUR  : Vincent Philippe
-# VERSION : 1.5  (ajout cas STT, sync Tasker après chaque write global.json)
-# DATE    : 2026-05-20
+# VERSION : 1.51  (ajout champ ts timestamp pour changer le context entre deux appels dans la fonction calculate_stt_context)
+# DATE    : 2026-06-06
 # =============================================================================
 
 # --- CONFIGURATION DES CHEMINS ---
@@ -127,9 +127,9 @@ calculate_stt_context() {
     # → met à jour %RZsttContext via profil Fichier_ModifieParSE → RZ_Dispatch → RZ_STT_Context
     local trigger_file="/sdcard/Tasker/RobotRZ/trigger.txt"
     if [ -d "$(dirname "$trigger_file")" ]; then
-       printf '{"task":"RZ_STT_Context","param":"%s","ts":"%s"}' \
-              "$context" "$(date +%s)" \ 
-            > "$trigger_file"
+    printf '{"task":"RZ_STT_Context","param":"%s","ts":"%s"}' \
+                "$context" "$(date +%s)" \
+                > "$trigger_file"
     fi
 }
 

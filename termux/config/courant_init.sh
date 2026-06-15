@@ -26,6 +26,7 @@
 #   [x] Mic   : modeMicro, paraMicro (seuils, balayage orientation)
 #   [x] Appli : états initiaux, tâches Tasker, packages Android
 #   [x] STT   : modeSTT, keyphrase, threshold, lib_path
+#   [x] Voice : vol, output, ttsRate
 #   [x] Mtr   : speed_cruise, scales, kturn  (lu directement par rz_stt_handler.sh)
 #
 # ARTICULATION
@@ -96,6 +97,7 @@ modeGyro="DATACont"
 # Angle combiné BASE+THB pour correction tangage (mode ALERTE)
 # Exemple : 150 = 15.0° | 0 = machine parfaitement verticale
 angleVSEBase=150
+
 
 freqCont_gyro=20        # Hz — flux continu (> 0)
 freqMoy_gyro=2          # Hz — flux moyenné (> 0)
@@ -213,10 +215,11 @@ mic_timeoutOrientation=15   # secondes — durée max balayage (sécurité)
 # Tasker. Tasker doit être lancé avant Baby, BabyMonitor, NavGPS.
 
 # États initiaux (On|Off) — recommandé : toujours Off au démarrage
-appli_Baby_state="Off"  ;  appli_tasker_state="Off"  ;  appli_zoom_state="Off"
+appli_IA_Conv_state="Off"; appli_Baby_state="Off"  ;  appli_tasker_state="Off"  ;  appli_zoom_state="Off"
 appli_BabyMonitor_state="Off"  ;  appli_NavGPS_state="Off"
 
 # Noms des tâches Tasker (doivent correspondre exactement dans Tasker)
+appli_IA_Conv_task="RZ_IA_Conv"
 appli_Baby_task="RZ_Baby"
 appli_zoom_task="RZ_Zoom"
 appli_BabyMonitor_task="RZ_BabyMonitor"
@@ -265,6 +268,22 @@ stt_threshold="1e-20"
 stt_keyphrase="rz"
 stt_lang="fr"
 stt_lib_path="lib_pocketsphinx"
+
+# =============================================================================
+# SECTION VOICE — Propriétés SP → SE  (Table A : module Voice)
+# =============================================================================
+# vol      : volume initial (0-100, normalisé vers plage Android native au boot)
+#            rz_voice_manager.sh convertit en 0-maxVolume Android (détecté dynamiquement)
+# output   : sortie audio par défaut (internal|jack|bt)
+#            Android commute automatiquement — ce paramètre n'est qu'un état initial publié.
+#            jack/BT pris en charge par Android ; BT forcé = V2 (hors scope V1)
+# ttsRate  : vitesse de synthèse vocale (0.5=lent … 1.0=normal … 2.0=rapide)
+#            Passé à termux-tts-speak si supporté par le moteur TTS Android.
+#            Valeur recommandée pour robot compagnon : 1.0
+
+voice_vol=80
+voice_output="internal"
+voice_ttsRate="1.0"
 
 # =============================================================================
 # SECTION MTR — Propriétés de référence moteur  (Table A : module Mtr)
@@ -385,6 +404,7 @@ cat > "$OUTPUT_JSON" <<EOF
   },
   "appli": {
     "Baby":        { "state": "$appli_Baby_state",        "tasker_task": "$appli_Baby_task",        "package": "",                    "last_change": "" },
+    "IA_Conv":     { "state": "$appli_IA_Conv_state",          "tasker_task": "$appli_IA_Conv_task",     "package": "",                    "last_change": "" },
     "tasker":      { "state": "$appli_tasker_state",      "tasker_task": "",                        "package": "$appli_tasker_pkg",   "last_change": "" },
     "zoom":        { "state": "$appli_zoom_state",        "tasker_task": "$appli_zoom_task",        "package": "$appli_zoom_pkg",     "last_change": "" },
     "BabyMonitor": { "state": "$appli_BabyMonitor_state", "tasker_task": "$appli_BabyMonitor_task", "package": "",                    "last_change": "" },
@@ -412,6 +432,11 @@ cat > "$OUTPUT_JSON" <<EOF
     "keyphrase": "$stt_keyphrase",
     "lang":      "$stt_lang",
     "lib_path":  "$stt_lib_path"
+  },
+  "voice": {
+    "vol":     $voice_vol,
+    "output":  "$voice_output",
+    "ttsRate": "$voice_ttsRate"
   },
   "mtr": {
     "speed_cruise":  $mtr_speed_cruise,

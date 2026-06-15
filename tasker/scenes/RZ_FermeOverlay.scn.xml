@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TaskerData sr="" dvi="1" tv="6.6.20">
+	<Scene sr="sceneRZ_FermeOverlay">
+		<cdate>1778900000020</cdate>
+		<edate>1778916887413</edate>
+		<heightLand>-1</heightLand>
+		<heightPort>50</heightPort>
+		<nme>RZ_FermeOverlay</nme>
+		<widthLand>-1</widthLand>
+		<widthPort>200</widthPort>
+		<TextElement sr="elements0" ve="3">
+			<clickTask>22</clickTask>
+			<flags>4</flags>
+			<geom>0,0,200,50,-1,-1,-1,-1</geom>
+			<Str sr="arg0" ve="3">btn_fermer_appli</Str>
+			<Str sr="arg1" ve="3">🛑 Fermer %RZappliActive</Str>
+			<Int sr="arg2" val="12" />
+			<Int sr="arg3" val="100" />
+			<Str sr="arg4" ve="3">#FFFFFFFF</Str>
+			<Str sr="arg5" ve="3" />
+			<Int sr="arg6" val="3" />
+			<Int sr="arg7" val="0" />
+			<Int sr="arg8" val="0" />
+			<RectElement sr="background">
+				<flags>4</flags>
+				<geom>-1,-1,-1,-1,-1,-1,-1,-1</geom>
+				<Str sr="arg0" ve="3" />
+				<Int sr="arg1" val="0" />
+				<Str sr="arg2" ve="3">#CC881A1A</Str>
+				<Str sr="arg3" ve="3" />
+				<Int sr="arg4" val="0" />
+				<Str sr="arg5" ve="3" />
+				<Int sr="arg6" val="0" />
+				<Int sr="arg7" val="0" />
+			</RectElement>
+		</TextElement>
+		<PropertiesElement sr="props">
+			<Int sr="arg0" val="1" />
+			<Int sr="arg1" val="0" />
+			<Str sr="arg2" ve="3">#00000000</Str>
+			<Int sr="arg3" val="0" />
+			<Str sr="arg4" ve="3">RZ_FermeOverlay</Str>
+			<Str sr="arg5" ve="3" />
+			<Img sr="arg6" ve="2" />
+			<Str sr="arg7" ve="3" />
+		</PropertiesElement>
+	</Scene>
+</TaskerData>

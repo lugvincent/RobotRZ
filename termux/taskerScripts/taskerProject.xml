@@ -1,0 +1,2001 @@
+<TaskerData sr="" dvi="1" tv="6.6.20">
+    <dmetric>720.0,1338.0</dmetric>
+
+    <!-- ════════════════════════════════════════════════════════════
+             PROFIL — fichier modifié → déclenche RZ_Dispatch
+             Surveille trigger.txt écrit par rz_tasker_bridge.sh
+             ════════════════════════════════════════════════════════════ -->
+    <Profile sr="prof117" ve="2">
+        <cdate>1778133079772</cdate>
+        <clp>true</clp>
+        <edate>1777678155962</edate>
+        <flags>8</flags>
+        <id>117</id>
+        <mid0>114</mid0>
+        <nme>fichier modifié</nme>
+        <Event sr="con0" ve="2">
+            <code>222</code>
+            <pri>0</pri>
+            <Str sr="arg0" ve="3">/sdcard/Tasker/RobotRZ/trigger.txt</Str>
+            <Str sr="arg1" ve="3" />
+        </Event>
+    </Profile>
+
+    <!-- ════════════════════════════════════════════════════════════
+             PROJET RobotRZ
+             tids : toutes les tâches du projet
+             pids : profils
+             scenes : scènes
+             ════════════════════════════════════════════════════════════ -->
+    <Project sr="proj0" ve="2">
+        <cdate>1777552833137</cdate>
+        <name>RobotRZ</name>
+        <pids>117,131</pids>
+        <scenes>RZ_Expression,RZ_Menu,RZ_Etat,RZ_VoiceHelp,RZ_VoiceDetail</scenes>
+        <tids>114,116,118,113,115,126,127,128,129,130,132,133,134,135,136,137,138,139,140,141,142</tids>
+    </Project>
+
+    <!-- ════════════════════════════════════════════════════════════
+             SCÈNE — RZ_Expression
+             Affiche l'emoji facial du robot
+             Éléments : emoji_expression (TextElement), btn_menu (Button)
+             ════════════════════════════════════════════════════════════ -->
+    <Scene sr="sceneRZ_Expression">
+        <cdate>1777842601993</cdate>
+        <edate>1777847685363</edate>
+        <heightLand>-1</heightLand>
+        <heightPort>759</heightPort>
+        <nme>RZ_Expression</nme>
+        <widthLand>-1</widthLand>
+        <widthPort>467</widthPort>
+        <TextElement sr="elements0" ve="3">
+            <flags>4</flags>
+            <geom>0,0,465,601,-1,-1,-1,-1</geom>
+            <Str sr="arg0" ve="3">emoji_expression</Str>
+            <Str sr="arg1" ve="3">😐</Str>
+            <Int sr="arg2" val="160" />
+            <Int sr="arg3" val="100" />
+            <Str sr="arg4" ve="3">#FFFAF2F2</Str>
+            <Str sr="arg5" ve="3" />
+            <Int sr="arg6" val="0" />
+            <Int sr="arg7" val="0" />
+            <Int sr="arg8" val="0" />
+        </TextElement>
+        <ButtonElement sr="elements1" ve="3">
+            <flags>4</flags>
+            <geom>381,626,50,50,-1,-1,-1,-1</geom>
+            <Str sr="arg0" ve="3">btn_menu</Str>
+            <Str sr="arg1" ve="3">📃</Str>
+            <Int sr="arg2" val="16" />
+            <Int sr="arg3" val="100" />
+            <Str sr="arg4" ve="3">#FF000000</Str>
+            <Str sr="arg5" ve="3" />
+            <Int sr="arg6" val="8" />
+            <Img sr="arg7" ve="2" />
+        </ButtonElement>
+        <PropertiesElement sr="props">
+            <Int sr="arg0" val="2" />
+            <Int sr="arg1" val="2" />
+            <Str sr="arg2" ve="3">#000000</Str>
+            <Int sr="arg3" val="0" />
+            <Str sr="arg4" ve="3">RZ_Expression</Str>
+            <Str sr="arg5" ve="3" />
+            <Img sr="arg6" ve="2" />
+            <Str sr="arg7" ve="3" />
+        </PropertiesElement>
+    </Scene>
+
+    <!-- ════════════════════════════════════════════════════════════
+             TÂCHE 114 — RZ_Dispatch
+             Point d'entrée unique. Lit trigger.txt, parse JSON,
+             extrait task+param, appelle la tâche nommée.
+             VPIV entrant : $A:*:*:*:*# (CAT=A)
+             ════════════════════════════════════════════════════════════ -->
+    <Task sr="task114">
+        <cdate>1777553490788</cdate>
+        <edate>1777824899258</edate>
+        <id>114</id>
+        <nme>RZ_Dispatch</nme>
+        <pri>6</pri>
+        <Action sr="act0" ve="7">
+            <code>417</code>
+            <label>Lire trigger.txt → %RZ_JSON</label>
+            <Str sr="arg0" ve="3">Tasker/RobotRZ/trigger.txt</Str>
+            <Str sr="arg1" ve="3">%RZ_JSON</Str>
+            <Int sr="arg2" val="1" />
+        </Action>
+        <Action sr="act1" ve="7">
+            <code>129</code>
+            <label>Parse JSON → RZtask + RZparam</label>
+            <se>false</se>
+            <Str sr="arg0" ve="3">var contenu = global('RZ_JSON').trim();
+                var j = JSON.parse(contenu);
+                setGlobal('RZtask', j.task.trim());
+                setGlobal('RZparam', j.param.trim());</Str>
+            <Str sr="arg1" ve="3" />
+            <Int sr="arg2" val="1" />
+            <Int sr="arg3" val="5" />
+        </Action>
+        <Action sr="act2" ve="7">
+            <code>130</code>
+            <label>Appel tâche nommée</label>
+            <Str sr="arg0" ve="3">%RZtask</Str>
+            <Int sr="arg1" val="0" />
+            <Int sr="arg10" val="1" />
+            <Str sr="arg2" ve="3">%RZparam</Str>
+            <Str sr="arg3" ve="3" />
+            <Str sr="arg4" ve="3" />
+            <Int sr="arg5" val="0" />
+            <Int sr="arg6" val="0" />
+            <Str sr="arg7" ve="3" />
+            <Int sr="arg8" val="0" />
+            <Int sr="arg9" val="0" />
+        </Action>
+    </Task>
+
+    <!-- ════════════════════════════════════════════════════════════
+             TÂCHE 116 — RZ_Expression
+             Affiche une expression faciale emoji sur la scène RZ_Expression.
+             %RZparam = nom expression (sourire|neutre|colere|triste|...)
+             Retour automatique à neutre après 3s (sauf si param=neutre).
+             VPIV : $A:Appli:ExprTasker:Expression:sourire#
+             ════════════════════════════════════════════════════════════ -->
+    <Task sr="task116">
+        <cdate>1777845194290</cdate>
+        <edate>1778136351264</edate>
+        <id>116</id>
+        <nme>RZ_Expression</nme>
+        <pri>100</pri>
+        <Action sr="act0" ve="7">
+            <code>129</code>
+            <label>Mapper param → emoji + flag retour</label>
+            <se>false</se>
+            <Str sr="arg0" ve="3">// Table emoji — ajouter ici pour étendre
+                var expressions = {
+                'sourire': '😊',
+                'neutre': '😐',
+                'colere': '😠',
+                'triste': '😢',
+                'surprise': '😮',
+                'peur': '😨',
+                'clin_oeil': '😉',
+                'endormi': '😴',
+                'reflechi': '🤔',
+                'content': '😄',
+                'fatigue': '😓',
+                'curieux': '🧐'
+                };
+                var EMOJI_DEFAUT = '😐';
+                var param = global('RZparam').trim().toLowerCase();
+                var emoji = expressions[param] || EMOJI_DEFAUT;
+                setGlobal('RZemoji', emoji);
+                setGlobal('RZemoji_defaut', EMOJI_DEFAUT);
+                // Flag : 1 = retour neutre nécessaire, 0 = déjà neutre
+                var retour = (emoji !== EMOJI_DEFAUT) ? '1' : '0';
+                setGlobal('RZretourNeutre', retour);</Str>
+            <Str sr="arg1" ve="3" />
+            <Int sr="arg2" val="1" />
+            <Int sr="arg3" val="45" />
+        </Action>
+        <Action sr="act1" ve="7">
+            <code>47</code>
+            <label>Afficher scène RZ_Expression</label>
+            <Str sr="arg0" ve="3">RZ_Expression</Str>
+            <Int sr="arg1" val="6" />
+            <Int sr="arg10" val="1" />
+            <Int sr="arg2" val="100" />
+            <Int sr="arg3" val="100" />
+            <Int sr="arg4" val="0" />
+            <Int sr="arg5" val="1" />
+            <Int sr="arg6" val="1" />
+            <Int sr="arg7" val="1" />
+            <Int sr="arg8" val="1" />
+            <Int sr="arg9" val="1" />
+        </Action>
+        <Action sr="act2" ve="7">
+            <code>30</code>
+            <label>Attendre init scène 500ms</label>
+            <Int sr="arg0" val="500" />
+            <Int sr="arg1" val="0" />
+            <Int sr="arg2" val="0" />
+            <Int sr="arg3" val="0" />
+            <Int sr="arg4" val="0" />
+        </Action>
+        <Action sr="act3" ve="7">
+            <code>195</code>
+            <label>Afficher emoji dans scène</label>
+            <Str sr="arg0" ve="3">RZ_Expression</Str>
+            <Str sr="arg1" ve="3">emoji_expression</Str>
+            <Int sr="arg2" val="0" />
+            <Str sr="arg3" ve="3">%RZemoji</Str>
+        </Action>
+        <Action sr="act4" ve="7">
+            <code>30</code>
+            <label>Attente 3s avant retour neutre</label>
+            <Int sr="arg0" val="0" />
+            <Int sr="arg1" val="3" />
+            <Int sr="arg2" val="0" />
+            <Int sr="arg3" val="0" />
+            <Int sr="arg4" val="0" />
+            <ConditionList sr="if">
+                <Condition sr="c0" ve="3">
+                    <lhs>%RZretourNeutre</lhs>
+                    <op>2</op>
+                    <rhs>1</rhs>
+                </Condition>
+            </ConditionList>
+        </Action>
+        <Action sr="act5" ve="7">
+            <code>130</code>
+            <label>Retour auto neutre via RZ_ExprNeutre</label>
+            <Str sr="arg0" ve="3">RZ_ExprNeutre</Str>
+            <Int sr="arg1" val="0" />
+            <Int sr="arg10" val="0" />
+            <Str sr="arg2" ve="3" />
+            <Str sr="arg3" ve="3" />
+            <Str sr="arg4" ve="3" />
+            <Int sr="arg5" val="0" />
+            <Int sr="arg6" val="0" />
+            <Str sr="arg7" ve="3" />
+            <Int sr="arg8" val="0" />
+            <Int sr="arg9" val="0" />
+            <ConditionList sr="if">
+                <Condition sr="c0" ve="3">
+                    <lhs>%RZretourNeutre</lhs>
+                    <op>2</op>
+                    <rhs>1</rhs>
+                </Condition>
+            </ConditionList>
+        </Action>
+    </Task>
+
+    <!-- ════════════════════════════════════════════════════════════
+             TÂCHE 118 — RZ_ExprNeutre
+             Remet la scène RZ_Expression à l'emoji par défaut (😐).
+             Appelée par RZ_Expression après le délai de 3s.
+             Réutilisable depuis RZ_Init pour reset au démarrage.
+             ════════════════════════════════════════════════════════════ -->
+    <Task sr="task118">
+        <cdate>1778134312974</cdate>
+        <edate>1778135714713</edate>
+        <id>118</id>
+        <nme>RZ_ExprNeutre</nme>
+        <Action sr="act0" ve="7">
+            <code>269</code>
+            <label>Forcer RZparam = neutre</label>
+            <Str sr="arg0" ve="3">%RZparam</Str>
+            <Str sr="arg1" ve="3">neutre</Str>
+            <Int sr="arg2" val="0" />
+        </Action>
+        <Action sr="act1" ve="7">
+            <code>47</code>
+            <label>Afficher scène RZ_Expression</label>
+            <Str sr="arg0" ve="3">RZ_Expression</Str>
+            <Int sr="arg1" val="0" />
+            <Int sr="arg10" val="1" />
+            <Int sr="arg2" val="100" />
+            <Int sr="arg3" val="100" />
+            <Int sr="arg4" val="0" />
+            <Int sr="arg5" val="0" />
+            <Int sr="arg6" val="1" />
+            <Int sr="arg7" val="1" />
+            <Int sr="arg8" val="1" />
+            <Int sr="arg9" val="1" />
+        </Action>
+        <Action sr="act2" ve="7">
+            <code>30</code>
+            <label>Attendre init scène 500ms</label>
+            <Int sr="arg0" val="500" />
+            <Int sr="arg1" val="0" />
+            <Int sr="arg2" val="0" />
+            <Int sr="arg3" val="0" />
+            <Int sr="arg4" val="0" />
+        </Action>
+        <Action sr="act3" ve="7">
+            <code>195</code>
+            <label>Afficher emoji défaut dans scène</label>
+            <Str sr="arg0" ve="3">RZ_Expression</Str>
+            <Str sr="arg1" ve="3">emoji_expression</Str>
+            <Int sr="arg2" val="0" />
+            <Str sr="arg3" ve="3">%RZemoji_defaut</Str>
+        </Action>
+    </Task>
+
+    <!-- ════════════════════════════════════════════════════════════
+             TÂCHE 113 — RZ_CamStart
+             Lance IP Webcam Pro et démarre le serveur HTTP.
+             rz_camera_manager.sh prend le relai pour surveiller port 8080.
+             VPIV : $A:CamSE:modeCam:rear:stream#
+             ════════════════════════════════════════════════════════════ -->
+    <Task sr="task113">
+        <cdate>1777666684222</cdate>
+        <edate>1777978038426</edate>
+        <id>113</id>
+        <nme>RZ_CamStart</nme>
+        <pri>100</pri>
+        <Action sr="act0" ve="7">
+            <code>20</code>
+            <label>Lancer IP Webcam Pro</label>
+            <App sr="arg0">
+                <appClass>com.pas.webcam.Configuration</appClass>
+                <appPkg>com.pas.webcam.pro</appPkg>
+                <label>IP Webcam Pro</label>
+            </App>
+            <Str sr="arg1" ve="3" />
+            <Int sr="arg2" val="0" />
+            <Int sr="arg3" val="0" />
+        </Action>
+        <Action sr="act1" ve="7">
+            <code>1026948950</code>
+            <label>Démarrer serveur IP Webcam</label>
+            <Bundle sr="arg0">
+                <Vals sr="val">
+                    <com.twofortyfouram.locale.intent.extra.BLURB>Démarrer le serveur</com.twofortyfouram.locale.intent.extra.BLURB>
+                    <com.twofortyfouram.locale.intent.extra.BLURB-type>java.lang.String</com.twofortyfouram.locale.intent.extra.BLURB-type>
+                    <net.dinglisch.android.tasker.subbundled>true</net.dinglisch.android.tasker.subbundled>
+                    <net.dinglisch.android.tasker.subbundled-type>java.lang.Boolean</net.dinglisch.android.tasker.subbundled-type>
+                    <tasker_event_mode>start_server</tasker_event_mode>
+                    <tasker_event_mode-type>java.lang.String</tasker_event_mode-type>
+                    <tasker_event_mode_sig>7YA+l9Y481IDuK4chvwP+g==</tasker_event_mode_sig>
+                    <tasker_event_mode_sig-type>java.lang.String</tasker_event_mode_sig-type>
+                </Vals>
+            </Bundle>
+            <Str sr="arg1" ve="3">com.pas.webcam.pro</Str>
+            <Str sr="arg2" ve="3">com.pas.webcam.configpages.TaskerServiceControl</Str>
+            <Int sr="arg3" val="0" />
+            <Int sr="arg4" val="1" />
+        </Action>
+    </Task>
+
+    <!-- ════════════════════════════════════════════════════════════
+             TÂCHE 115 — RZ_CamStop
+             Arrête le serveur IP Webcam Pro et ferme l'application.
+             VPIV : $A:CamSE:modeCam:*:off#
+             ════════════════════════════════════════════════════════════ -->
+    <Task sr="task115">
+        <cdate>1777824438758</cdate>
+        <edate>1777824856806</edate>
+        <id>115</id>
+        <nme>RZ_CamStop</nme>
+        <Action sr="act0" ve="7">
+            <code>1026948950</code>
+            <label>Arrêter serveur IP Webcam</label>
+            <Bundle sr="arg0">
+                <Vals sr="val">
+                    <com.twofortyfouram.locale.intent.extra.BLURB>Arrêter la caméra</com.twofortyfouram.locale.intent.extra.BLURB>
+                    <com.twofortyfouram.locale.intent.extra.BLURB-type>java.lang.String</com.twofortyfouram.locale.intent.extra.BLURB-type>
+                    <net.dinglisch.android.tasker.subbundled>true</net.dinglisch.android.tasker.subbundled>
+                    <net.dinglisch.android.tasker.subbundled-type>java.lang.Boolean</net.dinglisch.android.tasker.subbundled-type>
+                    <tasker_event_mode>stop_server</tasker_event_mode>
+                    <tasker_event_mode-type>java.lang.String</tasker_event_mode-type>
+                    <tasker_event_mode_sig>dwZVOJmmXbkY7xu9FMwBtQ==</tasker_event_mode_sig>
+                    <tasker_event_mode_sig-type>java.lang.String</tasker_event_mode_sig-type>
+                </Vals>
+            </Bundle>
+            <Str sr="arg1" ve="3">com.pas.webcam.pro</Str>
+            <Str sr="arg2" ve="3">com.pas.webcam.configpages.TaskerServiceControl</Str>
+            <Int sr="arg3" val="0" />
+            <Int sr="arg4" val="1" />
+        </Action>
+        <Action sr="act1" ve="7">
+            <code>18</code>
+            <label>Fermer IP Webcam Pro</label>
+            <App sr="arg0">
+                <appClass>com.pas.webcam.Configuration</appClass>
+                <appPkg>com.pas.webcam.pro</appPkg>
+                <label>IP Webcam Pro</label>
+            </App>
+            <Int sr="arg1" val="0" />
+        </Action>
+        <Action sr="act2" ve="7">
+            <code>548</code>
+            <label>Notifier arrêt caméra</label>
+            <Str sr="arg0" ve="3">Cam SE arrêtée</Str>
+            <Int sr="arg1" val="1" />
+            <Str sr="arg10" ve="3" />
+            <Int sr="arg11" val="1" />
+            <Int sr="arg12" val="0" />
+            <Str sr="arg13" ve="3" />
+            <Int sr="arg14" val="0" />
+            <Str sr="arg15" ve="3" />
+            <Int sr="arg2" val="0" />
+            <Str sr="arg3" ve="3" />
+            <Str sr="arg4" ve="3" />
+            <Str sr="arg5" ve="3" />
+            <Str sr="arg6" ve="3" />
+            <Str sr="arg7" ve="3" />
+            <Str sr="arg8" ve="3" />
+            <Int sr="arg9" val="1" />
+        </Action>
+    </Task>
+
+    <!-- ════════════════════════════════════════════════════════════
+             TÂCHE 126 — RZ_TorchOn
+             Active la torche du smartphone Doro.
+             Si caméra active → commande HTTP IP Webcam /enablels
+             Si caméra inactive → termux-torch on (Termux:API)
+             VPIV : $A:TorchSE:active:*:On#
+             ════════════════════════════════════════════════════════════ -->
+    <Task sr="task126">
+        <cdate>1778200000000</cdate>
+        <edate>1778200000000</edate>
+        <id>126</id>
+        <nme>RZ_TorchOn</nme>
+        <Action sr="act0" ve="7">
+            <code>129</code>
+            <label>Activer torche selon état caméra</label>
+            <se>false</se>
+            <Str sr="arg0" ve="3">// Si caméra active : HTTP IP Webcam
+                // Si caméra inactive : termux-torch via shell
+                var modeCam = global('RZmodeCam') || 'off';
+                if (modeCam === 'stream' || modeCam === 'snapshot') {
+                // Caméra active → API IP Webcam (port 8080)
+                setGlobal('RZtorchMode', 'webcam');
+                } else {
+                // Caméra inactive → termux-torch
+                setGlobal('RZtorchMode', 'termux');
+                }</Str>
+            <Str sr="arg1" ve="3" />
+            <Int sr="arg2" val="1" />
+            <Int sr="arg3" val="5" />
+        </Action>
+        <Action sr="act1" ve="7">
+            <code>664</code>
+            <label>termux-torch on (si caméra inactive)</label>
+            <Str sr="arg0" ve="3">termux-torch on</Str>
+            <Int sr="arg1" val="0" />
+            <Int sr="arg2" val="0" />
+            <Int sr="arg3" val="0" />
+            <ConditionList sr="if">
+                <Condition sr="c0" ve="3">
+                    <lhs>%RZtorchMode</lhs>
+                    <op>2</op>
+                    <rhs>termux</rhs>
+                </Condition>
+            </ConditionList>
+        </Action>
+        <Action sr="act2" ve="7">
+            <code>664</code>
+            <label>HTTP enablels (si caméra active)</label>
+            <Str sr="arg0" ve="3">curl -s http://localhost:8080/enablels</Str>
+            <Int sr="arg1" val="0" />
+            <Int sr="arg2" val="0" />
+            <Int sr="arg3" val="0" />
+            <ConditionList sr="if">
+                <Condition sr="c0" ve="3">
+                    <lhs>%RZtorchMode</lhs>
+                    <op>2</op>
+                    <rhs>webcam</rhs>
+                </Condition>
+            </ConditionList>
+        </Action>
+        <Action sr="act3" ve="7">
+            <code>269</code>
+            <label>Mettre à jour état torche global</label>
+            <Str sr="arg0" ve="3">%RZtorchEtat</Str>
+            <Str sr="arg1" ve="3">On</Str>
+            <Int sr="arg2" val="0" />
+        </Action>
+    </Task>
+
+    <!-- ════════════════════════════════════════════════════════════
+             TÂCHE 127 — RZ_TorchOff
+             Désactive la torche du smartphone Doro.
+             Symétrique de RZ_TorchOn.
+             VPIV : $A:TorchSE:active:*:Off#
+             ════════════════════════════════════════════════════════════ -->
+    <Task sr="task127">
+        <cdate>1778200000001</cdate>
+        <edate>1778200000001</edate>
+        <id>127</id>
+        <nme>RZ_TorchOff</nme>
+        <Action sr="act0" ve="7">
+            <code>129</code>
+            <label>Désactiver torche selon état caméra</label>
+            <se>false</se>
+            <Str sr="arg0" ve="3">var modeCam = global('RZmodeCam') || 'off';
+                if (modeCam === 'stream' || modeCam === 'snapshot') {
+                setGlobal('RZtorchMode', 'webcam');
+                } else {
+                setGlobal('RZtorchMode', 'termux');
+                }</Str>
+            <Str sr="arg1" ve="3" />
+            <Int sr="arg2" val="1" />
+            <Int sr="arg3" val="5" />
+        </Action>
+        <Action sr="act1" ve="7">
+            <code>664</code>
+            <label>termux-torch off (si caméra inactive)</label>
+            <Str sr="arg0" ve="3">termux-torch off</Str>
+            <Int sr="arg1" val="0" />
+            <Int sr="arg2" val="0" />
+            <Int sr="arg3" val="0" />
+            <ConditionList sr="if">
+                <Condition sr="c0" ve="3">
+                    <lhs>%RZtorchMode</lhs>
+                    <op>2</op>
+                    <rhs>termux</rhs>
+                </Condition>
+            </ConditionList>
+        </Action>
+        <Action sr="act2" ve="7">
+            <code>664</code>
+            <label>HTTP disablels (si caméra active)</label>
+            <Str sr="arg0" ve="3">curl -s http://localhost:8080/disablels</Str>
+            <Int sr="arg1" val="0" />
+            <Int sr="arg2" val="0" />
+            <Int sr="arg3" val="0" />
+            <ConditionList sr="if">
+                <Condition sr="c0" ve="3">
+                    <lhs>%RZtorchMode</lhs>
+                    <op>2</op>
+                    <rhs>webcam</rhs>
+                </Condition>
+            </ConditionList>
+        </Action>
+        <Action sr="act3" ve="7">
+            <code>269</code>
+            <label>Mettre à jour état torche global</label>
+            <Str sr="arg0" ve="3">%RZtorchEtat</Str>
+            <Str sr="arg1" ve="3">Off</Str>
+            <Int sr="arg2" val="0" />
+        </Action>
+    </Task>
+
+    <!-- ════════════════════════════════════════════════════════════
+             TÂCHE 128 — RZ_Baby
+             Lance ou arrête l'application Baby Monitor.
+             %RZparam = On → lance | Off → ferme
+             VPIV : $A:Appli:Baby:*:On#
+             ════════════════════════════════════════════════════════════ -->
+    <Task sr="task128">
+        <cdate>1778200000002</cdate>
+        <edate>1778200000002</edate>
+        <id>128</id>
+        <nme>RZ_Baby</nme>
+        <Action sr="act0" ve="7">
+            <code>20</code>
+            <label>Lancer app Baby Monitor</label>
+            <App sr="arg0">
+                <appClass />
+                <appPkg>com.hlx.babymonitor</appPkg>
+                <label>Baby Monitor</label>
+            </App>
+            <Str sr="arg1" ve="3" />
+            <Int sr="arg2" val="0" />
+            <Int sr="arg3" val="0" />
+            <ConditionList sr="if">
+                <Condition sr="c0" ve="3">
+                    <lhs>%RZparam</lhs>
+                    <op>2</op>
+                    <rhs>On</rhs>
+                </Condition>
+            </ConditionList>
+        </Action>
+        <Action sr="act1" ve="7">
+            <code>18</code>
+            <label>Fermer app Baby Monitor</label>
+            <App sr="arg0">
+                <appClass />
+                <appPkg>com.hlx.babymonitor</appPkg>
+                <label>Baby Monitor</label>
+            </App>
+            <Int sr="arg1" val="0" />
+            <ConditionList sr="if">
+                <Condition sr="c0" ve="3">
+                    <lhs>%RZparam</lhs>
+                    <op>2</op>
+                    <rhs>Off</rhs>
+                </Condition>
+            </ConditionList>
+        </Action>
+    </Task>
+
+    <!-- ════════════════════════════════════════════════════════════
+             TÂCHE 129 — RZ_Zoom
+             Lance ou arrête Zoom.
+             %RZparam = On → lance | Off → ferme
+             VPIV : $A:Appli:zoom:*:On#
+             ════════════════════════════════════════════════════════════ -->
+    <Task sr="task129">
+        <cdate>1778200000003</cdate>
+        <edate>1778200000003</edate>
+        <id>129</id>
+        <nme>RZ_Zoom</nme>
+        <Action sr="act0" ve="7">
+            <code>20</code>
+            <label>Lancer Zoom</label>
+            <App sr="arg0">
+                <appClass />
+                <appPkg>us.zoom.videomeetings</appPkg>
+                <label>Zoom</label>
+            </App>
+            <Str sr="arg1" ve="3" />
+            <Int sr="arg2" val="0" />
+            <Int sr="arg3" val="0" />
+            <ConditionList sr="if">
+                <Condition sr="c0" ve="3">
+                    <lhs>%RZparam</lhs>
+                    <op>2</op>
+                    <rhs>On</rhs>
+                </Condition>
+            </ConditionList>
+        </Action>
+        <Action sr="act1" ve="7">
+            <code>18</code>
+            <label>Fermer Zoom</label>
+            <App sr="arg0">
+                <appClass />
+                <appPkg>us.zoom.videomeetings</appPkg>
+                <label>Zoom</label>
+            </App>
+            <Int sr="arg1" val="0" />
+            <ConditionList sr="if">
+                <Condition sr="c0" ve="3">
+                    <lhs>%RZparam</lhs>
+                    <op>2</op>
+                    <rhs>Off</rhs>
+                </Condition>
+            </ConditionList>
+        </Action>
+    </Task>
+
+    <!-- ════════════════════════════════════════════════════════════
+             TÂCHE 130 — RZ_NavGPS
+             Lance ou arrête Google Maps.
+             %RZparam = On → lance | Off → ferme
+             VPIV : $A:Appli:NavGPS:*:On#
+             ════════════════════════════════════════════════════════════ -->
+    <Task sr="task130">
+        <cdate>1778200000004</cdate>
+        <edate>1778200000004</edate>
+        <id>130</id>
+        <nme>RZ_NavGPS</nme>
+        <Action sr="act0" ve="7">
+            <code>20</code>
+            <label>Lancer Google Maps</label>
+            <App sr="arg0">
+                <appClass />
+                <appPkg>com.google.android.apps.maps</appPkg>
+                <label>Maps</label>
+            </App>
+            <Str sr="arg1" ve="3" />
+            <Int sr="arg2" val="0" />
+            <Int sr="arg3" val="0" />
+            <ConditionList sr="if">
+                <Condition sr="c0" ve="3">
+                    <lhs>%RZparam</lhs>
+                    <op>2</op>
+                    <rhs>On</rhs>
+                </Condition>
+            </ConditionList>
+        </Action>
+        <Action sr="act1" ve="7">
+            <code>18</code>
+            <label>Fermer Google Maps</label>
+            <App sr="arg0">
+                <appClass />
+                <appPkg>com.google.android.apps.maps</appPkg>
+                <label>Maps</label>
+            </App>
+            <Int sr="arg1" val="0" />
+            <ConditionList sr="if">
+                <Condition sr="c0" ve="3">
+                    <lhs>%RZparam</lhs>
+                    <op>2</op>
+                    <rhs>Off</rhs>
+                </Condition>
+            </ConditionList>
+        </Action>
+    </Task>
+
+
+    <!-- ════════════════════════════════════════════════════════════
+             PROFIL 131 — menu_cmd.json → RZ_MenuCmd
+             Déclenché par les boutons de RZ_Menu (option B)
+             Tasker écrit dans menu_cmd.json → SE lit vpiv_out.txt
+             ════════════════════════════════════════════════════════════ -->
+    <Profile sr="prof131" ve="2">
+        <cdate>1778300000001</cdate>
+        <edate>1778300000001</edate>
+        <flags>8</flags>
+        <id>131</id>
+        <mid0>132</mid0>
+        <nme>menu commande</nme>
+        <Event sr="con0" ve="2">
+            <code>222</code>
+            <pri>0</pri>
+            <Str sr="arg0" ve="3">/sdcard/Tasker/RobotRZ/menu_cmd.json</Str>
+            <Str sr="arg1" ve="3" />
+        </Event>
+    </Profile>
+
+
+    <!-- ════════════════════════════════════════════════════════════
+             SCÈNE RZ_Menu — overlay sur RZ_Expression
+             Modes robot + Applications + État + VoiceHelp + Fermer
+             Boutons modes/applis → écrivent menu_cmd.json (option B)
+             Boutons info → ouvrent scènes RZ_Etat / RZ_VoiceHelp
+             ════════════════════════════════════════════════════════════ -->
+    <Scene sr="sceneRZ_Menu">
+        <cdate>1778300000003</cdate>
+        <edate>1778300000003</edate>
+        <heightLand>-1</heightLand>
+        <heightPort>759</heightPort>
+        <nme>RZ_Menu</nme>
+        <widthLand>-1</widthLand>
+        <widthPort>467</widthPort>
+        <TextElement sr="elements0" ve="3">
+            <flags>4</flags>
+            <geom>0,0,467,50,-1,-1,-1,-1</geom>
+            <Str sr="arg0" ve="3">txt_titre</Str>
+            <Str sr="arg1" ve="3">Menu RZ</Str>
+            <Int sr="arg2" val="22" />
+            <Int sr="arg3" val="100" />
+            <Str sr="arg4" ve="3">#FF1A1A2E</Str>
+            <Str sr="arg5" ve="3" />
+            <Int sr="arg6" val="1" />
+            <Int sr="arg7" val="0" />
+            <Int sr="arg8" val="0" />
+        </TextElement>
+        <TextElement sr="elements1" ve="3">
+            <flags>4</flags>
+            <geom>10,55,447,25,-1,-1,-1,-1</geom>
+            <Str sr="arg0" ve="3">txt_sep_modes</Str>
+            <Str sr="arg1" ve="3">— Modes robot —</Str>
+            <Int sr="arg2" val="13" />
+            <Int sr="arg3" val="100" />
+            <Str sr="arg4" ve="3">#FF666666</Str>
+            <Str sr="arg5" ve="3" />
+            <Int sr="arg6" val="1" />
+            <Int sr="arg7" val="0" />
+            <Int sr="arg8" val="0" />
+        </TextElement>
+        <ButtonElement sr="elements2" ve="3">
+            <flags>4</flags>
+            <geom>10,82,100,44,-1,-1,-1,-1</geom>
+            <Str sr="arg0" ve="3">btn_veille</Str>
+            <Str sr="arg1" ve="3">Veille</Str>
+            <Int sr="arg2" val="13" />
+            <Int sr="arg3" val="100" />
+            <Str sr="arg4" ve="3">#FF2D6A4F</Str>
+            <Str sr="arg5" ve="3">RZ_MenuSendMode</Str>
+            <Int sr="arg6" val="8" />
+            <Img sr="arg7" ve="2" />
+        </ButtonElement>
+        <ButtonElement sr="elements3" ve="3">
+            <flags>4</flags>
+            <geom>118,82,100,44,-1,-1,-1,-1</geom>
+            <Str sr="arg0" ve="3">btn_fixe</Str>
+            <Str sr="arg1" ve="3">Fixe</Str>
+            <Int sr="arg2" val="13" />
+            <Int sr="arg3" val="100" />
+            <Str sr="arg4" ve="3">#FF1D6A8A</Str>
+            <Str sr="arg5" ve="3">RZ_MenuSendMode</Str>
+            <Int sr="arg6" val="8" />
+            <Img sr="arg7" ve="2" />
+        </ButtonElement>
+        <ButtonElement sr="elements4" ve="3">
+            <flags>4</flags>
+            <geom>226,82,120,44,-1,-1,-1,-1</geom>
+            <Str sr="arg0" ve="3">btn_deplacement</Str>
+            <Str sr="arg1" ve="3">Deplacement</Str>
+            <Int sr="arg2" val="12" />
+            <Int sr="arg3" val="100" />
+            <Str sr="arg4" ve="3">#FF7B5EA7</Str>
+            <Str sr="arg5" ve="3">RZ_MenuSendMode</Str>
+            <Int sr="arg6" val="8" />
+            <Img sr="arg7" ve="2" />
+        </ButtonElement>
+        <ButtonElement sr="elements5" ve="3">
+            <flags>4</flags>
+            <geom>354,82,100,44,-1,-1,-1,-1</geom>
+            <Str sr="arg0" ve="3">btn_arret</Str>
+            <Str sr="arg1" ve="3">Arret</Str>
+            <Int sr="arg2" val="13" />
+            <Int sr="arg3" val="100" />
+            <Str sr="arg4" ve="3">#FFC0392B</Str>
+            <Str sr="arg5" ve="3">RZ_MenuSendMode</Str>
+            <Int sr="arg6" val="8" />
+            <Img sr="arg7" ve="2" />
+        </ButtonElement>
+        <TextElement sr="elements6" ve="3">
+            <flags>4</flags>
+            <geom>10,138,447,25,-1,-1,-1,-1</geom>
+            <Str sr="arg0" ve="3">txt_sep_applis</Str>
+            <Str sr="arg1" ve="3">— Applications —</Str>
+            <Int sr="arg2" val="13" />
+            <Int sr="arg3" val="100" />
+            <Str sr="arg4" ve="3">#FF666666</Str>
+            <Str sr="arg5" ve="3" />
+            <Int sr="arg6" val="1" />
+            <Int sr="arg7" val="0" />
+            <Int sr="arg8" val="0" />
+        </TextElement>
+        <ButtonElement sr="elements7" ve="3">
+            <flags>4</flags>
+            <geom>10,165,85,44,-1,-1,-1,-1</geom>
+            <Str sr="arg0" ve="3">btn_cam</Str>
+            <Str sr="arg1" ve="3">Cam</Str>
+            <Int sr="arg2" val="13" />
+            <Int sr="arg3" val="100" />
+            <Str sr="arg4" ve="3">#FF2C3E50</Str>
+            <Str sr="arg5" ve="3">RZ_MenuSendAppli</Str>
+            <Int sr="arg6" val="8" />
+            <Img sr="arg7" ve="2" />
+        </ButtonElement>
+        <ButtonElement sr="elements8" ve="3">
+            <flags>4</flags>
+            <geom>103,165,85,44,-1,-1,-1,-1</geom>
+            <Str sr="arg0" ve="3">btn_torch</Str>
+            <Str sr="arg1" ve="3">Torch</Str>
+            <Int sr="arg2" val="13" />
+            <Int sr="arg3" val="100" />
+            <Str sr="arg4" ve="3">#FF7F6000</Str>
+            <Str sr="arg5" ve="3">RZ_MenuSendAppli</Str>
+            <Int sr="arg6" val="8" />
+            <Img sr="arg7" ve="2" />
+        </ButtonElement>
+        <ButtonElement sr="elements9" ve="3">
+            <flags>4</flags>
+            <geom>196,165,85,44,-1,-1,-1,-1</geom>
+            <Str sr="arg0" ve="3">btn_baby</Str>
+            <Str sr="arg1" ve="3">Baby</Str>
+            <Int sr="arg2" val="13" />
+            <Int sr="arg3" val="100" />
+            <Str sr="arg4" ve="3">#FF1A6B4A</Str>
+            <Str sr="arg5" ve="3">RZ_MenuSendAppli</Str>
+            <Int sr="arg6" val="8" />
+            <Img sr="arg7" ve="2" />
+        </ButtonElement>
+        <ButtonElement sr="elements10" ve="3">
+            <flags>4</flags>
+            <geom>289,165,85,44,-1,-1,-1,-1</geom>
+            <Str sr="arg0" ve="3">btn_zoom</Str>
+            <Str sr="arg1" ve="3">Zoom</Str>
+            <Int sr="arg2" val="13" />
+            <Int sr="arg3" val="100" />
+            <Str sr="arg4" ve="3">#FF1A4B8C</Str>
+            <Str sr="arg5" ve="3">RZ_MenuSendAppli</Str>
+            <Int sr="arg6" val="8" />
+            <Img sr="arg7" ve="2" />
+        </ButtonElement>
+        <ButtonElement sr="elements11" ve="3">
+            <flags>4</flags>
+            <geom>382,165,75,44,-1,-1,-1,-1</geom>
+            <Str sr="arg0" ve="3">btn_gps</Str>
+            <Str sr="arg1" ve="3">GPS</Str>
+            <Int sr="arg2" val="13" />
+            <Int sr="arg3" val="100" />
+            <Str sr="arg4" ve="3">#FF4A235A</Str>
+            <Str sr="arg5" ve="3">RZ_MenuSendAppli</Str>
+            <Int sr="arg6" val="8" />
+            <Img sr="arg7" ve="2" />
+        </ButtonElement>
+        <TextElement sr="elements12" ve="3">
+            <flags>4</flags>
+            <geom>10,221,447,25,-1,-1,-1,-1</geom>
+            <Str sr="arg0" ve="3">txt_sep_info</Str>
+            <Str sr="arg1" ve="3">— Informations —</Str>
+            <Int sr="arg2" val="13" />
+            <Int sr="arg3" val="100" />
+            <Str sr="arg4" ve="3">#FF666666</Str>
+            <Str sr="arg5" ve="3" />
+            <Int sr="arg6" val="1" />
+            <Int sr="arg7" val="0" />
+            <Int sr="arg8" val="0" />
+        </TextElement>
+        <ButtonElement sr="elements13" ve="3">
+            <flags>4</flags>
+            <geom>10,248,215,50,-1,-1,-1,-1</geom>
+            <Str sr="arg0" ve="3">btn_etat</Str>
+            <Str sr="arg1" ve="3">Etat RZ</Str>
+            <Int sr="arg2" val="14" />
+            <Int sr="arg3" val="100" />
+            <Str sr="arg4" ve="3">#FF1A3A5C</Str>
+            <Str sr="arg5" ve="3">RZ_OuvreEtat</Str>
+            <Int sr="arg6" val="8" />
+            <Img sr="arg7" ve="2" />
+        </ButtonElement>
+        <ButtonElement sr="elements14" ve="3">
+            <flags>4</flags>
+            <geom>233,248,224,50,-1,-1,-1,-1</geom>
+            <Str sr="arg0" ve="3">btn_voice</Str>
+            <Str sr="arg1" ve="3">Cmdes vocales</Str>
+            <Int sr="arg2" val="12" />
+            <Int sr="arg3" val="100" />
+            <Str sr="arg4" ve="3">#FF3A1A5C</Str>
+            <Str sr="arg5" ve="3">RZ_OuvreVoice</Str>
+            <Int sr="arg6" val="8" />
+            <Img sr="arg7" ve="2" />
+        </ButtonElement>
+        <ButtonElement sr="elements15" ve="3">
+            <flags>4</flags>
+            <geom>150,620,167,50,-1,-1,-1,-1</geom>
+            <Str sr="arg0" ve="3">btn_fermer</Str>
+            <Str sr="arg1" ve="3">X Fermer</Str>
+            <Int sr="arg2" val="16" />
+            <Int sr="arg3" val="100" />
+            <Str sr="arg4" ve="3">#FF8B0000</Str>
+            <Str sr="arg5" ve="3">RZ_FermeMenu</Str>
+            <Int sr="arg6" val="8" />
+            <Img sr="arg7" ve="2" />
+        </ButtonElement>
+        <PropertiesElement sr="props">
+            <Int sr="arg0" val="2" />
+            <Int sr="arg1" val="2" />
+            <Str sr="arg2" ve="3">#EEF0F2F5</Str>
+            <Int sr="arg3" val="0" />
+            <Str sr="arg4" ve="3">RZ_Menu</Str>
+            <Str sr="arg5" ve="3" />
+            <Img sr="arg6" ve="2" />
+            <Str sr="arg7" ve="3" />
+        </PropertiesElement>
+    </Scene>
+
+    <!-- ════════════════════════════════════════════════════════════
+             SCÈNE RZ_Etat — valeurs dynamiques lues par RZ_OuvreEtat
+             Champs : val_mode, val_ptge, val_reseau, val_ip_se, val_ip_sp, val_ctx_reseau
+             ════════════════════════════════════════════════════════════ -->
+    <Scene sr="sceneRZ_Etat">
+        <cdate>1778300000004</cdate>
+        <edate>1778300000004</edate>
+        <heightLand>-1</heightLand>
+        <heightPort>759</heightPort>
+        <nme>RZ_Etat</nme>
+        <widthLand>-1</widthLand>
+        <widthPort>467</widthPort>
+        <TextElement sr="elements0" ve="3">
+            <flags>4</flags>
+            <geom>0,0,467,50,-1,-1,-1,-1</geom>
+            <Str sr="arg0" ve="3">txt_titre</Str>
+            <Str sr="arg1" ve="3">Etat RZ</Str>
+            <Int sr="arg2" val="22" />
+            <Int sr="arg3" val="100" />
+            <Str sr="arg4" ve="3">#FF1A1A2E</Str>
+            <Str sr="arg5" ve="3" />
+            <Int sr="arg6" val="1" />
+            <Int sr="arg7" val="0" />
+            <Int sr="arg8" val="0" />
+        </TextElement>
+        <TextElement sr="elements1" ve="3">
+            <flags>4</flags>
+            <geom>10,60,200,36,-1,-1,-1,-1</geom>
+            <Str sr="arg0" ve="3">lbl_mode</Str>
+            <Str sr="arg1" ve="3">Mode robot :</Str>
+            <Int sr="arg2" val="14" />
+            <Int sr="arg3" val="100" />
+            <Str sr="arg4" ve="3">#FF444444</Str>
+            <Str sr="arg5" ve="3" />
+            <Int sr="arg6" val="0" />
+            <Int sr="arg7" val="0" />
+            <Int sr="arg8" val="0" />
+        </TextElement>
+        <TextElement sr="elements2" ve="3">
+            <flags>4</flags>
+            <geom>220,60,237,36,-1,-1,-1,-1</geom>
+            <Str sr="arg0" ve="3">val_mode</Str>
+            <Str sr="arg1" ve="3">-</Str>
+            <Int sr="arg2" val="14" />
+            <Int sr="arg3" val="100" />
+            <Str sr="arg4" ve="3">#FF1A6B9A</Str>
+            <Str sr="arg5" ve="3" />
+            <Int sr="arg6" val="1" />
+            <Int sr="arg7" val="0" />
+            <Int sr="arg8" val="0" />
+        </TextElement>
+        <TextElement sr="elements3" ve="3">
+            <flags>4</flags>
+            <geom>10,104,200,36,-1,-1,-1,-1</geom>
+            <Str sr="arg0" ve="3">lbl_ptge</Str>
+            <Str sr="arg1" ve="3">Pilotage :</Str>
+            <Int sr="arg2" val="14" />
+            <Int sr="arg3" val="100" />
+            <Str sr="arg4" ve="3">#FF444444</Str>
+            <Str sr="arg5" ve="3" />
+            <Int sr="arg6" val="0" />
+            <Int sr="arg7" val="0" />
+            <Int sr="arg8" val="0" />
+        </TextElement>
+        <TextElement sr="elements4" ve="3">
+            <flags>4</flags>
+            <geom>220,104,237,36,-1,-1,-1,-1</geom>
+            <Str sr="arg0" ve="3">val_ptge</Str>
+            <Str sr="arg1" ve="3">-</Str>
+            <Int sr="arg2" val="14" />
+            <Int sr="arg3" val="100" />
+            <Str sr="arg4" ve="3">#FF1A6B9A</Str>
+            <Str sr="arg5" ve="3" />
+            <Int sr="arg6" val="1" />
+            <Int sr="arg7" val="0" />
+            <Int sr="arg8" val="0" />
+        </TextElement>
+        <TextElement sr="elements5" ve="3">
+            <flags>4</flags>
+            <geom>10,148,200,36,-1,-1,-1,-1</geom>
+            <Str sr="arg0" ve="3">lbl_reseau</Str>
+            <Str sr="arg1" ve="3">Reseau :</Str>
+            <Int sr="arg2" val="14" />
+            <Int sr="arg3" val="100" />
+            <Str sr="arg4" ve="3">#FF444444</Str>
+            <Str sr="arg5" ve="3" />
+            <Int sr="arg6" val="0" />
+            <Int sr="arg7" val="0" />
+            <Int sr="arg8" val="0" />
+        </TextElement>
+        <TextElement sr="elements6" ve="3">
+            <flags>4</flags>
+            <geom>220,148,237,36,-1,-1,-1,-1</geom>
+            <Str sr="arg0" ve="3">val_reseau</Str>
+            <Str sr="arg1" ve="3">-</Str>
+            <Int sr="arg2" val="14" />
+            <Int sr="arg3" val="100" />
+            <Str sr="arg4" ve="3">#FF1A6B9A</Str>
+            <Str sr="arg5" ve="3" />
+            <Int sr="arg6" val="1" />
+            <Int sr="arg7" val="0" />
+            <Int sr="arg8" val="0" />
+        </TextElement>
+        <TextElement sr="elements7" ve="3">
+            <flags>4</flags>
+            <geom>10,192,200,36,-1,-1,-1,-1</geom>
+            <Str sr="arg0" ve="3">lbl_ip_se</Str>
+            <Str sr="arg1" ve="3">IP SE :</Str>
+            <Int sr="arg2" val="14" />
+            <Int sr="arg3" val="100" />
+            <Str sr="arg4" ve="3">#FF444444</Str>
+            <Str sr="arg5" ve="3" />
+            <Int sr="arg6" val="0" />
+            <Int sr="arg7" val="0" />
+            <Int sr="arg8" val="0" />
+        </TextElement>
+        <TextElement sr="elements8" ve="3">
+            <flags>4</flags>
+            <geom>220,192,237,36,-1,-1,-1,-1</geom>
+            <Str sr="arg0" ve="3">val_ip_se</Str>
+            <Str sr="arg1" ve="3">-</Str>
+            <Int sr="arg2" val="14" />
+            <Int sr="arg3" val="100" />
+            <Str sr="arg4" ve="3">#FF1A6B9A</Str>
+            <Str sr="arg5" ve="3" />
+            <Int sr="arg6" val="1" />
+            <Int sr="arg7" val="0" />
+            <Int sr="arg8" val="0" />
+        </TextElement>
+        <TextElement sr="elements9" ve="3">
+            <flags>4</flags>
+            <geom>10,236,200,36,-1,-1,-1,-1</geom>
+            <Str sr="arg0" ve="3">lbl_ip_sp</Str>
+            <Str sr="arg1" ve="3">IP SP :</Str>
+            <Int sr="arg2" val="14" />
+            <Int sr="arg3" val="100" />
+            <Str sr="arg4" ve="3">#FF444444</Str>
+            <Str sr="arg5" ve="3" />
+            <Int sr="arg6" val="0" />
+            <Int sr="arg7" val="0" />
+            <Int sr="arg8" val="0" />
+        </TextElement>
+        <TextElement sr="elements10" ve="3">
+            <flags>4</flags>
+            <geom>220,236,237,36,-1,-1,-1,-1</geom>
+            <Str sr="arg0" ve="3">val_ip_sp</Str>
+            <Str sr="arg1" ve="3">-</Str>
+            <Int sr="arg2" val="14" />
+            <Int sr="arg3" val="100" />
+            <Str sr="arg4" ve="3">#FF1A6B9A</Str>
+            <Str sr="arg5" ve="3" />
+            <Int sr="arg6" val="1" />
+            <Int sr="arg7" val="0" />
+            <Int sr="arg8" val="0" />
+        </TextElement>
+        <TextElement sr="elements11" ve="3">
+            <flags>4</flags>
+            <geom>10,282,447,50,-1,-1,-1,-1</geom>
+            <Str sr="arg0" ve="3">val_ctx_reseau</Str>
+            <Str sr="arg1" ve="3">-</Str>
+            <Int sr="arg2" val="13" />
+            <Int sr="arg3" val="100" />
+            <Str sr="arg4" ve="3">#FF555555</Str>
+            <Str sr="arg5" ve="3" />
+            <Int sr="arg6" val="1" />
+            <Int sr="arg7" val="0" />
+            <Int sr="arg8" val="0" />
+        </TextElement>
+        <ButtonElement sr="elements12" ve="3">
+            <flags>4</flags>
+            <geom>150,640,167,50,-1,-1,-1,-1</geom>
+            <Str sr="arg0" ve="3">btn_fermer</Str>
+            <Str sr="arg1" ve="3">X Fermer</Str>
+            <Int sr="arg2" val="16" />
+            <Int sr="arg3" val="100" />
+            <Str sr="arg4" ve="3">#FF8B0000</Str>
+            <Str sr="arg5" ve="3">RZ_FermeEtat</Str>
+            <Int sr="arg6" val="8" />
+            <Img sr="arg7" ve="2" />
+        </ButtonElement>
+        <PropertiesElement sr="props">
+            <Int sr="arg0" val="2" />
+            <Int sr="arg1" val="2" />
+            <Str sr="arg2" ve="3">#EEF5F5F5</Str>
+            <Int sr="arg3" val="0" />
+            <Str sr="arg4" ve="3">RZ_Etat</Str>
+            <Str sr="arg5" ve="3" />
+            <Img sr="arg6" ve="2" />
+            <Str sr="arg7" ve="3" />
+        </PropertiesElement>
+    </Scene>
+
+    <!-- ════════════════════════════════════════════════════════════
+             SCÈNE RZ_VoiceHelp — catégories commandes vocales
+             Source : Table D STT Consolidée V1+V2
+             ════════════════════════════════════════════════════════════ -->
+    <Scene sr="sceneRZ_VoiceHelp">
+        <cdate>1778300000005</cdate>
+        <edate>1778300000005</edate>
+        <heightLand>-1</heightLand>
+        <heightPort>759</heightPort>
+        <nme>RZ_VoiceHelp</nme>
+        <widthLand>-1</widthLand>
+        <widthPort>467</widthPort>
+        <TextElement sr="elements0" ve="3">
+            <flags>4</flags>
+            <geom>0,0,467,50,-1,-1,-1,-1</geom>
+            <Str sr="arg0" ve="3">txt_titre</Str>
+            <Str sr="arg1" ve="3">Commandes vocales</Str>
+            <Int sr="arg2" val="18" />
+            <Int sr="arg3" val="100" />
+            <Str sr="arg4" ve="3">#FF1A1A2E</Str>
+            <Str sr="arg5" ve="3" />
+            <Int sr="arg6" val="1" />
+            <Int sr="arg7" val="0" />
+            <Int sr="arg8" val="0" />
+        </TextElement>
+        <TextElement sr="elements1" ve="3">
+            <flags>4</flags>
+            <geom>10,56,447,26,-1,-1,-1,-1</geom>
+            <Str sr="arg0" ve="3">lbl_reveil</Str>
+            <Str sr="arg1" ve="3">Mot de réveil : "rz" puis votre commande</Str>
+            <Int sr="arg2" val="13" />
+            <Int sr="arg3" val="100" />
+            <Str sr="arg4" ve="3">#FF7B3F00</Str>
+            <Str sr="arg5" ve="3" />
+            <Int sr="arg6" val="1" />
+            <Int sr="arg7" val="0" />
+            <Int sr="arg8" val="0" />
+        </TextElement>
+        <TextElement sr="elements2" ve="3">
+            <flags>4</flags>
+            <geom>10,90,447,22,-1,-1,-1,-1</geom>
+            <Str sr="arg0" ve="3">lbl_cat1</Str>
+            <Str sr="arg1" ve="3">MODES ROBOT</Str>
+            <Int sr="arg2" val="13" />
+            <Int sr="arg3" val="100" />
+            <Str sr="arg4" ve="3">#FF2D6A4F</Str>
+            <Str sr="arg5" ve="3" />
+            <Int sr="arg6" val="0" />
+            <Int sr="arg7" val="0" />
+            <Int sr="arg8" val="0" />
+        </TextElement>
+        <TextElement sr="elements3" ve="3">
+            <flags>4</flags>
+            <geom>10,114,447,54,-1,-1,-1,-1</geom>
+            <Str sr="arg0" ve="3">txt_cat1</Str>
+            <Str sr="arg1" ve="3">mode veille | mode fixe | mode deplacement | mode autonome
+                pilotage vocal | pilotage ecran | mode laisse</Str>
+            <Int sr="arg2" val="12" />
+            <Int sr="arg3" val="100" />
+            <Str sr="arg4" ve="3">#FF333333</Str>
+            <Str sr="arg5" ve="3" />
+            <Int sr="arg6" val="0" />
+            <Int sr="arg7" val="0" />
+            <Int sr="arg8" val="0" />
+        </TextElement>
+        <TextElement sr="elements4" ve="3">
+            <flags>4</flags>
+            <geom>10,176,447,22,-1,-1,-1,-1</geom>
+            <Str sr="arg0" ve="3">lbl_cat2</Str>
+            <Str sr="arg1" ve="3">DEPLACEMENT</Str>
+            <Int sr="arg2" val="13" />
+            <Int sr="arg3" val="100" />
+            <Str sr="arg4" ve="3">#FF7B5EA7</Str>
+            <Str sr="arg5" ve="3" />
+            <Int sr="arg6" val="0" />
+            <Int sr="arg7" val="0" />
+            <Int sr="arg8" val="0" />
+        </TextElement>
+        <TextElement sr="elements5" ve="3">
+            <flags>4</flags>
+            <geom>10,200,447,54,-1,-1,-1,-1</geom>
+            <Str sr="arg0" ve="3">txt_cat2</Str>
+            <Str sr="arg1" ve="3">avance | recule | stop | lentement | vite
+                tourne a droite | tourne a gauche | arrête tout</Str>
+            <Int sr="arg2" val="12" />
+            <Int sr="arg3" val="100" />
+            <Str sr="arg4" ve="3">#FF333333</Str>
+            <Str sr="arg5" ve="3" />
+            <Int sr="arg6" val="0" />
+            <Int sr="arg7" val="0" />
+            <Int sr="arg8" val="0" />
+        </TextElement>
+        <TextElement sr="elements6" ve="3">
+            <flags>4</flags>
+            <geom>10,262,447,22,-1,-1,-1,-1</geom>
+            <Str sr="arg0" ve="3">lbl_cat3</Str>
+            <Str sr="arg1" ve="3">EXPRESSIONS</Str>
+            <Int sr="arg2" val="13" />
+            <Int sr="arg3" val="100" />
+            <Str sr="arg4" ve="3">#FF1D6A8A</Str>
+            <Str sr="arg5" ve="3" />
+            <Int sr="arg6" val="0" />
+            <Int sr="arg7" val="0" />
+            <Int sr="arg8" val="0" />
+        </TextElement>
+        <TextElement sr="elements7" ve="3">
+            <flags>4</flags>
+            <geom>10,286,447,36,-1,-1,-1,-1</geom>
+            <Str sr="arg0" ve="3">txt_cat3</Str>
+            <Str sr="arg1" ve="3">souris | triste | etonne | en colere | neutre | bonjour</Str>
+            <Int sr="arg2" val="12" />
+            <Int sr="arg3" val="100" />
+            <Str sr="arg4" ve="3">#FF333333</Str>
+            <Str sr="arg5" ve="3" />
+            <Int sr="arg6" val="0" />
+            <Int sr="arg7" val="0" />
+            <Int sr="arg8" val="0" />
+        </TextElement>
+        <TextElement sr="elements8" ve="3">
+            <flags>4</flags>
+            <geom>10,330,447,22,-1,-1,-1,-1</geom>
+            <Str sr="arg0" ve="3">lbl_cat4</Str>
+            <Str sr="arg1" ve="3">CONVERSATION IA</Str>
+            <Int sr="arg2" val="13" />
+            <Int sr="arg3" val="100" />
+            <Str sr="arg4" ve="3">#FF8B4513</Str>
+            <Str sr="arg5" ve="3" />
+            <Int sr="arg6" val="0" />
+            <Int sr="arg7" val="0" />
+            <Int sr="arg8" val="0" />
+        </TextElement>
+        <TextElement sr="elements9" ve="3">
+            <flags>4</flags>
+            <geom>10,354,447,36,-1,-1,-1,-1</geom>
+            <Str sr="arg0" ve="3">txt_cat4</Str>
+            <Str sr="arg1" ve="3">discute avec moi (mode veille requis)</Str>
+            <Int sr="arg2" val="12" />
+            <Int sr="arg3" val="100" />
+            <Str sr="arg4" ve="3">#FF333333</Str>
+            <Str sr="arg5" ve="3" />
+            <Int sr="arg6" val="0" />
+            <Int sr="arg7" val="0" />
+            <Int sr="arg8" val="0" />
+        </TextElement>
+        <ButtonElement sr="elements10" ve="3">
+            <flags>4</flags>
+            <geom>10,420,220,46,-1,-1,-1,-1</geom>
+            <Str sr="arg0" ve="3">btn_detail</Str>
+            <Str sr="arg1" ve="3">Liste complete</Str>
+            <Int sr="arg2" val="14" />
+            <Int sr="arg3" val="100" />
+            <Str sr="arg4" ve="3">#FF1A3A5C</Str>
+            <Str sr="arg5" ve="3">RZ_OuvreVoiceDetail</Str>
+            <Int sr="arg6" val="8" />
+            <Img sr="arg7" ve="2" />
+        </ButtonElement>
+        <ButtonElement sr="elements11" ve="3">
+            <flags>4</flags>
+            <geom>237,420,220,46,-1,-1,-1,-1</geom>
+            <Str sr="arg0" ve="3">btn_fermer</Str>
+            <Str sr="arg1" ve="3">X Fermer</Str>
+            <Int sr="arg2" val="16" />
+            <Int sr="arg3" val="100" />
+            <Str sr="arg4" ve="3">#FF8B0000</Str>
+            <Str sr="arg5" ve="3">RZ_FermeVoice</Str>
+            <Int sr="arg6" val="8" />
+            <Img sr="arg7" ve="2" />
+        </ButtonElement>
+        <PropertiesElement sr="props">
+            <Int sr="arg0" val="2" />
+            <Int sr="arg1" val="2" />
+            <Str sr="arg2" ve="3">#EEF0F5FF</Str>
+            <Int sr="arg3" val="0" />
+            <Str sr="arg4" ve="3">RZ_VoiceHelp</Str>
+            <Str sr="arg5" ve="3" />
+            <Img sr="arg6" ve="2" />
+            <Str sr="arg7" ve="3" />
+        </PropertiesElement>
+    </Scene>
+
+    <!-- ════════════════════════════════════════════════════════════
+             SCÈNE RZ_VoiceDetail — liste complète Table D STT V1+V2
+             ════════════════════════════════════════════════════════════ -->
+    <Scene sr="sceneRZ_VoiceDetail">
+        <cdate>1778300000006</cdate>
+        <edate>1778300000006</edate>
+        <heightLand>-1</heightLand>
+        <heightPort>1400</heightPort>
+        <nme>RZ_VoiceDetail</nme>
+        <widthLand>-1</widthLand>
+        <widthPort>467</widthPort>
+        <TextElement sr="elements0" ve="3">
+            <flags>4</flags>
+            <geom>0,0,467,50,-1,-1,-1,-1</geom>
+            <Str sr="arg0" ve="3">txt_titre</Str>
+            <Str sr="arg1" ve="3">Toutes les commandes</Str>
+            <Int sr="arg2" val="18" />
+            <Int sr="arg3" val="100" />
+            <Str sr="arg4" ve="3">#FF1A1A2E</Str>
+            <Str sr="arg5" ve="3" />
+            <Int sr="arg6" val="1" />
+            <Int sr="arg7" val="0" />
+            <Int sr="arg8" val="0" />
+        </TextElement>
+        <TextElement sr="elements1" ve="3">
+            <flags>4</flags>
+            <geom>10,58,447,22,-1,-1,-1,-1</geom>
+            <Str sr="arg0" ve="3">cat1</Str>
+            <Str sr="arg1" ve="3">URGENCE (toujours actif)</Str>
+            <Int sr="arg2" val="13" />
+            <Int sr="arg3" val="100" />
+            <Str sr="arg4" ve="3">#FFC0392B</Str>
+            <Str sr="arg5" ve="3" />
+            <Int sr="arg6" val="0" />
+            <Int sr="arg7" val="0" />
+            <Int sr="arg8" val="0" />
+        </TextElement>
+        <TextElement sr="elements2" ve="3">
+            <flags>4</flags>
+            <geom>10,82,447,20,-1,-1,-1,-1</geom>
+            <Str sr="arg0" ve="3">txt1</Str>
+            <Str sr="arg1" ve="3">stop | arrete tout | urgence | freine</Str>
+            <Int sr="arg2" val="12" />
+            <Int sr="arg3" val="100" />
+            <Str sr="arg4" ve="3">#FF333333</Str>
+            <Str sr="arg5" ve="3" />
+            <Int sr="arg6" val="0" />
+            <Int sr="arg7" val="0" />
+            <Int sr="arg8" val="0" />
+        </TextElement>
+        <TextElement sr="elements3" ve="3">
+            <flags>4</flags>
+            <geom>10,110,447,22,-1,-1,-1,-1</geom>
+            <Str sr="arg0" ve="3">cat2</Str>
+            <Str sr="arg1" ve="3">DEPLACEMENT</Str>
+            <Int sr="arg2" val="13" />
+            <Int sr="arg3" val="100" />
+            <Str sr="arg4" ve="3">#FF7B5EA7</Str>
+            <Str sr="arg5" ve="3" />
+            <Int sr="arg6" val="0" />
+            <Int sr="arg7" val="0" />
+            <Int sr="arg8" val="0" />
+        </TextElement>
+        <TextElement sr="elements4" ve="3">
+            <flags>4</flags>
+            <geom>10,134,447,100,-1,-1,-1,-1</geom>
+            <Str sr="arg0" ve="3">txt2</Str>
+            <Str sr="arg1" ve="3">avance | tout droit | vas-y | en avant
+                recule | en arriere | marche arriere
+                stop | arrete | freine | immobile
+                lentement | doucement | ralentis
+                vite | accelere | plus vite | rapide
+                tourne a droite | tourne a gauche
+                vitesse (+ valeur) | avance de (+ distance)</Str>
+            <Int sr="arg2" val="12" />
+            <Int sr="arg3" val="100" />
+            <Str sr="arg4" ve="3">#FF333333</Str>
+            <Str sr="arg5" ve="3" />
+            <Int sr="arg6" val="0" />
+            <Int sr="arg7" val="0" />
+            <Int sr="arg8" val="0" />
+        </TextElement>
+        <TextElement sr="elements5" ve="3">
+            <flags>4</flags>
+            <geom>10,242,447,22,-1,-1,-1,-1</geom>
+            <Str sr="arg0" ve="3">cat3</Str>
+            <Str sr="arg1" ve="3">CONFIGURATION</Str>
+            <Int sr="arg2" val="13" />
+            <Int sr="arg3" val="100" />
+            <Str sr="arg4" ve="3">#FF2D6A4F</Str>
+            <Str sr="arg5" ve="3" />
+            <Int sr="arg6" val="0" />
+            <Int sr="arg7" val="0" />
+            <Int sr="arg8" val="0" />
+        </TextElement>
+        <TextElement sr="elements6" ve="3">
+            <flags>4</flags>
+            <geom>10,266,447,90,-1,-1,-1,-1</geom>
+            <Str sr="arg0" ve="3">txt3</Str>
+            <Str sr="arg1" ve="3">mode veille | mode fixe | mode deplacement | mode autonome
+                pilotage vocal | pilotage ecran | mode laisse
+                efface urgence | annule alerte
+                reinitialise | reset</Str>
+            <Int sr="arg2" val="12" />
+            <Int sr="arg3" val="100" />
+            <Str sr="arg4" ve="3">#FF333333</Str>
+            <Str sr="arg5" ve="3" />
+            <Int sr="arg6" val="0" />
+            <Int sr="arg7" val="0" />
+            <Int sr="arg8" val="0" />
+        </TextElement>
+        <TextElement sr="elements7" ve="3">
+            <flags>4</flags>
+            <geom>10,364,447,22,-1,-1,-1,-1</geom>
+            <Str sr="arg0" ve="3">cat4</Str>
+            <Str sr="arg1" ve="3">EXPRESSIONS VISAGE</Str>
+            <Int sr="arg2" val="13" />
+            <Int sr="arg3" val="100" />
+            <Str sr="arg4" ve="3">#FF1D6A8A</Str>
+            <Str sr="arg5" ve="3" />
+            <Int sr="arg6" val="0" />
+            <Int sr="arg7" val="0" />
+            <Int sr="arg8" val="0" />
+        </TextElement>
+        <TextElement sr="elements8" ve="3">
+            <flags>4</flags>
+            <geom>10,388,447,70,-1,-1,-1,-1</geom>
+            <Str sr="arg0" ve="3">txt4</Str>
+            <Str sr="arg1" ve="3">souris | fais un sourire
+                triste | sois triste
+                etonne | surpris
+                en colere | fache
+                neutre | visage neutre</Str>
+            <Int sr="arg2" val="12" />
+            <Int sr="arg3" val="100" />
+            <Str sr="arg4" ve="3">#FF333333</Str>
+            <Str sr="arg5" ve="3" />
+            <Int sr="arg6" val="0" />
+            <Int sr="arg7" val="0" />
+            <Int sr="arg8" val="0" />
+        </TextElement>
+        <TextElement sr="elements9" ve="3">
+            <flags>4</flags>
+            <geom>10,466,447,22,-1,-1,-1,-1</geom>
+            <Str sr="arg0" ve="3">cat5</Str>
+            <Str sr="arg1" ve="3">CAMERA / TORCHE</Str>
+            <Int sr="arg2" val="13" />
+            <Int sr="arg3" val="100" />
+            <Str sr="arg4" ve="3">#FF5A3E7A</Str>
+            <Str sr="arg5" ve="3" />
+            <Int sr="arg6" val="0" />
+            <Int sr="arg7" val="0" />
+            <Int sr="arg8" val="0" />
+        </TextElement>
+        <TextElement sr="elements10" ve="3">
+            <flags>4</flags>
+            <geom>10,490,447,70,-1,-1,-1,-1</geom>
+            <Str sr="arg0" ve="3">txt5</Str>
+            <Str sr="arg1" ve="3">demarre la camera | eteins la camera
+                camera avant | camera arriere
+                prends une photo | snapshot
+                allume la lumiere | torche | eteins la lumiere</Str>
+            <Int sr="arg2" val="12" />
+            <Int sr="arg3" val="100" />
+            <Str sr="arg4" ve="3">#FF333333</Str>
+            <Str sr="arg5" ve="3" />
+            <Int sr="arg6" val="0" />
+            <Int sr="arg7" val="0" />
+            <Int sr="arg8" val="0" />
+        </TextElement>
+        <TextElement sr="elements11" ve="3">
+            <flags>4</flags>
+            <geom>10,568,447,22,-1,-1,-1,-1</geom>
+            <Str sr="arg0" ve="3">cat6</Str>
+            <Str sr="arg1" ve="3">MACROS</Str>
+            <Int sr="arg2" val="13" />
+            <Int sr="arg3" val="100" />
+            <Str sr="arg4" ve="3">#FF7B3F00</Str>
+            <Str sr="arg5" ve="3" />
+            <Int sr="arg6" val="0" />
+            <Int sr="arg7" val="0" />
+            <Int sr="arg8" val="0" />
+        </TextElement>
+        <TextElement sr="elements12" ve="3">
+            <flags>4</flags>
+            <geom>10,592,447,54,-1,-1,-1,-1</geom>
+            <Str sr="arg0" ve="3">txt6</Str>
+            <Str sr="arg1" ve="3">bonjour | salut | coucou
+                dors | va dormir | mode nuit
+                reveille-toi | debout | active-toi</Str>
+            <Int sr="arg2" val="12" />
+            <Int sr="arg3" val="100" />
+            <Str sr="arg4" ve="3">#FF333333</Str>
+            <Str sr="arg5" ve="3" />
+            <Int sr="arg6" val="0" />
+            <Int sr="arg7" val="0" />
+            <Int sr="arg8" val="0" />
+        </TextElement>
+        <TextElement sr="elements13" ve="3">
+            <flags>4</flags>
+            <geom>10,654,447,22,-1,-1,-1,-1</geom>
+            <Str sr="arg0" ve="3">cat7</Str>
+            <Str sr="arg1" ve="3">CONVERSATION IA (mode veille)</Str>
+            <Int sr="arg2" val="13" />
+            <Int sr="arg3" val="100" />
+            <Str sr="arg4" ve="3">#FF8B4513</Str>
+            <Str sr="arg5" ve="3" />
+            <Int sr="arg6" val="0" />
+            <Int sr="arg7" val="0" />
+            <Int sr="arg8" val="0" />
+        </TextElement>
+        <TextElement sr="elements14" ve="3">
+            <flags>4</flags>
+            <geom>10,678,447,36,-1,-1,-1,-1</geom>
+            <Str sr="arg0" ve="3">txt7</Str>
+            <Str sr="arg1" ve="3">discute avec moi | on parle | mode discussion</Str>
+            <Int sr="arg2" val="12" />
+            <Int sr="arg3" val="100" />
+            <Str sr="arg4" ve="3">#FF333333</Str>
+            <Str sr="arg5" ve="3" />
+            <Int sr="arg6" val="0" />
+            <Int sr="arg7" val="0" />
+            <Int sr="arg8" val="0" />
+        </TextElement>
+        <ButtonElement sr="elements15" ve="3">
+            <flags>4</flags>
+            <geom>150,730,167,50,-1,-1,-1,-1</geom>
+            <Str sr="arg0" ve="3">btn_fermer</Str>
+            <Str sr="arg1" ve="3">X Fermer</Str>
+            <Int sr="arg2" val="16" />
+            <Int sr="arg3" val="100" />
+            <Str sr="arg4" ve="3">#FF8B0000</Str>
+            <Str sr="arg5" ve="3">RZ_FermeVoiceDetail</Str>
+            <Int sr="arg6" val="8" />
+            <Img sr="arg7" ve="2" />
+        </ButtonElement>
+        <PropertiesElement sr="props">
+            <Int sr="arg0" val="2" />
+            <Int sr="arg1" val="2" />
+            <Str sr="arg2" ve="3">#EEF0F5FF</Str>
+            <Int sr="arg3" val="0" />
+            <Str sr="arg4" ve="3">RZ_VoiceDetail</Str>
+            <Str sr="arg5" ve="3" />
+            <Img sr="arg6" ve="2" />
+            <Str sr="arg7" ve="3" />
+        </PropertiesElement>
+    </Scene>
+
+    <!-- ═══════════════════════════════════════════════════
+             TÂCHE 132 — RZ_MenuCmd (déclenchée par profil 131)
+             Lit menu_cmd.json → construit trame VPIV → écrit vpiv_out.txt
+             SE surveille vpiv_out.txt et injecte dans fifo_termux_in
+             ═══════════════════════════════════════════════════ -->
+    <Task sr="task132">
+        <cdate>1778300000011</cdate>
+        <edate>1778300000011</edate>
+        <id>132</id>
+        <nme>RZ_MenuCmd</nme>
+        <pri>6</pri>
+        <Action sr="act0" ve="7">
+            <code>417</code>
+            <label>Lire menu_cmd.json</label>
+            <Str sr="arg0" ve="3">Tasker/RobotRZ/menu_cmd.json</Str>
+            <Str sr="arg1" ve="3">%RZ_MENU_JSON</Str>
+            <Int sr="arg2" val="1" />
+        </Action>
+        <Action sr="act1" ve="7">
+            <code>129</code>
+            <label>Construire trame VPIV depuis JSON</label>
+            <se>false</se>
+            <Str sr="arg0" ve="3">// Format JSON attendu :
+                // {"cat":"V","var":"CfgS","prop":"modeRZ","inst":"*","val":"1"}
+                var j = JSON.parse(global('RZ_MENU_JSON').trim());
+                var trame = '$' + j.cat + ':' + j.var + ':' + j.prop + ':' + j.inst + ':' + j.val +
+                '#';
+                setGlobal('RZvpivOut', trame);</Str>
+            <Str sr="arg1" ve="3" />
+            <Int sr="arg2" val="1" />
+            <Int sr="arg3" val="5" />
+        </Action>
+        <Action sr="act2" ve="7">
+            <code>498</code>
+            <label>Écrire trame dans vpiv_out.txt — SE surveille ce fichier</label>
+            <Str sr="arg0" ve="3">/sdcard/Tasker/RobotRZ/vpiv_out.txt</Str>
+            <Str sr="arg1" ve="3">%RZvpivOut</Str>
+            <Int sr="arg2" val="0" />
+            <Int sr="arg3" val="0" />
+        </Action>
+    </Task>
+
+    <!-- ═══════════════════════════════════════════════════
+             TÂCHE 133 — RZ_MenuSendMode
+             Appelée par boutons modes (btn_veille, btn_fixe, btn_deplacement, btn_arret)
+             %RZmenuBtn = nom du bouton → valeur modeRZ → menu_cmd.json
+             ═══════════════════════════════════════════════════ -->
+    <Task sr="task133">
+        <cdate>1778300000012</cdate>
+        <edate>1778300000012</edate>
+        <id>133</id>
+        <nme>RZ_MenuSendMode</nme>
+        <Action sr="act0" ve="7">
+            <code>129</code>
+            <label>Mapper bouton → valeur modeRZ et écrire menu_cmd.json</label>
+            <se>false</se>
+            <Str sr="arg0" ve="3">var btn = global('RZmenuBtn') || '';
+                var modes = {
+                'btn_veille': '1',
+                'btn_fixe': '2',
+                'btn_deplacement': '3',
+                'btn_arret': '0'
+                };
+                var val = modes[btn] || '1';
+                var json = '{"cat":"V","var":"CfgS","prop":"modeRZ","inst":"*","val":"' + val +
+                '"}';
+                setGlobal('RZmenuCmdJson', json);</Str>
+            <Str sr="arg1" ve="3" />
+            <Int sr="arg2" val="1" />
+            <Int sr="arg3" val="5" />
+        </Action>
+        <Action sr="act1" ve="7">
+            <code>498</code>
+            <label>Écrire menu_cmd.json → déclenche profil 131 → RZ_MenuCmd</label>
+            <Str sr="arg0" ve="3">/sdcard/Tasker/RobotRZ/menu_cmd.json</Str>
+            <Str sr="arg1" ve="3">%RZmenuCmdJson</Str>
+            <Int sr="arg2" val="0" />
+            <Int sr="arg3" val="0" />
+        </Action>
+    </Task>
+
+    <!-- ═══════════════════════════════════════════════════
+             TÂCHE 134 — RZ_MenuSendAppli
+             Appelée par boutons applications (btn_cam, btn_torch, btn_baby, btn_zoom, btn_gps)
+             Toggle On/Off selon état global courant %RZetat_btn_xxx
+             ═══════════════════════════════════════════════════ -->
+    <Task sr="task134">
+        <cdate>1778300000013</cdate>
+        <edate>1778300000013</edate>
+        <id>134</id>
+        <nme>RZ_MenuSendAppli</nme>
+        <Action sr="act0" ve="7">
+            <code>129</code>
+            <label>Mapper bouton → commande VPIV application avec toggle</label>
+            <se>false</se>
+            <Str sr="arg0" ve="3">var btn = global('RZmenuBtn') || '';
+                var applis = {
+                'btn_cam': {cat:'V', var:'CamSE', prop:'modeCam', inst:'rear'},
+                'btn_torch': {cat:'V', var:'TorchSE', prop:'active', inst:'*'},
+                'btn_baby': {cat:'A', var:'Appli', prop:'Baby', inst:'*'},
+                'btn_zoom': {cat:'A', var:'Appli', prop:'zoom', inst:'*'},
+                'btn_gps': {cat:'A', var:'Appli', prop:'NavGPS', inst:'*'}
+                };
+                var cmd = applis[btn];
+                if (!cmd) { setGlobal('RZmenuCmdJson', ''); return; }
+                var etatKey = 'RZetat_' + btn;
+                var etat = global(etatKey) || 'off';
+                var val;
+                if (btn === 'btn_cam') {
+                val = (etat === 'stream') ? 'off' : 'stream';
+                } else {
+                val = (etat === 'On') ? 'Off' : 'On';
+                }
+                var json = '{"cat":"' + cmd.cat + '","var":"' + cmd.var + '","prop":"' + cmd.prop +
+                '","inst":"' + cmd.inst + '","val":"' + val + '"}';
+                setGlobal('RZmenuCmdJson', json);</Str>
+            <Str sr="arg1" ve="3" />
+            <Int sr="arg2" val="1" />
+            <Int sr="arg3" val="5" />
+        </Action>
+        <Action sr="act1" ve="7">
+            <code>498</code>
+            <label>Écrire menu_cmd.json → déclenche profil 131</label>
+            <Str sr="arg0" ve="3">/sdcard/Tasker/RobotRZ/menu_cmd.json</Str>
+            <Str sr="arg1" ve="3">%RZmenuCmdJson</Str>
+            <Int sr="arg2" val="0" />
+            <Int sr="arg3" val="0" />
+        </Action>
+    </Task>
+
+    <!-- ═══════════════════════════════════════════════════
+             TÂCHE 135 — RZ_OuvreEtat
+             Lit global.json via shell → remplit scène RZ_Etat dynamiquement
+             ═══════════════════════════════════════════════════ -->
+    <Task sr="task135">
+        <cdate>1778300000014</cdate>
+        <edate>1778300000014</edate>
+        <id>135</id>
+        <nme>RZ_OuvreEtat</nme>
+        <Action sr="act0" ve="7">
+            <code>664</code>
+            <label>Lire global.json</label>
+            <Str sr="arg0" ve="3">cat
+                /data/data/com.termux/files/home/robotRZ-smartSE/config/global.json 2>/dev/null ||
+                echo '{}'</Str>
+            <Str sr="arg1" ve="3">%RZ_GLOBAL</Str>
+            <Int sr="arg2" val="1" />
+            <Int sr="arg3" val="0" />
+        </Action>
+        <Action sr="act1" ve="7">
+            <code>129</code>
+            <label>Parser global.json → variables pour la scène</label>
+            <se>false</se>
+            <Str sr="arg0" ve="3">var raw = global('RZ_GLOBAL') || '{}';
+                var g = {};
+                try { g = JSON.parse(raw); } catch(e) { g = {}; }
+                var MODES = {0:'ARRET',1:'VEILLE',2:'FIXE',3:'DEPLACEMENT',4:'AUTONOME',5:'ERREUR'};
+                var PTGE = {0:'Ecran',1:'Vocal',2:'Manette',3:'Laisse',4:'Laisse+Vocal'};
+                var modeVal = g.CfgS ? (g.CfgS.modeRZ !== undefined ? g.CfgS.modeRZ : '?') : '?';
+                var ptgeVal = g.CfgS ? (g.CfgS.typePtge !== undefined ? g.CfgS.typePtge : '?') :
+                '?';
+                var reseau = g.CfgS ? (g.CfgS.typeReseau || '?') : '?';
+                setGlobal('RZetatMode', MODES[modeVal] || ('Mode '+modeVal));
+                setGlobal('RZetatPtge', PTGE[ptgeVal] || ('Ptge '+ptgeVal));
+                setGlobal('RZetatReseau', reseau);
+                setGlobal('RZetatIpSE', (g.Sys &amp;&amp; g.Sys.ipSE) ? g.Sys.ipSE :
+                '192.168.1.12');
+                var ipSP = '?';
+                if (reseau==='WifiInternetBox') ipSP='192.168.1.40 (local)';
+                else if (reseau==='Wifi4KSP') ipSP='DuckDNS (4G SP)';
+                else if (reseau==='WifiSPSsI') ipSP='SP Smart local';
+                else if (reseau==='4K') ipSP='DuckDNS (SIM SE)';
+                setGlobal('RZetatIpSP', ipSP);
+                var CTX = {
+                'WifiInternetBox':'Wi-Fi box maison - SP RPI local',
+                'Wifi4KSP': 'Wi-Fi partage SP - SP RPI DuckDNS',
+                'WifiSPSsI': 'Wi-Fi SP sans internet - SP Smart local',
+                '4K': 'SIM SE - SP RPI via DuckDNS'
+                };
+                setGlobal('RZetatCtxReseau', CTX[reseau] || reseau);</Str>
+            <Str sr="arg1" ve="3" />
+            <Int sr="arg2" val="1" />
+            <Int sr="arg3" val="5" />
+        </Action>
+        <Action sr="act2" ve="7">
+            <code>47</code>
+            <label>Afficher scène RZ_Etat</label>
+            <Str sr="arg0" ve="3">RZ_Etat</Str>
+            <Int sr="arg1" val="6" />
+            <Int sr="arg10" val="1" />
+            <Int sr="arg2" val="100" />
+            <Int sr="arg3" val="100" />
+            <Int sr="arg4" val="0" />
+            <Int sr="arg5" val="1" />
+            <Int sr="arg6" val="1" />
+            <Int sr="arg7" val="1" />
+            <Int sr="arg8" val="1" />
+            <Int sr="arg9" val="1" />
+        </Action>
+        <Action sr="act3" ve="7">
+            <code>30</code>
+            <Int sr="arg0" val="500" />
+            <Int sr="arg1" val="0" />
+            <Int sr="arg2" val="0" />
+            <Int sr="arg3" val="0" />
+            <Int sr="arg4" val="0" />
+        </Action>
+        <Action sr="act4" ve="7">
+            <code>195</code>
+            <Str sr="arg0" ve="3">RZ_Etat</Str>
+            <Str sr="arg1" ve="3">val_mode</Str>
+            <Int sr="arg2" val="0" />
+            <Str sr="arg3" ve="3">%RZetatMode</Str>
+        </Action>
+        <Action sr="act5" ve="7">
+            <code>195</code>
+            <Str sr="arg0" ve="3">RZ_Etat</Str>
+            <Str sr="arg1" ve="3">val_ptge</Str>
+            <Int sr="arg2" val="0" />
+            <Str sr="arg3" ve="3">%RZetatPtge</Str>
+        </Action>
+        <Action sr="act6" ve="7">
+            <code>195</code>
+            <Str sr="arg0" ve="3">RZ_Etat</Str>
+            <Str sr="arg1" ve="3">val_reseau</Str>
+            <Int sr="arg2" val="0" />
+            <Str sr="arg3" ve="3">%RZetatReseau</Str>
+        </Action>
+        <Action sr="act7" ve="7">
+            <code>195</code>
+            <Str sr="arg0" ve="3">RZ_Etat</Str>
+            <Str sr="arg1" ve="3">val_ip_se</Str>
+            <Int sr="arg2" val="0" />
+            <Str sr="arg3" ve="3">%RZetatIpSE</Str>
+        </Action>
+        <Action sr="act8" ve="7">
+            <code>195</code>
+            <Str sr="arg0" ve="3">RZ_Etat</Str>
+            <Str sr="arg1" ve="3">val_ip_sp</Str>
+            <Int sr="arg2" val="0" />
+            <Str sr="arg3" ve="3">%RZetatIpSP</Str>
+        </Action>
+        <Action sr="act9" ve="7">
+            <code>195</code>
+            <Str sr="arg0" ve="3">RZ_Etat</Str>
+            <Str sr="arg1" ve="3">val_ctx_reseau</Str>
+            <Int sr="arg2" val="0" />
+            <Str sr="arg3" ve="3">%RZetatCtxReseau</Str>
+        </Action>
+    </Task>
+
+    <!-- ═══════════════════════════════════════════════════
+             TÂCHE 136 — RZ_Init_Tasker
+             Démarrage SE depuis widget écran d'accueil Doro
+             Ordre : ① Termux:API → ② rz_start.sh → ③ IP Webcam veille → ④ Scène RZ_Expression
+             ═══════════════════════════════════════════════════ -->
+    <Task sr="task136">
+        <cdate>1778300000020</cdate>
+        <edate>1778300000020</edate>
+        <id>136</id>
+        <nme>RZ_Init_Tasker</nme>
+        <Action sr="act0" ve="7">
+            <code>20</code>
+            <label>① Lancer Termux:API service</label>
+            <App sr="arg0">
+                <appClass>com.termux.api.TermuxApiReceiver</appClass>
+                <appPkg>com.termux.api</appPkg>
+                <label>Termux:API</label>
+            </App>
+            <Str sr="arg1" ve="3" />
+            <Int sr="arg2" val="0" />
+            <Int sr="arg3" val="0" />
+        </Action>
+        <Action sr="act1" ve="7">
+            <code>30</code>
+            <label>Attente Termux:API</label>
+            <Int sr="arg0" val="2000" />
+            <Int sr="arg1" val="0" />
+            <Int sr="arg2" val="0" />
+            <Int sr="arg3" val="0" />
+            <Int sr="arg4" val="0" />
+        </Action>
+        <Action sr="act2" ve="7">
+            <code>664</code>
+            <label>② Lancer rz_start.sh dans Termux</label>
+            <Str sr="arg0" ve="3">bash /data/data/com.termux/files/home/robotRZ-smartSE/rz_start.sh</Str>
+            <Int sr="arg1" val="0" />
+            <Int sr="arg2" val="1" />
+            <Int sr="arg3" val="0" />
+        </Action>
+        <Action sr="act3" ve="7">
+            <code>30</code>
+            <label>Attente daemons SE (rz_start.sh envoie SE_READY quand pret)</label>
+            <Int sr="arg0" val="4000" />
+            <Int sr="arg1" val="0" />
+            <Int sr="arg2" val="0" />
+            <Int sr="arg3" val="0" />
+            <Int sr="arg4" val="0" />
+        </Action>
+        <Action sr="act4" ve="7">
+            <code>20</code>
+            <label>③ Lancer IP Webcam Pro en veille (pas de démarrage serveur)</label>
+            <App sr="arg0">
+                <appClass>com.pas.webcam.Configuration</appClass>
+                <appPkg>com.pas.webcam.pro</appPkg>
+                <label>IP Webcam Pro</label>
+            </App>
+            <Str sr="arg1" ve="3" />
+            <Int sr="arg2" val="0" />
+            <Int sr="arg3" val="0" />
+        </Action>
+        <Action sr="act5" ve="7">
+            <code>30</code>
+            <label>Attente IP Webcam chargée</label>
+            <Int sr="arg0" val="2000" />
+            <Int sr="arg1" val="0" />
+            <Int sr="arg2" val="0" />
+            <Int sr="arg3" val="0" />
+            <Int sr="arg4" val="0" />
+        </Action>
+        <Action sr="act6" ve="7">
+            <code>47</code>
+            <label>④ Afficher scène RZ_Expression</label>
+            <Str sr="arg0" ve="3">RZ_Expression</Str>
+            <Int sr="arg1" val="6" />
+            <Int sr="arg10" val="1" />
+            <Int sr="arg2" val="100" />
+            <Int sr="arg3" val="100" />
+            <Int sr="arg4" val="0" />
+            <Int sr="arg5" val="1" />
+            <Int sr="arg6" val="1" />
+            <Int sr="arg7" val="1" />
+            <Int sr="arg8" val="1" />
+            <Int sr="arg9" val="1" />
+        </Action>
+        <Action sr="act7" ve="7">
+            <code>30</code>
+            <Int sr="arg0" val="500" />
+            <Int sr="arg1" val="0" />
+            <Int sr="arg2" val="0" />
+            <Int sr="arg3" val="0" />
+            <Int sr="arg4" val="0" />
+        </Action>
+        <Action sr="act8" ve="7">
+            <code>195</code>
+            <label>Afficher emoji neutre initial</label>
+            <Str sr="arg0" ve="3">RZ_Expression</Str>
+            <Str sr="arg1" ve="3">emoji_expression</Str>
+            <Int sr="arg2" val="0" />
+            <Str sr="arg3" ve="3">😐</Str>
+        </Action>
+    </Task>
+
+    <!-- Tâches utilitaires — ouverture/fermeture scènes -->
+
+    <Task sr="task137">
+        <cdate>1778300000021</cdate>
+        <edate>1778300000021</edate>
+        <id>137</id>
+        <nme>RZ_OuvreVoice</nme>
+        <Action sr="act0" ve="7">
+            <code>47</code>
+            <Str sr="arg0" ve="3">RZ_VoiceHelp</Str>
+            <Int sr="arg1" val="6" />
+            <Int sr="arg10" val="1" />
+            <Int sr="arg2" val="100" />
+            <Int sr="arg3" val="100" />
+            <Int sr="arg4" val="0" />
+            <Int sr="arg5" val="1" />
+            <Int sr="arg6" val="1" />
+            <Int sr="arg7" val="1" />
+            <Int sr="arg8" val="1" />
+            <Int sr="arg9" val="1" />
+        </Action>
+    </Task>
+
+    <Task sr="task138">
+        <cdate>1778300000022</cdate>
+        <edate>1778300000022</edate>
+        <id>138</id>
+        <nme>RZ_OuvreVoiceDetail</nme>
+        <Action sr="act0" ve="7">
+            <code>47</code>
+            <Str sr="arg0" ve="3">RZ_VoiceDetail</Str>
+            <Int sr="arg1" val="6" />
+            <Int sr="arg10" val="1" />
+            <Int sr="arg2" val="100" />
+            <Int sr="arg3" val="100" />
+            <Int sr="arg4" val="0" />
+            <Int sr="arg5" val="1" />
+            <Int sr="arg6" val="1" />
+            <Int sr="arg7" val="1" />
+            <Int sr="arg8" val="1" />
+            <Int sr="arg9" val="1" />
+        </Action>
+    </Task>
+
+    <Task sr="task139">
+        <cdate>1778300000023</cdate>
+        <edate>1778300000023</edate>
+        <id>139</id>
+        <nme>RZ_FermeMenu</nme>
+        <Action sr="act0" ve="7">
+            <code>49</code>
+            <Str sr="arg0" ve="3">RZ_Menu</Str>
+            <Int sr="arg1" val="0" />
+        </Action>
+    </Task>
+
+    <Task sr="task140">
+        <cdate>1778300000024</cdate>
+        <edate>1778300000024</edate>
+        <id>140</id>
+        <nme>RZ_FermeEtat</nme>
+        <Action sr="act0" ve="7">
+            <code>49</code>
+            <Str sr="arg0" ve="3">RZ_Etat</Str>
+            <Int sr="arg1" val="0" />
+        </Action>
+    </Task>
+
+    <Task sr="task141">
+        <cdate>1778300000025</cdate>
+        <edate>1778300000025</edate>
+        <id>141</id>
+        <nme>RZ_FermeVoice</nme>
+        <Action sr="act0" ve="7">
+            <code>49</code>
+            <Str sr="arg0" ve="3">RZ_VoiceHelp</Str>
+            <Int sr="arg1" val="0" />
+        </Action>
+    </Task>
+
+    <Task sr="task142">
+        <cdate>1778300000026</cdate>
+        <edate>1778300000026</edate>
+        <id>142</id>
+        <nme>RZ_FermeVoiceDetail</nme>
+        <Action sr="act0" ve="7">
+            <code>49</code>
+            <Str sr="arg0" ve="3">RZ_VoiceDetail</Str>
+            <Int sr="arg1" val="0" />
+        </Action>
+    </Task>
+
+</TaskerData>

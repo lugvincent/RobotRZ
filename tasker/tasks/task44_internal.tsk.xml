@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TaskerData sr="" dvi="1" tv="6.6.20">
+	<Task sr="task44">
+		<cdate>1778677179992</cdate>
+		<edate>1778900000001</edate>
+		<id>44</id>
+		<Action sr="act0" ve="7">
+			<code>49</code>
+			<Str sr="arg0" ve="3">RZ_Menu</Str>
+		</Action>
+		<Action sr="act1" ve="7">
+			<code>130</code>
+			<label>Torche ON</label>
+			<Str sr="arg0" ve="3">RZ_TorchOn</Str>
+			<Int sr="arg1" val="0" />
+			<Int sr="arg10" val="1" />
+			<Str sr="arg2" ve="3" />
+			<Str sr="arg3" ve="3" />
+			<Str sr="arg4" ve="3" />
+			<Int sr="arg5" val="0" />
+			<Int sr="arg6" val="0" />
+			<Str sr="arg7" ve="3" />
+			<Int sr="arg8" val="0" />
+			<Int sr="arg9" val="0" />
+			<ConditionList sr="if">
+				<Condition sr="c0" ve="3">
+					<lhs>%RZtorchEtat</lhs>
+					<op>3</op>
+					<rhs>On</rhs>
+				</Condition>
+			</ConditionList>
+		</Action>
+		<Action sr="act2" ve="7">
+			<code>130</code>
+			<label>Torche OFF</label>
+			<Str sr="arg0" ve="3">RZ_TorchOff</Str>
+			<Int sr="arg1" val="0" />
+			<Int sr="arg10" val="1" />
+			<Str sr="arg2" ve="3" />
+			<Str sr="arg3" ve="3" />
+			<Str sr="arg4" ve="3" />
+			<Int sr="arg5" val="0" />
+			<Int sr="arg6" val="0" />
+			<Str sr="arg7" ve="3" />
+			<Int sr="arg8" val="0" />
+			<Int sr="arg9" val="0" />
+			<ConditionList sr="if">
+				<Condition sr="c0" ve="3">
+					<lhs>%RZtorchEtat</lhs>
+					<op>2</op>
+					<rhs>On</rhs>
+				</Condition>
+			</ConditionList>
+		</Action>
+	</Task>
+</TaskerData>

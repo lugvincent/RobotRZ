@@ -77,6 +77,7 @@
   },
   "appli": {
     "Baby":        { "state": "Off",        "tasker_task": "RZ_Baby",        "package": "",                    "last_change": "" },
+    "IA_Conv":     { "state": "Off",          "tasker_task": "RZ_IA_Conv",     "package": "",                    "last_change": "" },
     "tasker":      { "state": "Off",      "tasker_task": "",                        "package": "net.dinglisch.android.taskerm",   "last_change": "" },
     "zoom":        { "state": "Off",        "tasker_task": "RZ_Zoom",        "package": "us.zoom.videomeetings",     "last_change": "" },
     "BabyMonitor": { "state": "Off", "tasker_task": "RZ_BabyMonitor", "package": "",                    "last_change": "" },
@@ -104,6 +105,11 @@
     "keyphrase": "rz",
     "lang":      "fr",
     "lib_path":  "lib_pocketsphinx"
+  },
+  "voice": {
+    "vol":     80,
+    "output":  "internal",
+    "ttsRate": "1.0"
   },
   "mtr": {
     "speed_cruise":  30,

@@ -22,3 +22,15 @@ termux/scripts/sensors/stt/lib_pocketsphinx/lexique_referent.dict
 
 termux/config/keys.json
 .env
+termux/scripts/core/rz_state-manager.sh.save
+termux/scripts/core/rz_state-manager.sh.save.1
+termux/scripts/sensors/stt/__pycache__/
+termux/scripts/sensors/stt/lib_pocketsphinx/
+termux/scripts/sensors/stt/old_rz_autovoice_bridge.sh
+termux/scripts/sensors/stt/rz_stt_debug.py
+termux/scripts/core/rz_state-manager.sh.save
+termux/scripts/core/rz_state-manager.sh.save.1
+termux/scripts/sensors/stt/__pycache__/
+termux/scripts/sensors/stt/lib_pocketsphinx/
+termux/scripts/sensors/stt/old_rz_autovoice_bridge.sh
+termux/scripts/sensors/stt/rz_stt_debug.py

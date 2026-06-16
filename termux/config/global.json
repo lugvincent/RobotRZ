@@ -1,7 +1,7 @@
 {
   "CfgS": {
     "modeRZ": 2,
-    "typePtge": 0,
+    "typePtge": 1,
     "reset": false,
     "typeReseau": "WifiInternetBox"
   },
@@ -19,15 +19,15 @@
   "Sys": {
     "cpu_load": 0,
     "temp": 0,
-    "storage": 60,
-    "mem": 56,
-    "batt": 93,
+    "storage": 65,
+    "mem": 60,
+    "batt": 100,
     "uptime": 0,
-    "last_update": "2026-04-27 13:11:22",
+    "last_update": "2026-06-16 08:59:51",
     "cpu": 0,
-    "thermal": 24
+    "thermal": 30
   },
   "STT": {
-    "context": "Inactif"
+    "context": "Mixte"
   }
 }

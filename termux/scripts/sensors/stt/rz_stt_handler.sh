@@ -95,7 +95,7 @@ fi
 
 # --- ÉTAPE C : IDENTIFICATION DE LA COMMANDE ---
 CLEAN_TEXT=$(echo "$TEXT_RAW" | sed 's/^rz //g' | xargs)
-CMD_DATA=$(jq -c --arg txt "$CLEAN_TEXT" '.commandes[] | select(.synonymes[] == $txt)' "$CATALOGUE")
+CMD_DATA=$(jq -c --arg txt "$CLEAN_TEXT" '[.commandes[] | select(.synonymes[] == $txt)]| first' "$CATALOGUE")
 CMD_ID=$(echo "$CMD_DATA" | jq -r '.id // empty')
 
 # SI INCONNU : ON RENVOIE 1 POUR TENTER L'IA CLOUD

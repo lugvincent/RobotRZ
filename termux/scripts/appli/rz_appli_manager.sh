@@ -19,7 +19,6 @@
 #
 # TABLE DE ROUTAGE
 # ----------------
-#   PROP=BabyCam    VAL=On/Off  → RZ_Baby     On|Off
 #   PROP=IA_Conv    VAL=On/Off  → RZ_IA_Conv  On|Off
 #   PROP=zoom       VAL=On/Off  → RZ_Zoom     On|Off
 #   PROP=NavGPS     VAL=On/Off  → RZ_NavGPS   On|Off
@@ -28,11 +27,10 @@
 #
 # VPIV ENTRANTS (depuis fifo_appli_in)
 # -------------------------------------
-#   $A:Appli:BabyCam:*:On#
-#   $A:Appli:BabyCam:*:Off#
 #   $A:Appli:IA_Conv:*:On#
 #   $A:Appli:IA_Conv:*:Off#
 #   $A:Appli:zoom:*:On#
+#   $A:Appli:zoom:*:Off#
 #   $A:Appli:NavGPS:*:On#
 #   $A:Appli:NavGPS:*:Off#
 #   $A:Appli:ExprTasker:Expression:sourire#
@@ -48,7 +46,7 @@
 # -----------
 # - fifo_appli_in doit exister (créé par fifo_manager.sh create)
 # - rz_tasker_bridge.sh doit être accessible et exécutable
-# - Tasker doit être actif en arrière-plan (profil 222 actif)
+# - Tasker doit être actif en arrière-plan (profil actif)
 # - Les ACK retour sont gérés par Tasker via vpiv_out.txt
 #   → ne pas attendre de retour dans ce script
 #
@@ -57,8 +55,8 @@
 #   rz_tasker_bridge.sh
 #
 # AUTEUR  : Vincent Philippe
-# VERSION : 1.0  (création — routage CAT=A MODULE=Appli vers Tasker)
-# DATE    : 2026-05-09
+# VERSION : 1.1  (juin 2026 — Baby supprimé, IA_Conv validé)
+# DATE    : 2026-06-16
 # =============================================================================
 
 # =============================================================================
@@ -99,12 +97,7 @@ route_appli() {
 
     case "$PROP" in
 
-        # ── BabyCam ──────────────────────────────────────────────────────────
-        "BabyCam"|"Baby")
-            TASK_NAME="RZ_Baby"
-            TASK_PARAM="$VAL"
-            ;;
-        # ── IA_Conv ──────────────────────────────────────────────────────────
+        # ── IA_Conv — conversation Gemini ────────────────────────────────────
         "IA_Conv"|"IA")
             TASK_NAME="RZ_IA_Conv"
             TASK_PARAM="$VAL"
@@ -182,7 +175,7 @@ process_trame() {
 
 main() {
     log "=========================================="
-    log "Démarrage rz_appli_manager.sh v1.0"
+    log "Démarrage rz_appli_manager.sh v1.1"
     log "=========================================="
 
     # Vérifications

@@ -1,0 +1,20 @@
+<TaskerData sr="" dvi="1" tv="6.6.20">
+	<Task sr="task43">
+		<cdate>1749600000000</cdate>
+		<edate>1781163272756</edate>
+		<id>43</id>
+		<nme>RZ_GeminiStop</nme>
+		<pri>100</pri>
+		<Action sr="act0" ve="7">
+			<code>547</code>
+			<label>Ferme conversation Gemini</label>
+			<Str sr="arg0" ve="3">%RZappliConv</Str>
+			<Str sr="arg1" ve="3">ferme</Str>
+			<Int sr="arg2" val="0"/>
+			<Int sr="arg3" val="0"/>
+			<Int sr="arg4" val="0"/>
+			<Int sr="arg5" val="3"/>
+			<Int sr="arg6" val="1"/>
+		</Action>
+	</Task>
+</TaskerData>

@@ -1,0 +1,1 @@
+/data/data/com.termux/files/home/robotRZ-smartSE/termux/scripts/sensors/stt/rz_autovoice_bridge.sh

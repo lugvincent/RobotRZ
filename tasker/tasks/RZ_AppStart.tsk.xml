@@ -1,9 +1,10 @@
 <TaskerData sr="" dvi="1" tv="6.6.20">
 	<Task sr="task19">
 		<cdate>1778900000001</cdate>
-		<edate>1779137627803</edate>
+		<edate>1781589967292</edate>
 		<id>19</id>
 		<nme>RZ_AppStart</nme>
+		<pri>100</pri>
 		<Action sr="act0" ve="7">
 			<code>547</code>
 			<label>Mémoriser état écran précédent</label>
@@ -51,6 +52,13 @@
 			<Str sr="arg7" ve="3"/>
 			<Int sr="arg8" val="0"/>
 			<Int sr="arg9" val="0"/>
+			<ConditionList sr="if">
+				<Condition sr="c0" ve="3">
+					<lhs>%RZappliTask</lhs>
+					<op>12</op>
+					<rhs></rhs>
+				</Condition>
+			</ConditionList>
 		</Action>
 		<Action sr="act4" ve="7">
 			<code>49</code>

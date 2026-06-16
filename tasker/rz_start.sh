@@ -1,1 +1,1 @@
-/data/data/com.termux/files/home/robotRZ-smartSE/termux/scripts/core/rz_start.sh
+C:/data/data/com.termux/files/home/robotRZ-smartSE/termux/scripts/core/rz_start.sh

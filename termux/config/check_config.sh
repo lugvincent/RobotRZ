@@ -46,9 +46,10 @@
 #   Cam   : instances {front,rear} {res,fps,quality,urgDelay}
 #            profils CPU {normal,optimized}
 #   Mic   : modeMicro, paraMicro {freqCont(ms), winSize(ms), seuils, balayage}
-#   Appli : états initiaux, tâches Tasker, packages Android, ExprTasker
-#   STT   : modeSTT, threshold, keyphrase, lang, lib_path
-#            + vérification présence fichiers PocketSphinx (model-fr/, dicts)
+#   Appli : états initiaux, tâches Tasker, packages Android, ExprTasker, IA_Conv
+#           (Baby/BabyMonitor supprimés juin 2026)
+#   STT   : modeSTT (OFF=AutoVoice/Tasker, KWS=PocketSphinx abandonné Android 9)
+#            + vérification présence fichiers PocketSphinx (info seulement si OFF)
 #
 # NOTE UNITÉS FRÉQUENCES
 # -----------------------
@@ -82,8 +83,8 @@
 #   jq : manipulation JSON (pkg install jq)
 #
 # AUTEUR  : Vincent Philippe
-# VERSION : 9.0  (ajout section STT + vérification lib_pocketsphinx)
-# DATE    : 2026-03-06
+# VERSION : 10.0  (juin 2026 — Baby/BabyMonitor supprimés, IA_Conv ajouté, STT=OFF AutoVoice, chemin robotRZ-smartSE)
+# DATE    : 2026-06-16
 # =============================================================================
 
 # =============================================================================
@@ -138,7 +139,7 @@ lire_json() {
 # =============================================================================
 
 log "=========================================="
-log "Démarrage check_config.sh  v9.0"
+log "Démarrage check_config.sh  v10.0"
 log "=========================================="
 
 if ! command -v jq &>/dev/null; then
@@ -465,39 +466,35 @@ log "--- Validation section Appli ---"
 
 if ! jq -e '.appli' "$INPUT_JSON" > /dev/null 2>&1; then erreur "Bloc '.appli' absent"; fi
 
-appli_Baby_state=$(       lire_json '.appli.Baby.state'        'Off')
-appli_IA_Conv_state=$(          lire_json '.appli.IA_Conv.state'           'Off')
-appli_tasker_state=$(     lire_json '.appli.tasker.state'      'Off')
-appli_zoom_state=$(       lire_json '.appli.zoom.state'        'Off')
-appli_BabyMonitor_state=$(lire_json '.appli.BabyMonitor.state' 'Off')
-appli_NavGPS_state=$(     lire_json '.appli.NavGPS.state'      'Off')
+appli_tasker_state=$(  lire_json '.appli.tasker.state'       'Off')
+appli_zoom_state=$(    lire_json '.appli.zoom.state'         'Off')
+appli_NavGPS_state=$(  lire_json '.appli.NavGPS.state'       'Off')
+appli_IA_Conv_state=$( lire_json '.appli.IA_Conv.state'      'Off')
 
-appli_Baby_task=$(        lire_json '.appli.Baby.tasker_task'        'RZ_Baby')
-appli_IA_Conv_task=$(     lire_json '.appli.IA_Conv.tasker_task'     'RZ_IA_Conv')
-appli_zoom_task=$(        lire_json '.appli.zoom.tasker_task'        'RZ_Zoom')
-appli_BabyMonitor_task=$( lire_json '.appli.BabyMonitor.tasker_task' 'RZ_BabyMonitor')
-appli_NavGPS_task=$(      lire_json '.appli.NavGPS.tasker_task'      'RZ_NavGPS')
-appli_tasker_pkg=$(       lire_json '.appli.tasker.package'          'net.dinglisch.android.taskerm')
-appli_zoom_pkg=$(         lire_json '.appli.zoom.package'            'us.zoom.videomeetings')
-appli_NavGPS_pkg=$(       lire_json '.appli.NavGPS.package'          'com.google.android.apps.maps')
-appli_bridge_timeout=$(   lire_json '.appli.bridge_timeout'          '5')
-appli_expr_task=$(        lire_json '.appli.ExprTasker.expr_task'    'RZ_Expression')
-appli_info_task=$(        lire_json '.appli.ExprTasker.info_task'    'RZ_Info')
+appli_zoom_task=$(     lire_json '.appli.zoom.tasker_task'    'RZ_Zoom')
+appli_NavGPS_task=$(   lire_json '.appli.NavGPS.tasker_task'  'RZ_NavGPS')
+appli_IA_Conv_task=$(  lire_json '.appli.IA_Conv.tasker_task' 'RZ_IA_Conv')
+appli_tasker_pkg=$(    lire_json '.appli.tasker.package'      'net.dinglisch.android.taskerm')
+appli_zoom_pkg=$(      lire_json '.appli.zoom.package'        'us.zoom.videomeetings')
+appli_NavGPS_pkg=$(    lire_json '.appli.NavGPS.package'      'com.google.android.apps.maps')
+appli_bridge_timeout=$(lire_json '.appli.bridge_timeout'      '5')
+appli_expr_task=$(     lire_json '.appli.ExprTasker.expr_task' 'RZ_Expression')
+appli_info_task=$(     lire_json '.appli.ExprTasker.info_task' 'RZ_Info')
 
 # Validation états initiaux (On|Off)
-for app_state in "$appli_Baby_state" "$appli_IA_Conv_state" "$appli_tasker_state" "$appli_zoom_state" \
-                 "$appli_BabyMonitor_state" "$appli_NavGPS_state"; do
+for app_state in "$appli_tasker_state" "$appli_zoom_state" \
+                 "$appli_NavGPS_state" "$appli_IA_Conv_state"; do
     case "$app_state" in On|Off) ;; *) erreur "appli : état invalide '$app_state' (attendu : On|Off)";; esac
 done
 
 # Avertissement si un état initial n'est pas Off (sécurité démarrage)
-for app_state in "$appli_Baby_state" "$appli_IA_Conv_state" "$appli_tasker_state" "$appli_zoom_state" \
-                 "$appli_BabyMonitor_state" "$appli_NavGPS_state"; do
+for app_state in "$appli_tasker_state" "$appli_zoom_state" \
+                 "$appli_NavGPS_state" "$appli_IA_Conv_state"; do
     [ "$app_state" != "Off" ] && log "  WARN : état initial '$app_state' non Off — recommandé Off au démarrage"
 done
 
 # Noms de tâches Tasker non vides
-for task in "$appli_Baby_task" "$appli_IA_Conv_task" "$appli_zoom_task" "$appli_BabyMonitor_task" "$appli_NavGPS_task"; do
+for task in "$appli_zoom_task" "$appli_NavGPS_task" "$appli_IA_Conv_task"; do
     [ -z "$task" ] && erreur "appli : tasker_task vide pour une app Tasker-dépendante"
 done
 [ -z "$appli_expr_task" ] && erreur "appli.ExprTasker.expr_task vide"
@@ -507,6 +504,7 @@ if ! [[ "$appli_bridge_timeout" =~ ^[0-9]+$ ]] || [ "$appli_bridge_timeout" -le 
     erreur "appli.bridge_timeout invalide : '$appli_bridge_timeout'"
 fi
 
+log "  tasker=$appli_tasker_state zoom=$appli_zoom_state NavGPS=$appli_NavGPS_state IA_Conv=$appli_IA_Conv_state  ✓"
 log "  ExprTasker : expr_task=$appli_expr_task info_task=$appli_info_task  ✓"
 log "--- Section Appli : VALIDÉE ---"
 
@@ -514,12 +512,10 @@ mkdir -p "$(dirname "$APPLI_CONFIG")"
 cat > "$APPLI_CONFIG" <<EOF
 {
   "appli": {
-    "Baby":        { "state": "$appli_Baby_state",        "tasker_task": "$appli_Baby_task",        "package": "",                  "last_change": "" },
-    "IA_Conv":     { "state": "$appli_IA_Conv_state",     "tasker_task": "$appli_IA_Conv_task",     "package": "",                  "last_change": "" },
-    "tasker":      { "state": "$appli_tasker_state",      "tasker_task": "",                        "package": "$appli_tasker_pkg", "last_change": "" },
-    "zoom":        { "state": "$appli_zoom_state",        "tasker_task": "$appli_zoom_task",        "package": "$appli_zoom_pkg",   "last_change": "" },
-    "BabyMonitor": { "state": "$appli_BabyMonitor_state", "tasker_task": "$appli_BabyMonitor_task", "package": "",                  "last_change": "" },
-    "NavGPS":      { "state": "$appli_NavGPS_state",      "tasker_task": "$appli_NavGPS_task",      "package": "$appli_NavGPS_pkg", "last_change": "" },
+    "tasker":  { "state": "$appli_tasker_state",  "tasker_task": "",                   "package": "$appli_tasker_pkg", "last_change": "" },
+    "zoom":    { "state": "$appli_zoom_state",    "tasker_task": "$appli_zoom_task",   "package": "$appli_zoom_pkg",   "last_change": "" },
+    "NavGPS":  { "state": "$appli_NavGPS_state",  "tasker_task": "$appli_NavGPS_task", "package": "$appli_NavGPS_pkg", "last_change": "" },
+    "IA_Conv": { "state": "$appli_IA_Conv_state", "tasker_task": "$appli_IA_Conv_task","package": "",                  "last_change": "" },
     "bridge_timeout": $appli_bridge_timeout,
     "ExprTasker": { "expr_task": "$appli_expr_task", "info_task": "$appli_info_task" }
   }
@@ -604,16 +600,17 @@ log "mic_config.json généré et validé  ✓"
 # =============================================================================
 # SECTION STT — Lecture, validation et génération de stt_config.json
 # =============================================================================
-# Valide les paramètres PocketSphinx puis vérifie la présence des fichiers
-# modèles dans lib_pocketsphinx/. Ces fichiers ne sont JAMAIS écrits ici.
+# PocketSphinx abandonné sur Android 9 (OpenSL ES inaccessible).
+# STT géré par AutoVoice (Tasker) depuis juin 2026 — modeSTT=OFF en production.
+# La section est conservée pour compatibilité future (RPI 4 / autre plateforme).
 #
-# Fichiers vérifiés (présence uniquement, pas d'écriture) :
+# Si modeSTT=OFF : vérification PocketSphinx en mode INFO seulement (pas bloquant).
+# Si modeSTT=KWS : vérification complète des fichiers modèles.
+#
+# Fichiers vérifiés (présence uniquement, jamais écrits ici) :
 #   lib_pocketsphinx/model-fr/             ← modèle acoustique (~50-200 Mo, hors Git)
 #   lib_pocketsphinx/lexique_referent.dict ← dictionnaire source (hors Git)
 #   lib_pocketsphinx/fr.dict               ← dictionnaire réduit (généré par rz_build_dict.py)
-#
-# En cas d'absence de fichiers modèles : WARN dans le log mais pas d'exit 1.
-# Les autres modules restent opérationnels — seul le STT sera inopérant.
 # =============================================================================
 
 log "--- Validation section STT ---"
@@ -666,6 +663,9 @@ STT_LIB="$STT_SCRIPT_DIR/$stt_lib_path"
 stt_lib_ok=true
 
 log "  Vérification fichiers PocketSphinx : $STT_LIB"
+if [ "$stt_modeSTT" = "OFF" ]; then
+    log "  INFO : modeSTT=OFF — PocketSphinx non utilisé (AutoVoice/Tasker actif)"
+fi
 
 if [ ! -d "$STT_LIB/model-fr" ]; then
     log "  WARN : model-fr/ absent dans $STT_LIB"
@@ -694,11 +694,8 @@ else
     log "  fr.dict présent  ✓"
 fi
 
-if $stt_lib_ok; then
-    log "  Tous les fichiers PocketSphinx présents  ✓"
-else
+$stt_lib_ok && log "  Tous les fichiers PocketSphinx présents  ✓" || \
     log "  WARN : STT potentiellement inopérant — voir avertissements ci-dessus"
-fi
 
 log "--- Section STT : VALIDÉE ---"
 

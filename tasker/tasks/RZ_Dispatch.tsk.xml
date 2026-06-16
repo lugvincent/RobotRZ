@@ -1,10 +1,10 @@
 <TaskerData sr="" dvi="1" tv="6.6.20">
 	<Task sr="task114">
 		<cdate>1777553490788</cdate>
-		<edate>1780482865665</edate>
+		<edate>1781457040498</edate>
 		<id>114</id>
 		<nme>RZ_Dispatch</nme>
-		<pri>100</pri>
+		<pri>6</pri>
 		<Action sr="act0" ve="7">
 			<code>417</code>
 			<label>Lire trigger.txt → %RZ_JSON</label>

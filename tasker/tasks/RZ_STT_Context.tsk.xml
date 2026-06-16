@@ -1,11 +1,13 @@
 <TaskerData sr="" dvi="1" tv="6.6.20">
-	<Task sr="task27">
-		<cdate>1780487199147</cdate>
-		<edate>1780516818395</edate>
-		<id>27</id>
+	<Task sr="task60">
+		<cdate>1749600000000</cdate>
+		<edate>1781166046638</edate>
+		<id>60</id>
 		<nme>RZ_STT_Context</nme>
+		<pri>100</pri>
 		<Action sr="act0" ve="7">
 			<code>547</code>
+			<label>Contexte STT reçu de SP</label>
 			<Str sr="arg0" ve="3">%RZsttContext</Str>
 			<Str sr="arg1" ve="3">%par</Str>
 			<Int sr="arg2" val="0"/>
@@ -13,6 +15,210 @@
 			<Int sr="arg4" val="0"/>
 			<Int sr="arg5" val="3"/>
 			<Int sr="arg6" val="1"/>
+		</Action>
+		<Action sr="act1" ve="7">
+			<code>37</code>
+			<label>Branche Inactif</label>
+			<ConditionList sr="if">
+				<Condition sr="c0" ve="3">
+					<lhs>%par</lhs>
+					<op>2</op>
+					<rhs>Inactif</rhs>
+				</Condition>
+			</ConditionList>
+		</Action>
+		<Action sr="act10" ve="7">
+			<code>130</code>
+			<label>Cmde → démarrer AutoVoice</label>
+			<Str sr="arg0" ve="3">RZ_AVStart</Str>
+			<Int sr="arg1" val="0"/>
+			<Int sr="arg10" val="0"/>
+			<Str sr="arg2" ve="3"/>
+			<Str sr="arg3" ve="3"/>
+			<Str sr="arg4" ve="3"/>
+			<Int sr="arg5" val="0"/>
+			<Int sr="arg6" val="0"/>
+			<Str sr="arg7" ve="3"/>
+			<Int sr="arg8" val="0"/>
+			<Int sr="arg9" val="0"/>
+		</Action>
+		<Action sr="act11" ve="7">
+			<code>130</code>
+			<label>Cmde → fermer Gemini (SP prioritaire)</label>
+			<Str sr="arg0" ve="3">RZ_GeminiStop</Str>
+			<Int sr="arg1" val="0"/>
+			<Int sr="arg10" val="0"/>
+			<Str sr="arg2" ve="3"/>
+			<Str sr="arg3" ve="3"/>
+			<Str sr="arg4" ve="3"/>
+			<Int sr="arg5" val="0"/>
+			<Int sr="arg6" val="0"/>
+			<Str sr="arg7" ve="3"/>
+			<Int sr="arg8" val="0"/>
+			<Int sr="arg9" val="0"/>
+		</Action>
+		<Action sr="act12" ve="7">
+			<code>43</code>
+		</Action>
+		<Action sr="act13" ve="7">
+			<code>37</code>
+			<label>Branche Conv</label>
+			<ConditionList sr="if">
+				<Condition sr="c0" ve="3">
+					<lhs>%par</lhs>
+					<op>2</op>
+					<rhs>Conv</rhs>
+				</Condition>
+			</ConditionList>
+		</Action>
+		<Action sr="act14" ve="7">
+			<code>130</code>
+			<label>Conv → arrêter AutoVoice</label>
+			<Str sr="arg0" ve="3">RZ_AVStop</Str>
+			<Int sr="arg1" val="0"/>
+			<Int sr="arg10" val="0"/>
+			<Str sr="arg2" ve="3"/>
+			<Str sr="arg3" ve="3"/>
+			<Str sr="arg4" ve="3"/>
+			<Int sr="arg5" val="0"/>
+			<Int sr="arg6" val="0"/>
+			<Str sr="arg7" ve="3"/>
+			<Int sr="arg8" val="0"/>
+			<Int sr="arg9" val="0"/>
+		</Action>
+		<Action sr="act15" ve="7">
+			<code>130</code>
+			<label>Conv → Gemini ouvert-seul</label>
+			<Str sr="arg0" ve="3">RZ_GeminiStart</Str>
+			<Int sr="arg1" val="0"/>
+			<Int sr="arg10" val="0"/>
+			<Str sr="arg2" ve="3"/>
+			<Str sr="arg3" ve="3"/>
+			<Str sr="arg4" ve="3"/>
+			<Int sr="arg5" val="0"/>
+			<Int sr="arg6" val="0"/>
+			<Str sr="arg7" ve="3"/>
+			<Int sr="arg8" val="0"/>
+			<Int sr="arg9" val="0"/>
+		</Action>
+		<Action sr="act16" ve="7">
+			<code>43</code>
+			<label>Branche Mixte (défaut)</label>
+		</Action>
+		<Action sr="act17" ve="7">
+			<code>130</code>
+			<label>Mixte → démarrer AutoVoice</label>
+			<Str sr="arg0" ve="3">RZ_AVStart</Str>
+			<Int sr="arg1" val="0"/>
+			<Int sr="arg10" val="0"/>
+			<Str sr="arg2" ve="3"/>
+			<Str sr="arg3" ve="3"/>
+			<Str sr="arg4" ve="3"/>
+			<Int sr="arg5" val="0"/>
+			<Int sr="arg6" val="0"/>
+			<Str sr="arg7" ve="3"/>
+			<Int sr="arg8" val="0"/>
+			<Int sr="arg9" val="0"/>
+		</Action>
+		<Action sr="act18" ve="7">
+			<code>130</code>
+			<label>Mixte → Gemini avec-autovoice</label>
+			<Str sr="arg0" ve="3">RZ_GeminiStart</Str>
+			<Int sr="arg1" val="0"/>
+			<Int sr="arg10" val="0"/>
+			<Str sr="arg2" ve="3"/>
+			<Str sr="arg3" ve="3"/>
+			<Str sr="arg4" ve="3"/>
+			<Int sr="arg5" val="0"/>
+			<Int sr="arg6" val="0"/>
+			<Str sr="arg7" ve="3"/>
+			<Int sr="arg8" val="0"/>
+			<Int sr="arg9" val="0"/>
+		</Action>
+		<Action sr="act19" ve="7">
+			<code>38</code>
+		</Action>
+		<Action sr="act2" ve="7">
+			<code>130</code>
+			<label>Inactif → arrêter AutoVoice</label>
+			<Str sr="arg0" ve="3">RZ_AVStop</Str>
+			<Int sr="arg1" val="0"/>
+			<Int sr="arg10" val="0"/>
+			<Str sr="arg2" ve="3"/>
+			<Str sr="arg3" ve="3"/>
+			<Str sr="arg4" ve="3"/>
+			<Int sr="arg5" val="0"/>
+			<Int sr="arg6" val="0"/>
+			<Str sr="arg7" ve="3"/>
+			<Int sr="arg8" val="0"/>
+			<Int sr="arg9" val="0"/>
+		</Action>
+		<Action sr="act20" ve="7">
+			<code>38</code>
+		</Action>
+		<Action sr="act21" ve="7">
+			<code>38</code>
+		</Action>
+		<Action sr="act3" ve="7">
+			<code>37</code>
+			<label>Gemini demandé par utilisateur ?</label>
+			<ConditionList sr="if">
+				<Condition sr="c0" ve="3">
+					<lhs>%RZiAConvOnOff</lhs>
+					<op>2</op>
+					<rhs>On</rhs>
+				</Condition>
+			</ConditionList>
+		</Action>
+		<Action sr="act4" ve="7">
+			<code>130</code>
+			<label>Inactif + Gemini On → ouvert-seul</label>
+			<Str sr="arg0" ve="3">RZ_GeminiStart</Str>
+			<Int sr="arg1" val="0"/>
+			<Int sr="arg10" val="0"/>
+			<Str sr="arg2" ve="3"/>
+			<Str sr="arg3" ve="3"/>
+			<Str sr="arg4" ve="3"/>
+			<Int sr="arg5" val="0"/>
+			<Int sr="arg6" val="0"/>
+			<Str sr="arg7" ve="3"/>
+			<Int sr="arg8" val="0"/>
+			<Int sr="arg9" val="0"/>
+		</Action>
+		<Action sr="act5" ve="7">
+			<code>43</code>
+		</Action>
+		<Action sr="act6" ve="7">
+			<code>130</code>
+			<label>Inactif + Gemini Off → ferme</label>
+			<Str sr="arg0" ve="3">RZ_GeminiStop</Str>
+			<Int sr="arg1" val="0"/>
+			<Int sr="arg10" val="0"/>
+			<Str sr="arg2" ve="3"/>
+			<Str sr="arg3" ve="3"/>
+			<Str sr="arg4" ve="3"/>
+			<Int sr="arg5" val="0"/>
+			<Int sr="arg6" val="0"/>
+			<Str sr="arg7" ve="3"/>
+			<Int sr="arg8" val="0"/>
+			<Int sr="arg9" val="0"/>
+		</Action>
+		<Action sr="act7" ve="7">
+			<code>38</code>
+		</Action>
+		<Action sr="act8" ve="7">
+			<code>43</code>
+		</Action>
+		<Action sr="act9" ve="7">
+			<code>37</code>
+			<label>Branche Cmde</label>
+			<ConditionList sr="if">
+				<Condition sr="c0" ve="3">
+					<lhs>%par</lhs>
+					<op>2</op>
+					<rhs>Cmde</rhs>
+				</Condition>
+			</ConditionList>
 		</Action>
 	</Task>
 </TaskerData>

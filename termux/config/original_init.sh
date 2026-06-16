@@ -17,6 +17,9 @@
 # ----------------------
 #   1. Vérifie la présence des fichiers PocketSphinx (model-fr/, dicts)
 #      → Ne les crée ni ne les écrase JAMAIS.
+#      → PocketSphinx abandonné sur Android 9 (OpenSL ES inaccessible).
+#      → STT géré par AutoVoice via Tasker. Vérification conservée pour
+#         compatibilité future (RPI 4 / autre plateforme).
 #   2. Génère courant_init.json (configuration complète SE + Arduino)
 #   3. Génère tableD_catalogueV2.csv (catalogue des commandes vocales STT)
 #   4. Lance rz_build_system.py → stt_catalog.json + rz_words.txt
@@ -38,7 +41,8 @@
 #   [x] Cam   : instances front/rear, profils CPU normal/optimized
 #   [x] Mic   : modeMicro, paraMicro (seuils, balayage orientation)
 #   [x] Appli : états initiaux, tâches Tasker, packages Android
-#   [x] STT   : modeSTT, keyphrase, threshold, lib_path
+#               Baby supprimé. IA_Conv ajouté (juin 2026).
+#   [x] STT   : modeSTT=OFF (PocketSphinx abandonné — AutoVoice via Tasker)
 #   [x] Voice : vol (volume multimédia global), output (sortie audio), ttsRate
 #   [x] Mtr   : speed_cruise, scales, kturn
 #
@@ -54,8 +58,8 @@
 # ------------
 #   original_init.sh
 #     → courant_init.json       → check_config.sh → *_runtime.json / *_config.json
-#     → tableD_catalogueV2.csv   → rz_build_system.py → stt_catalog.json + rz_words.txt
-#                                → rz_build_dict.py   → fr.dict
+#     → tableD_catalogueV2.csv  → rz_build_system.py → stt_catalog.json + rz_words.txt
+#                               → rz_build_dict.py   → fr.dict
 #
 # PRÉCAUTIONS
 # -----------
@@ -84,8 +88,8 @@
 #   check_config.sh : validation et distribution des configs
 #
 # AUTEUR  : Vincent Philippe
-# VERSION : 1.0  (intégration courant_init + catalogue STT)
-# DATE    : 2026-03-06
+# VERSION : 2.0  (juin 2026 — Baby supprimé, IA_Conv ajouté, STT=OFF AutoVoice)
+# DATE    : 2026-06-16
 # =============================================================================
 
 # =============================================================================
@@ -136,7 +140,7 @@ erreur() {
 }
 
 log "=========================================="
-log "Démarrage original_init.sh  v1.0"
+log "Démarrage original_init.sh  v2.0"
 log "=========================================="
 
 # =============================================================================
@@ -153,9 +157,10 @@ log "  jq et python3 disponibles  ✓"
 # =============================================================================
 # ÉTAPE 1 — VÉRIFICATION FICHIERS POCKETSPHINX
 # =============================================================================
-# ⚠️ Ces fichiers sont LOURDS (~50-200 Mo), exclus du dépôt Git.
-#    Ils doivent être installés manuellement UNE SEULE FOIS sur le smartphone.
-#    Ce script les vérifie sans jamais les créer ni les écraser.
+# ⚠️ PocketSphinx abandonné sur Android 9 (OpenSL ES inaccessible).
+#    STT géré par AutoVoice via Tasker depuis juin 2026.
+#    La vérification est conservée pour compatibilité future (RPI 4).
+#    Ces fichiers sont LOURDS (~50-200 Mo), exclus du dépôt Git.
 #
 # Structure attendue dans lib_pocketsphinx/ :
 #   model-fr/              ← modèle acoustique français (binaires PocketSphinx)
@@ -163,32 +168,28 @@ log "  jq et python3 disponibles  ✓"
 #   fr.dict                ← dictionnaire réduit (généré par rz_build_dict.py)
 # =============================================================================
 
-log "--- Vérification fichiers PocketSphinx ---"
+log "--- Vérification fichiers PocketSphinx (info seulement — STT=OFF) ---"
 
-# lib_path est lu depuis les variables STT définies plus bas.
-# Pour la vérification préalable, on utilise la valeur par défaut.
 STT_LIB_CHECK="$STT_SCRIPT_DIR/lib_pocketsphinx"
 stt_prereq_ok=true
 
 if [ ! -d "$STT_LIB_CHECK/model-fr" ]; then
-    log "  WARN : model-fr/ absent dans $STT_LIB_CHECK"
-    log "         → STT inopérant après installation."
-    log "         → Copier manuellement le modèle acoustique français."
+    log "  INFO : model-fr/ absent dans $STT_LIB_CHECK"
+    log "         → Normal : PocketSphinx abandonné sur Android 9."
     stt_prereq_ok=false
 else
     log "  model-fr/ présent  ✓  (non modifié)"
 fi
 
 if [ ! -f "$STT_LIB_CHECK/lexique_referent.dict" ]; then
-    log "  WARN : lexique_referent.dict absent dans $STT_LIB_CHECK"
-    log "         → rz_build_dict.py ne pourra pas générer fr.dict."
-    log "         → Copier manuellement le dictionnaire source français."
+    log "  INFO : lexique_referent.dict absent dans $STT_LIB_CHECK"
+    log "         → Normal : PocketSphinx abandonné sur Android 9."
     stt_prereq_ok=false
 else
     log "  lexique_referent.dict présent  ✓  (non modifié)"
 fi
 
-$stt_prereq_ok || log "  WARN : Installation STT incomplète — continuer quand même."
+$stt_prereq_ok || log "  INFO : PocketSphinx non installé — STT AutoVoice actif."
 
 # =============================================================================
 # ÉTAPE 2 — PARAMÈTRES DE CONFIGURATION
@@ -295,15 +296,16 @@ mic_timeoutOrientation=15   # secondes — durée max balayage
 # SECTION APPLI — Propriétés SP → SE  (Table A : module Appli, CAT=A)
 # ---------------------------------------------------------------------------
 # États toujours Off au démarrage (sécurité)
+# Baby supprimé (juin 2026) — fonctionnalité abandonnée
+# IA_Conv ajouté (juin 2026) — conversation Gemini via AutoVoice
 
-appli_Baby_state="Off"  ;  appli_tasker_state="Off"  ;  appli_zoom_state="Off"
-appli_BabyMonitor_state="Off"  ;  appli_NavGPS_state="Off"
+appli_tasker_state="Off"  ;  appli_zoom_state="Off"  ;  appli_NavGPS_state="Off"
+appli_IA_Conv_state="Off"
 
 # Noms des tâches Tasker (doivent correspondre exactement dans Tasker)
-appli_Baby_task="RZ_Baby"
 appli_zoom_task="RZ_Zoom"
-appli_BabyMonitor_task="RZ_BabyMonitor"
 appli_NavGPS_task="RZ_NavGPS"
+appli_IA_Conv_task="RZ_IA_Conv"
 
 # Packages Android (pour fallback am start)
 appli_tasker_pkg="net.dinglisch.android.taskerm"
@@ -319,14 +321,16 @@ appli_info_task="RZ_Info"
 # ---------------------------------------------------------------------------
 # SECTION STT — Propriétés SP → SE  (Table A : module STT)
 # ---------------------------------------------------------------------------
-# modeSTT   : KWS = Keyword Spotting | OFF = inactif
+# modeSTT=OFF : PocketSphinx abandonné sur Android 9 (OpenSL ES inaccessible)
+#               STT géré par AutoVoice (Tasker) depuis juin 2026.
+#               Les autres paramètres sont conservés pour compatibilité future
+#               (usage possible sur RPI 4 avec PocketSphinx).
 # threshold : seuil PocketSphinx (notation scientifique : 1e-20 recommandé)
-#             Plus petit → plus exigeant (moins de faux déclenchements)
 # keyphrase : mot de réveil (doit être dans fr.dict)
 # lang      : langue de reconnaissance (uniquement "fr" dans ce projet)
 # lib_path  : chemin RELATIF au dossier stt/ vers les modèles PocketSphinx
 
-stt_modeSTT="KWS"
+stt_modeSTT="OFF"
 stt_threshold="1e-20"
 stt_keyphrase="rz"
 stt_lang="fr"
@@ -450,11 +454,10 @@ cat > "$OUTPUT_JSON" <<EOF
     }
   },
   "appli": {
-    "Baby":        { "state": "$appli_Baby_state",        "tasker_task": "$appli_Baby_task",        "package": "",                    "last_change": "" },
-    "tasker":      { "state": "$appli_tasker_state",      "tasker_task": "",                        "package": "$appli_tasker_pkg",   "last_change": "" },
-    "zoom":        { "state": "$appli_zoom_state",        "tasker_task": "$appli_zoom_task",        "package": "$appli_zoom_pkg",     "last_change": "" },
-    "BabyMonitor": { "state": "$appli_BabyMonitor_state", "tasker_task": "$appli_BabyMonitor_task", "package": "",                    "last_change": "" },
-    "NavGPS":      { "state": "$appli_NavGPS_state",      "tasker_task": "$appli_NavGPS_task",      "package": "$appli_NavGPS_pkg",   "last_change": "" },
+    "tasker":  { "state": "$appli_tasker_state",   "tasker_task": "",                    "package": "$appli_tasker_pkg", "last_change": "" },
+    "zoom":    { "state": "$appli_zoom_state",     "tasker_task": "$appli_zoom_task",    "package": "$appli_zoom_pkg",   "last_change": "" },
+    "NavGPS":  { "state": "$appli_NavGPS_state",   "tasker_task": "$appli_NavGPS_task",  "package": "$appli_NavGPS_pkg", "last_change": "" },
+    "IA_Conv": { "state": "$appli_IA_Conv_state",  "tasker_task": "$appli_IA_Conv_task", "package": "",                  "last_change": "" },
     "bridge_timeout": $appli_bridge_timeout,
     "ExprTasker": { "expr_task": "$appli_expr_task", "info_task": "$appli_info_task" }
   },
@@ -479,11 +482,11 @@ cat > "$OUTPUT_JSON" <<EOF
     "lang":      "$stt_lang",
     "lib_path":  "$stt_lib_path"
   },
-    "voice": {
+  "voice": {
     "vol":     $voice_vol,
     "output":  "$voice_output",
     "ttsRate": $voice_ttsRate
-    },
+  },
   "mtr": {
     "speed_cruise":  $mtr_speed_cruise,
     "inputScale":    $mtr_inputScale,
@@ -587,7 +590,7 @@ log "global.json généré et validé  ✓"
 # ##  CAT        : V (Consigne) | I (Info) | A (Application)                 ##
 # ##  Destinataire : A (Arduino) | SE (Smartphone) | SP (Superviseur)        ##
 # ##  moteurActif  : 1 = commande moteur (bloquée en mode laisse)            ##
-# ##  Alias      : synonymes séparés par virgule (reconnus par PocketSphinx) ##
+# ##  Alias      : synonymes séparés par virgule (reconnus par AutoVoice)    ##
 # ##  ID_fils    : pour COMPLEXE uniquement, IDs séparés par virgule         ##
 # ##  Prepa_Encodage : pour PLAN uniquement :                                ##
 # ##    NUM       → injecter le nombre extrait de la phrase                  ##
@@ -599,7 +602,7 @@ log "global.json généré et validé  ✓"
 # ##  - Ajouter une ligne dans le groupe correspondant                       ##
 # ##  - Les lignes de commentaire commencent par ;;;;                        ##
 # ##  - Après modification : relancer ce script complet                      ##
-# ##    (ou lancer rz_build_system.py + rz_build_dict.py manuellement)       ##
+# ##    (ou lancer rz_build_system.py manuellement)                          ##
 # ##                                                                         ##
 # #############################################################################
 # #############################################################################
@@ -662,10 +665,10 @@ APP_TASKER_ON;SIMPLE;A;SE;0;lance tasker,démarre tasker;;Appli;tasker;*;On;;Tas
 APP_TASKER_OFF;SIMPLE;A;SE;0;arrête tasker,ferme tasker;;Appli;tasker;*;Off;;Tasker fermé.
 APP_ZOOM_ON;SIMPLE;A;SE;0;lance zoom,démarre zoom,réunion zoom;;Appli;zoom;*;On;;Je lance Zoom.
 APP_ZOOM_OFF;SIMPLE;A;SE;0;arrête zoom,ferme zoom;;Appli;zoom;*;Off;;Zoom fermé.
-APP_BABY_ON;SIMPLE;A;SE;0;lance baby,surveillance bébé;;Appli;Baby;*;On;;Surveillance bébé démarrée.
-APP_BABY_OFF;SIMPLE;A;SE;0;arrête baby,stop bébé;;Appli;Baby;*;Off;;Surveillance bébé arrêtée.
 APP_GPS_ON;SIMPLE;A;SE;0;lance la navigation,gps,navigation;;Appli;NavGPS;*;On;;Navigation démarrée.
 APP_GPS_OFF;SIMPLE;A;SE;0;arrête la navigation,stop gps;;Appli;NavGPS;*;Off;;Navigation arrêtée.
+APP_IA_CONV_ON;SIMPLE;A;SE;0;active gemini,lance la conversation,conversation ia;;Appli;IA_Conv;*;On;;Je t'écoute.
+APP_IA_CONV_OFF;SIMPLE;A;SE;0;arrête gemini,ferme la conversation,stop ia;;Appli;IA_Conv;*;Off;;Conversation terminée.
 ;;;;;;;;;;;; EXPRESSIONS TASKER ;;;;
 EXPR_SMILE;SIMPLE;A;SE;0;fais un sourire,souris tasker;;Appli;ExprTasker;Expression;sourire;;Voilà !
 EXPR_NEUTRAL;SIMPLE;A;SE;0;retour neutre,expression normale;;Appli;ExprTasker;Off;*;;D'accord.
@@ -753,7 +756,7 @@ fi
 # =============================================================================
 
 log "=========================================="
-log "original_init.sh terminé"
+log "original_init.sh v2.0 terminé"
 log ""
 log "Arborescence créée :"
 log "  → $BASE_DIR/config/sensors/"

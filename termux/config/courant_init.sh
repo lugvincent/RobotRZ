@@ -25,7 +25,8 @@
 #   [x] Cam   : instances front/rear, profils CPU normal/optimized
 #   [x] Mic   : modeMicro, paraMicro (seuils, balayage orientation)
 #   [x] Appli : états initiaux, tâches Tasker, packages Android
-#   [x] STT   : modeSTT, keyphrase, threshold, lib_path
+#               Baby/BabyMonitor supprimés. IA_Conv ajouté (juin 2026).
+#   [x] STT   : modeSTT=OFF (PocketSphinx abandonné — AutoVoice via Tasker)
 #   [x] Voice : vol, output, ttsRate
 #   [x] Mtr   : speed_cruise, scales, kturn  (lu directement par rz_stt_handler.sh)
 #
@@ -41,12 +42,11 @@
 # rz_stt_handler.sh le lit directement depuis courant_init.json pour construire
 # les trames VPIV dynamiques (commandes vocales de type PLAN).
 #
-# NOTE BLOCS LIB_POCKETSPHINX
-# ----------------------------
-# model-fr/ et lexique_referent.dict sont des fichiers LOURDS (50-200 Mo),
-# exclus du dépôt Git. À installer manuellement une seule fois sur le smartphone.
-# fr.dict est léger et regénérable via rz_build_dict.py.
-# original_init.sh vérifie leur présence sans jamais les écraser.
+# NOTE STT
+# --------
+# PocketSphinx abandonné sur Android 9 (OpenSL ES inaccessible).
+# STT géré par AutoVoice (Tasker) depuis juin 2026.
+# Les paramètres stt_* sont conservés pour compatibilité future (RPI 4).
 #
 # NOTE UNITÉS FRÉQUENCES
 # -----------------------
@@ -66,8 +66,8 @@
 #   Aucune (génération texte pur)
 #
 # AUTEUR  : Vincent Philippe
-# VERSION : 5.1  (ajout blocs STT et Mtr)
-# DATE    : 2026-03-06
+# VERSION : 6.0  (juin 2026 — Baby supprimé, IA_Conv, STT=OFF AutoVoice, ttsRate float)
+# DATE    : 2026-06-16
 # =============================================================================
 
 # =============================================================================
@@ -97,7 +97,6 @@ modeGyro="DATACont"
 # Angle combiné BASE+THB pour correction tangage (mode ALERTE)
 # Exemple : 150 = 15.0° | 0 = machine parfaitement verticale
 angleVSEBase=150
-
 
 freqCont_gyro=20        # Hz — flux continu (> 0)
 freqMoy_gyro=2          # Hz — flux moyenné (> 0)
@@ -211,19 +210,18 @@ mic_timeoutOrientation=15   # secondes — durée max balayage (sécurité)
 # =============================================================================
 # SECTION APPLI — Propriétés SP → SE  (Table A : module Appli, CAT=A)
 # =============================================================================
-# Chaque app a un état initial Off (sécurité démarrage) et un nom de tâche
-# Tasker. Tasker doit être lancé avant Baby, BabyMonitor, NavGPS.
+# Chaque app a un état initial Off (sécurité démarrage) et un nom de tâche Tasker.
+# Baby/BabyMonitor supprimés (juin 2026) — fonctionnalité abandonnée.
+# IA_Conv ajouté (juin 2026) — conversation Gemini via AutoVoice.
 
-# États initiaux (On|Off) — recommandé : toujours Off au démarrage
-appli_IA_Conv_state="Off"; appli_Baby_state="Off"  ;  appli_tasker_state="Off"  ;  appli_zoom_state="Off"
-appli_BabyMonitor_state="Off"  ;  appli_NavGPS_state="Off"
+# États initiaux (On|Off) — toujours Off au démarrage (sécurité)
+appli_tasker_state="Off"  ;  appli_zoom_state="Off"  ;  appli_NavGPS_state="Off"
+appli_IA_Conv_state="Off"
 
 # Noms des tâches Tasker (doivent correspondre exactement dans Tasker)
-appli_IA_Conv_task="RZ_IA_Conv"
-appli_Baby_task="RZ_Baby"
 appli_zoom_task="RZ_Zoom"
-appli_BabyMonitor_task="RZ_BabyMonitor"
 appli_NavGPS_task="RZ_NavGPS"
+appli_IA_Conv_task="RZ_IA_Conv"
 
 # Packages Android (pour fallback am start si Tasker bridge échoue)
 appli_tasker_pkg="net.dinglisch.android.taskerm"
@@ -239,31 +237,26 @@ appli_info_task="RZ_Info"           # Tâche pour affichage message info
 # =============================================================================
 # SECTION STT — Propriétés SP → SE  (Table A : module STT)
 # =============================================================================
-# Paramètres de reconnaissance vocale PocketSphinx.
-# PocketSphinx écoute en continu et ne réagit qu'au wake word (keyphrase).
-#
-# modeSTT   : KWS = Keyword Spotting (écoute wake word) | OFF = inactif
+# modeSTT=OFF : PocketSphinx abandonné sur Android 9 (OpenSL ES inaccessible).
+#               STT géré par AutoVoice (Tasker) depuis juin 2026.
+#               Paramètres conservés pour compatibilité future (RPI 4).
 #
 # threshold : seuil de sensibilité détection wake word (notation scientifique).
 #   1e-20 = 0.00000000000000000001
 #   Plus petite → plus exigeant (moins de faux déclenchements)
-#   Valeur recommandée PocketSphinx : 1e-20
 #
-# keyphrase : mot de réveil prononcé pour activer RZ.
+# keyphrase : mot de réveil. Dans ce projet : "rz"
 #   Doit être présent dans fr.dict (dictionnaire phonétique local).
-#   Dans ce projet : "rz"
 #
 # lang      : langue de reconnaissance. Uniquement "fr" dans ce projet.
 #
 # lib_path  : chemin RELATIF au dossier du script STT vers les modèles.
 #   Structure attendue dans lib_pocketsphinx/ :
 #     model-fr/             ← modèle acoustique français (~50-200 Mo, hors Git)
-#     lexique_referent.dict ← dictionnaire source français (~milliers de mots, hors Git)
-#     fr.dict               ← dictionnaire réduit catalogue STT (regénérable, dans Git)
-#   ⚠️ model-fr/ et lexique_referent.dict : installer manuellement une seule fois.
-#      original_init.sh vérifie leur présence sans jamais les écraser.
+#     lexique_referent.dict ← dictionnaire source français (hors Git)
+#     fr.dict               ← dictionnaire réduit catalogue STT (regénérable)
 
-stt_modeSTT="KWS"
+stt_modeSTT="OFF"
 stt_threshold="1e-20"
 stt_keyphrase="rz"
 stt_lang="fr"
@@ -280,10 +273,11 @@ stt_lib_path="lib_pocketsphinx"
 # ttsRate  : vitesse de synthèse vocale (0.5=lent … 1.0=normal … 2.0=rapide)
 #            Passé à termux-tts-speak si supporté par le moteur TTS Android.
 #            Valeur recommandée pour robot compagnon : 1.0
+#            ⚠️ Float sans guillemets — termux-tts-speak attend un nombre.
 
 voice_vol=80
 voice_output="internal"
-voice_ttsRate="1.0"
+voice_ttsRate=1.0       # float — pas de guillemets
 
 # =============================================================================
 # SECTION MTR — Propriétés de référence moteur  (Table A : module Mtr)
@@ -294,21 +288,14 @@ voice_ttsRate="1.0"
 # ⚠️ CE BLOC N'EST PAS distribué en fichier local séparé par check_config.sh.
 #    rz_stt_handler.sh lit directement courant_init.json pour construire les
 #    trames VPIV des commandes vocales dynamiques (type PLAN).
-#    Cohérence : PLAN utilise les valeurs de CONFIGURATION (stables),
-#    pas les valeurs runtime (vitesse instantanée inconnue de SE).
 #
 # speed_cruise : vitesse "normale" de déplacement (-100..100, unité Mtr).
-#   Utilisée par les commandes PLAN type "angle+speed" :
-#   ex "avance de 2 mètres" → trame Mtr:cmd = speed_cruise, omega, accel
-#
-# inputScale  : échelle des commandes en entrée
-# outputScale : échelle de sortie vers le hardware moteur
+# inputScale   : échelle des commandes en entrée
+# outputScale  : échelle de sortie vers le hardware moteur
 #   Conversion : consigne_hw = commande × outputScale / inputScale
-#
-# kturn : facteur de rotation, stocké ×10 pour éviter les float en Bash.
+# kturn : facteur de rotation ×10 pour éviter les float en Bash.
 #   Côté Arduino : kturn_reel = kturn / 10  (ex: 8 → 0.8)
 #   Formule : L = (v - omega×0.8)  |  R = (v + omega×0.8)
-#
 # active : état moteur au démarrage. Toujours false (sécurité).
 
 mtr_speed_cruise=30
@@ -403,12 +390,10 @@ cat > "$OUTPUT_JSON" <<EOF
     }
   },
   "appli": {
-    "Baby":        { "state": "$appli_Baby_state",        "tasker_task": "$appli_Baby_task",        "package": "",                    "last_change": "" },
-    "IA_Conv":     { "state": "$appli_IA_Conv_state",          "tasker_task": "$appli_IA_Conv_task",     "package": "",                    "last_change": "" },
-    "tasker":      { "state": "$appli_tasker_state",      "tasker_task": "",                        "package": "$appli_tasker_pkg",   "last_change": "" },
-    "zoom":        { "state": "$appli_zoom_state",        "tasker_task": "$appli_zoom_task",        "package": "$appli_zoom_pkg",     "last_change": "" },
-    "BabyMonitor": { "state": "$appli_BabyMonitor_state", "tasker_task": "$appli_BabyMonitor_task", "package": "",                    "last_change": "" },
-    "NavGPS":      { "state": "$appli_NavGPS_state",      "tasker_task": "$appli_NavGPS_task",      "package": "$appli_NavGPS_pkg",   "last_change": "" },
+    "tasker":  { "state": "$appli_tasker_state",   "tasker_task": "",                    "package": "$appli_tasker_pkg", "last_change": "" },
+    "zoom":    { "state": "$appli_zoom_state",     "tasker_task": "$appli_zoom_task",    "package": "$appli_zoom_pkg",   "last_change": "" },
+    "NavGPS":  { "state": "$appli_NavGPS_state",   "tasker_task": "$appli_NavGPS_task",  "package": "$appli_NavGPS_pkg", "last_change": "" },
+    "IA_Conv": { "state": "$appli_IA_Conv_state",  "tasker_task": "$appli_IA_Conv_task", "package": "",                  "last_change": "" },
     "bridge_timeout": $appli_bridge_timeout,
     "ExprTasker": { "expr_task": "$appli_expr_task", "info_task": "$appli_info_task" }
   },
@@ -436,7 +421,7 @@ cat > "$OUTPUT_JSON" <<EOF
   "voice": {
     "vol":     $voice_vol,
     "output":  "$voice_output",
-    "ttsRate": "$voice_ttsRate"
+    "ttsRate": $voice_ttsRate
   },
   "mtr": {
     "speed_cruise":  $mtr_speed_cruise,

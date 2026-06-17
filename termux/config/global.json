@@ -1,8 +1,8 @@
 {
   "CfgS": {
-    "modeRZ": 2,
-    "typePtge": 1,
-    "reset": false,
+    "modeRZ":   1,
+    "typePtge": 0,
+    "reset":      false,
     "typeReseau": "WifiInternetBox"
   },
   "Urg": {
@@ -13,21 +13,16 @@
   "COM": {
     "debug": "",
     "error": "",
-    "info": "",
-    "warn": ""
+    "info":  "",
+    "warn":  ""
   },
   "Sys": {
-    "cpu_load": 0,
-    "temp": 0,
-    "storage": 65,
-    "mem": 60,
-    "batt": 100,
-    "uptime": 0,
-    "last_update": "2026-06-16 08:59:51",
-    "cpu": 0,
-    "thermal": 30
-  },
-  "STT": {
-    "context": "Mixte"
+    "cpu_load":   0,
+    "temp":       0,
+    "storage":    0,
+    "mem":        0,
+    "batt":       0,
+    "uptime":     0,
+    "last_update": ""
   }
 }

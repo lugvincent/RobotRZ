@@ -17,7 +17,7 @@
                 "var": "Mtr",
                 "prop": "cmd",
                 "inst": "*",
-                "val": "0,0,2",
+                "val": "0,0,0",
                 "encodage": ""
             },
             "alias_tts": [
@@ -81,6 +81,7 @@
             "moteurActif": 1,
             "synonymes": [
                 "stop",
+                "top",
                 "arrête",
                 "freine",
                 "immobile",
@@ -161,7 +162,7 @@
                 "var": "Mtr",
                 "prop": "cmd",
                 "inst": "*",
-                "val": "[calculé]",
+                "val": "[calcule]",
                 "encodage": "angle->NUM_DIR"
             },
             "alias_tts": [
@@ -184,7 +185,7 @@
                 "var": "Mtr",
                 "prop": "cmd",
                 "inst": "*",
-                "val": "[calculé]",
+                "val": "[calcule]",
                 "encodage": "angle->NUM_DIR"
             },
             "alias_tts": [
@@ -206,7 +207,7 @@
                 "var": "Mtr",
                 "prop": "cmd",
                 "inst": "*",
-                "val": "[calculé]",
+                "val": "[calcule]",
                 "encodage": "angle->NUM_DIR"
             },
             "alias_tts": [
@@ -228,7 +229,7 @@
                 "var": "Mtr",
                 "prop": "cmd",
                 "inst": "*",
-                "val": "[calculé]",
+                "val": "[calcule]",
                 "encodage": "speed->NUM"
             },
             "alias_tts": [
@@ -250,7 +251,7 @@
                 "var": "Mtr",
                 "prop": "cmd",
                 "inst": "*",
-                "val": "[calculé]",
+                "val": "[calcule]",
                 "encodage": "dist->NUM"
             },
             "alias_tts": [
@@ -433,7 +434,7 @@
                 "var": "CfgS",
                 "prop": "typePtge",
                 "inst": "*",
-                "val": "[calculé]",
+                "val": "[calcule]",
                 "encodage": "mode->STR"
             },
             "alias_tts": [
@@ -776,7 +777,7 @@
                 "var": "Lring",
                 "prop": "lumin",
                 "inst": "*",
-                "val": "[calculé]",
+                "val": "[calcule]",
                 "encodage": "brightness->NUM"
             },
             "alias_tts": [
@@ -934,7 +935,7 @@
                 "var": "Srv",
                 "prop": "angle",
                 "inst": "TGD",
-                "val": "[calculé]",
+                "val": "[calcule]",
                 "encodage": "angle->NUM"
             },
             "alias_tts": [
@@ -1031,50 +1032,6 @@
             ]
         },
         {
-            "id": "APP_BABY_ON",
-            "traitement": "SIMPLE",
-            "cat": "V",
-            "destinataire": "SE",
-            "moteurActif": 0,
-            "synonymes": [
-                "lance baby",
-                "surveillance bébé"
-            ],
-            "id_fils": [],
-            "vpiv_parts": {
-                "var": "Appli",
-                "prop": "Baby",
-                "inst": "*",
-                "val": "On",
-                "encodage": ""
-            },
-            "alias_tts": [
-                "Surveillance bébé démarrée."
-            ]
-        },
-        {
-            "id": "APP_BABY_OFF",
-            "traitement": "SIMPLE",
-            "cat": "V",
-            "destinataire": "SE",
-            "moteurActif": 0,
-            "synonymes": [
-                "arrête baby",
-                "stop bébé"
-            ],
-            "id_fils": [],
-            "vpiv_parts": {
-                "var": "Appli",
-                "prop": "Baby",
-                "inst": "*",
-                "val": "Off",
-                "encodage": ""
-            },
-            "alias_tts": [
-                "Surveillance bébé arrêtée."
-            ]
-        },
-        {
             "id": "APP_GPS_ON",
             "traitement": "SIMPLE",
             "cat": "V",
@@ -1117,6 +1074,52 @@
             },
             "alias_tts": [
                 "Navigation arrêtée."
+            ]
+        },
+        {
+            "id": "APP_IA_CONV_ON",
+            "traitement": "SIMPLE",
+            "cat": "V",
+            "destinataire": "SE",
+            "moteurActif": 0,
+            "synonymes": [
+                "active gemini",
+                "lance la conversation",
+                "conversation ia"
+            ],
+            "id_fils": [],
+            "vpiv_parts": {
+                "var": "Appli",
+                "prop": "IA_Conv",
+                "inst": "*",
+                "val": "On",
+                "encodage": ""
+            },
+            "alias_tts": [
+                "Je t'écoute."
+            ]
+        },
+        {
+            "id": "APP_IA_CONV_OFF",
+            "traitement": "SIMPLE",
+            "cat": "V",
+            "destinataire": "SE",
+            "moteurActif": 0,
+            "synonymes": [
+                "arrête gemini",
+                "ferme la conversation",
+                "stop ia"
+            ],
+            "id_fils": [],
+            "vpiv_parts": {
+                "var": "Appli",
+                "prop": "IA_Conv",
+                "inst": "*",
+                "val": "Off",
+                "encodage": ""
+            },
+            "alias_tts": [
+                "Conversation terminée."
             ]
         },
         {
@@ -1478,7 +1481,7 @@
                 "var": "Voice",
                 "prop": "vol",
                 "inst": "*",
-                "val": "[calculé]",
+                "val": "[calcule]",
                 "encodage": "vol->NUM_OR_ADV"
             },
             "alias_tts": [
@@ -1529,9 +1532,7 @@
                 "val": "",
                 "encodage": ""
             },
-            "alias_tts": [
-                "Je marque une pause."
-            ]
+            "alias_tts": []
         },
         {
             "id": "MACRO_HELLO",
@@ -1556,9 +1557,7 @@
                 "val": "",
                 "encodage": ""
             },
-            "alias_tts": [
-                "Bonjour !"
-            ]
+            "alias_tts": []
         },
         {
             "id": "MACRO_SLEEP",
@@ -1583,9 +1582,7 @@
                 "val": "",
                 "encodage": ""
             },
-            "alias_tts": [
-                "Bonne nuit."
-            ]
+            "alias_tts": []
         },
         {
             "id": "MACRO_WAKE",
@@ -1610,9 +1607,7 @@
                 "val": "",
                 "encodage": ""
             },
-            "alias_tts": [
-                "Je me réveille !"
-            ]
+            "alias_tts": []
         }
     ]
 }

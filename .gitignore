@@ -35,3 +35,5 @@ termux/scripts/sensors/stt/lib_pocketsphinx/
 termux/scripts/sensors/stt/old_rz_autovoice_bridge.sh
 termux/scripts/sensors/stt/rz_stt_debug.py
 termux/config/global.json
+tasker/tasks/old*.tsk.xml
+tasker/profiles/old*.prf.xml

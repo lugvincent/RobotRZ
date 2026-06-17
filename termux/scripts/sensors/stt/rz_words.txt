@@ -12,13 +12,11 @@ autonomie
 avance
 avant
 avec
-baby
 baisse
 bas
 bascule
 batterie
 bonjour
-bébé
 caméra
 cap
 capture
@@ -30,6 +28,7 @@ commande
 comment
 connecté
 connexion
+conversation
 coucou
 couleur
 coupe
@@ -63,9 +62,11 @@ fort
 freine
 fâché
 gauche
+gemini
 gps
 halte
 haut
+ia
 identité
 immobile
 inclinaison
@@ -142,6 +143,7 @@ système
 tasker
 température
 ton
+top
 torche
 tourne
 tout

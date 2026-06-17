@@ -196,6 +196,17 @@ main() {
     fi
     echo $$ > "$PID_FILE"
 
+# Vérification modeSTT — si OFF, pas de PocketSphinx
+    local stt_config="$BASE_DIR/config/sensors/stt_config.json"
+    local mode_stt
+    mode_stt=$(jq -r '.stt.modeSTT // "OFF"' "$stt_config" 2>/dev/null || echo "OFF")
+    if [ "$mode_stt" = "OFF" ]; then
+        log_stt "modeSTT=OFF — PocketSphinx désactivé (AutoVoice/Tasker actif)"
+        log_stt "Module STT en veille — arrêt propre."
+        rm -f "$PID_FILE"
+        exit 0
+    fi
+
     # Vérification prérequis
     if ! check_prerequisites; then
         exit 1

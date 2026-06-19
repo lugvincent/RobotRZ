@@ -5,43 +5,72 @@
 #
 # OBJECTIF
 # --------
-# Gestionnaire centralisé des états SE du robot RobotRZ.
-# Lit les trames VPIV depuis MQTT (SE/commande), met à jour global.json,
-# recalcule le contexte STT et synchronise l'état vers Tasker.
+# Gestionnaire centralise des etats SE du robot RobotRZ.
+# Lit les trames VPIV depuis MQTT (SE/commande), met a jour global.json,
+# recalcule le contexte STT et synchronise l'etat vers Tasker.
 #
 # DESCRIPTION FONCTIONNELLE
 # -------------------------
-#   - Reçoit les trames VPIV via mosquitto_sub (topic SE/commande)
+#   - Recoit les trames VPIV via mosquitto_sub (topic SE/commande)
 #   - Traite les modules : CfgS, Mtr, Gyro, MG, STT
-#   - Met à jour global.json après chaque changement d'état (écriture atomique)
-#   - Calcule STT.context selon modeRZ / typePtge / Robot.speed
-#   - Copie global.json vers /sdcard/Tasker/RobotRZ/ après chaque écriture
-#     (requis par la tâche Tasker RZ_OuvreEtat pour lire l'état SE)
+#   - Met a jour global.json apres chaque changement d'etat (ecriture atomique)
+#   - Calcule STT.context selon modeRZ / typePtge / mouvement moteur (Mtr.state)
+#   - Copie global.json vers /sdcard/Tasker/RobotRZ/ apres chaque ecriture
+#     (requis par la tache Tasker RZ_OuvreEtat pour lire l'etat SE)
 #   - Envoie les ACK VPIV $I:*# sur MQTT SE/statut
+#
+# LOGIQUE STT.context (revisee juin 2026)
+# -----------------------------------------
+# Table modeRZ -> STT.context (base) :
+#   0 (ARRET)        -> Inactif
+#   1 (VEILLE)        -> Mixte  (permissif par conception ; SEUL risque reel :
+#                                 deplacement initie alors que modeRZ reste VEILLE)
+#   2 (FIXE)          -> Mixte  (deja securise : moteurs deplacement bloques
+#                                 par typePtge/Table A, pas besoin de restreindre STT)
+#   3 (DEPLACEMENT)   -> Cmde   (uniquement -- securite + rapidite pendant deplacement)
+#   4 (AUTONOME)      -> Mixte
+#   5 (ERREUR)        -> Inactif
+#
+# typePtge doit etre Vocal(1) ou Laisse+Vocal(4), sinon -> Inactif (pas de pilotage
+# vocal active du tout).
+#
+# RAFFINEMENT SECURITE -- detection mouvement via Mtr.state :
+#   Mtr.state (Table A, CAT=I, format "L,R,A", direction A->SP) est relaye par SP
+#   vers SE sur SE/commande : $I:Mtr:state:*:L,R,A#
+#   Si modeRZ=1 (VEILLE) ET mouvement detecte (L!=0 ou R!=0) -> Cmde force
+#   (au lieu de Mixte), pour eviter qu'une conversation Gemini ne distraie
+#   pendant un deplacement initie en mode VEILLE.
+#   ATTENTION : ce cablage SP->SE (relai Mtr.state) n'est peut-etre pas encore
+#   actif cote Node-RED. En son absence, L et R restent a leur derniere valeur
+#   connue (0 par defaut) -- comportement sans danger, simplement pas de
+#   detection mouvement tant que le cablage SP n'est pas fait.
 #
 # INTERACTIONS
 # ------------
-#   Lit    : config/global.json                    (état courant)
-#   Écrit  : config/global.json                    (mises à jour état)
+#   Lit    : config/global.json                    (etat courant)
+#   Ecrit  : config/global.json                    (mises a jour etat)
 #   Copie  : /sdcard/Tasker/RobotRZ/global.json    (sync Tasker)
 #   Publie : MQTT SE/statut                        (ACK transitions)
 #   Lit    : config/keys.json                      (credentials MQTT)
 #
-# PRÉCAUTIONS
+# PRECAUTIONS
 # -----------
-# - Écriture atomique via fichier .tmp + mv (évite corruption JSON)
+# - Ecriture atomique via fichier .tmp + mv (evite corruption JSON)
 # - sync_to_tasker() silencieux si /sdcard/Tasker/RobotRZ/ absent
-# - STT.modeSTT=OFF → STT.context forcé à Inactif (Python ignorera à la prochaine détection)
-# - Jamais de pattern A && B || C (SC2015) — utiliser if/then/else
+# - STT.modeSTT=OFF -> STT.context force a Inactif (Python ignorera a la prochaine detection)
+# - Jamais de pattern A && B || C (SC2015) -- utiliser if/then/else
+# - Robot.speed N'EXISTE PAS dans Table A -- ne jamais l'utiliser (corrige juin 2026,
+#   remplace par Mtr.state qui est la variable VPIV reelle et documentee)
 #
-# DÉPENDANCES
+# DEPENDANCES
 # -----------
 #   jq, mosquitto_sub, mosquitto_pub
 #   config/keys.json, config/global.json
 #
 # AUTEUR  : Vincent Philippe
-# VERSION : 1.5  (ajout cas STT, sync Tasker après chaque write global.json)
-# DATE    : 2026-05-20
+# VERSION : 1.6  (revision table modeRZ/STTcontext, detection mouvement via
+#                  Mtr.state au lieu de Robot.speed inexistant dans Table A)
+# DATE    : 2026-06-19
 # =============================================================================
 
 # --- CONFIGURATION DES CHEMINS ---
@@ -50,7 +79,7 @@ GLOBAL_CONFIG="$BASE_DIR/config/global.json"
 LOG_FILE="$BASE_DIR/logs/state_manager.log"
 FIFO_IN="$BASE_DIR/fifo/fifo_termux_in"
 
-# Chemin Tasker — requis par RZ_OuvreEtat pour lire l'état SE
+# Chemin Tasker -- requis par RZ_OuvreEtat pour lire l'etat SE
 TASKER_GLOBAL="/sdcard/Tasker/RobotRZ/global.json"
 
 # --- CREDENTIALS MQTT depuis keys.json ---
@@ -72,48 +101,69 @@ log() {
 
 # =============================================================================
 # FONCTION : sync_to_tasker
-# Copie global.json vers /sdcard/Tasker/RobotRZ/ après chaque écriture.
-# Requis par la tâche Tasker RZ_OuvreEtat pour lire l'état SE.
-# Silencieux si le dossier Tasker est absent (Tasker non installé / SD absent).
-# ⚠ Utilise if/then/else — jamais de pattern A && B || C (SC2015).
+# Copie global.json vers /sdcard/Tasker/RobotRZ/ apres chaque ecriture.
+# Requis par la tache Tasker RZ_OuvreEtat pour lire l'etat SE.
+# Silencieux si le dossier Tasker est absent (Tasker non installe / SD absent).
+# Utilise if/then/else -- jamais de pattern A && B || C (SC2015).
 # =============================================================================
 sync_to_tasker() {
     local tasker_dir
     tasker_dir="$(dirname "$TASKER_GLOBAL")"
     if [ -d "$tasker_dir" ]; then
         if cp "$GLOBAL_CONFIG" "$TASKER_GLOBAL" 2>/dev/null; then
-            log "Sync Tasker ✓" "DEBUG"
+            log "Sync Tasker OK" "DEBUG"
         else
-            log "Sync Tasker échouée" "WARN"
+            log "Sync Tasker echouee" "WARN"
         fi
     fi
 }
 
 # =============================================================================
 # FONCTION : calculate_stt_context
+#
+# Logique (revisee juin 2026) :
+#   1. modeRZ=0|5            -> Inactif
+#   2. typePtge != 1 et != 4 -> Inactif (pilotage vocal pas actif)
+#   3. modeRZ=1 (VEILLE) ET mouvement detecte (Mtr.state L!=0 ou R!=0)
+#                             -> Cmde force (protection deplacement en VEILLE)
+#   4. Sinon, table de base :
+#        1 (VEILLE)      -> Mixte
+#        2 (FIXE)        -> Mixte
+#        3 (DEPLACEMENT) -> Cmde
+#        4 (AUTONOME)    -> Mixte
 # =============================================================================
 calculate_stt_context() {
     local modeRZ
     modeRZ=$(jq -r '.CfgS.modeRZ // 0' "$GLOBAL_CONFIG")
     local modePtge
     modePtge=$(jq -r '.CfgS.typePtge // 0' "$GLOBAL_CONFIG")
-    local speed
-    speed=$(jq -r '.Robot.speed // 0' "$GLOBAL_CONFIG")
+    local mtr_l
+    mtr_l=$(jq -r '.Mtr.state.L // 0' "$GLOBAL_CONFIG")
+    local mtr_r
+    mtr_r=$(jq -r '.Mtr.state.R // 0' "$GLOBAL_CONFIG")
     local context="Inactif"
+    local en_mouvement=false
 
-    log "Calcul contexte STT (RZ:$modeRZ, Ptge:$modePtge, Spd:$speed)"
+    if [[ "$mtr_l" != "0" || "$mtr_r" != "0" ]]; then
+        en_mouvement=true
+    fi
+
+    log "Calcul contexte STT (RZ:$modeRZ, Ptge:$modePtge, L:$mtr_l, R:$mtr_r, mvt:$en_mouvement)"
 
     if [[ "$modeRZ" == "0" || "$modeRZ" == "5" ]]; then
         context="Inactif"
     elif [[ "$modePtge" != "1" && "$modePtge" != "4" ]]; then
         context="Inactif"
-    elif [[ "$speed" != "0" ]]; then
+    elif [[ "$modeRZ" == "1" && "$en_mouvement" == "true" ]]; then
+        # VEILLE + mouvement detecte : seul cas a risque -- force Cmde
         context="Cmde"
+        log "VEILLE + mouvement detecte -- STT.context force a Cmde (securite)" "WARN"
     else
         case "$modeRZ" in
-            1)   context="Conv"   ;;
+            1)   context="Mixte"  ;;
+            2)   context="Mixte"  ;;
+            3)   context="Cmde"   ;;
             4)   context="Mixte"  ;;
-            2|3) context="Mixte"  ;;
             *)   context="Inactif" ;;
         esac
     fi
@@ -121,10 +171,10 @@ calculate_stt_context() {
     jq --arg ctx "$context" '.STT.context=$ctx' "$GLOBAL_CONFIG" > "${GLOBAL_CONFIG}.tmp" \
     && mv "${GLOBAL_CONFIG}.tmp" "$GLOBAL_CONFIG"
 
-    log "STT.context défini sur : $context"
+    log "STT.context defini sur : $context"
     sync_to_tasker
     # Notifier Tasker du changement de contexte STT
-    # → met à jour %RZsttContext via profil Fichier_ModifieParSE → RZ_Dispatch → RZ_STT_Context
+    # -> met a jour %RZsttContext via profil Fichier_ModifieParSE -> RZ_Dispatch -> RZ_STT_Context
     local trigger_file="/sdcard/Tasker/RobotRZ/trigger.txt"
     if [ -d "$(dirname "$trigger_file")" ]; then
        printf '{"task":"RZ_STT_Context","param":"%s","ts":"%s"}' \
@@ -140,7 +190,7 @@ handle_state_transition() {
     local key="$1"
     local value="$2"
 
-    log "Transition demandée : $key -> $value" "UPDATE"
+    log "Transition demandee : $key -> $value" "UPDATE"
 
     jq --arg val "$value" ".CfgS.$key=(\$val|tonumber)" "$GLOBAL_CONFIG" > "${GLOBAL_CONFIG}.tmp" \
     && mv "${GLOBAL_CONFIG}.tmp" "$GLOBAL_CONFIG"
@@ -172,20 +222,30 @@ process_mqtt_command() {
                     && handle_state_transition "$PROP" "$VALUE"
                 ;;
             "Mtr")
-                if [[ "$PROP" == "speed" ]]; then
-                    jq --arg v "$VALUE" '.Robot.speed=($v|tonumber)' "$GLOBAL_CONFIG" \
-                        > "${GLOBAL_CONFIG}.tmp" \
+                # ----------------------------------------------------------------
+                # Mtr.state : releve par SP depuis Arduino, relaye vers SE.
+                # Format VALUE : "L,R,A" (Table A : Mtr.state, CAT=I, A->SP)
+                # Utilise par calculate_stt_context pour detecter un mouvement
+                # en cours (protection deplacement initie en modeRZ=1 VEILLE).
+                # ----------------------------------------------------------------
+                if [[ "$PROP" == "state" ]]; then
+                    local mtr_l mtr_r mtr_a
+                    IFS=',' read -r mtr_l mtr_r mtr_a <<< "$VALUE"
+                    jq --arg l "${mtr_l:-0}" --arg r "${mtr_r:-0}" --arg a "${mtr_a:-0}" \
+                        '.Mtr.state.L=($l|tonumber) | .Mtr.state.R=($r|tonumber) | .Mtr.state.A=($a|tonumber)' \
+                        "$GLOBAL_CONFIG" > "${GLOBAL_CONFIG}.tmp" \
                     && mv "${GLOBAL_CONFIG}.tmp" "$GLOBAL_CONFIG"
-                    calculate_stt_context   # sync_to_tasker appelé en fin de calculate
+                    log "Mtr.state mis a jour : L=$mtr_l R=$mtr_r A=$mtr_a"
+                    calculate_stt_context   # sync_to_tasker appele en fin de calculate
                 fi
                 ;;
             "STT")
                 # ----------------------------------------------------------------
-                # Commandes SP → STT
-                # modeSTT : KWS = écoute active | OFF = inactif
-                #   OFF → STT.context forcé Inactif (Python ignorera à la prochaine détection)
-                #   KWS → recalcul contexte selon modeRZ / typePtge
-                # paraSTT : mise à jour paramètres PocketSphinx (objet JSON)
+                # Commandes SP -> STT
+                # modeSTT : KWS = ecoute active | OFF = inactif
+                #   OFF -> STT.context force Inactif (Python ignorera a la prochaine detection)
+                #   KWS -> recalcul contexte selon modeRZ / typePtge / Mtr.state
+                # paraSTT : mise a jour parametres PocketSphinx (objet JSON)
                 # ----------------------------------------------------------------
                 case "$PROP" in
                     "modeSTT")
@@ -197,10 +257,10 @@ process_mqtt_command() {
                             jq '.STT.context="Inactif"' "$GLOBAL_CONFIG" \
                                 > "${GLOBAL_CONFIG}.tmp" \
                             && mv "${GLOBAL_CONFIG}.tmp" "$GLOBAL_CONFIG"
-                            log "STT.context forcé Inactif (mode OFF)"
+                            log "STT.context force Inactif (mode OFF)"
                             sync_to_tasker
                         else
-                            calculate_stt_context   # sync_to_tasker appelé en fin
+                            calculate_stt_context   # sync_to_tasker appele en fin
                         fi
                         mosquitto_pub -h "$MQTT_HOST" -p 1883 \
                             -u "$MQTT_USER" -P "$MQTT_PASS" \
@@ -211,11 +271,11 @@ process_mqtt_command() {
                         jq --argjson v "$VALUE" '.STT.paraSTT=$v' "$GLOBAL_CONFIG" \
                             > "${GLOBAL_CONFIG}.tmp" \
                         && mv "${GLOBAL_CONFIG}.tmp" "$GLOBAL_CONFIG"
-                        log "STT.paraSTT mis à jour" "UPDATE"
+                        log "STT.paraSTT mis a jour" "UPDATE"
                         sync_to_tasker
                         ;;
                     *)
-                        log "STT.$PROP : propriété inconnue — ignorée" "DEBUG"
+                        log "STT.$PROP : propriete inconnue -- ignoree" "DEBUG"
                         ;;
                 esac
                 ;;
@@ -223,11 +283,11 @@ process_mqtt_command() {
                 printf '%s\n' "$msg" > "$FIFO_IN"
                 ;;
             *)
-                log "Module inconnu ou ignoré : $MODULE" "DEBUG"
+                log "Module inconnu ou ignore : $MODULE" "DEBUG"
                 ;;
         esac
     else
-        log "Trame invalide reçue : $msg" "ERROR"
+        log "Trame invalide recue : $msg" "ERROR"
     fi
 }
 
@@ -235,14 +295,19 @@ process_mqtt_command() {
 # BOUCLE PRINCIPALE
 # =============================================================================
 main() {
-    log "=== Démarrage du Gestionnaire d'État (SE) ==="
+    log "=== Demarrage du Gestionnaire d'Etat (SE) ==="
 
     if [[ ! -f "$GLOBAL_CONFIG" ]]; then
-        log "Global config absente. Création d'une structure de base." "WARN"
-        echo '{"CfgS":{"modeRZ":1,"typePtge":0},"Robot":{"speed":0},"STT":{"modeSTT":"OFF","context":"Inactif"},"Sys":{}}' \
+        log "Global config absente. Creation d'une structure de base." "WARN"
+        echo '{"CfgS":{"modeRZ":1,"typePtge":0},"Mtr":{"state":{"L":0,"R":0,"A":0}},"STT":{"modeSTT":"OFF","context":"Inactif"},"Sys":{}}' \
             > "$GLOBAL_CONFIG"
         sync_to_tasker
     fi
+
+    # Garantit un STT.context coherent des le demarrage, meme si global.json
+    # existait deja sans bloc STT complet (ex: genere par original_init.sh)
+    log "Calcul initial du contexte STT au demarrage"
+    calculate_stt_context
 
     log "En attente de commandes sur SE/commande..."
     mosquitto_sub -h "$MQTT_HOST" -p 1883 \

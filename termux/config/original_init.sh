@@ -88,8 +88,8 @@
 #   check_config.sh : validation et distribution des configs
 #
 # AUTEUR  : Vincent Philippe
-# VERSION : 2.2  (juin 2026 — Baby supprimé, IA_Conv ajouté, STT=OFF AutoVoice)
-# DATE    : 2026-06-17
+# VERSION : 2.3  (juin 2026 — Baby supprimé, IA_Conv ajouté, STT=OFF AutoVoice, ajout de Mtr state)
+# DATE    : 2026-06-19
 # =============================================================================
 
 # =============================================================================
@@ -541,8 +541,8 @@ log "--- Génération global.json ---"
 cat > "$GLOBAL_JSON" <<EOF
 {
   "CfgS": {
-    "modeRZ":   1,
-    "typePtge": 0,
+    "modeRZ":     1,
+    "typePtge":   0,
     "reset":      false,
     "typeReseau": "WifiInternetBox"
   },
@@ -558,13 +558,24 @@ cat > "$GLOBAL_JSON" <<EOF
     "warn":  ""
   },
   "Sys": {
-    "cpu_load":   0,
-    "temp":       0,
-    "storage":    0,
-    "mem":        0,
-    "batt":       0,
-    "uptime":     0,
+    "cpu_load":    0,
+    "temp":        0,
+    "storage":     0,
+    "mem":         0,
+    "batt":        0,
+    "uptime":      0,
     "last_update": ""
+  },
+  "Mtr": {
+    "state": {
+      "L": 0,
+      "R": 0,
+      "A": 0
+    }
+  },
+  "STT": {
+    "modeSTT": "OFF",
+    "context": "Inactif"
   }
 }
 EOF

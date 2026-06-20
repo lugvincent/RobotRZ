@@ -6,79 +6,65 @@
 # OBJECTIF
 # --------
 # Pont entre AutoVoice (Tasker) et le handler vocal RZ.
-# Reçoit le texte reconnu par AutoVoice via Termux:Tasker,
-# le passe à rz_stt_handler.sh qui gère tout le reste
-# (catalogue, filtres sécurité, trames VPIV, TTS feedback).
+# Recoit le texte reconnu par AutoVoice via Termux:Tasker (deja debarrasse
+# du prefixe "rz" par Rz_Traite_Ecoute), et route selon STT.context (lu
+# directement dans global.json) vers le catalogue (rz_stt_handler.sh) et/ou
+# la conversation IA (rz_ai_conversation.py).
 #
-# RÉPARTITION DES RESPONSABILITÉS
-# --------------------------------
-# TASKER/AUTOVOICE gère :
-#   - Filtrage wake word "RZ" (Command Filter ^RZ, Trigger Word RZ)
-#   - Retrait du préfixe "rz" du texte (%avcommnofilter)
-#   - Sélection mode écoute selon %RZsttContext (multi-contextes profils)
-#   - Bascule Gemini sur No Match (profil RZ_NoMatch → RZ_GeminiConv)
-#   - Gestion échec reconnaissance (profil RZ_RecFailed → RZ_VoiceError)
-#   - Écoute continue (Continuous mode AutoVoice)
+# LOGIQUE DE ROUTAGE -- OPTION B (un seul mot-cle "rz", juin 2026)
+# -------------------------------------------------------------------
+#   STT.context = Inactif
+#     -> TTS "contexte vocal non actif" + log. Rien d'autre.
 #
-# CE SCRIPT gère :
-#   - Normalisation légère du texte (espaces multiples, casse)
-#   - Préfixe spéciaux : GEMINI: (bascule directe IA) et ERROR: (erreur recog)
-#   - Appel rz_stt_handler.sh (catalogue → VPIV → MQTT)
-#   - Logging pour diagnostic
-#   - Gestion erreurs fatales (handler introuvable)
+#   STT.context = Cmde
+#     -> catalogue uniquement (rz_stt_handler.sh)
+#     -> exit=1 (commande inconnue) -> TTS "je n'ai pas compris"
+#     -> PAS de bascule Gemini (securite + rapidite en deplacement)
 #
-# DESCRIPTION FONCTIONNELLE
-# -------------------------
-# Trois modes selon l'argument reçu :
+#   STT.context = Conv
+#     -> Gemini direct (rz_ai_conversation.py), SAUF :
+#        exception "stop"/"top" -- routees vers le catalogue (URGENCY_STOP)
+#        meme en conversation, l'arret d'urgence doit toujours fonctionner.
 #
-#   1. Texte normal (ex: "stop", "avance", "mode veille")
-#      → Normalisé → rz_stt_handler.sh → catalogue → VPIV
-#      Note : %avcommnofilter ne contient PAS "rz" — AutoVoice l'a retiré
+#   STT.context = Mixte
+#     -> catalogue en priorite (rz_stt_handler.sh)
+#     -> exit=1 (commande inconnue) -> bascule SILENCIEUSE vers Gemini
+#        (pas de TTS d'erreur intermediaire -- transition transparente)
 #
-#   2. Préfixe GEMINI: (ex: "GEMINI:rz discute avec moi")
-#      → Envoyé directement à rz_ai_conversation.py
-#      → Déclenché par profil RZ_NoMatch (Tasker) en contexte Conv/Mixte
+#   STT.context vide ou absent (demarrage avant 1er calcul SP/SE)
+#     -> TTS demandant a l'utilisateur de preciser le contexte
+#        (rz commande / rz conversation / rz mixte)
 #
-#   3. Préfixe ERROR: (ex: "ERROR:recognition_failed")
-#      → TTS "je n'ai pas compris" + log
-#      → Déclenché par profil RZ_RecFailed (Tasker)
-#
-# PIPELINE COMPLET
-# ----------------
-#   AutoVoice détecte wake word "RZ" + commande
-#   → Tasker profil RZ_EcouteCommandes ou RZ_EcouteConversation
-#   → Tâche RZ_VoiceCmd → Termux:Tasker
-#   → rz_autovoice_bridge.sh "%avcommnofilter"
-#   → rz_stt_handler.sh "commande"
-#   → stt_catalog.json → trame VPIV → fifo_termux_in → MQTT → SP
-#
-#   Si No Match :
-#   → Tasker profil RZ_NoMatch → Tâche RZ_GeminiConv
-#   → rz_autovoice_bridge.sh "GEMINI:%avcomm"
-#   → rz_ai_conversation.py → Gemini API → TTS
-#
-#   Si Recognition Failed :
-#   → Tasker profil RZ_RecFailed → Tâche RZ_VoiceError
-#   → rz_autovoice_bridge.sh "ERROR:recognition_failed"
-#   → TTS "je n'ai pas compris"
+# MODES SPECIAUX (compatibilite, appel direct sans passer par le contexte)
+# ---------------------------------------------------------------------------
+#   GEMINI:texte   -> bascule directe IA, quel que soit STT.context
+#                      (reserve a un appel explicite externe, ex: RZ_IA_Conv)
+#   ERROR:type     -> echec de reconnaissance AutoVoice -> TTS "pas compris"
 #
 # ARTICULATION
 # ------------
-#   Appelé par : RZ_VoiceCmd, RZ_GeminiConv, RZ_VoiceError (via Termux:Tasker)
-#   Appelle    : rz_stt_handler.sh   (catalogue → VPIV)
-#   Appelle    : rz_ai_conversation.py (Gemini, mode GEMINI:)
+#   Appele par : Rz_Traite_Ecoute (task62, Tasker) via Termux:Tasker
+#   Lit        : config/global.json              (STT.context)
+#   Appelle    : rz_stt_handler.sh                (catalogue -> VPIV)
+#   Appelle    : rz_ai_conversation.py            (Gemini)
 #   Log        : logs/autovoice_bridge.log
 #
-# PRÉCAUTIONS
+# PRECAUTIONS
 # -----------
-# - Appelé depuis Tasker — pas depuis rz_start.sh. Pas de PID file.
-# - Termux:API doit être actif (lancé par RZ_Init_Tasker au démarrage).
-# - Le symlink ~/.termux/tasker/rz_autovoice_bridge.sh doit pointer ici.
+# - Appele depuis Tasker -- pas depuis rz_start.sh. Pas de PID file.
+# - Termux:API doit etre actif (lance par RZ_Init_Tasker au demarrage).
+# - Doit etre un fichier REGULIER dans tasker/ (jamais un symlink --
+#   Termux:Tasker refuse les symlinks apres reboot Android).
 # - pip install requests requis pour rz_ai_conversation.py (Gemini).
+# - L'exception stop/top en contexte Conv ne couvre QUE ces deux mots exacts
+#   (apres normalisation minuscule) -- pas de regex large, pour eviter qu'une
+#   phrase de conversation legitime contenant "stop" soit mal routee
+#   (ex: "raconte-moi l'histoire du stop and go" -- cas limite accepte).
 #
 # AUTEUR  : Vincent Philippe
-# VERSION : 2.0  (simplification — contexte STT délégué à Tasker/AutoVoice)
-# DATE    : 2026-06-04
+# VERSION : 3.0  (Option B : routage par STT.context unique mot-cle "rz",
+#                  exception stop/top en Conv, bascule Mixte->Gemini silencieuse)
+# DATE    : 2026-06-19
 # =============================================================================
 
 # =============================================================================
@@ -90,6 +76,7 @@ STT_DIR="$BASE_DIR/scripts/sensors/stt"
 
 HANDLER="$STT_DIR/rz_stt_handler.sh"
 AI_CONV="$STT_DIR/rz_ai_conversation.py"
+GLOBAL_JSON="$BASE_DIR/config/global.json"
 LOG_FILE="$BASE_DIR/logs/autovoice_bridge.log"
 
 # =============================================================================
@@ -104,79 +91,145 @@ tts_say() {
     termux-tts-speak "$1" 2>/dev/null &
 }
 
+call_handler() {
+    local text="$1"
+    if [ ! -f "$HANDLER" ]; then
+        log_av "ERREUR : handler introuvable : $HANDLER"
+        tts_say "Erreur systeme vocal."
+        return 1
+    fi
+    bash "$HANDLER" "$text"
+    return $?
+}
+
+call_gemini() {
+    local text="$1"
+    log_av "Appel Gemini : '$text'"
+    if [ -f "$AI_CONV" ]; then
+        python3 "$AI_CONV" "$text"
+    else
+        log_av "WARN : rz_ai_conversation.py introuvable"
+        tts_say "Je ne peux pas repondre, module IA absent."
+    fi
+}
+
 # =============================================================================
-# VÉRIFICATION ARGUMENT
+# VERIFICATION ARGUMENT
 # =============================================================================
 
 if [ -z "$1" ]; then
-    log_av "ERREUR : aucun texte reçu — appel sans argument"
+    log_av "ERREUR : aucun texte recu -- appel sans argument"
     exit 1
 fi
 
 ARG_RAW="$1"
 
 # =============================================================================
-# MODE ERROR: — échec de reconnaissance (profil RZ_RecFailed)
-# Tasker appelle ce script avec "ERROR:recognition_failed"
+# MODE ERROR: -- echec de reconnaissance
 # =============================================================================
 
 if [[ "$ARG_RAW" == ERROR:* ]]; then
     ERROR_TYPE="${ARG_RAW#ERROR:}"
-    log_av "Échec reconnaissance : $ERROR_TYPE"
+    log_av "Echec reconnaissance : $ERROR_TYPE"
     tts_say "Je n'ai pas compris."
     exit 0
 fi
 
 # =============================================================================
-# MODE GEMINI: — bascule directe IA (profil RZ_NoMatch)
-# Tasker appelle ce script avec "GEMINI:texte complet reconnu"
-# Le texte est la phrase complète (%avcomm) car pas de commande matchée
+# MODE GEMINI: -- bascule directe IA explicite (appel externe, ex: RZ_IA_Conv)
+# Reste disponible independamment de STT.context pour des usages futurs.
 # =============================================================================
 
 if [[ "$ARG_RAW" == GEMINI:* ]]; then
     GEMINI_TEXT="${ARG_RAW#GEMINI:}"
-    log_av "Bascule Gemini directe : '$GEMINI_TEXT'"
-    if [ -f "$AI_CONV" ]; then
-        python3 "$AI_CONV" "$GEMINI_TEXT"
-    else
-        log_av "WARN : rz_ai_conversation.py introuvable"
-        tts_say "Je ne peux pas répondre, module IA absent."
+    log_av "Bascule Gemini directe (appel explicite) : '$GEMINI_TEXT'"
+    call_gemini "$GEMINI_TEXT"
+    exit 0
+fi
+
+# =============================================================================
+# MODE NORMAL -- routage selon STT.context
+# =============================================================================
+
+TEXT_NORM=$(echo "$ARG_RAW" | tr '[:upper:]' '[:lower:]' | tr -s ' ' | xargs)
+
+log_av "Texte recu : '$ARG_RAW' -> normalise : '$TEXT_NORM'"
+
+# --- Lecture de STT.context depuis global.json ---
+STT_CONTEXT=""
+if [ -f "$GLOBAL_JSON" ]; then
+    STT_CONTEXT=$(jq -r '.STT.context // empty' "$GLOBAL_JSON" 2>/dev/null)
+fi
+
+log_av "STT.context lu : '$STT_CONTEXT'"
+
+# =============================================================================
+# CAS : CONTEXTE VIDE OU ABSENT (avant 1er calcul SP/SE)
+# =============================================================================
+
+if [ -z "$STT_CONTEXT" ]; then
+    log_av "STT.context vide -- demande de precision a l'utilisateur"
+    tts_say "Contexte vocal non défini. Dites rz commande, rz conversation, ou rz mixte."
+    exit 0
+fi
+
+# =============================================================================
+# CAS : INACTIF
+# =============================================================================
+
+if [ "$STT_CONTEXT" = "Inactif" ]; then
+    log_av "STT.context=Inactif -- aucune action"
+    exit 0
+fi
+
+# =============================================================================
+# CAS : CMDE -- catalogue uniquement, pas de bascule Gemini
+# =============================================================================
+
+if [ "$STT_CONTEXT" = "Cmde" ]; then
+    call_handler "$TEXT_NORM"
+    EXIT_CODE=$?
+    log_av "Contexte Cmde -- handler exit=$EXIT_CODE pour '$TEXT_NORM'"
+    if [ $EXIT_CODE -eq 1 ]; then
+        log_av "Commande inconnue en contexte Cmde -- TTS erreur (pas de Gemini)"
+        tts_say "Je n'ai pas compris."
     fi
     exit 0
 fi
 
 # =============================================================================
-# MODE NORMAL — commande vocale standard
-# Reçoit %avcommnofilter : texte SANS le préfixe "rz"
-# AutoVoice a déjà retiré le wake word via Command Filter
-# Normalisation : minuscules + espaces multiples supprimés
+# CAS : CONV -- Gemini direct, sauf exception stop/top (securite)
 # =============================================================================
 
-# Note : rz_stt_handler.sh fait aussi un sed 's/^rz //g' par sécurité
-# — inoffensif si le texte ne commence pas par "rz"
-TEXT_NORM=$(echo "$ARG_RAW" | tr '[:upper:]' '[:lower:]' | tr -s ' ' | xargs)
-
-log_av "Commande reçue : '$ARG_RAW' → normalisé : '$TEXT_NORM'"
-
-# Vérification handler
-if [ ! -f "$HANDLER" ]; then
-    log_av "ERREUR : handler introuvable : $HANDLER"
-    tts_say "Erreur système vocal."
-    exit 1
+if [ "$STT_CONTEXT" = "Conv" ]; then
+    if [ "$TEXT_NORM" = "stop" ] || [ "$TEXT_NORM" = "top" ]; then
+        log_av "Contexte Conv -- exception securite '$TEXT_NORM' -- route vers catalogue"
+        call_handler "$TEXT_NORM"
+        exit 0
+    fi
+    log_av "Contexte Conv -- route direct vers Gemini"
+    call_gemini "$TEXT_NORM"
+    exit 0
 fi
 
-# Appel handler → catalogue → VPIV → MQTT
-bash "$HANDLER" "$TEXT_NORM"
-EXIT_CODE=$?
+# =============================================================================
+# CAS : MIXTE -- catalogue priorite, bascule Gemini silencieuse sur exit=1
+# =============================================================================
 
-log_av "Handler exit=$EXIT_CODE pour '$TEXT_NORM'"
-
-# Exit 1 = commande inconnue du catalogue
-# En mode normal ce cas est géré par Tasker profil RZ_NoMatch
-# qui déclenche RZ_GeminiConv si %RZsttContext = Conv|Mixte
-# Ici on se contente de logger — pas de double bascule Gemini
-if [ $EXIT_CODE -eq 1 ]; then
-    log_av "Commande inconnue '$TEXT_NORM' — RZ_NoMatch Tasker prendra le relais si contexte Conv/Mixte"
+if [ "$STT_CONTEXT" = "Mixte" ]; then
+    call_handler "$TEXT_NORM"
+    EXIT_CODE=$?
+    log_av "Contexte Mixte -- handler exit=$EXIT_CODE pour '$TEXT_NORM'"
+    if [ $EXIT_CODE -eq 1 ]; then
+        log_av "Commande inconnue en contexte Mixte -- bascule Gemini silencieuse"
+        call_gemini "$TEXT_NORM"
+    fi
+    exit 0
 fi
 
+# =============================================================================
+# CAS : VALEUR INATTENDUE
+# =============================================================================
+
+log_av "WARN : STT.context inattendu : '$STT_CONTEXT' -- aucune action"
 exit 0

@@ -5,22 +5,24 @@
 #
 # OBJECTIF
 # --------
-# Moteur de conversation Cloud utilisant l'API Google Gemini 1.5 Flash.
-# Intervient en bascule quand le catalogue local PocketSphinx ne reconnaît
-# pas la phrase (rz_stt_handler.sh retourne exit 1).
+# Moteur de conversation Cloud utilisant l'API Google Gemini 2.5 Flash.
+# Intervient en bascule quand le catalogue local ne reconnaît pas la phrase
+# (rz_stt_handler.sh retourne exit 1), ou en contexte Conv (conversation
+# directe sans passer par le catalogue) — routage géré par rz_autovoice_bridge.sh.
 #
 # DESCRIPTION FONCTIONNELLE
 # -------------------------
 # 1. Reçoit la phrase reconnue en argument (sys.argv[1]).
 # 2. Construit un prompt avec la personnalité de RZ (robot compagnon).
-# 3. Interroge Gemini 1.5 Flash via l'API REST (timeout 10s).
+# 3. Interroge Gemini 2.5 Flash via l'API REST (timeout 10s).
 # 4. Joue la réponse via termux-tts-speak.
 #
 # ARTICULATION
 # ------------
-#   rz_stt_manager.py → (bascule IA, context=Conv/Mixte)
-#                     → rz_ai_conversation.py "phrase utilisateur"
-#                     → API Gemini → réponse texte → termux-tts-speak
+#   rz_autovoice_bridge.sh → (routage selon STT.context : Conv direct,
+#                              ou Mixte en bascule silencieuse sur exit=1)
+#                          → rz_ai_conversation.py "phrase utilisateur"
+#                          → API Gemini → réponse texte → termux-tts-speak
 #
 # PERSONNALITÉ RZ (SYSTEM PROMPT)
 # --------------------------------
@@ -36,6 +38,17 @@
 # La clé Gemini est lue dans config/keys.json :
 #   { "GEMINI_API_KEY": "AIza..." }
 # Ne jamais mettre la clé en dur dans ce fichier.
+#
+# MODÈLE GEMINI — ATTENTION ÉVOLUTION RAPIDE
+# --------------------------------------------
+# La famille de modèles Gemini évolue vite et Google retire régulièrement
+# les anciennes versions (404 Not Found sans préavis long) :
+#   - gemini-1.5-flash : discontinué (404 confirmé juin 2026)
+#   - gemini-2.0-flash / flash-lite : discontinués depuis le 1er juin 2026
+#   - gemini-2.5-flash : modèle stable utilisé actuellement (juin 2026)
+# Si une erreur 404 apparaît à nouveau dans les logs (ai_conversation.log),
+# vérifier le modèle courant sur https://ai.google.dev/gemini-api/docs/changelog
+# avant de remettre un nom de modèle figé.
 #
 # PRÉCAUTIONS
 # -----------
@@ -54,8 +67,8 @@
 #   python3 rz_ai_conversation.py "bonjour comment tu vas"
 #
 # AUTEUR  : Vincent Philippe
-# VERSION : 1.2  (headers complets, fallback TTS amélioré, timeout explicite)
-# DATE    : 2026-03-05
+# VERSION : 1.3  (modèle Gemini 1.5-flash → 2.5-flash, 1.5 et 2.0 discontinués)
+# DATE    : 2026-06-19
 # =============================================================================
 
 import sys
@@ -71,10 +84,10 @@ BASE_DIR    = "/data/data/com.termux/files/home/robotRZ-smartSE/termux"
 CONFIG_KEYS = f"{BASE_DIR}/config/keys.json"
 LOG_FILE    = f"{BASE_DIR}/logs/ai_conversation.log"
 
-# URL API Gemini 1.5 Flash (rapide, gratuit avec quota)
+# URL API Gemini 2.5 Flash (gemini-1.5-flash et gemini-2.0-flash discontinués)
 GEMINI_URL_TEMPLATE = (
     "https://generativelanguage.googleapis.com/v1beta/models/"
-    "gemini-1.5-flash:generateContent?key={api_key}"
+    "gemini-2.5-flash:generateContent?key={api_key}"
 )
 
 # Timeout requête HTTP (secondes)
@@ -120,7 +133,7 @@ def speak(text: str):
 
 def ask_gemini(text_input: str) -> str:
     """
-    Envoie la phrase à Gemini 1.5 Flash et retourne la réponse texte.
+    Envoie la phrase à Gemini 2.5 Flash et retourne la réponse texte.
     Retourne FALLBACK_RESPONSE en cas d'erreur réseau ou API.
     """
     api_key = get_api_key()

@@ -113,7 +113,7 @@
     "speed_cruise":  30,
     "inputScale":    100,
     "outputScale":   400,
-    "kturn":         8,
+    "kturn":         800,
     "active":        false
   }
 }

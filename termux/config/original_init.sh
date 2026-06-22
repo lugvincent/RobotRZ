@@ -358,14 +358,31 @@ voice_ttsRate=1.0       # vitesse de synthèse TTS (1.0 = normale, >1 = plus rap
 # Lu directement depuis courant_init.json par rz_stt_handler.sh pour les
 # commandes vocales de type PLAN (valeurs de configuration, pas runtime).
 #
-# kturn : ×10 pour éviter les float Bash → 8 = 0.8 côté Arduino
-#   Formule : L = (v - omega×0.8) | R = (v + omega×0.8)
+# speed_cruise : vitesse "normale" de référence (unité Mtr, -100..100),
+#   utilisée pour générer les intents vocaux PLAN type vitesse/distance.
+#
+# inputScale / outputScale : MÊMES constantes que cfg_mtr_inputScale /
+#   cfg_mtr_outputScale côté Arduino (mtr.cpp). Permettent à SE de calculer
+#   des intents v/omega cohérents avec le calcul différentiel réel de
+#   l'Arduino : L = (vNorm - omNorm×kturn) × outputScale, où
+#   vNorm = v / inputScale. Constantes Arduino (config.cpp), non pilotables
+#   par VPIV — PAS de ligne dédiée dans la Table A (usage interne SE).
+#   ⚠️ Si modifiées côté Arduino (recompilation), les réaligner ici à la main.
+#
+# kturn : facteur de rotation. Stocké ×1000, MÊME ÉCHELLE que le VPIV Arduino
+#   (Table A, module Mtr, propriété kturn — $V:Mtr:*:kturn:800#).
+#   Côté Arduino : kturn_reel = kturn / 1000  (ex: 800 → 0.8)
+#   Formule : L = (v - omega×0.8)  |  R = (v + omega×0.8)
+#   ⚠️ Harmonisé V2 (juin 2026) : auparavant stocké ×10 (valeur 8). Passage à
+#      ×1000 pour éliminer une seconde convention d'échelle et matcher
+#      directement la valeur ACK/Config échangée en VPIV avec l'Arduino.
+#
 # active : toujours false au démarrage (sécurité)
 
 mtr_speed_cruise=30
 mtr_inputScale=100
 mtr_outputScale=400
-mtr_kturn=8             # ×10 → 0.8 côté Arduino
+mtr_kturn=800           # ×1000 → 0.8 côté Arduino (même échelle que le VPIV kturn)
 mtr_active=false
 
 # =============================================================================

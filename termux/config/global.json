@@ -19,13 +19,13 @@
   "Sys": {
     "cpu_load": 0,
     "temp": 0,
-    "storage": 62,
-    "mem": 66,
+    "storage": 65,
+    "mem": 60,
     "batt": 100,
     "uptime": 0,
-    "last_update": "2026-06-20 17:25:34",
+    "last_update": "2026-06-22 11:31:38",
     "cpu": 0,
-    "thermal": 40
+    "thermal": 30
   },
   "Mtr": {
     "state": {

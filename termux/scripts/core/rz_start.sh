@@ -22,11 +22,21 @@
 #    - rz_gyro_manager.sh  si modeGyro != OFF
 #    - rz_mg_manager.sh    si modeMg != OFF
 #    - rz_microSe_manager.sh si modeMicro != off
-#    - rz_camera_manager.sh  si cam.rear.mode ou cam.front.mode != off
 #    - rz_voice_manager.sh   toujours (TTS requis avant STT)
 #    - rz_stt_manager.sh     si modeSTT != OFF  (après voice — TTS "prêt" doit sortir)
+#    ⚠️ rz_camera_manager.sh N'EST PAS un daemon — voir note V1.2 ci-dessous.
 # 6. Envoi trame d'annonce vers SP : $I:COM:info:SE:SE_READY#
 # 7. Attente infinie (les daemons tournent en arrière-plan)
+#
+# ⚠️ NOTE V1.2 (juin 2026) — rz_camera_manager.sh retiré de ce script
+# ---------------------------------------------------------------------------
+# rz_camera_manager.sh est un script ONE-SHOT (pas un daemon) : il est appelé
+# à la demande par rz_vpiv_parser.sh à chaque trame VPIV CAT=V/F MODULE=CamSE,
+# avec 3 arguments (PROP VAL INST). Voir rz_vpiv_parser.sh ligne ~240-243.
+# Le lancer ici sans argument (comme avant V1.2) provoquait un exit 1 immédiat
+# (PROP vide → case par défaut → erreur), faussant cmd_status() et polluant
+# camera_manager.log sans impact fonctionnel réel (la caméra, pilotée par
+# Tasker via rz_tasker_bridge.sh, fonctionne indépendamment de ce faux daemon).
 #
 # UTILISATION
 # -----------
@@ -49,6 +59,8 @@
 # - Les managers écrivent dans fifo_termux_in → ne pas lancer avant le parser
 # - check_config.sh doit avoir été exécuté au moins une fois
 #   pour que les *_runtime.json existent
+# - rz_camera_manager.sh NE DOIT PAS être ajouté à start_sensors()/cmd_stop()/
+#   cmd_status() : c'est un one-shot invoqué par rz_vpiv_parser.sh, pas un daemon.
 #
 # DÉPENDANCES
 # -----------
@@ -58,8 +70,8 @@
 #   rz_voice_manager.sh, rz_stt_manager.sh
 #
 # AUTEUR  : Vincent Philippe
-# VERSION : 1.1  (ajout rz_voice_manager — démarrage avant STT)
-# DATE    : 2026-05-20
+# VERSION : 1.2  (retrait rz_camera_manager.sh — n'est pas un daemon, cf note ci-dessus)
+# DATE    : 2026-06-22
 # =============================================================================
 
 # =============================================================================
@@ -157,7 +169,6 @@ cmd_stop() {
     kill_process "rz_gyro_manager"
     kill_process "rz_mg_manager"
     kill_process "rz_microSe_manager"
-    kill_process "rz_camera_manager"
     kill_process "rz_stt_manager"
     kill_process "rz_voice_manager"
     log "Arrêt terminé."
@@ -176,7 +187,6 @@ cmd_status() {
         "rz_gyro_manager"
         "rz_mg_manager"
         "rz_microSe_manager"
-        "rz_camera_manager"
         "rz_voice_manager"
         "rz_stt_manager"
     )
@@ -334,15 +344,13 @@ start_sensors() {
     fi
 
     # --- Caméra ---
-    local mode_cam_rear mode_cam_front
-    mode_cam_rear=$(cfg '.cam.rear.mode')
-    mode_cam_front=$(cfg '.cam.front.mode')
-    if [ "$mode_cam_rear" != "off" ] || [ "$mode_cam_front" != "off" ]; then
-        kill_process "rz_camera_manager"
-        start_bg "camera_manager" "$SCRIPTS_DIR/sensors/cam/rz_camera_manager.sh"
-    else
-        warn "Camera manager : mode rear=$mode_cam_rear front=$mode_cam_front — non démarré"
-    fi
+    # ⚠️ RETIRÉ V1.2 (juin 2026) : rz_camera_manager.sh N'EST PAS un daemon.
+    # Il est invoqué à la demande par rz_vpiv_parser.sh (CAT=V/F MODULE=CamSE),
+    # avec 3 arguments (PROP VAL INST) — voir rz_vpiv_parser.sh ligne ~240-243.
+    # Le lancer ici sans argument provoquait un exit 1 immédiat (PROP vide),
+    # sans impact fonctionnel réel mais polluant les logs et cmd_status().
+    # La caméra (IP Webcam Pro via Tasker/RZ_CamStart/RZ_CamStop) ne dépend
+    # d'aucun daemon lancé par ce script.
 
     # --- Voice manager ---
     # Toujours démarré : TTS requis pour les feedbacks vocaux de tous les managers.
@@ -383,7 +391,7 @@ announce_ready() {
 
 main() {
     log "=========================================="
-    log "Démarrage rz_start.sh v1.1"
+    log "Démarrage rz_start.sh v1.2"
     log "=========================================="
 
     case "${1:-}" in

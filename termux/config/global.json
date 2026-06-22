@@ -20,12 +20,12 @@
     "cpu_load": 0,
     "temp": 0,
     "storage": 65,
-    "mem": 60,
+    "mem": 57,
     "batt": 100,
     "uptime": 0,
-    "last_update": "2026-06-22 11:31:38",
+    "last_update": "2026-06-22 12:06:42",
     "cpu": 0,
-    "thermal": 30
+    "thermal": 31
   },
   "Mtr": {
     "state": {

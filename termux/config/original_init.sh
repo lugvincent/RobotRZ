@@ -44,7 +44,9 @@
 #               Baby supprimé. IA_Conv ajouté (juin 2026).
 #   [x] STT   : modeSTT=OFF (PocketSphinx abandonné — AutoVoice via Tasker)
 #   [x] Voice : vol (volume multimédia global), output (sortie audio), ttsRate
-#   [x] Mtr   : speed_cruise, scales, kturn
+#   [x] Mtr   : speed_cruise, kturn (active toujours false ; inputScale/
+#               outputScale retirés V2 juin 2026 — constantes Arduino,
+#               vivent désormais en dur dans rz_stt_handler.sh)
 #
 # CATALOGUE STT (tableD_catalogueV2.csv)
 # ----------------------------------------
@@ -361,14 +363,6 @@ voice_ttsRate=1.0       # vitesse de synthèse TTS (1.0 = normale, >1 = plus rap
 # speed_cruise : vitesse "normale" de référence (unité Mtr, -100..100),
 #   utilisée pour générer les intents vocaux PLAN type vitesse/distance.
 #
-# inputScale / outputScale : MÊMES constantes que cfg_mtr_inputScale /
-#   cfg_mtr_outputScale côté Arduino (mtr.cpp). Permettent à SE de calculer
-#   des intents v/omega cohérents avec le calcul différentiel réel de
-#   l'Arduino : L = (vNorm - omNorm×kturn) × outputScale, où
-#   vNorm = v / inputScale. Constantes Arduino (config.cpp), non pilotables
-#   par VPIV — PAS de ligne dédiée dans la Table A (usage interne SE).
-#   ⚠️ Si modifiées côté Arduino (recompilation), les réaligner ici à la main.
-#
 # kturn : facteur de rotation. Stocké ×1000, MÊME ÉCHELLE que le VPIV Arduino
 #   (Table A, module Mtr, propriété kturn — $V:Mtr:*:kturn:800#).
 #   Côté Arduino : kturn_reel = kturn / 1000  (ex: 800 → 0.8)
@@ -378,10 +372,19 @@ voice_ttsRate=1.0       # vitesse de synthèse TTS (1.0 = normale, >1 = plus rap
 #      directement la valeur ACK/Config échangée en VPIV avec l'Arduino.
 #
 # active : toujours false au démarrage (sécurité)
+#
+# ⚠️ inputScale / outputScale (V2, juin 2026) : RETIRÉES de ce bloc.
+#   Ce sont des CONSTANTES Arduino (cfg_mtr_inputScale/cfg_mtr_outputScale,
+#   config.cpp), non pilotables par VPIV, absentes de la Table A (usage
+#   interne Arduino uniquement). SP n'a pas à les connaître ni les transmettre.
+#   SE en a besoin localement pour calculer ses intents PLAN (même formule
+#   différentielle que mtr.cpp : L=(vNorm-omNorm×kturn)×outputScale,
+#   vNorm=v/inputScale) → définies en constantes en dur DANS
+#   rz_stt_handler.sh, pas dans courant_init.json/global.json.
+#   Si elles changent côté Arduino (recompilation), réaligner À LA MAIN
+#   dans rz_stt_handler.sh (pas ici).
 
 mtr_speed_cruise=30
-mtr_inputScale=100
-mtr_outputScale=400
 mtr_kturn=800           # ×1000 → 0.8 côté Arduino (même échelle que le VPIV kturn)
 mtr_active=false
 
@@ -506,8 +509,6 @@ cat > "$OUTPUT_JSON" <<EOF
   },
   "mtr": {
     "speed_cruise":  $mtr_speed_cruise,
-    "inputScale":    $mtr_inputScale,
-    "outputScale":   $mtr_outputScale,
     "kturn":         $mtr_kturn,
     "active":        $mtr_active
   }

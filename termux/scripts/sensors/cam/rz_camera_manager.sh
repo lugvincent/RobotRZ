@@ -39,6 +39,16 @@
 #   optimized : res "low", fps 10 (profil dégradé cam_config.json)
 # Le profil CPU prend le dessus sur paraCam en cas de surcharge.
 #
+# VERROU RESSOURCE PARTAGÉE (V3.1 — juin 2026)
+# ---------------------------------------------
+# La caméra physique du smartphone ne peut être utilisée que par UNE application
+# à la fois (IP Webcam Pro, Zoom, ...). Avant tout démarrage, ce script pose un
+# verrou via rz_resource_lock.sh (owner="ipwebcam"). Si la ressource "camera" est
+# déjà détenue par un autre acteur (ex: "zoom", posé par rz_appli_manager.sh),
+# le démarrage est refusé avec le code CAM_LOCKED_<owner> et l'utilisateur est
+# informé (COM:error → TTS si pilotage vocal actif, cf rz_vpiv_parser.sh).
+# Le verrou est levé dans stop_webcam(). Voir Table A : VAR LockSE (CAT=I).
+#
 # GESTION ERREURS (Table A)
 # -------------------------
 # Sur erreur : envoi $E:CamSE:(error):<side>:<CODE>#
@@ -65,21 +75,24 @@
 #   $E:CamSE:error:<side>:<CODE>#         Événement erreur
 #   $I:COM:error:SE:"CamSE <side> : ..."# Erreur non critique
 #   $E:Urg:source:SE:URG_SENSOR_FAIL#     Urgence (typePtge 0 ou 2)
+#   $I:LockSE:camera:SE:<owner|libre>#    État verrou caméra (V3.1)
 #
 # CODES ERREUR
 # ------------
-#   CAM_START_FAIL  : échec démarrage IP Webcam (Tasker bridge timeout)
-#   CAM_IP_FAIL     : IP wlan0 non lisible
-#   CAM_CONFIG_FAIL : cam_config.json illisible ou absent
+#   CAM_START_FAIL    : échec démarrage IP Webcam (Tasker bridge timeout)
+#   CAM_IP_FAIL       : IP wlan0 non lisible
+#   CAM_CONFIG_FAIL   : cam_config.json illisible ou absent
+#   CAM_LOCKED_<owner> : ressource caméra déjà détenue par <owner> (V3.1)
 #
 # INTERACTIONS
 # ------------
 #   Appelé par  : rz_vpiv_parser.sh ($PROP $VAL $INST)
 #   Lit         : config/sensors/cam_config.json (paramètres et état instances)
 #   Lit         : config/global.json (.Sys.cpu, .CfgS.typePtge, .CfgS.typeReseau)
-#   Écrit dans  : config/sensors/cam_config.json (mise à jour mode/streamURL)
+#   Écrit dans  : config/sensors/cam_config.json (mise à jour mode/streamURL/status.active)
 #   Écrit dans  : fifo/fifo_termux_in → rz_vpiv_parser.sh → MQTT → SP
 #   Appelle     : scripts/utils/rz_tasker_bridge.sh (RZ_CamStart / RZ_CamStop)
+#   Source      : scripts/utils/rz_resource_lock.sh (lock_resource/unlock_resource) (V3.1)
 #
 # PRÉCAUTIONS
 # -----------
@@ -91,18 +104,21 @@
 # - ⚠️ Les trames VPIV commencent par \$ (dollar échappé)
 # - Pour typeReseau=4K (SIM), le streaming RTMP n'est pas encore implémenté
 #   → fallback sur URL locale en attendant
+# - rz_appli_manager.sh doit poser/lever le verrou "camera" (owner="zoom") au
+#   lancement/fermeture de Zoom — sans quoi ce script ne peut pas le détecter.
 #
 # DÉPENDANCES
 # -----------
 #   jq                  : lecture/écriture JSON
 #   curl                : vérification port 8080 après démarrage Tasker
 #   rz_tasker_bridge.sh : déclenchement tâches Tasker
+#   rz_resource_lock.sh : gestion verrou ressource partagée (V3.1)
 #   ifconfig / ip addr  : lecture IP wlan0
 #   fifo_termux_in      : créé par fifo_manager.sh
 #
 # AUTEUR  : Vincent Philippe
-# VERSION : 3.0  (Tasker bridge, URL dynamique typeReseau, fix $INST depuis parser)
-# DATE    : 2026-05-03
+# VERSION : 3.1  (verrou ressource caméra partagée + fix status.active pour TorchSE)
+# DATE    : 2026-06-22
 # =============================================================================
 
 # =============================================================================
@@ -120,6 +136,10 @@ GLOBAL_JSON="$BASE_DIR/config/global.json"
 FIFO_OUT="$BASE_DIR/fifo/fifo_termux_in"
 LOG_FILE="$BASE_DIR/logs/camera.log"
 BRIDGE_SCRIPT="$BASE_DIR/scripts/utils/rz_tasker_bridge.sh"
+RESOURCE_LOCK_SCRIPT="$BASE_DIR/scripts/utils/rz_resource_lock.sh"
+
+# Nom de cet acteur dans le système de verrous (V3.1)
+LOCK_OWNER="ipwebcam"
 
 # URL RTMP pour streaming distant (typeReseau=4K)
 #RTMP_URL="rtmp://robotz-vincent.duckdns.org/live/rz"
@@ -150,6 +170,14 @@ send_vpiv() {
     sleep 2 && kill "$pid_write" 2>/dev/null &
     wait "$pid_write" 2>/dev/null
 }
+
+# Chargement des fonctions de verrou ressource (V3.1)
+if [ -f "$RESOURCE_LOCK_SCRIPT" ]; then
+    # shellcheck source=./rz_resource_lock.sh
+    source "$RESOURCE_LOCK_SCRIPT"
+else
+    log_cam "WARN : rz_resource_lock.sh introuvable ($RESOURCE_LOCK_SCRIPT) — verrouillage désactivé"
+fi
 
 # Lecture IP locale (ifconfig puis fallback ip addr)
 get_ip() {
@@ -198,7 +226,7 @@ get_stream_url() {
 # GESTION ERREURS
 # Envoie error + modeCam:error + URG ou COM:error selon typePtge
 # $1 = instance (front|rear)
-# $2 = code erreur (CAM_START_FAIL | CAM_IP_FAIL | CAM_CONFIG_FAIL)
+# $2 = code erreur (CAM_START_FAIL | CAM_IP_FAIL | CAM_CONFIG_FAIL | CAM_LOCKED_<owner>)
 # =============================================================================
 
 handle_error() {
@@ -231,7 +259,29 @@ handle_error() {
 }
 
 # =============================================================================
+# FONCTION : handle_locked
+# Refus de démarrage : ressource caméra déjà détenue par un autre acteur (V3.1)
+# $1 = instance (front|rear)
+# $2 = nom de l'acteur détenteur (ex: "zoom")
+# Toujours informatif (COM:error), quel que soit typePtge — l'utilisateur DOIT
+# savoir pourquoi la caméra ne démarre pas, ce n'est pas une urgence matérielle.
+# =============================================================================
+
+handle_locked() {
+    local side="$1"
+    local owner="$2"
+    local code="CAM_LOCKED_${owner}"
+
+    log_cam "REFUS [$side] : caméra déjà utilisée par '$owner' — $code"
+
+    send_vpiv "\$E:CamSE:error:${side}:${code}#"
+    send_mode_state "$side" "error"
+    send_vpiv "\$I:COM:error:SE:\"Caméra indisponible : ${owner} l'utilise déjà\"#"
+}
+
+# =============================================================================
 # MISE À JOUR mode DANS cam_config.json (par instance)
+# Met aussi à jour status.active (V3.1) : true si au moins une instance != off.
 # $1 = instance (front|rear)
 # $2 = mode (off|stream|snapshot|error)
 # =============================================================================
@@ -245,9 +295,18 @@ send_mode_state() {
        "$CONFIG_CAM" > "${CONFIG_CAM}.tmp" \
     && mv "${CONFIG_CAM}.tmp" "$CONFIG_CAM"
 
+    # ── V3.1 : recalcul status.active à partir de l'état réel front/rear ──
+    # Utilisé par rz_torch_manager.sh pour basculer torche native/API caméra.
+    local any_active
+    any_active=$(jq -r 'if (.front.mode != "off" and .front.mode != "error") or (.rear.mode != "off" and .rear.mode != "error") then 1 else 0 end' "$CONFIG_CAM" 2>/dev/null)
+    jq --argjson active "${any_active:-0}" \
+       '.status.active = $active' \
+       "$CONFIG_CAM" > "${CONFIG_CAM}.tmp" \
+    && mv "${CONFIG_CAM}.tmp" "$CONFIG_CAM"
+
     # ACK modeCam → SP
     send_vpiv "\$I:CamSE:modeCam:${side}:${mode_val}#"
-    log_cam "modeCam[$side] → $mode_val"
+    log_cam "modeCam[$side] → $mode_val (status.active=${any_active:-0})"
 }
 
 # =============================================================================
@@ -283,6 +342,9 @@ get_optimal_params() {
 # Démarre IP Webcam via Tasker (RZ_CamStart) et publie l'URL stream vers SP
 # $1 = instance (front|rear)
 # $2 = mode (stream|snapshot)
+#
+# V3.1 : pose le verrou "camera" (owner=ipwebcam) avant toute action. Si la
+# ressource est déjà détenue par un autre acteur (ex: zoom), refuse et informe.
 # =============================================================================
 
 start_webcam() {
@@ -293,6 +355,17 @@ start_webcam() {
     local fps
     local ip_addr
     local stream_url
+
+    # ── V3.1 : vérification du verrou ressource caméra ──────────────────────
+    if command -v lock_resource &>/dev/null; then
+        local lock_holder
+        lock_holder=$(lock_resource camera "$LOCK_OWNER")
+        if [ $? -ne 0 ]; then
+            handle_locked "$side" "$lock_holder"
+            return 1
+        fi
+        send_vpiv "\$I:LockSE:camera:SE:${LOCK_OWNER}#"
+    fi
 
     # Vérification cam_config.json accessible
     if [ ! -f "$CONFIG_CAM" ]; then
@@ -326,6 +399,10 @@ start_webcam() {
     if [ ! -f "$BRIDGE_SCRIPT" ]; then
         log_cam "ERREUR : rz_tasker_bridge.sh introuvable ($BRIDGE_SCRIPT)"
         handle_error "$side" "CAM_START_FAIL"
+        if command -v unlock_resource &>/dev/null; then
+            unlock_resource camera "$LOCK_OWNER"
+            send_vpiv "\$I:LockSE:camera:SE:libre#"
+        fi
         return 1
     fi
 
@@ -342,11 +419,19 @@ start_webcam() {
     ip_addr=$(get_ip)
     if [ -z "$ip_addr" ]; then
         handle_error "$side" "CAM_IP_FAIL"
+        if command -v unlock_resource &>/dev/null; then
+            unlock_resource camera "$LOCK_OWNER"
+            send_vpiv "\$I:LockSE:camera:SE:libre#"
+        fi
         return 1
     fi
 
     if ! curl -s --max-time 2 "http://${ip_addr}:${CAM_PORT}/" > /dev/null 2>&1; then
         handle_error "$side" "CAM_START_FAIL"
+        if command -v unlock_resource &>/dev/null; then
+            unlock_resource camera "$LOCK_OWNER"
+            send_vpiv "\$I:LockSE:camera:SE:libre#"
+        fi
         return 1
     fi
 
@@ -376,7 +461,7 @@ start_webcam() {
     send_vpiv "\$I:CamSE:StreamURL:${side}:${stream_url}#"
     log_cam "StreamURL[$side] → $stream_url"
 
-    # ACK mode → SP
+    # ACK mode → SP (met aussi à jour status.active via send_mode_state)
     send_mode_state "$side" "$target_mode"
 }
 
@@ -384,6 +469,8 @@ start_webcam() {
 # FONCTION : stop_webcam
 # Arrête IP Webcam via Tasker (RZ_CamStop) et remet mode à "off" sur l'instance
 # $1 = instance (front|rear|*) — si "*" : arrêt global
+#
+# V3.1 : lève le verrou "camera" (owner=ipwebcam) après arrêt effectif.
 # =============================================================================
 
 stop_webcam() {
@@ -399,10 +486,19 @@ stop_webcam() {
         jq '.front.mode = "off" | .rear.mode = "off"' \
            "$CONFIG_CAM" > "${CONFIG_CAM}.tmp" \
         && mv "${CONFIG_CAM}.tmp" "$CONFIG_CAM"
+        jq '.status.active = 0' \
+           "$CONFIG_CAM" > "${CONFIG_CAM}.tmp" \
+        && mv "${CONFIG_CAM}.tmp" "$CONFIG_CAM"
         send_vpiv "\$I:CamSE:modeCam:front:off#"
         send_vpiv "\$I:CamSE:modeCam:rear:off#"
     else
         send_mode_state "$side" "off"
+    fi
+
+    # ── V3.1 : libération du verrou ressource caméra ────────────────────────
+    if command -v unlock_resource &>/dev/null; then
+        unlock_resource camera "$LOCK_OWNER" > /dev/null
+        send_vpiv "\$I:LockSE:camera:SE:libre#"
     fi
 }
 

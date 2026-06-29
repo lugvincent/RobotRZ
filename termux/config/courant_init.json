@@ -76,10 +76,11 @@
     }
   },
   "appli": {
-    "tasker":  { "state": "Off",   "tasker_task": "",                    "package": "net.dinglisch.android.taskerm", "last_change": "" },
-    "zoom":    { "state": "Off",     "tasker_task": "RZ_Zoom",    "package": "us.zoom.videomeetings",   "last_change": "" },
-    "NavGPS":  { "state": "Off",   "tasker_task": "RZ_NavGPS",  "package": "com.google.android.apps.maps", "last_change": "" },
-    "IA_Conv": { "state": "Off",  "tasker_task": "RZ_IA_Conv", "package": "",                  "last_change": "" },
+    "Baby":        { "state": "Off",        "tasker_task": "RZ_Baby",        "package": "",                    "last_change": "" },
+    "tasker":      { "state": "Off",      "tasker_task": "",                        "package": "net.dinglisch.android.taskerm",   "last_change": "" },
+    "zoom":        { "state": "Off",        "tasker_task": "RZ_Zoom",        "package": "us.zoom.videomeetings",     "last_change": "" },
+    "BabyMonitor": { "state": "Off", "tasker_task": "RZ_BabyMonitor", "package": "",                    "last_change": "" },
+    "NavGPS":      { "state": "Off",      "tasker_task": "RZ_NavGPS",      "package": "com.google.android.apps.maps",   "last_change": "" },
     "bridge_timeout": 5,
     "ExprTasker": { "expr_task": "RZ_Expression", "info_task": "RZ_Info" }
   },
@@ -98,16 +99,11 @@
     }
   },
   "stt": {
-    "modeSTT":   "OFF",
+    "modeSTT":   "KWS",
     "threshold": 1e-20,
     "keyphrase": "rz",
     "lang":      "fr",
     "lib_path":  "lib_pocketsphinx"
-  },
-  "voice": {
-    "vol":     80,
-    "output":  "internal",
-    "ttsRate": 1.0
   },
   "mtr": {
     "speed_cruise":  30,

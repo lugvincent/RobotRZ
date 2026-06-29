@@ -254,7 +254,7 @@ process_trame() {
 
 main() {
     log "=========================================="
-    log "Démarrage rz_appli_manager.sh v1.1"
+    log "Démarrage rz_appli_manager.sh v1.2"
     log "=========================================="
 
     # Vérifications

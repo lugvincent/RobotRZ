@@ -15,8 +15,9 @@
 # 2. Test connexion MQTT broker (avec retry)
 # 3. Vérification/création des FIFOs
 # 4. Lancement core :
-#    - rz_vpiv_parser.sh  (daemon MQTT ↔ FIFO)
-#    - rz_state-manager.sh (état global)
+#    - rz_vpiv_parser.sh    (daemon MQTT ↔ FIFO)
+#    - rz_state-manager.sh  (état global)
+#    - rz_appli_manager.sh  (daemon routage CAT=A — Zoom/NavGPS/IA_Conv/ExprTasker/tasker)
 # 5. Lancement managers capteurs selon courant_init.json :
 #    - rz_sys_monitor.sh   si modeSys != OFF  (toujours en pratique)
 #    - rz_gyro_manager.sh  si modeGyro != OFF
@@ -70,8 +71,9 @@
 #   rz_voice_manager.sh, rz_stt_manager.sh
 #
 # AUTEUR  : Vincent Philippe
-# VERSION : 1.2  (retrait rz_camera_manager.sh — n'est pas un daemon, cf note ci-dessus)
-# DATE    : 2026-06-22
+# VERSION : 1.3  (ajout rz_appli_manager.sh au démarrage core — daemon CAT=A absent depuis
+#                 la création initiale du script, confirmé manquant lors d'un test du pattern LockSE)
+# DATE    : 2026-06-29
 # =============================================================================
 
 # =============================================================================
@@ -165,6 +167,7 @@ cmd_stop() {
     log "Arrêt de tous les managers SE..."
     kill_process "rz_vpiv_parser"
     kill_process "rz_state-manager"
+    kill_process "rz_appli_manager"
     kill_process "rz_sys_monitor"
     kill_process "rz_gyro_manager"
     kill_process "rz_mg_manager"
@@ -183,6 +186,7 @@ cmd_status() {
     local procs=(
         "rz_vpiv_parser"
         "rz_state-manager"
+        "rz_appli_manager"
         "rz_sys_monitor"
         "rz_gyro_manager"
         "rz_mg_manager"
@@ -294,6 +298,15 @@ start_core() {
     # State-manager — gestion état global (global.json)
     start_bg "state_manager" "$SCRIPTS_DIR/core/rz_state-manager.sh"
     sleep 1
+
+    # Appli manager — daemon routage CAT=A (Zoom, NavGPS, IA_Conv, ExprTasker, tasker)
+    # Toujours démarré : aucune dépendance à courant_init.json, lit fifo_appli_in en continu.
+    # ⚠️ Ajouté V1.3 (juin 2026) — absent depuis la création initiale du script, ce qui
+    #    empêchait tout pilotage SP→SE des applications Android tant qu'il n'était pas
+    #    lancé manuellement. Confirmé lors d'un test fonctionnel du pattern LockSE.
+    kill_process "rz_appli_manager"
+    start_bg "appli_manager" "$SCRIPTS_DIR/appli/rz_appli_manager.sh"
+    sleep 1
 }
 
 # =============================================================================
@@ -391,7 +404,7 @@ announce_ready() {
 
 main() {
     log "=========================================="
-    log "Démarrage rz_start.sh v1.2"
+    log "Démarrage rz_start.sh v1.3"
     log "=========================================="
 
     case "${1:-}" in

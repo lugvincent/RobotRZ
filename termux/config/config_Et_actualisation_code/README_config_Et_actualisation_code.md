@@ -1,7 +1,7 @@
 # config_Et_actualisation_code — Guide d'actualisation RobotRZ
 
 **Chemin :** `~/robotRZ-smartSE/termux/config/config_Et_actualisation_code/`  
-**Version :** 1.0 — Juillet 2026 — Vincent Philippe
+**Version :** 1.1 — Juillet 2026 — Vincent Philippe
 
 ---
 
@@ -65,20 +65,55 @@ et les credentials sont dispersés si on ne dispose pas d'un point d'entrée uni
 
 ### 1. Token GitHub expiré ou révoqué
 
-**Symptôme :** `git push` ou `git pull` échoue avec erreur 401/403 sur le Doro.  
-**Fréquence :** selon l'expiration choisie (ex. 90 jours).
+**Symptôme :** `git push` échoue avec `error 403` ou `Permission denied` sur le Doro.  
+**Fréquence :** selon l'expiration choisie (90 jours recommandé).
+
+#### Étape 1 — Créer un nouveau token sur GitHub
+
+Sur `https://github.com/settings/tokens` :
+
+1. Cliquer **Generate new token → Fine-grained token**
+2. **Token name** : `RobotRZ` (ou autre nom explicite)
+3. **Resource owner** : `lugvincent` (ton compte, proposé par défaut)
+4. **Repository access** → choisir **"Only select repositories"**
+   - Dans le champ qui apparaît, sélectionner **`lugvincent/RobotRZ`**
+   - ⚠️ Ne pas choisir "Public repositories" (lecture seule, push impossible)
+   - ⚠️ Ne pas choisir "All repositories" (trop large)
+5. **Permissions → Repository permissions** → trouver **Contents**
+   - Mettre sur **"Read and write"** (indispensable pour push/pull)
+   - Laisser tout le reste sur "No access"
+6. **Expiration** : 90 jours recommandé
+7. Cliquer **Generate token**
+8. **Copier immédiatement la valeur affichée** — GitHub ne la montre qu'une fois
+
+#### Étape 2 — Mettre à jour keys.json sur le Doro
 
 ```bash
-# Étape 1 — Générer un nouveau token sur GitHub
-# → github.com/settings/tokens → Fine-grained → RobotRZ → Contents Read/Write
-
-# Étape 2 — Mettre à jour keys.json
 nano ~/robotRZ-smartSE/termux/config/keys.json
-# Modifier la valeur de "GITHUB_TOKEN"
-
-# Étape 3 — Appliquer le nouveau remote
-bash ~/robotRZ-smartSE/termux/config/config_Et_actualisation_code/set_git_remote.sh
+# Modifier la valeur de "GITHUB_TOKEN" avec la nouvelle valeur
 ```
+
+#### Étape 3 — Appliquer le nouveau remote
+
+```bash
+bash ~/robotRZ-smartSE/termux/config/config_Et_actualisation_code/set_git_remote.sh
+# Doit afficher : Authentification réussie ✓
+```
+
+#### Étape 4 — Tester le push
+
+```bash
+cd ~/robotRZ-smartSE
+git push
+# Doit passer sans erreur
+```
+
+#### Étape 5 — Mettre à jour le PC (VS Code)
+
+Si le PC utilise le même token (mémorisé dans le Gestionnaire d'identifiants Windows) :
+- Ouvrir **Gestionnaire d'identifiants Windows** → onglet "Informations d'identification Windows"
+- Chercher une entrée `github.com` → la supprimer
+- Relancer `git pull` dans VS Code → Windows demandera le nouveau token
 
 ⚠️ **RÈGLE ABSOLUE** : ne jamais lancer `git remote -v` et coller le résultat
 dans une conversation, email ou autre canal. Le token apparaît en clair dans l'URL.
@@ -103,30 +138,62 @@ nano ~/robotRZ-smartSE/termux/config/keys.json
 # (verification par longueur, jamais par valeur)
 GEMINI_KEY=$(jq -r '.GEMINI_API_KEY' ~/robotRZ-smartSE/termux/config/keys.json)
 echo "Longueur clé Gemini : ${#GEMINI_KEY} caractères"
-# Attendu : environ 39 caractères pour une clé Gemini standard
+# Attendu : environ 53 caractères (format actuel juillet 2026 — a évolué, vérifier la cohérence)
 ```
 
 ---
 
 ### 3. Mot de passe MQTT modifié
 
-**Symptôme :** connexion MQTT refusée depuis le Doro ou Node-RED.
+**Symptôme :** `Connection Refused: not authorised` depuis le Doro ou Node-RED déconnecté.  
+**Composants à mettre à jour : 3 endroits** (Mosquitto RPi + keys.json Doro + Node-RED).
+
+#### Étape 1 — Changer le mot de passe sur le RPi
 
 ```bash
-# Sur le RPi (rzServeur) — modifier le mot de passe Mosquitto
-mosquitto_passwd /etc/mosquitto/passwd rpibrokerUser
-# Saisir le nouveau mot de passe deux fois
+# Se connecter en SSH sur le RPi
+ssh rzServeur@192.168.1.40
+
+# Changer le mot de passe (saisir le nouveau 2 fois)
+# ⚠️ Éviter les caractères spéciaux (!@$#) — problèmes dans les variables shell
+sudo mosquitto_passwd /etc/mosquitto/passwd rpibrokerUser
 
 # Redémarrer Mosquitto
 sudo systemctl restart mosquitto
 
-# Sur le Doro — mettre à jour keys.json
-nano ~/robotRZ-smartSE/termux/config/keys.json
-# Modifier la valeur de "MQTT_PASS"
-
-# Dans Node-RED (SP RPi) — mettre à jour le nœud MQTT broker
-# → onglet du broker → modifier le mot de passe → déployer
+# Vérifier que Mosquitto est bien actif
+sudo systemctl status mosquitto
+# Chercher : Active: active (running)
+# Pour quitter l'affichage du status : taper q
 ```
+
+#### Étape 2 — Mettre à jour keys.json sur le Doro
+
+```bash
+nano ~/robotRZ-smartSE/termux/config/keys.json
+# Modifier la valeur de "MQTT_PASS" avec exactement le même mot de passe
+```
+
+#### Étape 3 — Mettre à jour Node-RED (SP RPi)
+
+Dans l'interface Node-RED (`https://robotz-vincent.duckdns.org`) :
+- Aller dans n'importe quel nœud MQTT → cliquer sur le broker `192.168.1.40`
+- Onglet **Sécurité** → modifier le mot de passe → **Mettre à jour**
+- Cliquer **Déployer** (bouton rouge en haut à droite)
+
+#### Étape 4 — Valider la connexion depuis le Doro
+
+```bash
+# Test de publication MQTT (lit les credentials depuis keys.json)
+PASS=$(jq -r '.MQTT_PASS' ~/robotRZ-smartSE/termux/config/keys.json)
+USER=$(jq -r '.MQTT_USER' ~/robotRZ-smartSE/termux/config/keys.json)
+mosquitto_pub -h 192.168.1.40 -u "$USER" -P "$PASS" -t "SE/test" -m "ping"
+# Aucun message = succès. "Connection Refused" = mot de passe incorrect
+```
+
+⚠️ Si le test échoue malgré une saisie correcte : vérifier que le mot de passe
+dans `keys.json` est **exactement identique** à celui saisi dans `mosquitto_passwd`
+(casse, espaces, caractères spéciaux).
 
 ---
 

@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sécurité — RobotRZ V1</title>
+<style>
+:root{--bg:#0f1117;--bg2:#171b26;--bg3:#1e2333;--text:#e8eaf0;--text2:#8b93a8;--text3:#555e78;--blue:#4d9ef7;--purple:#9b7cf4;--amber:#f0a836;--teal:#2ec4a0;--coral:#f06a50;--green:#5dbd6a;--red:#e85555;--border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.12);--radius:10px;--radius-lg:14px}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;font-size:14px;line-height:1.6}
+.nav{background:var(--bg2);border-bottom:1px solid var(--border);padding:12px 24px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:100;flex-wrap:wrap}
+.nav-logo{font-size:16px;font-weight:700;color:var(--red);letter-spacing:1px;text-decoration:none}
+.nav-version{font-size:11px;color:var(--text3);background:var(--bg3);padding:2px 8px;border-radius:20px;border:1px solid var(--border)}
+.breadcrumb{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text3)}
+.breadcrumb a{color:var(--blue);text-decoration:none}
+.nav-links{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap}
+.nav-link{font-size:12px;color:var(--text2);text-decoration:none;padding:4px 10px;border-radius:6px;border:1px solid var(--border);transition:all .2s}
+.nav-link:hover{background:var(--bg3)}
+.header{padding:32px 24px 20px;max-width:1000px;margin:0 auto}
+.header h1{font-size:26px;font-weight:700;color:var(--red);margin-bottom:6px}
+.main{max-width:1000px;margin:0 auto;padding:0 24px 60px}
+.section{margin-bottom:28px}
+.section-title{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:var(--text3);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--border)}
+.incident{background:rgba(232,85,85,.06);border:1px solid rgba(232,85,85,.3);border-radius:var(--radius-lg);padding:18px 20px;margin-bottom:12px}
+.incident-title{color:var(--red);font-weight:600;font-size:15px;margin-bottom:8px}
+.incident-body{font-size:13px;color:var(--text2);line-height:1.7}
+.rule-ok{background:rgba(93,189,106,.06);border:1px solid rgba(93,189,106,.2);border-radius:var(--radius);padding:10px 14px;font-size:13px;color:var(--text2);margin-bottom:8px;display:flex;align-items:flex-start;gap:8px}
+.rule-warn{background:rgba(240,168,54,.06);border:1px solid rgba(240,168,54,.2);border-radius:var(--radius);padding:10px 14px;font-size:13px;color:var(--text2);margin-bottom:8px}
+.code{font-family:monospace;background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:12px 16px;font-size:12px;color:var(--teal);margin:10px 0;overflow-x:auto;line-height:1.7}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:16px 18px}
+.footer{border-top:1px solid var(--border);padding:20px 24px;text-align:center;color:var(--text3);font-size:12px;max-width:1000px;margin:0 auto}
+@media(max-width:700px){.grid-2{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<nav class="nav">
+  <a href="index.html" class="nav-logo">RobotRZ</a>
+  <span class="nav-version">V2 — Juillet 2026</span>
+  <div class="breadcrumb"><span>›</span><a href="index.html">Vue d'ensemble</a><span>›</span><span style="color:var(--red)">Sécurité</span></div>
+  <div class="nav-links">
+    <a href="mqtt_reseau_V1.html" class="nav-link">Réseau</a>
+    <a href="tables_donnees_V1.html" class="nav-link">Tables</a>
+  </div>
+</nav>
+<div class="header">
+  <h1>Sécurité</h1>
+  <p>Règles de sécurité du projet RobotRZ. Plusieurs incidents ont forgé ces règles — elles ne sont pas théoriques.</p>
+</div>
+<div class="main">
+
+  <div class="section">
+    <div class="section-title">Incidents de sécurité — leçons apprises</div>
+    <div class="incident">
+      <div class="incident-title">Incident 1 — Injection de flux Node-RED (28 avril 2026)</div>
+      <div class="incident-body">
+        Un flux Node-RED malveillant a été injecté via l'interface Node-RED exposée sans authentification sur internet via DuckDNS. Le flux tentait de créer un utilisateur système (<span style="font-family:monospace;color:var(--teal)">jim</span>) avec des droits sudo.<br><br>
+        <strong style="color:var(--green)">Résultat :</strong> La commande a échoué, aucun utilisateur créé, aucun accès SSH suspect confirmé dans les logs. Le flux a été supprimé immédiatement.<br><br>
+        <strong style="color:var(--text)">Actions correctives :</strong><br>
+        — adminAuth activé dans settings.js (login/mot de passe obligatoire)<br>
+        — Vérification complète des logs SSH<br>
+        — Audit de tous les flows existants
+      </div>
+    </div>
+    <div class="incident">
+      <div class="incident-title">Incident 2 — Clé API Gemini exposée dans Git</div>
+      <div class="incident-body">
+        La clé API Gemini a été committée dans le dépôt Git puis découverte dans l'historique.<br><br>
+        <strong style="color:var(--green)">Actions correctives :</strong><br>
+        — Clé révoquée immédiatement sur Google Cloud Console<br>
+        — Nouvelle clé générée<br>
+        — Historique Git purgé via <span style="font-family:monospace;color:var(--teal)">git filter-branch</span><br>
+        — keys.json ajouté au .gitignore<br>
+        — Vérification qu'aucune autre clé n'était exposée
+      </div>
+    </div>
+    <div class="incident">
+      <div class="incident-title">Incident 3 — Credentials exposés en clair pendant tests SSH (29 juin 2026)</div>
+      <div class="incident-body">
+        Le mot de passe MQTT (<span style="font-family:monospace;color:var(--teal)">MQTT_PASS</span>) et la clé API Gemini (déjà régénérée une première fois après l'incident 2) sont réapparus en clair plusieurs fois dans les échanges de la session — copier-coller de commandes et de fichiers de config pendant le diagnostic SSH du pattern LockSE.<br><br>
+        <strong style="color:var(--green)">Actions correctives — faites le 01/07/2026 :</strong><br>
+        — MQTT_PASS régénéré côté Mosquitto (RPi), keys.json (Doro) et broker Node-RED (SP RPI) — 3 emplacements, testé par <span style="font-family:monospace;color:var(--teal)">mosquitto_pub</span><br>
+        — Clé API Gemini régénérée sur Google AI Studio (nouveau format, 53 caractères)<br><br>
+        <strong style="color:var(--green)">Bonne pratique adoptée pour la suite :</strong> charger les credentials dans une variable shell sans jamais les afficher, et vérifier qu'elle est bien chargée par sa <strong>longueur</strong> plutôt que sa valeur — utile aussi pour diagnostiquer une session SSH expirée (variable perdue).
+        <div class="code" style="margin-top:8px">MQTT_PASS=$(jq -r '.MQTT_PASS' keys.json)
+echo "${#MQTT_PASS}"   # affiche la longueur, jamais la valeur</div>
+        <span class="tag-ok" style="display:inline-block;margin-top:8px;padding:2px 10px;border-radius:20px;background:rgba(93,189,106,.15);color:var(--green);font-size:11px">✅ Résolu — 01/07/2026</span>
+      </div>
+    </div>
+    <div class="incident">
+      <div class="incident-title">Incident 4 — Token GitHub supprimé par erreur (1er juillet 2026)</div>
+      <div class="incident-body">
+        Vincent a supprimé un token GitHub pensant qu'il était inutilisé. Conséquence : la synchronisation GitHub → Project Knowledge Claude a cessé de fonctionner. Le diagnostic a révélé que le remote Git sur le Doro (Termux) contenait le token <strong>en clair dans l'URL</strong> (<span style="font-family:monospace;color:var(--teal)">https://USER:TOKEN@github.com/...</span>) — exposé accidentellement dans une conversation pendant le diagnostic, donc traité comme compromis et révoqué immédiatement, quel que soit son état initial.<br><br>
+        <strong style="color:var(--green)">Actions correctives :</strong><br>
+        — Nouveau token GitHub <strong>fine-grained</strong> créé : portée limitée au dépôt <span style="font-family:monospace;color:var(--teal)">RobotRZ</span> uniquement (pas "All repositories"), permission <strong>Contents → Read and write</strong> seule, expiration 90 jours<br>
+        — Script <span style="font-family:monospace;color:var(--teal)">set_git_remote.sh</span> créé pour ne plus jamais manipuler l'URL du remote à la main<br>
+        — Constat : PC (VS Code) et Doro (Termux) utilisent deux mécanismes d'authentification différents — Windows Git Credential Manager (opaque, token non visible) vs URL avec token embarqué (Termux, visible via <span style="font-family:monospace;color:var(--teal)">git remote -v</span>). Supprimer un token ne casse que les clients qui l'utilisent directement.<br><br>
+        <span style="display:inline-block;padding:2px 10px;border-radius:20px;background:rgba(93,189,106,.15);color:var(--green);font-size:11px">✅ Résolu — 01/07/2026</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Règles en vigueur</div>
+    <div class="rule-ok"><span style="color:var(--green)">✓</span><div><strong style="color:var(--text)">Tous les credentials régénérés</strong> (01/07/2026) — GITHUB_TOKEN, GEMINI_API_KEY, MQTT_PASS, DUCKDNS_TOKEN. État détaillé dans le tableau ci-dessous.</div></div>
+    <div class="rule-ok"><span style="color:var(--green)">✓</span><div><strong style="color:var(--text)">adminAuth activé</strong> dans /home/rzServeur/.node-red/settings.js depuis le 28/04/2026. Accès Node-RED protégé par login/mot de passe.</div></div>
+    <div class="rule-ok"><span style="color:var(--green)">✓</span><div><strong style="color:var(--text)">keys.json dans .gitignore</strong> — jamais versionné. Format étendu depuis le 01/07 (7 clés, voir section dédiée).</div></div>
+    <div class="rule-ok"><span style="color:var(--green)">✓</span><div><strong style="color:var(--text)">SSH Termux</strong> — port 8022, authentification par mot de passe. Accès distant via NAT box port 5800.</div></div>
+    <div class="rule-ok"><span style="color:var(--green)">✓</span><div><strong style="color:var(--text)">Fichiers *_runtime.json</strong> générés localement par check_config.sh, non versionnés.</div></div>
+    <div class="rule-warn" style="border-color:rgba(240,106,80,.3);background:rgba(240,106,80,.06)">⚠ <strong>RÈGLE ABSOLUE — git remote -v</strong> : ne jamais lancer <span style="font-family:monospace;color:var(--teal)">git remote -v</span> et coller le résultat dans une conversation, email ou tout autre canal. Sur Termux/Doro, l'URL du remote contient le token GitHub <strong>en clair</strong>. Toujours utiliser <span style="font-family:monospace;color:var(--teal)">set_git_remote.sh</span> pour toute mise à jour du remote. Vérifier les tokens par leur <strong>longueur</strong> (<span style="font-family:monospace;color:var(--teal)">${#TOKEN}</span>), jamais par leur valeur affichée.</div>
+    <div class="rule-warn">⚠ Caractères spéciaux (<span style="font-family:monospace">! @ $ # %</span>) à éviter dans les mots de passe qui transitent par des variables shell bash (ex. MQTT_PASS) — préférer lettres + chiffres.</div>
+    <div class="rule-warn">⚠ Node-RED reste accessible via DuckDNS depuis internet. Envisager de restreindre l'accès par IP dans settings.js si le pilotage distant n'est pas nécessaire en permanence.</div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">État des credentials — après rotation du 01/07/2026</div>
+    <table style="width:100%;border-collapse:collapse;font-size:13px">
+      <thead><tr style="background:var(--bg3)">
+        <th style="padding:8px 12px;text-align:left;color:var(--text3);font-weight:500;border-bottom:1px solid var(--border)">Credential</th>
+        <th style="padding:8px 12px;text-align:left;color:var(--text3);font-weight:500;border-bottom:1px solid var(--border)">État</th>
+        <th style="padding:8px 12px;text-align:left;color:var(--text3);font-weight:500;border-bottom:1px solid var(--border)">Expiration / note</th>
+      </tr></thead>
+      <tbody>
+        <tr style="border-bottom:1px solid var(--border)"><td style="padding:8px 12px;font-family:monospace;color:var(--teal)">GITHUB_TOKEN</td><td style="padding:8px 12px;color:var(--green)">✅ Régénéré</td><td style="padding:8px 12px;color:var(--text2)">~90 jours — fine-grained, Contents R/W, RobotRZ uniquement</td></tr>
+        <tr style="border-bottom:1px solid var(--border)"><td style="padding:8px 12px;font-family:monospace;color:var(--teal)">GEMINI_API_KEY</td><td style="padding:8px 12px;color:var(--green)">✅ Régénérée</td><td style="padding:8px 12px;color:var(--text2)">Pas d'expiration fixe — surveiller les erreurs 404 API</td></tr>
+        <tr style="border-bottom:1px solid var(--border)"><td style="padding:8px 12px;font-family:monospace;color:var(--teal)">MQTT_PASS</td><td style="padding:8px 12px;color:var(--green)">✅ Régénéré</td><td style="padding:8px 12px;color:var(--text2)">Pas d'expiration — changer si compromis. Procédure : <a href="mqtt_reseau_V1.html" style="color:var(--blue)">mqtt_reseau_V1.html</a></td></tr>
+        <tr style="border-bottom:1px solid var(--border)"><td style="padding:8px 12px;font-family:monospace;color:var(--teal)">DUCKDNS_TOKEN</td><td style="padding:8px 12px;color:var(--green)">✅ À jour dans keys.json</td><td style="padding:8px 12px;color:var(--text2)">Token stable, ne change pas automatiquement</td></tr>
+        <tr><td style="padding:8px 12px;font-family:monospace;color:var(--teal)">GITHUB PAT (PC)</td><td style="padding:8px 12px;color:var(--teal)">ℹ️ Non touché</td><td style="padding:8px 12px;color:var(--text2)">Mécanisme OAuth Windows Credential Manager — indépendant, fonctionnel</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section">
+    <div class="section-title">keys.json — format étendu (depuis 01/07/2026)</div>
+    <div style="font-size:13px;color:var(--text2);margin-bottom:10px">À exécuter manuellement après chaque <span style="font-family:monospace;color:var(--teal)">git clone</span> sur chaque machine :</div>
+    <div class="code">mkdir -p ~/robotRZ-smartSE/termux/config
+nano ~/robotRZ-smartSE/termux/config/keys.json</div>
+    <div class="code">{
+    "GEMINI_API_KEY": "VOTRE_CLE_GEMINI",
+    "MQTT_USER":      "rpibrokerUser",
+    "MQTT_PASS":      "VOTRE_MOT_DE_PASSE_MQTT",
+    "MQTT_HOST":      "192.168.1.40",
+    "DUCKDNS_TOKEN":  "VOTRE_TOKEN_DUCKDNS",
+    "GITHUB_USER":    "lugvincent",
+    "GITHUB_TOKEN":   "VOTRE_TOKEN_GITHUB_FINEGRAINED"
+}</div>
+    <div class="rule-ok"><span style="color:var(--green)">✓</span><div><strong style="color:var(--text)">3 nouvelles clés</strong> ajoutées le 01/07/2026 : DUCKDNS_TOKEN, GITHUB_USER, GITHUB_TOKEN — nécessaires pour set_git_remote.sh et la procédure DuckDNS.</div></div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">config_Et_actualisation_code/ — outillage de rotation des credentials</div>
+    <div class="card">
+      <div style="font-size:13px;color:var(--text2);line-height:1.8">
+        Nouveau dossier <span style="font-family:monospace;color:var(--teal)">termux/config/config_Et_actualisation_code/</span> — point d'entrée unique pour toute procédure d'actualisation de credential, créé pour répondre à la désorganisation chronique liée au grand nombre de composants du projet.
+      </div>
+      <div class="code" style="margin-top:10px">termux/config/config_Et_actualisation_code/
+├── set_git_remote.sh                          # Met à jour le remote Git depuis keys.json
+└── README_config_Et_actualisation_code.md     # v1.1 — guide de renouvellement (GitHub, Gemini, MQTT, DuckDNS, git clone)</div>
+      <div style="font-size:13px;color:var(--text2);margin-top:10px"><span style="font-family:monospace;color:var(--teal)">set_git_remote.sh</span> lit <span style="font-family:monospace;color:var(--teal)">GITHUB_USER</span> et <span style="font-family:monospace;color:var(--teal)">GITHUB_TOKEN</span> depuis keys.json, met à jour le remote, fait un <span style="font-family:monospace;color:var(--teal)">git fetch</span> de validation. Vérifie les credentials par longueur uniquement. À relancer après chaque renouvellement de token ou <span style="font-family:monospace;color:var(--teal)">git clone</span>.</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">GitHub — token fine-grained : piège à connaître</div>
+    <div class="rule-warn">⚠ L'option <strong>"Public repositories"</strong> (sélectionnée par défaut à la création) donne un accès <strong>lecture seule</strong> aux dépôts publics, sans aucune permission d'écriture — aucun push possible. Choisir impérativement <strong>"Only select repositories"</strong> → sélectionner <span style="font-family:monospace;color:var(--teal)">RobotRZ</span> → permission <strong>Contents → Read and write</strong>.</div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">adminAuth Node-RED — régénérer un hash</div>
+    <div class="code"># Sur le RPI, régénérer un hash de mot de passe si nécessaire
+node-red admin hash-pw
+
+# Emplacement settings.js
+/home/rzServeur/.node-red/settings.js</div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Git — dépôt et .gitignore</div>
+    <div class="grid-2">
+      <div class="card">
+        <div style="color:var(--blue);font-weight:600;margin-bottom:8px">Dépôt</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.8">
+          URL : <a href="https://github.com/lugvincent/RobotRZ" style="color:var(--blue)">lugvincent/RobotRZ</a><br>
+          Branche principale : main<br>
+          Authentification : Personal Access Token (PAT)
+        </div>
+      </div>
+      <div class="card">
+        <div style="color:var(--red);font-weight:600;margin-bottom:8px">Fichiers exclus (.gitignore)</div>
+        <div style="font-family:monospace;font-size:12px;color:var(--text2);line-height:1.8">
+          termux/config/keys.json<br>
+          termux/config/*_runtime.json<br>
+          termux/logs/<br>
+          termux/config/sensors/*.json<br>
+          termux/scripts/sensors/stt/lib_pocketsphinx/<br>
+          .env
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+<div class="footer">
+  RobotRZ — Sécurité V2 — Juillet 2026 — Vincent Philippe &nbsp;·&nbsp;
+  <a href="index.html" style="color:var(--blue)">← Vue d'ensemble</a>
+</div>
+</body>
+</html>

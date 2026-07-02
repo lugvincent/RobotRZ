@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SP — Node-RED RobotRZ V1</title>
+<style>
+:root{--bg:#0f1117;--bg2:#171b26;--bg3:#1e2333;--bg4:#252a3a;--text:#e8eaf0;--text2:#8b93a8;--text3:#555e78;--blue:#4d9ef7;--purple:#9b7cf4;--amber:#f0a836;--teal:#2ec4a0;--coral:#f06a50;--green:#5dbd6a;--red:#e85555;--border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.12);--radius:10px;--radius-lg:14px}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;font-size:14px;line-height:1.6;min-height:100vh}
+.nav{background:var(--bg2);border-bottom:1px solid var(--border);padding:12px 24px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:100;flex-wrap:wrap}
+.nav-logo{font-size:16px;font-weight:700;color:var(--blue);letter-spacing:1px;text-decoration:none}
+.nav-version{font-size:11px;color:var(--text3);background:var(--bg3);padding:2px 8px;border-radius:20px;border:1px solid var(--border)}
+.breadcrumb{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text3)}
+.breadcrumb a{color:var(--blue);text-decoration:none}
+.breadcrumb a:hover{text-decoration:underline}
+.nav-links{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap}
+.nav-link{font-size:12px;color:var(--text2);text-decoration:none;padding:4px 10px;border-radius:6px;border:1px solid var(--border);transition:all .2s}
+.nav-link:hover{background:var(--bg3);color:var(--text);border-color:var(--border2)}
+.header{padding:32px 24px 20px;max-width:1000px;margin:0 auto}
+.header h1{font-size:26px;font-weight:700;color:var(--blue);margin-bottom:6px}
+.header p{color:var(--text2);font-size:14px;max-width:700px}
+.main{max-width:1000px;margin:0 auto;padding:0 24px 60px}
+.section{margin-bottom:28px}
+.section-title{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:var(--text3);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--border)}
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:18px 20px;margin-bottom:12px;cursor:pointer;transition:all .2s;text-decoration:none;display:block}
+.card:hover{border-color:var(--border2);background:var(--bg3)}
+.card-title{font-size:15px;font-weight:600;margin-bottom:4px;display:flex;align-items:center;gap:8px}
+.card-sub{font-size:12px;color:var(--text2);margin-bottom:8px}
+.card-body{font-size:13px;color:var(--text2);line-height:1.7}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.st{width:8px;height:8px;border-radius:50%;display:inline-block;flex-shrink:0;margin-right:4px}
+.st-ok{background:var(--green)}
+.st-wip{background:var(--amber)}
+.st-todo{background:var(--red)}
+.tag{font-size:10px;padding:2px 7px;border-radius:20px;font-weight:500;display:inline-block}
+.tag-sp{background:rgba(77,158,247,.15);color:var(--blue)}
+.tag-se{background:rgba(155,124,244,.15);color:var(--purple)}
+.tag-ok{background:rgba(93,189,106,.15);color:var(--green)}
+.tag-wip{background:rgba(240,168,54,.15);color:var(--amber)}
+.tag-todo{background:rgba(232,85,85,.15);color:var(--red)}
+.flow-block{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:16px 18px;margin-bottom:10px;transition:all .2s;cursor:pointer}
+.flow-block:hover{border-color:var(--border2);background:var(--bg3)}
+.flow-header{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.flow-name{font-size:14px;font-weight:600;color:var(--text)}
+.flow-desc{font-size:13px;color:var(--text2);line-height:1.7}
+.flow-detail{margin-top:10px;padding-top:10px;border-top:1px solid var(--border)}
+.sub-flow{background:var(--bg3);border-radius:8px;padding:10px 14px;margin-bottom:6px;font-size:12px;color:var(--text2)}
+.sub-flow-title{font-weight:600;color:var(--text);margin-bottom:3px}
+.link-row{display:flex;align-items:center;gap:8px;padding:8px 12px;background:var(--bg3);border-radius:8px;font-size:12px;color:var(--text2);margin-bottom:6px}
+.link-name{font-family:monospace;color:var(--teal);font-size:11px}
+.arrow{color:var(--text3)}
+.info-box{background:rgba(77,158,247,.06);border:1px solid rgba(77,158,247,.2);border-radius:var(--radius);padding:12px 16px;font-size:13px;color:var(--text2);margin:12px 0}
+.warn-box{background:rgba(240,168,54,.06);border:1px solid rgba(240,168,54,.2);border-radius:var(--radius);padding:12px 16px;font-size:13px;color:var(--text2);margin:12px 0}
+.code{font-family:monospace;background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:12px 16px;font-size:12px;color:var(--teal);margin:10px 0;overflow-x:auto;line-height:1.7}
+.sp-instances{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px}
+.sp-inst{background:var(--bg2);border:1px solid rgba(77,158,247,.25);border-radius:var(--radius-lg);padding:16px 18px}
+.sp-inst-title{color:var(--blue);font-weight:600;font-size:14px;margin-bottom:6px}
+.sp-inst-body{font-size:13px;color:var(--text2);line-height:1.7}
+.footer{border-top:1px solid var(--border);padding:20px 24px;text-align:center;color:var(--text3);font-size:12px;max-width:1000px;margin:0 auto}
+@media(max-width:700px){.grid-2,.grid-3,.sp-instances{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a href="index.html" class="nav-logo">RobotRZ</a>
+  <span class="nav-version">V1 — Mai 2026 · contenu à jour Juillet</span>
+  <div class="breadcrumb">
+    <span>›</span>
+    <a href="index.html">Vue d'ensemble</a>
+    <span>›</span>
+    <span style="color:var(--blue)">SP — Node-RED</span>
+  </div>
+  <div class="nav-links">
+    <a href="se_smartphone_V2.html" class="nav-link">SE</a>
+    <a href="arduino_V1.html" class="nav-link">Arduino</a>
+    <a href="tasker_V4.html" class="nav-link">Tasker</a>
+    <a href="mqtt_reseau_V1.html" class="nav-link">Réseau</a>
+    <a href="vpiv_protocol_V1.html" class="nav-link">VPIV</a>
+  </div>
+</nav>
+
+<div class="header">
+  <h1>SP — Système Pilote · Node-RED</h1>
+  <p>Maître absolu du système. Toutes les décisions partent de SP, toutes les données remontent vers SP. SP désigne une fonction — deux instances possibles selon le contexte réseau.</p>
+</div>
+
+<div class="main">
+
+  <a href="roadmap_nodered_V1.html" style="display:flex;align-items:center;gap:14px;background:rgba(77,158,247,.06);border:1px solid rgba(77,158,247,.3);border-radius:14px;padding:16px 20px;text-decoration:none;margin-bottom:24px;transition:all .2s" onmouseover="this.style.background='rgba(77,158,247,.12)'" onmouseout="this.style.background='rgba(77,158,247,.06)'">
+    <div style="font-size:26px;flex-shrink:0">🎯</div>
+    <div>
+      <div style="font-size:14px;font-weight:600;color:var(--blue);margin-bottom:3px">Chantier prioritaire — Feuille de route Node-RED disponible</div>
+      <div style="font-size:13px;color:var(--text2)">État réel du code, ce qui a changé depuis mars, 6 phases de développement proposées, ressources mobilisables. → roadmap_nodered_V1.html</div>
+    </div>
+  </a>
+
+  <!-- INSTANCES -->
+  <div class="section">
+    <div class="section-title">Deux instances — une seule active à la fois</div>
+    <div class="sp-instances">
+      <div class="sp-inst">
+        <div class="sp-inst-title">SP RPI — instance de référence</div>
+        <div class="sp-inst-body">
+          Raspberry Pi 3<br>
+          Utilisateur : <code style="color:var(--teal)">rzServeur</code><br>
+          Node-RED : <code style="color:var(--teal)">/home/rzServeur/.node-red/</code><br>
+          Broker MQTT : <code style="color:var(--teal)">192.168.1.40:1883</code><br>
+          ID broker : <code style="color:var(--teal)">ad09248d7131b4e0</code><br>
+          <br>
+          Actif en scénarios 1, 2 et 3.
+        </div>
+      </div>
+      <div class="sp-inst">
+        <div class="sp-inst-title">SP Smart — clone adapté</div>
+        <div class="sp-inst-body">
+          Smartphone Xiaomi (propriétaire du robot)<br>
+          Clone adapté de Node-RED<br>
+          Broker MQTT local sur le Xiaomi<br>
+          <br>
+          Actif uniquement en scénario 4 :<br>
+          hotspot Wi-Fi sans 4G, réseau local SE↔SP Smart, zéro consommation data.<br>
+          <br>
+          <a href="mqtt_reseau_V1.html" style="color:var(--blue);font-size:12px">Voir les 4 scénarios réseau →</a>
+        </div>
+      </div>
+    </div>
+    <div class="warn-box">⚠ SP désigne une <strong>fonction</strong> (pilotage via Node-RED), pas un appareil fixe. Le broker MQTT suit toujours le SP actif — en scénario 4, le broker tourne sur le Xiaomi, pas sur le RPI.</div>
+  </div>
+
+  <!-- SECURITE -->
+  <div class="section">
+    <div class="section-title">Sécurité Node-RED</div>
+    <div class="info-box">
+      <strong style="color:var(--green)">adminAuth activé depuis le 28 avril 2026</strong> — suite à l'injection d'un flux malveillant via l'interface exposée sur DuckDNS sans authentification. Accès protégé par login/mot de passe dans <code style="color:var(--teal)">settings.js</code>.<br><br>
+      Voir <a href="securite_V1.html" style="color:var(--blue)">page Sécurité</a> pour le détail de l'incident et les mesures prises.
+    </div>
+  </div>
+
+  <!-- FLOWS PAR COUCHE -->
+  <div class="section" id="flows">
+    <div class="section-title">Structure des flows Node-RED — par couche
+      <a href="schema_sp_flows_V1.html" style="margin-left:12px;display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--blue);text-decoration:none;background:rgba(77,158,247,.08);border:1px solid rgba(77,158,247,.25);padding:4px 12px;border-radius:20px">📊 Schéma organisation des flows</a>
+    </div>
+
+    <!-- BUS -->
+    <div style="font-size:12px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin:16px 0 8px">Bus — Infrastructure VPIV</div>
+    <div class="flow-block">
+      <div class="flow-header">
+        <span class="st st-ok"></span>
+        <span class="flow-name">Bus_GestionFlux</span>
+        <span class="tag tag-ok">Opérationnel</span>
+        <span style="font-size:11px;color:var(--text3);margin-left:auto">ex RZ_GestionFlux_V3</span>
+      </div>
+      <div class="flow-desc">Bus VPIV central. Centralise tout ce qui entre et sort. Ne décide rien — il transporte. Filtre CAT=V/A dans l'encodeur pour éviter la boucle de rétroaction ACK.</div>
+      <div class="flow-detail">
+        <div class="sub-flow"><div class="sub-flow-title">fn_parse_vpiv_v3 — parsing entrant</div>Découpe chaque trame SE/statut et SE/arduino/data. Alimente global.RZ_&lt;VAR&gt; à chaque trame. CAT=F → contexte uniquement. CAT=I/V/E/A → link EVT_RAW_IN.</div>
+        <div class="sub-flow"><div class="sub-flow-title">fn_encoder_router_v3 — encodeur sortant</div>Reçoit depuis CMD_FROM_BRAIN (Gtion_EtatGlobal). Construit la trame VPIV. Route vers SE/commande (V/I/E/A SE) ou SE/arduino (V/A Arduino). Filtre CAT strict.</div>
+        <div class="link-row"><span class="link-name">link_out_evt_raw_v3</span><span class="arrow">→</span><span>EVT_RAW_IN dans Gtion_EtatGlobal_V1</span></div>
+        <div class="link-row"><span class="link-name">link_in_cmd_brain_v3</span><span class="arrow">←</span><span>ETAGLOBAL_OUT depuis Gtion_EtatGlobal_V1</span></div>
+        <div class="code">// Accès contexte global depuis n'importe quel flow
+const sys  = global.get('RZ_Sys');   // { dataContCpu: { SE: 42, _last: 42 } }
+const gyro = global.get('RZ_Gyro');  // { dataContGyro: { '*': [x,y,z] } }
+const cfgs = global.get('RZ_CfgS');  // { modeRZ: { '*': 2 } }
+// Clé _last = dernière valeur sans connaître l'instance
+global.get('RZ_Sys').dataContCpu._last</div>
+      </div>
+    </div>
+
+    <div class="flow-block">
+      <div class="flow-header">
+        <span class="st st-todo"></span>
+        <span class="flow-name">Gtion_Reseau</span>
+        <span class="tag tag-todo">À créer</span>
+      </div>
+      <div class="flow-desc">Gestion des 4 scénarios de connectivité. Détecte le contexte réseau, configure les IP cibles, met à jour CfgS.typeReseau. Détermine quel SP est actif et quel broker utiliser.</div>
+    </div>
+
+    <!-- DECISION -->
+    <div style="font-size:12px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin:16px 0 8px">Gtion_ — Décision &amp; gestion globale</div>
+
+    <div class="flow-block">
+      <div class="flow-header">
+        <span class="st st-wip"></span>
+        <span class="flow-name">Gtion_Init</span>
+        <span class="tag tag-wip">Partiel</span>
+      </div>
+      <div class="flow-desc">Initialisation système. Déclenché au démarrage ou après RESET. Aucune règle métier ici — uniquement la mise en place.</div>
+      <div class="flow-detail">
+        <div class="sub-flow"><div class="sub-flow-title">SF_Init_1 — variables</div>Charge enrichedVars depuis contexte fichier Node-RED. Initialise toutes les variables globales avec leurs valeurs par défaut. Produit INIT_VARS_OK.</div>
+        <div class="sub-flow"><div class="sub-flow-title">SF_Init_2 — réseau</div>Détecte contexte réseau (MAISON / PARTAGE / DISTANT). Prépare IP candidates SE. Initialise Net_SP, Net_SE, Net_Broker. Pas de ping ni MQTT à ce stade.</div>
+        <div class="sub-flow"><div class="sub-flow-title">SF_Init_3 — attente SE + Arduino</div>Attend SE_READY ($I:COM:info:SE:SE_READY#) et boot Arduino ($I:System:boot:*:OK#). Valide INIT_SESSION.validated = true.</div>
+        <div class="sub-flow"><div class="sub-flow-title">SF_Init_4 — envoi trames VPIV</div>Envoie depuis enrichedVars toutes les trames VPIV d'initialisation vers SE et Arduino. Place modeRZ = 1 (VEILLE). Produit INIT_OK → Gtion_EtatGlobal.</div>
+      </div>
+    </div>
+
+    <div class="flow-block">
+      <div class="flow-header">
+        <span class="st st-ok"></span>
+        <span class="flow-name">Gtion_EtatGlobal_V1</span>
+        <span class="tag tag-ok">Opérationnel</span>
+      </div>
+      <div class="flow-desc">Cœur décisionnel unique. Seul endroit où modeRZ peut être accepté, corrigé ou refusé. Structuré en chaîne de 5 sous-flows.</div>
+      <div class="flow-detail">
+        <div class="sub-flow"><div class="sub-flow-title">SF_Dispatcher_EtatGlobal</div>Reçoit depuis EVT_RAW_IN. Trie par type d'événement et dispatche vers le sous-flow approprié.</div>
+        <div class="sub-flow"><div class="sub-flow-title">SF_GestionUrgence — priorité 0</div>Sécurité absolue. En urgence active, toute commande est bloquée sauf CfgS:emg, Urg:clear, modeRZ ARRET/VEILLE.</div>
+        <div class="sub-flow"><div class="sub-flow-title">SF_ReglesMinimales_V1</div>Invariants système garantis en permanence : retour VEILLE toujours possible, ARRET prioritaire, pas de blocage définitif, UI jamais source de vérité. Ex R11 : ARRET→DEPLACEMENT interdit sans passer par VEILLE.</div>
+        <div class="sub-flow"><div class="sub-flow-title">SF_ValidationIntent_V1</div>Transforme un intent brut en commande logique validée. Vérifie les préconditions de chaque transition modeRZ.</div>
+        <div class="sub-flow"><div class="sub-flow-title">SF_Stabilisation_V1</div>Temporisation 500ms anti-rebond. Empêche les transitions trop rapides qui déstabiliseraient le hardware.</div>
+        <div class="link-row"><span class="link-name">ETAGLOBAL_OUT (e7ddcd86)</span><span class="arrow">→</span><span>link_in_cmd_brain_v3 (Bus) + UI_Map_StateLevel (ui_Accueil)</span></div>
+      </div>
+    </div>
+
+    <div class="flow-block">
+      <div class="flow-header">
+        <span class="st st-ok"></span>
+        <span class="flow-name">Gtion_Statut SE</span>
+        <span class="tag tag-ok">Opérationnel v3</span>
+        <span style="font-size:11px;color:var(--text3);margin-left:auto">ex Diag_SE_Statut</span>
+      </div>
+      <div class="flow-desc">Supervision temps réel des métriques SE. Reçoit les trames CAT=F depuis Bus_GestionFlux. Alimente le dashboard Diag-SE.</div>
+      <div class="flow-detail">
+        <div class="grid-3" style="gap:8px">
+          <div class="sub-flow"><div class="sub-flow-title">Sys <span class="tag tag-se" style="margin-left:4px">SE</span></div>CPU, RAM, Batt, Temp, Stockage. Seuils warn/urg. Batterie : alerte si EN DESSOUS du seuil (sens inversé).</div>
+          <div class="sub-flow"><div class="sub-flow-title">Gyro <span class="tag tag-se" style="margin-left:4px">SE</span></div>LSM6DS3C. Trame $F:Gyro:dataContGyro:*:[x,y,z]#. Valeurs rad/s×100. Affichage Gx/Gy/Gz.</div>
+          <div class="sub-flow"><div class="sub-flow-title">Mag <span class="tag tag-se" style="margin-left:4px">SE</span></div>MMC3630KJ. Trame $F:Mag:DataContMg:*:1850#. Degrés×10 → conversion + direction cardinale.</div>
+        </div>
+        <div class="info-box" style="margin-top:8px;font-size:12px">Utilise flow.get/set pour conserver les métriques entre trames. Chaque métrique a sa propre sortie de nœud (évite [object Object] dans le dashboard).</div>
+      </div>
+    </div>
+
+    <div class="flow-block">
+      <div class="flow-header">
+        <span class="st st-todo"></span>
+        <span class="flow-name">Gtion_Statut Arduino</span>
+        <span class="tag tag-todo">À créer</span>
+      </div>
+      <div class="flow-desc">Supervision modules Arduino via SE/arduino/data. Sous-blocs : US (9 capteurs), Odom (position x/y/cap), Mic (3 micros + angle son), SecMvt (anti-collision).</div>
+    </div>
+
+    <div class="flow-block">
+      <div class="flow-header">
+        <span class="st st-todo"></span>
+        <span class="flow-name">Gtion_ReglesDyn</span>
+        <span class="tag tag-todo">À créer (V2)</span>
+      </div>
+      <div class="flow-desc">Règles dynamiques configurables via ui_Rules, sans violer les ReglesMinimales. Permettra d'ajuster des seuils et comportements sans toucher au code.</div>
+    </div>
+
+    <!-- MODULES -->
+    <div style="font-size:12px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin:16px 0 8px">M_Capt_ · M_Act_ — Modules (flows à créer)</div>
+
+    <div class="info-box">Ces flows gèrent chaque capteur ou actionneur individuellement. La plupart sont <strong style="color:var(--red)">à créer</strong> côté SP — les managers SE/Arduino existent déjà, mais les flows Node-RED de supervision et commande manquent.</div>
+
+    <div class="grid-2" style="gap:10px">
+      <div class="flow-block" style="margin-bottom:0">
+        <div class="flow-header"><span class="st st-ok"></span><span class="flow-name" style="font-size:13px">M_Capt_Gyro</span><span class="tag tag-se">SE</span></div>
+        <div class="flow-desc" style="font-size:12px">Intégré dans Gtion_Statut SE. LSM6DS3C via termux-sensor. Trame $F:Gyro:dataContGyro:*:[x,y,z]#.</div>
+      </div>
+      <div class="flow-block" style="margin-bottom:0">
+        <div class="flow-header"><span class="st st-ok"></span><span class="flow-name" style="font-size:13px">M_Capt_Mag</span><span class="tag tag-se">SE</span></div>
+        <div class="flow-desc" style="font-size:12px">Intégré dans Gtion_Statut SE. MMC3630KJ. Cap degrés×10. Direction cardinale calculée côté SP.</div>
+      </div>
+      <div class="flow-block" style="margin-bottom:0">
+        <div class="flow-header"><span class="st st-ok"></span><span class="flow-name" style="font-size:13px">M_Capt_Sys</span><span class="tag tag-se">SE</span></div>
+        <div class="flow-desc" style="font-size:12px">Intégré dans Gtion_Statut SE. 5 métriques. Seuils configurables via enrichedVars.</div>
+      </div>
+      <div class="flow-block" style="margin-bottom:0">
+        <div class="flow-header"><span class="st st-wip"></span><span class="flow-name" style="font-size:13px">M_Act_Cam</span><span class="tag" style="background:rgba(155,124,244,.15);color:var(--purple)">CAT=V/F</span><span class="tag tag-se">SE</span></div>
+        <div class="flow-desc" style="font-size:12px">Confirmé CAT=V/F — appel direct rz_camera_manager.sh par rz_vpiv_parser.sh (pas de passage par fifo_tasker_in). rz_camera_manager.sh v3.1 (one-shot, pattern LockSE) délègue ensuite <strong>en interne</strong> à Tasker (RZ_CamStart/Stop, plugin IP Webcam Pro) pour le lancement, gère profil qualité, verrou ressource, et publie StreamURL. Flow SP à créer : envoi consigne CAT=V + supervision StreamURL + lecture LockSE.camera.</div>
+      </div>
+      <div class="flow-block" style="margin-bottom:0">
+        <div class="flow-header"><span class="st st-todo"></span><span class="flow-name" style="font-size:13px">M_Capt_US</span><span class="tag" style="background:rgba(240,168,54,.15);color:var(--amber)">A</span></div>
+        <div class="flow-desc" style="font-size:12px">9 ultrasons HC-SR04. Distances, alertes anti-collision. Données via SE/arduino/data. Flow SP à créer.</div>
+      </div>
+      <div class="flow-block" style="margin-bottom:0">
+        <div class="flow-header"><span class="st st-todo"></span><span class="flow-name" style="font-size:13px">M_Capt_Odom</span><span class="tag" style="background:rgba(240,168,54,.15);color:var(--amber)">A</span></div>
+        <div class="flow-desc" style="font-size:12px">Odométrie. SP extrait gz depuis Gyro SE et le relaie vers Arduino — relai obligatoire. Flow SP à créer.</div>
+      </div>
+      <div class="flow-block" style="margin-bottom:0">
+        <div class="flow-header"><span class="st st-todo"></span><span class="flow-name" style="font-size:13px">M_Act_Mtr</span><span class="tag" style="background:rgba(240,168,54,.15);color:var(--amber)">A</span></div>
+        <div class="flow-desc" style="font-size:12px">Moteurs. Commande $V:Mtr:cmd:*:v,omega,A#. Scale et kturn en entiers×1000. Keepalive 100ms vers UNO. Flow SP à créer.</div>
+      </div>
+      <div class="flow-block" style="margin-bottom:0">
+        <div class="flow-header"><span class="st st-todo"></span><span class="flow-name" style="font-size:13px">M_Act_Srv · Lring · Lrub · Torch</span></div>
+        <div class="flow-desc" style="font-size:12px">Flows à créer pour chaque actionneur. Servos TGD/THB/BAL, anneaux LEDs, torche smartphone via Tasker.</div>
+      </div>
+    </div>
+
+    <!-- PILOTAGE -->
+    <div style="font-size:12px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin:16px 0 8px">M_Pil_ — Médias de pilotage</div>
+    <div class="grid-2" style="gap:10px">
+      <div class="flow-block" style="margin-bottom:0">
+        <div class="flow-header"><span class="st st-wip"></span><span class="flow-name" style="font-size:13px">M_Pil_Ecran</span></div>
+        <div class="flow-desc" style="font-size:12px">Réalisé par ui_Accueil + ui_Pilotage (à créer). typePtge=0. Pilotage via dashboard Node-RED.</div>
+      </div>
+      <div class="flow-block" style="margin-bottom:0">
+        <div class="flow-header"><span class="st st-wip"></span><span class="flow-name" style="font-size:13px">M_Pil_Joystick</span></div>
+        <div class="flow-desc" style="font-size:12px">Flow travail existant (travail_joystickAcceleration). À migrer en production. typePtge=2.</div>
+      </div>
+      <div class="flow-block" style="margin-bottom:0">
+        <div class="flow-header"><span class="st st-todo"></span><span class="flow-name" style="font-size:13px">M_Pil_Vocale</span></div>
+        <div class="flow-desc" style="font-size:12px">STT PocketSphinx côté SE. Flow SP à créer : validation intents, ui_STT. Repli Gemini API. typePtge=1.</div>
+      </div>
+      <div class="flow-block" style="margin-bottom:0">
+        <div class="flow-header"><span class="st st-todo"></span><span class="flow-name" style="font-size:13px">M_Pil_Laisse</span></div>
+        <div class="flow-desc" style="font-size:12px">Capteur force FS + ctrl_L Arduino. Flow SP à créer. typePtge=3 (Laisse) ou 4 (Laisse+Vocal).</div>
+      </div>
+    </div>
+
+    <!-- UI -->
+    <div style="font-size:12px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin:16px 0 8px">ui_ — Interfaces utilisateur</div>
+    <div class="grid-2" style="gap:10px">
+      <div class="flow-block" style="margin-bottom:0">
+        <div class="flow-header"><span class="st st-wip"></span><span class="flow-name" style="font-size:13px">ui_Accueil</span></div>
+        <div class="flow-desc" style="font-size:12px">Interface principale. Liens manquants. Reçoit états via UI_Map_StateLevel. Path /dashboard/.</div>
+      </div>
+      <div class="flow-block" style="margin-bottom:0">
+        <div class="flow-header"><span class="st st-ok"></span><span class="flow-name" style="font-size:13px">ui_VarG</span></div>
+        <div class="flow-desc" style="font-size:12px">Éditeur enrichedVars (Table C) en temps réel. Interface Vue 3. 4 boutons par ligne. Path /dashboard/varg.</div>
+      </div>
+      <div class="flow-block" style="margin-bottom:0">
+        <div class="flow-header"><span class="st st-wip"></span><span class="flow-name" style="font-size:13px">ui_Rules · ui_Admin</span></div>
+        <div class="flow-desc" style="font-size:12px">Règles admin et administration générale. En cours. Alimenteront Gtion_ReglesDyn quand créé.</div>
+      </div>
+      <div class="flow-block" style="margin-bottom:0">
+        <div class="flow-header"><span class="st st-todo"></span><span class="flow-name" style="font-size:13px">ui_Pilotage · ui_STT · ui_Joystick</span></div>
+        <div class="flow-desc" style="font-size:12px">À créer. Interface pilotage temps réel, retour vidéo caméra, interface vocale, joystick écran.</div>
+      </div>
+    </div>
+
+    <!-- DEV -->
+    <div style="font-size:12px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin:16px 0 8px">Dev_ — Flows de travail / atelier</div>
+    <div style="background:var(--bg2);border:1px dashed var(--border);border-radius:var(--radius);padding:12px 16px;display:flex;flex-wrap:wrap;gap:8px">
+      <span style="font-size:11px;color:var(--text3);padding:3px 8px;background:var(--bg3);border-radius:4px">travail_joystickAcceleration → à migrer vers M_Pil_Joystick</span>
+      <span style="font-size:11px;color:var(--text3);padding:3px 8px;background:var(--bg3);border-radius:4px">travail_chatAideAdmin</span>
+      <span style="font-size:11px;color:var(--text3);padding:3px 8px;background:var(--bg3);border-radius:4px">travail_chatEchangeVPIV</span>
+      <span style="font-size:11px;color:var(--text3);padding:3px 8px;background:var(--bg3);border-radius:4px">Rz-GestionFluxOld (archivé)</span>
+      <span style="font-size:11px;color:var(--text3);padding:3px 8px;background:var(--bg3);border-radius:4px">ui_OldAccueil (archivé)</span>
+      <span style="font-size:11px;color:var(--text3);padding:3px 8px;background:var(--bg3);border-radius:4px">exemple-template (désactivé)</span>
+    </div>
+  </div>
+
+  <!-- CONTEXTE GLOBAL -->
+  <div class="section">
+    <div class="section-title">Contexte global Node-RED</div>
+    <div class="card" style="cursor:default">
+      <div class="card-body">Alimenté en continu par Bus_GestionFlux à chaque trame reçue. Accessible depuis n'importe quel flow.</div>
+      <div class="code">global.get('RZ_Sys').dataContCpu._last     // CPU % — clé _last = dernière valeur toutes instances
+global.get('RZ_Gyro').dataContGyro._last   // [x,y,z] rad/s ×100
+global.get('RZ_Mag').DataContMg._last      // degrés×10
+global.get('RZ_CfgS').modeRZ['*']         // mode courant
+global.get('enrichedVars')                 // Table B complète
+global.get('INIT_SESSION').validated       // true si init complète</div>
+    </div>
+  </div>
+
+  <!-- LIENS -->
+  <div class="section">
+    <div class="section-title">Liens inter-flows (Node-RED Link nodes)</div>
+    <div class="link-row"><span class="link-name">link_out_evt_raw_v3</span><span class="arrow">Bus_GestionFlux →</span><span>EVT_RAW_IN (df8ba8c4) dans Gtion_EtatGlobal_V1</span></div>
+    <div class="link-row"><span class="link-name">lo_evt_init_ok</span><span class="arrow">Gtion_Init →</span><span>EVT_RAW_IN (df8ba8c4) dans Gtion_EtatGlobal_V1</span></div>
+    <div class="link-row"><span class="link-name">ETAGLOBAL_OUT (e7ddcd86)</span><span class="arrow">Gtion_EtatGlobal →</span><span>link_in_cmd_brain_v3 (Bus) + UI_Map_StateLevel (ui_Accueil)</span></div>
+  </div>
+
+</div>
+
+<div class="footer">
+  RobotRZ — SP Node-RED V1 — Mai 2026 — Vincent Philippe &nbsp;·&nbsp;
+  <a href="index.html" style="color:var(--blue)">← Vue d'ensemble</a> &nbsp;·&nbsp;
+  <a href="se_smartphone_V2.html" style="color:var(--blue)">SE →</a>
+</div>
+
+</body>
+</html>

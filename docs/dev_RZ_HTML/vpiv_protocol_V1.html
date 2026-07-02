@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Protocole VPIV — RobotRZ V1</title>
+<style>
+:root{--bg:#0f1117;--bg2:#171b26;--bg3:#1e2333;--text:#e8eaf0;--text2:#8b93a8;--text3:#555e78;--blue:#4d9ef7;--purple:#9b7cf4;--amber:#f0a836;--teal:#2ec4a0;--coral:#f06a50;--green:#5dbd6a;--red:#e85555;--border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.12);--radius:10px;--radius-lg:14px}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;font-size:14px;line-height:1.6}
+.nav{background:var(--bg2);border-bottom:1px solid var(--border);padding:12px 24px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:100;flex-wrap:wrap}
+.nav-logo{font-size:16px;font-weight:700;color:var(--teal);letter-spacing:1px;text-decoration:none}
+.nav-version{font-size:11px;color:var(--text3);background:var(--bg3);padding:2px 8px;border-radius:20px;border:1px solid var(--border)}
+.breadcrumb{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text3)}
+.breadcrumb a{color:var(--blue);text-decoration:none}
+.nav-links{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap}
+.nav-link{font-size:12px;color:var(--text2);text-decoration:none;padding:4px 10px;border-radius:6px;border:1px solid var(--border);transition:all .2s}
+.nav-link:hover{background:var(--bg3)}
+.header{padding:32px 24px 20px;max-width:1000px;margin:0 auto}
+.header h1{font-size:26px;font-weight:700;color:var(--teal);margin-bottom:6px}
+.main{max-width:1000px;margin:0 auto;padding:0 24px 60px}
+.section{margin-bottom:28px}
+.section-title{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:var(--text3);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--border)}
+.vpiv-display{background:var(--bg2);border:1px solid rgba(46,196,160,.3);border-radius:var(--radius-lg);padding:20px 24px;margin-bottom:16px}
+.vpiv-format{font-family:monospace;font-size:22px;color:var(--teal);letter-spacing:2px;margin-bottom:16px;text-align:center}
+.vpiv-fields{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+.vpiv-field{background:var(--bg3);border-radius:8px;padding:10px;text-align:center}
+.vpiv-field-name{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px}
+.vpiv-field-val{font-family:monospace;font-size:13px;font-weight:600;color:var(--teal)}
+.vpiv-field-pos{font-size:10px;color:var(--text3);margin-top:4px}
+.warn-box{background:rgba(240,168,54,.06);border:1px solid rgba(240,168,54,.2);border-radius:var(--radius);padding:12px 16px;font-size:13px;color:var(--text2);margin:12px 0}
+.cat-block{background:var(--bg2);border-left:4px solid;border-radius:0 var(--radius-lg) var(--radius-lg) 0;padding:14px 16px;margin-bottom:10px;border-top:1px solid var(--border);border-right:1px solid var(--border);border-bottom:1px solid var(--border)}
+.cat-title{font-family:monospace;font-size:15px;font-weight:700;margin-bottom:6px}
+.cat-desc{font-size:13px;color:var(--text2);line-height:1.7}
+.code{font-family:monospace;background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:12px 16px;font-size:12px;color:var(--teal);margin:10px 0;overflow-x:auto;line-height:1.7}
+.cycle-step{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:12px 16px;margin-bottom:8px;display:grid;grid-template-columns:32px 1fr;gap:10px;align-items:start}
+.cycle-num{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0}
+.cycle-content{}
+.cycle-title{font-weight:600;font-size:13px;margin-bottom:3px}
+.cycle-detail{font-size:12px;color:var(--text2)}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.footer{border-top:1px solid var(--border);padding:20px 24px;text-align:center;color:var(--text3);font-size:12px;max-width:1000px;margin:0 auto}
+@media(max-width:700px){.vpiv-fields{grid-template-columns:1fr 1fr}.grid-2{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<nav class="nav">
+  <a href="index.html" class="nav-logo">RobotRZ</a>
+  <span class="nav-version">V1 — Mai 2026</span>
+  <div class="breadcrumb"><span>›</span><a href="index.html">Vue d'ensemble</a><span>›</span><span style="color:var(--teal)">Protocole VPIV</span></div>
+  <div class="nav-links">
+    <a href="mqtt_reseau_V1.html" class="nav-link">Réseau MQTT</a>
+    <a href="sp_nodeRED_V1.html" class="nav-link">SP</a>
+    <a href="se_smartphone_V1.html" class="nav-link">SE</a>
+  </div>
+</nav>
+<div class="header">
+  <h1>Protocole VPIV</h1>
+  <p>Format unique de communication entre tous les sous-systèmes RobotRZ. Transporté par MQTT. Partagé et compris identiquement par SP, SE et Arduino.</p>
+</div>
+<div class="main">
+
+  <div class="section">
+    <div class="section-title">Format canonique</div>
+    <div class="vpiv-display">
+      <div class="vpiv-format">$ CAT : VAR : PROP : INST : VAL #</div>
+      <div class="vpiv-fields">
+        <div class="vpiv-field"><div class="vpiv-field-name">CAT</div><div class="vpiv-field-val">V I E F A</div><div class="vpiv-field-pos">position 0</div></div>
+        <div class="vpiv-field"><div class="vpiv-field-name">VAR</div><div class="vpiv-field-val">CfgS Sys Gyro…</div><div class="vpiv-field-pos">position 1</div></div>
+        <div class="vpiv-field"><div class="vpiv-field-name">PROP</div><div class="vpiv-field-val">modeRZ dataCont…</div><div class="vpiv-field-pos">position 2</div></div>
+        <div class="vpiv-field"><div class="vpiv-field-name">INST</div><div class="vpiv-field-val">* SE rear…</div><div class="vpiv-field-pos">position 3</div></div>
+        <div class="vpiv-field"><div class="vpiv-field-name">VAL</div><div class="vpiv-field-val">valeur</div><div class="vpiv-field-pos">position 4</div></div>
+      </div>
+    </div>
+    <div class="warn-box">⚠ PROP est en position 2, INST en position 3 — erreur récurrente à surveiller. Jamais de float sur le fil — entiers ×1000 pour les facteurs, ×100 pour rad/s et µT, ×10 pour les degrés cap.</div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Les 5 catégories (CAT)</div>
+    <div class="cat-block" style="border-color:var(--blue)"><div class="cat-title" style="color:var(--blue)">V — Consigne</div><div class="cat-desc">Commande émise par SP vers SE ou Arduino. Déclenche une action ou un changement d'état. Exemples : $V:CfgS:modeRZ:*:2# (passer en mode FIXE) · $V:CamSE:modeCam:rear:stream# (caméra — appel direct à rz_camera_manager.sh, qui délègue ensuite à Tasker en interne).</div></div>
+    <div class="cat-block" style="border-color:var(--green)"><div class="cat-title" style="color:var(--green)">I — Info / ACK</div><div class="cat-desc">Acquittement ou information ponctuelle. SE ou Arduino confirment réception d'une commande V, ou envoient un état non-urgent. Exemple : $I:COM:info:SE:SE_READY#.</div></div>
+    <div class="cat-block" style="border-color:var(--red)"><div class="cat-title" style="color:var(--red)">E — Événement urgent</div><div class="cat-desc">Événement nécessitant une réaction immédiate. Priorité absolue dans le routage — traité avant tout autre message. Exemple : $E:Urg:etat:SE:danger#.</div></div>
+    <div class="cat-block" style="border-color:var(--teal)"><div class="cat-title" style="color:var(--teal)">F — Flux continu</div><div class="cat-desc">Données périodiques de capteurs. Haute fréquence. Côté SP : alimente le contexte global uniquement, pas de décision. Exemple : $F:Gyro:dataContGyro:*:[120,-45,300]#.</div></div>
+    <div class="cat-block" style="border-color:var(--amber)"><div class="cat-title" style="color:var(--amber)">A — Application Android</div><div class="cat-desc">Commande destinée à Tasker. Routée par rz_vpiv_parser.sh vers fifo_tasker_in. Couvre Appli, Voice, TorchSE, ExprTasker. Exemple : $A:Appli:expr:*:sourire#.</div></div>
+  </div>
+
+  <div class="warn-box">⚠️ <strong>CamSE n'est pas CAT=A</strong> malgré l'implication de Tasker dans sa chaîne d'exécution. La trame reçue par SE est CAT=V/F, traitée par appel direct à rz_camera_manager.sh (pas de passage par fifo_tasker_in). C'est ce script qui délègue ensuite à Tasker en interne pour le lancement effectif de l'app — Tasker est un détail d'implémentation interne au module CamSE, pas la catégorie VPIV de la trame d'origine. Confirmé dans le code source de rz_vpiv_parser.sh (case "V"|"F" → module CamSE) et dans la Table A (modeCam/paraCam/snap classés CAT=V).</div>
+
+  <div class="section">
+    <div class="section-title">Variables clés — valeurs et signification</div>
+    <div class="code">CfgS.modeRZ  : 0=ARRET | 1=VEILLE | 2=FIXE | 3=DEPLACEMENT | 4=AUTONOME | 5=ERREUR
+CfgS.typePtge: 0=Ecran | 1=Vocal | 2=Joystick | 3=Laisse | 4=Laisse+Vocal
+CfgS.typeReseau: WifiInternetBox | Wifi4KSP | WifiSPSsI | 4K
+
+Urg.statut   : cleared | active
+Urg.niveau   : warn | danger      // deux propriétés distinctes, pas une seule enum</div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Exemples de trames réelles</div>
+    <div class="code">// Commandes SP→SE (CAT=V)
+$V:CfgS:modeRZ:*:2#              // Passer en mode FIXE
+$V:CfgS:typePtge:*:1#            // Pilotage vocal
+$V:Mtr:cmd:*:500,300,2#          // Moteurs : v=500, omega=300, A=2
+$V:CamSE:modeCam:rear:stream#    // Démarrer caméra arrière (PAS CAT=A — voir note ci-dessus)
+
+// Flux capteurs SE→SP (CAT=F)
+$F:Sys:dataContCpu:SE:42#        // CPU 42%
+$F:Gyro:dataContGyro:*:[120,-45,300]#   // Gyro x,y,z en rad/s×100
+$F:Mag:DataContMg:*:1850#        // Cap 185.0° (degrés×10)
+
+// Info / ACK SE→SP (CAT=I)
+$I:COM:info:SE:SE_READY#         // SE prêt au démarrage
+$I:CfgS:modeRZ:*:2#             // ACK changement modeRZ
+
+// Urgence (CAT=E)
+$E:Urg:etat:SE:danger#           // Urgence danger depuis SE
+
+// Application Android (CAT=A)
+$A:Appli:expr:*:sourire#         // Expression sourire
+$A:TorchSE:etat:*:on#            // Torche allumée</div>
+  </div>
+
+  <div class="section" id="cycle">
+    <div class="section-title">Cycle d'une trame — chemin complet</div>
+
+    <div style="font-size:12px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">Chemin aller — SP → SE (commande)</div>
+    <div class="cycle-step"><div class="cycle-num" style="background:rgba(77,158,247,.15);color:var(--blue)">①</div><div class="cycle-content"><div class="cycle-title">SP — Node-RED décide</div><div class="cycle-detail">Gtion_EtatGlobal valide l'intent. Produit une commande vers CMD_FROM_BRAIN → Bus_GestionFlux.</div></div></div>
+    <div class="cycle-step"><div class="cycle-num" style="background:rgba(46,196,160,.15);color:var(--teal)">②</div><div class="cycle-content"><div class="cycle-title">Trame construite</div><div class="cycle-detail">fn_encoder_router_v3 encode : $V:CfgS:modeRZ:*:2#</div></div></div>
+    <div class="cycle-step"><div class="cycle-num" style="background:rgba(46,196,160,.15);color:var(--teal)">③</div><div class="cycle-content"><div class="cycle-title">MQTT publish SE/commande</div><div class="cycle-detail">Broker reçoit et distribue vers tous les abonnés de SE/commande.</div></div></div>
+    <div class="cycle-step"><div class="cycle-num" style="background:rgba(155,124,244,.15);color:var(--purple)">④</div><div class="cycle-content"><div class="cycle-title">rz_vpiv_parser.sh reçoit</div><div class="cycle-detail">Découpe $V:CfgS:modeRZ:*:2# → CAT=V, VAR=CfgS, PROP=modeRZ, INST=*, VAL=2.</div></div></div>
+    <div class="cycle-step"><div class="cycle-num" style="background:rgba(155,124,244,.15);color:var(--purple)">⑤</div><div class="cycle-content"><div class="cycle-title">Routage par CAT et VAR</div><div class="cycle-detail">CAT=V + VAR=CfgS → fifo_termux_in → rz_state-manager.sh.</div></div></div>
+    <div class="cycle-step"><div class="cycle-num" style="background:rgba(240,168,54,.15);color:var(--amber)">⑥</div><div class="cycle-content"><div class="cycle-title">Action exécutée</div><div class="cycle-detail">global.json mis à jour : CfgS.modeRZ = 2. ACK émis : $I:CfgS:modeRZ:*:2#</div></div></div>
+
+    <div style="font-size:12px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin:16px 0 8px">Chemin retour — SE → SP (flux capteur)</div>
+    <div class="cycle-step"><div class="cycle-num" style="background:rgba(93,189,106,.15);color:var(--green)">Ⓡ①</div><div class="cycle-content"><div class="cycle-title">Manager capte une donnée</div><div class="cycle-detail">rz_gyro_manager.sh lit le LSM6DS3C via termux-sensor.</div></div></div>
+    <div class="cycle-step"><div class="cycle-num" style="background:rgba(93,189,106,.15);color:var(--green)">Ⓡ②</div><div class="cycle-content"><div class="cycle-title">Trame VPIV formatée</div><div class="cycle-detail">$F:Gyro:dataContGyro:*:[120,-45,300]# — valeurs entières ×100.</div></div></div>
+    <div class="cycle-step"><div class="cycle-num" style="background:rgba(46,196,160,.15);color:var(--teal)">Ⓡ③</div><div class="cycle-content"><div class="cycle-title">Écriture dans fifo_termux_in</div><div class="cycle-detail">Règle absolue : jamais mosquitto_pub direct. FIFO uniquement.</div></div></div>
+    <div class="cycle-step"><div class="cycle-num" style="background:rgba(155,124,244,.15);color:var(--purple)">Ⓡ④</div><div class="cycle-content"><div class="cycle-title">rz_vpiv_parser publie MQTT</div><div class="cycle-detail">Lit la FIFO et publie sur SE/statut vers le broker.</div></div></div>
+    <div class="cycle-step"><div class="cycle-num" style="background:rgba(77,158,247,.15);color:var(--blue)">Ⓡ⑤</div><div class="cycle-content"><div class="cycle-title">SP reçoit et met à jour</div><div class="cycle-detail">Bus_GestionFlux : CAT=F → global.get('RZ_Gyro').dataContGyro._last = [120,-45,300].</div></div></div>
+  </div>
+
+</div>
+<div class="footer">
+  RobotRZ — Protocole VPIV V1 — Mai 2026 — Vincent Philippe &nbsp;·&nbsp;
+  <a href="index.html" style="color:var(--blue)">← Vue d'ensemble</a> &nbsp;·&nbsp;
+  <a href="mqtt_reseau_V1.html" style="color:var(--blue)">Réseau MQTT →</a>
+</div>
+</body>
+</html>

@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>STT & Voice — RobotRZ V2</title>
+<style>
+:root{--bg:#0f1117;--bg2:#171b26;--bg3:#1e2333;--bg4:#252a3a;--text:#e8eaf0;--text2:#8b93a8;--text3:#555e78;--blue:#4d9ef7;--purple:#9b7cf4;--amber:#f0a836;--teal:#2ec4a0;--coral:#f06a50;--green:#5dbd6a;--red:#e85555;--border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.12);--radius:10px;--radius-lg:14px}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;font-size:14px;line-height:1.6}
+.nav{background:var(--bg2);border-bottom:1px solid var(--border);padding:12px 24px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:100;flex-wrap:wrap}
+.nav-logo{font-size:16px;font-weight:700;color:var(--teal);letter-spacing:1px;text-decoration:none}
+.nav-version{font-size:11px;color:var(--text3);background:var(--bg3);padding:2px 8px;border-radius:20px;border:1px solid var(--border)}
+.breadcrumb{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text3)}
+.breadcrumb a{color:var(--blue);text-decoration:none}
+.nav-links{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap}
+.nav-link{font-size:12px;color:var(--text2);text-decoration:none;padding:4px 10px;border-radius:6px;border:1px solid var(--border);transition:all .2s}
+.nav-link:hover{background:var(--bg3)}
+.header{padding:32px 24px 20px;max-width:1000px;margin:0 auto}
+.header h1{font-size:26px;font-weight:700;color:var(--teal);margin-bottom:6px}
+.header p{color:var(--text2);font-size:14px;max-width:720px}
+.main{max-width:1000px;margin:0 auto;padding:0 24px 60px}
+.section{margin-bottom:28px}
+.section-title{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:var(--text3);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:16px 18px;margin-bottom:10px}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.st{width:8px;height:8px;border-radius:50%;display:inline-block;flex-shrink:0;margin-right:4px}
+.st-ok{background:var(--green)}.st-wip{background:var(--amber)}.st-todo{background:var(--red)}
+.tag{font-size:10px;padding:2px 7px;border-radius:20px;font-weight:500;display:inline-block}
+.tag-ok{background:rgba(93,189,106,.15);color:var(--green)}
+.tag-wip{background:rgba(240,168,54,.15);color:var(--amber)}
+.tag-todo{background:rgba(232,85,85,.15);color:var(--red)}
+.tag-new{background:rgba(77,158,247,.15);color:var(--blue)}
+.code{font-family:monospace;background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:12px 16px;font-size:12px;color:var(--teal);margin:10px 0;overflow-x:auto;line-height:1.7}
+.warn-box{background:rgba(240,168,54,.06);border:1px solid rgba(240,168,54,.2);border-radius:var(--radius);padding:12px 16px;font-size:13px;color:var(--text2);margin:12px 0}
+.err-box{background:rgba(232,85,85,.06);border:1px solid rgba(232,85,85,.2);border-radius:var(--radius);padding:12px 16px;font-size:13px;color:var(--text2);margin:12px 0}
+.ok-box{background:rgba(93,189,106,.06);border:1px solid rgba(93,189,106,.2);border-radius:var(--radius);padding:12px 16px;font-size:13px;color:var(--text2);margin:12px 0}
+.info-box{background:rgba(77,158,247,.06);border:1px solid rgba(77,158,247,.2);border-radius:var(--radius);padding:12px 16px;font-size:13px;color:var(--text2);margin:12px 0}
+.key-box{background:rgba(46,196,160,.06);border:2px solid rgba(46,196,160,.3);border-radius:var(--radius-lg);padding:14px 18px;margin:12px 0}
+.key-title{font-size:14px;font-weight:600;color:var(--teal);margin-bottom:8px}
+.milestone{background:rgba(93,189,106,.06);border:1px solid rgba(93,189,106,.3);border-radius:12px;padding:16px 20px;margin-bottom:16px;display:flex;align-items:flex-start;gap:14px}
+.milestone-icon{font-size:26px;flex-shrink:0}
+.milestone-title{font-size:15px;font-weight:600;color:var(--green);margin-bottom:4px}
+.milestone-desc{font-size:13px;color:var(--text2);line-height:1.6}
+.pipeline{display:flex;flex-direction:column;gap:4px;padding:12px;background:var(--bg3);border-radius:var(--radius);margin:10px 0}
+.pipeline-step{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text2)}
+.pipeline-arrow{color:var(--text3)}
+.rule{background:var(--bg3);border-left:3px solid var(--teal);padding:8px 12px;border-radius:0 8px 8px 0;margin-bottom:6px;font-size:12px;color:var(--text2)}
+.rule-bad{background:var(--bg3);border-left:3px solid var(--red);padding:8px 12px;border-radius:0 8px 8px 0;margin-bottom:6px;font-size:12px;color:var(--text2)}
+.schema-link{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--blue);text-decoration:none;background:rgba(77,158,247,.08);border:1px solid rgba(77,158,247,.25);padding:4px 12px;border-radius:20px;transition:all .2s}
+.schema-link:hover{background:rgba(77,158,247,.15)}
+table{width:100%;border-collapse:collapse;font-size:12.5px;margin:8px 0}
+th{background:var(--bg3);color:var(--text2);font-weight:500;padding:8px 12px;text-align:left;border-bottom:1px solid var(--border)}
+td{padding:7px 12px;border-bottom:1px solid var(--border);color:var(--text2);vertical-align:top}
+td:first-child{color:var(--text)}
+tr:last-child td{border-bottom:none}
+.footer{border-top:1px solid var(--border);padding:20px 24px;text-align:center;color:var(--text3);font-size:12px;max-width:1000px;margin:0 auto}
+@media(max-width:700px){.grid-2{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<nav class="nav">
+  <a href="index.html" class="nav-logo">RobotRZ</a>
+  <span class="nav-version">V2 — 21 Juin 2026</span>
+  <div class="breadcrumb"><span>›</span><a href="index.html">Vue d'ensemble</a><span>›</span><span style="color:var(--teal)">STT &amp; Voice</span></div>
+  <div class="nav-links">
+    <a href="se_smartphone_V2.html" class="nav-link">SE</a>
+    <a href="tasker_V4.html" class="nav-link">Tasker</a>
+    <a href="tables_donnees_V1.html" class="nav-link">Tables</a>
+  </div>
+</nav>
+
+<div class="header">
+  <h1>STT &amp; Voice — Module vocal</h1>
+  <p>Reconnaissance vocale (STT) et synthèse vocale (TTS) du robot. Architecture "Option B" : routage Cmde/Conv/Mixte décidé côté SE (bridge), Tasker se limite à transmettre. AutoVoice — PocketSphinx abandonné (Android 9).</p>
+</div>
+
+<div class="main">
+
+  <!-- JALON -->
+  <div class="milestone">
+    <div class="milestone-icon">🎯</div>
+    <div>
+      <div class="milestone-title">Architecture STT Option B validée et testée — 21 juin 2026</div>
+      <div class="milestone-desc">Routage complet Cmde / Conv / Mixte fonctionnel dans rz_autovoice_bridge.sh v3.0. Les 3 contextes testés avec succès. Gemini opérationnel (gemini-2.5-flash). Tâche RZ_IA_Conv créée et testée.</div>
+    </div>
+  </div>
+
+  <!-- DÉCISION ARCHITECTURALE -->
+  <div class="section">
+    <div class="section-title">Décision architecturale — PocketSphinx abandonné</div>
+    <div class="err-box">
+      <strong style="color:var(--red)">PocketSphinx définitivement abandonné sur Doro / Android 9.</strong><br>
+      Cause racine : OpenSL ES inaccessible depuis un processus Termux non privilégié. Conservé dans Git pour un futur usage sur RPI ou appareil avec micro USB.
+    </div>
+    <div class="ok-box">
+      <strong style="color:var(--green)">AutoVoice retenu comme moteur STT.</strong> Accès micro natif Android fiable. Mode commandes : offline (moteur Android). Mode conversation libre (Gemini) : nécessite internet.
+    </div>
+  </div>
+
+  <!-- ARCHITECTURE OPTION B -->
+  <div class="section">
+    <div class="section-title">Architecture Option B — un seul mot-clé "rz"</div>
+
+    <div class="key-box">
+      <div class="key-title">Principe : le bridge SE décide, Tasker transmet</div>
+      <div style="font-size:13px;color:var(--text2);line-height:1.7">
+        Contrairement à l'architecture précédente (Tasker décidait via %RZsttContext), c'est maintenant <strong style="color:var(--text)">rz_autovoice_bridge.sh</strong> qui lit <code style="color:var(--teal)">STT.context</code> dans global.json et décide du routage. Tasker (Rz_Traite_Ecoute) a été radicalement simplifié : il ne fait plus que transmettre la phrase au bridge.
+      </div>
+    </div>
+
+    <div class="pipeline">
+      <div class="pipeline-step"><span style="color:var(--blue)">AutoVoice Continuous</span><span class="pipeline-arrow">→</span><span>phrase détectée commençant par "rz"</span></div>
+      <div class="pipeline-step"><span style="color:var(--teal)">Rz_Traite_Ecoute (task62) — simplifiée</span><span class="pipeline-arrow">→</span><span>6 actions : Init → Si rz* → copie phrase → retrait préfixe → appel bridge → Fin Si</span></div>
+      <div class="pipeline-step"><span style="color:var(--purple)">rz_autovoice_bridge.sh v3.0</span><span class="pipeline-arrow">→</span><span>lit STT.context dans global.json → décide du routage</span></div>
+      <div class="pipeline-step"><span style="color:var(--amber)">Catalogue (rz_stt_handler.sh) et/ou Gemini (rz_ai_conversation.py)</span><span class="pipeline-arrow">→</span><span>selon contexte</span></div>
+      <div class="pipeline-step"><span style="color:var(--green)">TTS feedback</span><span class="pipeline-arrow">→</span><span>fifo_voice_in → rz_voice_manager.sh</span></div>
+    </div>
+
+    <div class="info-box">Rz_Traite_Ecoute simplifiée : suppression du bloc Sinon/Conv-Mixte historique. Structure finale : <strong>6 actions</strong> au lieu de 14. Tout le routage est désormais délégué au bridge.</div>
+  </div>
+
+  <!-- TABLE ROUTAGE -->
+  <div class="section">
+    <div class="section-title">Routage selon STT.context — comportement testé</div>
+    <table>
+      <thead><tr><th>STT.context</th><th>Comportement</th><th>Test</th></tr></thead>
+      <tbody>
+        <tr>
+          <td style="color:var(--blue)">Cmde</td>
+          <td>Catalogue seul. Échec → TTS "je n'ai pas compris". <strong>Jamais</strong> de Gemini.</td>
+          <td><span class="tag tag-ok">✓</span> "avance" (exit=0), phrase inconnue (exit=1, TTS erreur)</td>
+        </tr>
+        <tr>
+          <td style="color:var(--amber)">Conv</td>
+          <td>Gemini direct. <strong>Exception sécurité</strong> : "stop"/"top" → catalogue (URGENCY_STOP) même en conversation.</td>
+          <td><span class="tag tag-ok">✓</span> Gemini répond ; "stop" routé catalogue</td>
+        </tr>
+        <tr>
+          <td style="color:var(--green)">Mixte</td>
+          <td>Catalogue priorité. Échec → bascule Gemini <strong>silencieuse</strong> (pas de TTS d'erreur intermédiaire).</td>
+          <td><span class="tag tag-ok">✓</span> Validé ("nickel")</td>
+        </tr>
+        <tr>
+          <td style="color:var(--red)">vide / absent</td>
+          <td>TTS demande de précision : "dites rz commande/conversation/mixte"</td>
+          <td><span class="tag tag-wip">⏳</span> Implémenté, non testé en réel</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="warn-box">⚠ Le cas "vide/absent" n'a jamais été déclenché en conditions réelles — à tester explicitement (ex. avant que SP n'ait envoyé le premier modeRZ après boot).</div>
+  </div>
+
+  <!-- TABLE MODERZ -->
+  <div class="section">
+    <div class="section-title">modeRZ → STT.context — table définitive
+      <a href="schema_stt_context_V1.html" class="schema-link">📊 Schéma</a>
+    </div>
+    <table>
+      <thead><tr><th>modeRZ</th><th>Libellé</th><th>STT.context</th><th>Note</th></tr></thead>
+      <tbody>
+        <tr><td>0</td><td>ARRET</td><td style="color:var(--red)">Inactif</td><td>—</td></tr>
+        <tr><td>1</td><td>VEILLE</td><td style="color:var(--green)">Mixte</td><td>Permissif par conception ; sécurisé par détection mouvement (Mtr.state)</td></tr>
+        <tr><td>2</td><td>FIXE</td><td style="color:var(--green)">Mixte</td><td>Sécurisé en amont (moteurs bloqués)</td></tr>
+        <tr><td>3</td><td>DEPLACEMENT</td><td style="color:var(--blue)">Cmde</td><td>Sécurité + rapidité</td></tr>
+        <tr><td>4</td><td>AUTONOME</td><td style="color:var(--green)">Mixte</td><td>—</td></tr>
+        <tr><td>5</td><td>ERREUR</td><td style="color:var(--red)">Inactif</td><td>—</td></tr>
+      </tbody>
+    </table>
+    <div class="key-box">
+      <div class="key-title">Raffinement sécurité — VEILLE + mouvement</div>
+      <div style="font-size:13px;color:var(--text2);line-height:1.7">Si <code style="color:var(--teal)">modeRZ=1</code> (VEILLE) <strong>ET</strong> mouvement détecté (<code style="color:var(--teal)">Mtr.state.L≠0 ou R≠0</code>) → STT.context forcé à <code style="color:var(--teal)">Cmde</code> au lieu de Mixte. Protège le seul cas réellement à risque : un déplacement initié pendant que modeRZ reste VEILLE.</div>
+    </div>
+    <div class="err-box">
+      <strong>🔴 Robot.speed N'EXISTE PAS dans Table A.</strong> Variable découverte inexistante — remplacée par <code style="color:var(--teal)">Mtr.state</code> (CAT=I, format <code style="color:var(--teal)">"L,R,A"</code>), seule donnée VPIV réelle pour détecter un mouvement moteur.
+    </div>
+    <div class="warn-box">
+      ⚠ <strong>Câblage Node-RED SP en attente</strong> — SP doit relayer la trame Mtr.state reçue d'Arduino vers SE (<code style="color:var(--teal)">$I:Mtr:state:*:L,R,A#</code> sur SE/commande) pour que la protection VEILLE+mouvement fonctionne réellement. Code SE prêt, valeur par défaut sûre 0,0,0 en son absence.
+    </div>
+    <div class="info-box">
+      <strong>Valeur "Conv" réservée à un déclenchement explicite.</strong> Aucun modeRZ ne produit Conv automatiquement — elle est activée uniquement via <code style="color:var(--teal)">Appli.IA_Conv</code> (tâche Tasker RZ_IA_Conv), indépendamment du modeRZ courant.
+    </div>
+  </div>
+
+  <!-- TÂCHES TASKER -->
+  <div class="section">
+    <div class="section-title">Tâches Tasker — STT &amp; Gemini</div>
+
+    <div class="card">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+        <span class="st st-ok"></span><span style="font-family:monospace;color:var(--teal);font-weight:600">Rz_Traite_Ecoute</span>
+        <span class="tag tag-ok">task62 — simplifiée 21 juin</span>
+      </div>
+      <div style="font-size:13px;color:var(--text2);line-height:1.7">6 actions : Init → Si %avcommnofilter ~ rz* → copie phrase → retrait préfixe "rz " → Termux:Tasker rz_autovoice_bridge.sh → Fin Si. Tout le routage Cmde/Conv/Mixte est délégué au bridge — la tâche ne fait plus aucune logique de contexte.</div>
+    </div>
+
+    <div class="card">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+        <span class="st st-ok"></span><span style="font-family:monospace;color:var(--teal);font-weight:600">RZ_IA_Conv</span>
+        <span class="tag tag-ok">task id 26 — créée et testée 21 juin</span>
+      </div>
+      <div style="font-size:13px;color:var(--text2);line-height:1.7">%par1 = On/Off → appelle RZ_GeminiStart ou RZ_GeminiStop (sans paramètre). Logs runlog confirmant %RZappliConv correctement mis à jour (<code style="color:var(--teal)">avec-autovoice</code> / <code style="color:var(--teal)">ferme</code>). Déclenchée par la commande catalogue APP_IA_CONV_ON/OFF.</div>
+    </div>
+
+    <div class="card">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+        <span class="st st-ok"></span><span style="font-family:monospace;color:var(--teal);font-weight:600">RZ_GeminiStart / RZ_GeminiStop</span>
+        <span class="tag tag-ok">task202 / task203</span>
+      </div>
+      <div style="font-size:13px;color:var(--text2)">Activent/coupent la conversation Gemini. %RZappliConv = avec-autovoice / ouvert-seul / ferme selon contexte.</div>
+    </div>
+  </div>
+
+  <!-- GEMINI -->
+  <div class="section">
+    <div class="section-title">Gemini — IA conversationnelle</div>
+
+    <div class="card">
+      <div style="font-family:monospace;font-size:13px;color:var(--teal);font-weight:600;margin-bottom:6px">rz_ai_conversation.py <span class="tag tag-ok" style="margin-left:6px">v1.3</span></div>
+      <div style="font-size:13px;color:var(--text2);line-height:1.7">Modèle : <code style="color:var(--teal)">gemini-2.5-flash</code> (gemini-1.5-flash retourne 404, discontinué). ⚠ La famille de modèles Gemini évolue vite — toujours vérifier sur <a href="https://ai.google.dev/gemini-api/docs/changelog" style="color:var(--blue)">ai.google.dev/gemini-api/docs/changelog</a> avant de supposer un nom de modèle stable.</div>
+    </div>
+
+    <div class="err-box">
+      <strong style="color:var(--red)">🔴 Incident sécurité — clé API révoquée</strong><br>
+      GEMINI_API_KEY détectée "leaked" par Google (403 Forbidden). Cause double : un fichier <code style="color:var(--teal)">API key.odt</code> commité dans l'historique Git (branche master, commit du 3 mai 2026) + la clé apparaissant en clair dans des logs partagés en conversation (URL avec <code style="color:var(--teal)">?key=...</code>).<br><br>
+      Nouvelle clé générée et déployée dans <code style="color:var(--teal)">keys.json</code> (non versionné, .gitignore). Pipeline retesté avec succès.
+    </div>
+    <div class="rule-bad">JAMAIS coller une clé API en clair dans une conversation ou un log partagé. Toujours masquer/tronquer avant de coller un extrait contenant <code style="color:var(--red)">?key=...</code>.</div>
+    <div class="warn-box">⚠ Nettoyage d'historique Git recommandé (non urgent, clé déjà révoquée) : purger <code style="color:var(--teal)">API key.odt</code> de l'historique via <code style="color:var(--teal)">git filter-repo</code> + <code style="color:var(--teal)">push --force</code>, avec sauvegarde préalable.</div>
+  </div>
+
+  <!-- AUTOVOICE CONFORT -->
+  <div class="section">
+    <div class="section-title">AutoVoice — confort d'usage</div>
+    <div class="warn-box">
+      <strong>⚠ Bip continu — amélioré, pas résolu.</strong> Comportement Android imposé (confirmé par le développeur AutoVoice) : bip à chaque cycle de vérification, sans solution de suppression propre.<br><br>
+      <strong>Réglage appliqué :</strong> "Stream to Mute" 10s → 50s dans AutoVoice — espace nettement les bips. Combiné au Timeout de reconnaissance à 5s, résout aussi les phrases tronquées (testé OK avec phrase longue captée en entier).<br><br>
+      Pistes non testées : couper le volume notification via Tasker juste avant RZ_AVStart (garder volume média actif pour TTS) · canaux de notification Android (Infos appli → Notifications).
+    </div>
+  </div>
+
+  <!-- SCRIPTS SE -->
+  <div class="section">
+    <div class="section-title">Scripts SE — module STT/Voice</div>
+
+    <div class="card">
+      <div style="font-family:monospace;font-size:13px;color:var(--teal);font-weight:600;margin-bottom:6px">rz_autovoice_bridge.sh <span class="tag tag-ok" style="margin-left:6px">v3.0</span></div>
+      <div style="font-size:13px;color:var(--text2);line-height:1.7">Cœur du routage Option B. Lit STT.context dans global.json, applique la table Cmde/Conv/Mixte. Gère l'exception sécurité "stop"/"top" même en Conv. chmod +x obligatoire après tout remplacement.</div>
+    </div>
+
+    <div class="card">
+      <div style="font-family:monospace;font-size:13px;color:var(--teal);font-weight:600;margin-bottom:6px">rz_stt_manager.sh <span class="tag tag-ok" style="margin-left:6px">v2.1</span></div>
+      <div style="font-size:13px;color:var(--text2)">Ajout vérification modeSTT en début de main() : si OFF, arrêt propre sans lancer PocketSphinx. Corrige le TTS répétitif parasite "problème de connexion à mon cerveau cloud" qui survenait par erreur en permanence.</div>
+    </div>
+
+    <div class="info-box">
+      <strong>Table A (22 juin) — paraSTT mis en réserve.</strong> modeSTT restreint à OFF uniquement (PocketSphinx/KWS abandonné en production, AutoVoice/Tasker en place). paraSTT commenté avec alerte explicite — résidu dormant conservé pour compatibilité future RPi 4, pas pour usage actuel.
+    </div>
+    <div class="info-box">
+      <strong>Table A (22 juin) — Voice.output ajouté.</strong> Enum <code style="color:var(--teal)">internal|jack|bt</code>, bidirectionnel SE↔SP, défaut <code style="color:var(--teal)">jack</code> (câble vers la baffe amovible du robot), pilotable depuis ui_VarG. Voice.ttsRate : encodage ×100 réservé à la trame VPIV — courant_init.json garde le float direct.
+    </div>
+
+    <div class="card">
+      <div style="font-family:monospace;font-size:13px;color:var(--teal);font-weight:600;margin-bottom:6px">rz_stt_handler.sh</div>
+      <div style="font-size:13px;color:var(--text2)">Lookup dans stt_catalog.json. Bug jq corrigé (<code style="color:var(--teal)">| first</code>).</div>
+    </div>
+
+    <div class="card">
+      <div style="font-family:monospace;font-size:13px;color:var(--teal);font-weight:600;margin-bottom:6px">rz_state-manager.sh <span class="tag tag-ok" style="margin-left:6px">v1.6</span></div>
+      <div style="font-size:13px;color:var(--text2)"><code style="color:var(--teal)">calculate_stt_context()</code> appelée au démarrage de main() — évite un STT.context=null persistant au boot.</div>
+    </div>
+
+    <div class="card">
+      <div style="font-family:monospace;font-size:13px;color:var(--teal);font-weight:600;margin-bottom:6px">rz_voice_manager.sh</div>
+      <div style="font-size:13px;color:var(--text2)">Lit fifo_voice_in. Exécute termux-tts-speak.</div>
+    </div>
+  </div>
+
+  <!-- SYMLINKS -->
+  <div class="section">
+    <div class="section-title">Infrastructure Termux:Tasker — symlinks définitivement interdits</div>
+    <div class="rule-bad">
+      <strong>🔴 RÈGLE CRITIQUE</strong> — après reboot Android, Termux:Tasker refuse les symlinks ("Non-regular file found at executable file path"). <code style="color:var(--red)">tasker/rz_autovoice_bridge.sh</code> et <code style="color:var(--red)">tasker/rz_start.sh</code> étaient des symlinks Windows-style créés par VS Code → remplacés définitivement par des copies réelles (<code style="color:var(--teal)">rm + cp + chmod +x</code>).
+    </div>
+    <div class="info-box">Crash Termux:API associé (SensorReaderService NullPointerException) après le même reboot — résolu par redémarrage complet du téléphone (app blacklistée par Android après crashs répétés).</div>
+  </div>
+
+  <!-- RÈGLES CRITIQUES AVCOMM -->
+  <div class="section">
+    <div class="section-title">Règles critiques — %avcomm et AutoVoice</div>
+    <div class="rule">%avcomm et %avcommnofilter disponibles UNIQUEMENT dans la tâche directement associée au profil — ne traversent pas "Effectuer la tâche"</div>
+    <div class="rule-bad">JAMAIS de second contexte variable sur un profil AutoVoice — bloque le déclenchement</div>
+    <div class="rule-bad">JAMAIS NotOnContinuous=true sur un profil AutoVoice Continuous</div>
+    <div class="rule">Opérateur "ou" Tasker : <code style="color:var(--teal)">/</code> — pas <code style="color:var(--red)">|</code></div>
+  </div>
+
+  <!-- CATALOGUE TABLE D -->
+  <div class="section">
+    <div class="section-title">Catalogue commandes — Table D</div>
+    <div class="card">
+      <div style="font-size:13px;color:var(--text2);line-height:1.7;margin-bottom:10px">
+        <strong style="color:var(--text)">71 commandes</strong> (était 61) dans tableD_catalogueV2.csv. Séparateur colonne Alias : <code style="color:var(--teal)">|</code> (pipe) confirmé — corrigé depuis le bug virgule. original_init.sh v2.0 → <strong>v2.3</strong>.
+      </div>
+      <table>
+        <thead><tr><th>Correction</th><th>Avant</th><th>Après</th></tr></thead>
+        <tbody>
+          <tr><td>Séparateur colonne Alias</td><td>virgule (bug)</td><td>| pipe</td></tr>
+          <tr><td>CAM_ON/OFF, CAM_FRONT/REAR, CAM_SNAP</td><td>CAT=A, PROP erronés</td><td>CAT=V, PROP=modeCam/snap</td></tr>
+          <tr><td>LRING_*</td><td>VAR=LRing</td><td>VAR=Lring (cohérent Lrub)</td></tr>
+          <tr><td>LRING_SMILE/NEUTRAL</td><td>VAL=sourire/neutre</td><td>VAL=smile/neutral</td></tr>
+          <tr><td>SYS_RESET, SYS_URG_CLEAR</td><td>PROP=(reset)/(clear)</td><td>PROP=reset/clear</td></tr>
+        </tbody>
+      </table>
+      <div style="font-size:12px;color:var(--text2);margin-top:8px"><strong style="color:var(--text)">Nouvelles commandes ajoutées :</strong> CAM_TORCH, LRUB_SET_RGB, SRV_HEAD_ANGLE, SYS_GET_TEMP, NAV_GET_HEADING, GYRO_GET_PITCH, COM_GET_STATE, SYS_SET_PILOT, AI_START_CONV, VOICE_VOL_SET, VOICE_SAY_ID.</div>
+    </div>
+    <div class="warn-box">
+      ⚠ <strong>Action manuelle en attente côté Vincent</strong> (fichier LibreOffice non accessible à Claude) : ajouter APP_IA_CONV_ON/OFF dans Table D LibreOffice (CAT=V, Destinataire=SE, VAR=Appli, PROP=IA_Conv, VAL=On/Off) · corriger légende colonne Alias (retirer mentions "PocketSphinx" et "fr.dict obligatoire", obsolètes depuis AutoVoice).
+    </div>
+    <div style="margin-top:8px">
+      <a href="tables_donnees_V1.html" style="color:var(--blue);font-size:13px">→ Voir Table D dans Tables de données</a>
+    </div>
+  </div>
+
+  <!-- CHANTIERS OUVERTS -->
+  <div class="section">
+    <div class="section-title">Chantiers ouverts — par ordre logique suggéré</div>
+
+    <div class="warn-box">
+      <strong>1. 🟡 Câblage Node-RED SP — relai Mtr.state</strong><br>
+      SP doit relayer Mtr.state d'Arduino vers SE pour activer la protection VEILLE+mouvement. Code SE déjà prêt.
+    </div>
+    <div class="warn-box">
+      <strong>2. 🟡 Node-RED SP — garde-fous STTcontext</strong><br>
+      Bloquer STTcontext=Mixte si typePtge=3 (laisse) ET modeRZ=3 (déplacement). Avertir (sans bloquer) si modeRZ=1 (VEILLE) avec Mixte actif.
+    </div>
+    <div class="info-box">
+      <strong>3. 🔵 Renommage global.json → SE_rzContext.json</strong><br>
+      16 fichiers identifiés référençant global.json. Nom retenu : <code style="color:var(--teal)">SE_rzContext.json</code> — "global" est un mot réservé Node-RED et prête à confusion. Chantier volontairement reporté — nécessite contrôle approfondi des effets de bord.
+    </div>
+    <div class="info-box">
+      <strong>4. 🔵 Nettoyage historique Git</strong><br>
+      Purge de <code style="color:var(--teal)">API key.odt</code> (clé déjà révoquée, non urgent).
+    </div>
+    <div class="info-box">
+      <strong>5. 🔵 Tester le cas "STT.context vide" en conditions réelles</strong><br>
+      Implémenté mais jamais déclenché en réel — tester avant que SP n'ait envoyé le premier modeRZ après boot.
+    </div>
+  </div>
+
+  <!-- RÈGLES TECHNIQUES -->
+  <div class="section">
+    <div class="section-title">Règles techniques confirmées — session 21 juin</div>
+    <div class="rule-bad">Symlinks dans tasker/ = INTERDITS (refusés par Termux:Tasker après reboot Android). Toujours copie réelle + chmod +x.</div>
+    <div class="rule">Séparateur colonne Alias Table D = <code style="color:var(--teal)">|</code> (pipe), jamais virgule.</div>
+    <div class="rule-bad">Robot.speed N'EXISTE PAS en Table A — utiliser Mtr.state.</div>
+    <div class="rule">Modèle Gemini à vérifier régulièrement — actuellement gemini-2.5-flash, sur ai.google.dev/gemini-api/docs/changelog.</div>
+    <div class="rule-bad">JAMAIS coller une clé API en clair dans une conversation ou un log partagé.</div>
+  </div>
+
+</div>
+
+<div class="footer">
+  RobotRZ — STT &amp; Voice V2 — 21 Juin 2026 — Vincent Philippe &nbsp;·&nbsp;
+  <a href="index.html" style="color:var(--blue)">← Vue d'ensemble</a> &nbsp;·&nbsp;
+  <a href="tasker_V4.html" style="color:var(--blue)">Tasker →</a>
+</div>
+</body>
+</html>

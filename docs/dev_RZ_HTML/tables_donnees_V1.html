@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tables de données — RobotRZ V1</title>
+<style>
+:root{--bg:#0f1117;--bg2:#171b26;--bg3:#1e2333;--text:#e8eaf0;--text2:#8b93a8;--text3:#555e78;--blue:#4d9ef7;--purple:#9b7cf4;--amber:#f0a836;--teal:#2ec4a0;--coral:#f06a50;--green:#5dbd6a;--red:#e85555;--border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.12);--radius:10px;--radius-lg:14px}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;font-size:14px;line-height:1.6}
+.nav{background:var(--bg2);border-bottom:1px solid var(--border);padding:12px 24px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:100;flex-wrap:wrap}
+.nav-logo{font-size:16px;font-weight:700;color:var(--green);letter-spacing:1px;text-decoration:none}
+.nav-version{font-size:11px;color:var(--text3);background:var(--bg3);padding:2px 8px;border-radius:20px;border:1px solid var(--border)}
+.breadcrumb{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text3)}
+.breadcrumb a{color:var(--blue);text-decoration:none}
+.nav-links{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap}
+.nav-link{font-size:12px;color:var(--text2);text-decoration:none;padding:4px 10px;border-radius:6px;border:1px solid var(--border);transition:all .2s}
+.nav-link:hover{background:var(--bg3)}
+.header{padding:32px 24px 20px;max-width:1000px;margin:0 auto}
+.header h1{font-size:26px;font-weight:700;color:var(--green);margin-bottom:6px}
+.main{max-width:1000px;margin:0 auto;padding:0 24px 60px}
+.section{margin-bottom:32px}
+.section-title{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:var(--text3);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--border)}
+.table-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px 22px;margin-bottom:16px}
+.table-letter{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700;flex-shrink:0}
+.table-header{display:flex;align-items:flex-start;gap:14px;margin-bottom:12px}
+.table-title{font-size:16px;font-weight:600;margin-bottom:3px}
+.table-file{font-family:monospace;font-size:12px;color:var(--teal)}
+.table-body{font-size:13px;color:var(--text2);line-height:1.7}
+.table-rule{background:var(--bg3);border-left:3px solid;padding:8px 12px;border-radius:0 8px 8px 0;margin-top:10px;font-size:12px;color:var(--text2)}
+.warn-box{background:rgba(240,168,54,.06);border:1px solid rgba(240,168,54,.2);border-radius:var(--radius);padding:12px 16px;font-size:13px;color:var(--text2);margin:12px 0}
+.footer{border-top:1px solid var(--border);padding:20px 24px;text-align:center;color:var(--text3);font-size:12px;max-width:1000px;margin:0 auto}
+</style>
+</head>
+<body>
+<nav class="nav">
+  <a href="index.html" class="nav-logo">RobotRZ</a>
+  <span class="nav-version">V1 — Mai 2026</span>
+  <div class="breadcrumb"><span>›</span><a href="index.html">Vue d'ensemble</a><span>›</span><span style="color:var(--green)">Tables de données</span></div>
+  <div class="nav-links">
+    <a href="sp_nodeRED_V1.html" class="nav-link">SP</a>
+    <a href="vpiv_protocol_V1.html" class="nav-link">VPIV</a>
+    <a href="securite_V1.html" class="nav-link">Sécurité</a>
+  </div>
+</nav>
+<div class="header">
+  <h1>Tables de données</h1>
+  <p>4 tables structurent les données du projet. Chacune a un rôle distinct et une source d'autorité. La Table A est normative mais jamais utilisée à l'exécution.</p>
+</div>
+<div class="main">
+
+  <div class="section">
+    <div class="table-card">
+      <div class="table-header">
+        <div class="table-letter" style="background:rgba(93,189,106,.15);color:var(--green)">A</div>
+        <div>
+          <div class="table-title" style="color:var(--green)">Table A — Référence normative VPIV</div>
+          <div class="table-file">Travail : TableA_updatedV3.csv (253 lignes) — Référence figée : table_A_SE_v3.ods, LibreOffice Calc</div>
+        </div>
+      </div>
+      <div class="table-body">
+        Document de référence pour le développement. Définit toutes les variables VPIV du projet : leur CAT, VAR, PROP, les valeurs possibles, les instances, les directions, les sources émettrices.<br><br>
+        <strong style="color:var(--text)">Usage :</strong> Consultation lors du développement. Jamais chargée ni utilisée à l'exécution. C'est la source de vérité pour concevoir les trames et les scripts.<br><br>
+        <strong style="color:var(--text)">Champs principaux :</strong> SOURCE (P/S/A/E), VAR, PROP, INST, CAT, DIRECTION, NATURE, CYCLE, INTERFACE, FORMAT_VALUE, COMPLEXE, VPIV_EX, NOTES.
+      </div>
+      <div class="table-rule" style="border-color:var(--green)">SOURCE E = soit SE soit Arduino peut émettre selon le contexte — pas les deux simultanément. Documente l'ambiguïté légitime de l'émetteur.</div>
+      <div class="table-rule" style="border-color:var(--amber)">⚠️ Toujours croiser FORMAT_VALUE <strong>et</strong> COMPLEXE avant de juger qu'une propriété structurelle (objet imbriqué) est absente de la norme — COMPLEXE peut être O/N (flag simple, ex. Odom) ou contenir la structure détaillée d'un objet JSON imbriqué (ex. paraCam). Une vérification basée uniquement sur FORMAT_VALUE a fait croire à tort que paraCam n'existait pas (29 juin 2026).</div>
+    </div>
+
+    <div class="table-card">
+      <div class="table-header">
+        <div class="table-letter" style="background:rgba(77,158,247,.15);color:var(--blue)">B</div>
+        <div>
+          <div class="table-title" style="color:var(--blue)">Table B — enrichedVars (runtime Node-RED)</div>
+          <div class="table-file">PC (dépôt Git) : node-red/config/globalSave.json<br>RPi réel (rzPath, settings.js) : /home/rzServeur/robotRZ/data/globalSave.json</div>
+        </div>
+      </div>
+      <div class="table-body">
+        Variables runtime de Node-RED. Chargées en mémoire au démarrage de SP depuis globalSave.json. Accessibles via <span style="font-family:monospace;color:var(--teal)">global.get('enrichedVars')</span>.<br><br>
+        <strong style="color:var(--text)">Usage :</strong> Source d'initialisation que SP envoie vers SE et Arduino après réception de SE_READY. Éditables en temps réel via l'interface <span style="font-family:monospace;color:var(--teal)">ui_VarG</span>.<br><br>
+        <strong style="color:var(--text)">Volatile :</strong> Perdues si Node-RED redémarre sans sauvegarde. La Table C est la source persistante.
+      </div>
+      <div class="table-rule" style="border-color:var(--blue)">SP est l'autorité d'initialisation : après SE_READY, SP envoie les trames VPIV depuis enrichedVars vers SE et Arduino. Garantit la cohérence quelle que soit l'instance Node-RED active.</div>
+      <div class="table-rule" style="border-color:var(--amber)">⚠️ Les deux chemins ci-dessus désignent <strong>deux fichiers distincts</strong>, pas le même fichier vu sous deux angles. Le chemin PC reflète l'arborescence du dépôt Git ; le chemin réel sur le RPi (déclaré dans settings.js → functionGlobalContext, variable rzPath) est celui effectivement lu/écrit à l'exécution.</div>
+    </div>
+
+    <div class="table-card">
+      <div class="table-header">
+        <div class="table-letter" style="background:rgba(155,124,244,.15);color:var(--purple)">C</div>
+        <div>
+          <div class="table-title" style="color:var(--purple)">Table C — courant_init.json</div>
+          <div class="table-file">termux/config/courant_init.json — sur SE</div>
+        </div>
+      </div>
+      <div class="table-body">
+        Source unique persistante de la configuration SE et Arduino. Définit les modes de démarrage de chaque manager (OFF/FLOW/MOY/ALERTE…), les seuils, les fréquences, les paramètres matériels.<br><br>
+        <strong style="color:var(--text)">Usage :</strong> Lue par rz_start.sh pour décider quels managers démarrer. Lue par check_config.sh pour générer les fichiers *_runtime.json. Modifiable via ui_VarG côté SP.<br><br>
+        <strong style="color:var(--text)">Fichiers générés :</strong> gyro_runtime.json, mag_runtime.json, sys_runtime.json, cam_config.json, mic_config.json, stt_config.json, appli_config.json.
+      </div>
+      <div class="table-rule" style="border-color:var(--purple)">Les fichiers *_runtime.json sont générés par check_config.sh — non versionnés dans Git. À relancer si courant_init.json est modifié.</div>
+    </div>
+
+    <div class="table-card">
+      <div class="table-header">
+        <div class="table-letter" style="background:rgba(240,168,54,.15);color:var(--amber)">D</div>
+        <div>
+          <div class="table-title" style="color:var(--amber)">Table D — Catalogue commandes STT</div>
+          <div class="table-file">termux/scripts/sensors/stt/table_d_catalogue.csv</div>
+        </div>
+      </div>
+      <div class="table-body">
+        Catalogue de toutes les commandes vocales reconnues par PocketSphinx. Associe chaque phrase au modeRZ requis, à la trame VPIV à émettre, et aux conditions de validité.<br><br>
+        <strong style="color:var(--text)">Usage :</strong> Consulté par rz_stt_handler.sh pour convertir une commande reconnue en trame VPIV. Si la commande n'est pas dans le catalogue, repli vers Gemini API.<br><br>
+        <strong style="color:var(--text)">Contexte dynamique :</strong> rz_state-manager.sh recalcule le sous-ensemble de commandes valides à chaque changement de modeRZ.
+      </div>
+      <div class="table-rule" style="border-color:var(--amber)">Module STT à développer. La Table D existe en structure mais le manager rz_stt_manager.sh n'est pas encore opérationnel.</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Procédures de mise à jour — Vade-mecum</div>
+    <a href="vademecum_tables_V1.html" style="display:flex;align-items:center;gap:16px;background:rgba(46,196,160,.05);border:1px solid rgba(46,196,160,.25);border-radius:14px;padding:18px 22px;text-decoration:none;transition:all .2s;margin-bottom:16px" onmouseover="this.style.background='rgba(46,196,160,.1)'" onmouseout="this.style.background='rgba(46,196,160,.05)'">
+      <div style="font-size:28px;flex-shrink:0">📋</div>
+      <div>
+        <div style="font-size:15px;font-weight:600;color:var(--teal);margin-bottom:4px">Vade-mecum — Gestion des tables</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.6">Procédures complètes pour ajouter, supprimer ou modifier une variable. Chaîne de dépendances A→B→C, matrice des fichiers impactés, exemples concrets (ajout Appli.IA_conv, suppression Appli.Baby), pièges et checklist de clôture.</div>
+        <div style="margin-top:8px;font-family:monospace;font-size:11px;color:var(--text3)">vademecum_tables_V1.html</div>
+      </div>
+    </a>
+
+    <div class="section-title">keys.json — fichier sensible hors tables</div>
+    <div style="background:var(--bg2);border:1px solid rgba(232,85,85,.3);border-radius:var(--radius-lg);padding:16px 18px;font-size:13px;color:var(--text2);line-height:1.7">
+      Fichier de credentials — <strong style="color:var(--red)">jamais dans Git</strong>. À créer manuellement après chaque git clone.<br><br>
+      Chemin : <span style="font-family:monospace;color:var(--teal)">termux/config/keys.json</span><br><br>
+      Contenu (format étendu depuis 01/07/2026) : GEMINI_API_KEY, MQTT_USER, MQTT_PASS, MQTT_HOST, DUCKDNS_TOKEN, GITHUB_USER, GITHUB_TOKEN<br><br>
+      Mise à jour du remote Git : toujours via <span style="font-family:monospace;color:var(--teal)">termux/config/config_Et_actualisation_code/set_git_remote.sh</span> — jamais à la main.<br><br>
+      Voir <a href="securite_V1.html" style="color:var(--blue)">page Sécurité</a> pour le contexte complet.
+    </div>
+  </div>
+
+</div>
+<div class="footer">
+  RobotRZ — Tables de données V1.1 — Juillet 2026 — Vincent Philippe &nbsp;·&nbsp;
+  <a href="index.html" style="color:var(--blue)">← Vue d'ensemble</a>
+</div>
+</body>
+</html>

@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Arduino — RobotRZ V1</title>
+<style>
+:root{--bg:#0f1117;--bg2:#171b26;--bg3:#1e2333;--text:#e8eaf0;--text2:#8b93a8;--text3:#555e78;--blue:#4d9ef7;--purple:#9b7cf4;--amber:#f0a836;--teal:#2ec4a0;--coral:#f06a50;--green:#5dbd6a;--red:#e85555;--border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.12);--radius:10px;--radius-lg:14px}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;font-size:14px;line-height:1.6;min-height:100vh}
+.nav{background:var(--bg2);border-bottom:1px solid var(--border);padding:12px 24px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:100;flex-wrap:wrap}
+.nav-logo{font-size:16px;font-weight:700;color:var(--amber);letter-spacing:1px;text-decoration:none}
+.nav-version{font-size:11px;color:var(--text3);background:var(--bg3);padding:2px 8px;border-radius:20px;border:1px solid var(--border)}
+.breadcrumb{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text3)}
+.breadcrumb a{color:var(--blue);text-decoration:none}
+.nav-links{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap}
+.nav-link{font-size:12px;color:var(--text2);text-decoration:none;padding:4px 10px;border-radius:6px;border:1px solid var(--border);transition:all .2s}
+.nav-link:hover{background:var(--bg3);color:var(--text)}
+.header{padding:32px 24px 20px;max-width:1000px;margin:0 auto}
+.header h1{font-size:26px;font-weight:700;color:var(--amber);margin-bottom:6px}
+.header p{color:var(--text2);font-size:14px;max-width:700px}
+.main{max-width:1000px;margin:0 auto;padding:0 24px 60px}
+.section{margin-bottom:28px}
+.section-title{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:var(--text3);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--border)}
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:16px 18px;margin-bottom:10px}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.tag{font-size:10px;padding:2px 7px;border-radius:20px;font-weight:500;display:inline-block}
+.tag-ard{background:rgba(240,168,54,.15);color:var(--amber)}
+.tag-se{background:rgba(155,124,244,.15);color:var(--purple)}
+.tag-sp{background:rgba(77,158,247,.15);color:var(--blue)}
+.module-block{background:var(--bg2);border:1px solid rgba(240,168,54,.2);border-radius:var(--radius-lg);padding:14px 16px;margin-bottom:8px}
+.module-header{display:flex;align-items:center;gap:8px;margin-bottom:6px;flex-wrap:wrap}
+.module-name{font-family:monospace;font-size:13px;font-weight:600;color:var(--amber)}
+.module-vpiv{font-family:monospace;font-size:11px;color:var(--teal)}
+.module-desc{font-size:13px;color:var(--text2);line-height:1.7}
+.code{font-family:monospace;background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:12px 16px;font-size:12px;color:var(--teal);margin:10px 0;overflow-x:auto;line-height:1.7}
+.warn-box{background:rgba(240,168,54,.06);border:1px solid rgba(240,168,54,.2);border-radius:var(--radius);padding:12px 16px;font-size:13px;color:var(--text2);margin:12px 0}
+.red-box{background:rgba(232,85,85,.06);border:1px solid rgba(232,85,85,.2);border-radius:var(--radius);padding:12px 16px;font-size:13px;color:var(--text2);margin:12px 0}
+.loop-step{display:flex;align-items:flex-start;gap:10px;padding:8px 12px;background:var(--bg3);border-radius:8px;margin-bottom:6px;font-size:12px;color:var(--text2)}
+.loop-num{width:20px;height:20px;border-radius:50%;background:rgba(240,168,54,.2);color:var(--amber);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;flex-shrink:0}
+.couche{background:var(--bg3);border-left:3px solid var(--amber);padding:10px 14px;border-radius:0 8px 8px 0;margin-bottom:6px}
+.couche-name{font-family:monospace;font-size:12px;font-weight:600;color:var(--amber);margin-bottom:3px}
+.couche-desc{font-size:12px;color:var(--text2)}
+.footer{border-top:1px solid var(--border);padding:20px 24px;text-align:center;color:var(--text3);font-size:12px;max-width:1000px;margin:0 auto}
+@media(max-width:700px){.grid-2,.grid-3{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<nav class="nav">
+  <a href="index.html" class="nav-logo">RobotRZ</a>
+  <span class="nav-version">V1 — Mai 2026</span>
+  <div class="breadcrumb"><span>›</span><a href="index.html">Vue d'ensemble</a><span>›</span><span style="color:var(--amber)">Arduino</span></div>
+  <div class="nav-links">
+    <a href="sp_nodeRED_V1.html" class="nav-link">SP</a>
+    <a href="se_smartphone_V1.html" class="nav-link">SE</a>
+    <a href="tasker_V1.html" class="nav-link">Tasker</a>
+    <a href="vpiv_protocol_V1.html" class="nav-link">VPIV</a>
+  </div>
+</nav>
+
+<div class="header">
+  <h1>Arduino Mega + UNO</h1>
+  <p>Contrôleur temps-réel. Gère capteurs et actionneurs physiques. Ne décide rien de haut niveau — SP décide, le Mega exécute. Loop max 80ms, watchdog intégré.</p>
+</div>
+
+<div class="main">
+
+  <div class="section">
+    <div class="section-title">Deux cartes — rôles distincts</div>
+    <div class="grid-2">
+      <div class="card" style="border-color:rgba(240,168,54,.3)">
+        <div style="color:var(--amber);font-weight:600;font-size:15px;margin-bottom:8px">Arduino Mega</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.8">
+          Maître du sous-système hardware<br>
+          Gère tous capteurs et actionneurs<br>
+          Lié à SE par USB-C<br>
+          Bridge via mqtt_bridge.py (SE)<br>
+          Firmware C++ / PlatformIO<br>
+          <span style="color:var(--red)">Loop max 80ms</span> — watchdog intégré
+        </div>
+      </div>
+      <div class="card" style="border-color:rgba(240,106,80,.3)">
+        <div style="color:var(--coral);font-weight:600;font-size:15px;margin-bottom:8px">Arduino UNO — esclave moteur</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.8">
+          Dédié exclusivement au pilotage PWM moteurs<br>
+          Reçoit ordres du Mega via UART série<br>
+          Format : &lt;L,R,A&gt;<br>
+          Invisible depuis SE et SP<br>
+          Driver : Pololu Dual VNH5019<br>
+          <span style="color:var(--red)">Freine auto si silence Mega &gt; 1000ms</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Architecture firmware — 3 couches strictes (chaque module)</div>
+    <div class="couche"><div class="couche-name">dispatch_Xxx.cpp — couche VPIV</div><div class="couche-desc">Reçoit la trame depuis vpiv_dispatch.cpp. Valide les champs. Appelle la couche métier. Envoie ACK via sendInfo() ou sendError().</div></div>
+    <div class="couche"><div class="couche-name">Xxx.cpp — couche métier</div><div class="couche-desc">Calculs, décisions, gestion d'état du module. Aucun accès direct au hardware.</div></div>
+    <div class="couche"><div class="couche-name">xxx_hardware.cpp — couche hardware</div><div class="couche-desc">Accès direct broches et timers. Isolation complète du hardware.</div></div>
+    <div class="warn-box">Chaque module = un namespace avec dispatch(prop, inst, value). Pas de String() — char buf[] + snprintf() uniquement. Pas de float sur le fil VPIV — entiers ×1000. Pas de malloc/new dans la loop.</div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Capteurs gérés par le Mega</div>
+    <div class="module-block">
+      <div class="module-header"><span class="module-name">us.cpp</span><span class="module-vpiv">VAR : US</span><span class="tag tag-ard">9 capteurs HC-SR04</span></div>
+      <div class="module-desc">9 capteurs ultrasons. Distances, alertes anti-collision. Alimente mvt_safe.cpp pour la sécurité mouvement automatique.</div>
+    </div>
+    <div class="module-block">
+      <div class="module-header"><span class="module-name">mic.cpp</span><span class="module-vpiv">VAR : Mic</span><span class="tag tag-ard">3 microphones</span></div>
+      <div class="module-desc">Niveau sonore moyen, angle de provenance du son (0-180° en degrés×10), détection présence. Distinct du microphone SE géré par rz_microSe_manager.sh.</div>
+    </div>
+    <div class="module-block">
+      <div class="module-header"><span class="module-name">mvt_ir.cpp</span><span class="module-vpiv">VAR : IRmvt</span><span class="tag tag-ard">Détecteur IR</span></div>
+      <div class="module-desc">Détection mouvement infrarouge. Seuil configurable, fréquence de détection.</div>
+    </div>
+    <div class="module-block">
+      <div class="module-header"><span class="module-name">fs.cpp</span><span class="module-vpiv">VAR : FS</span><span class="tag tag-ard">Capteur force</span></div>
+      <div class="module-desc">Valeur brute et force calibrée. Alerte seuil. Utilisé par ctrl_L.cpp pour le pilotage par laisse (typePtge=3 et 4).</div>
+    </div>
+    <div class="module-block">
+      <div class="module-header"><span class="module-name">odom.cpp</span><span class="module-vpiv">VAR : Odom</span><span class="tag tag-ard">Odométrie</span></div>
+      <div class="module-desc">Position x/y (m×1000), cap calculé. Reçoit gz depuis Gyro SE — ce relai est obligatoire, SP extrait la valeur et la publie vers Arduino. Fréquence et coefficient roue configurables.</div>
+    </div>
+    <div class="warn-box">⚠ Le gyroscope (LSM6DS3C) et le magnétomètre (MMC3630KJ) sont sur SE (smartphone), pas sur le Mega. Leurs données arrivent au Mega via SP — c'est un relai explicite, pas une lecture directe.</div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Actionneurs gérés par le Mega</div>
+    <div class="module-block">
+      <div class="module-header"><span class="module-name">mtr.cpp</span><span class="module-vpiv">VAR : Mtr</span><span class="tag tag-ard">Moteurs → UNO</span></div>
+      <div class="module-desc">Commande différentielle v/ω → L/R. Scale et kturn en entiers×1000. Envoie format &lt;L,R,A&gt; à l'UNO via UART. Keepalive 100ms obligatoire sinon l'UNO freine automatiquement.</div>
+      <div class="code">// Format UART vers UNO
+&lt;L,R,A&gt;  // L=vitesse gauche signée (-400..400), R=vitesse droite, A=accélération (0..4)</div>
+    </div>
+    <div class="module-block">
+      <div class="module-header"><span class="module-name">srv.cpp</span><span class="module-vpiv">VAR : Srv</span><span class="tag tag-ard">3 servomoteurs</span></div>
+      <div class="module-desc">TGD (tête gauche/droite), THB (haut/bas), BAL (balance). Angles en degrés entiers. Vitesse configurable. PWM 50Hz.</div>
+    </div>
+    <div class="module-block">
+      <div class="module-header"><span class="module-name">lring.cpp</span><span class="module-vpiv">VAR : Lring</span><span class="tag tag-ard">Anneau LEDs</span></div>
+      <div class="module-desc">Expressions visuelles du robot. Couleur RGB, animations, mode urgence (rouge clignotant). Piloté par Gtion_EtatGlobal via SP.</div>
+    </div>
+    <div class="module-block">
+      <div class="module-header"><span class="module-name">lrub.cpp</span><span class="module-vpiv">VAR : Lrub</span><span class="tag tag-ard">Ruban LEDs</span></div>
+      <div class="module-desc">Couleur, luminosité, effet fuite, timeout automatique. Géré indépendamment de Lring.</div>
+    </div>
+    <div class="module-block">
+      <div class="module-header"><span class="module-name">mvt_safe.cpp</span><span class="module-vpiv">VAR : SecMvt</span><span class="tag tag-ard">Sécurité mouvement</span></div>
+      <div class="module-desc">Anti-collision basé sur données US. Réduction douce ou arrêt dur selon distances. Fonctionne en autonomie dans la loop — ne dépend pas des commandes SP.</div>
+    </div>
+    <div class="module-block">
+      <div class="module-header"><span class="module-name">ctrl_L.cpp</span><span class="module-vpiv">typePtge 3/4</span><span class="tag tag-ard">Pilotage laisse</span></div>
+      <div class="module-desc">Mode laisse physique. Exploite le capteur force FS. Actif si typePtge = 3 (Laisse) ou 4 (Laisse+Vocal). Traité en étape 4 de la loop.</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Ordre de la loop() — non bloquant</div>
+    <div class="loop-step"><div class="loop-num">1</div><div>communication_processInput() — parsing VPIV entrant depuis SE</div></div>
+    <div class="loop-step"><div class="loop-num">2</div><div>lring / mic / us / fs / mvt_ir / odom — tâches périodiques capteurs</div></div>
+    <div class="loop-step"><div class="loop-num">3</div><div>mvtsafe_process() — anti-collision basé US</div></div>
+    <div class="loop-step"><div class="loop-num">4</div><div>ctrl_L_update() — mode laisse (si typePtge = 3 ou 4)</div></div>
+    <div class="loop-step"><div class="loop-num">5</div><div>lrub_processTimeout() — extinction LED ruban automatique</div></div>
+    <div class="loop-step"><div class="loop-num">6</div><div>srv_process() — PWM servos 50Hz</div></div>
+    <div class="loop-step"><div class="loop-num">7</div><div style="color:var(--red)">mtr_processPeriodic() — keepalive &lt;L,R,A&gt; vers UNO toutes les 100ms ⚠ OBLIGATOIRE</div></div>
+    <div class="loop-step"><div class="loop-num">8</div><div>Watchdog — si loop &gt; 80ms → déclenche URG_LOOP_TOO_SLOW</div></div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Gestion des urgences hardware</div>
+    <div class="red-box">Les urgences sont toujours déclenchées en interne par le firmware, jamais depuis SP. Quand urg_active = true, toutes les commandes VPIV sont ignorées sauf CfgS:emg et Urg:clear.</div>
+    <div class="grid-2">
+      <div style="font-size:13px;color:var(--text2);line-height:1.8;padding:12px;background:var(--bg2);border-radius:var(--radius);border:1px solid var(--border)">
+        <div style="color:var(--red);font-weight:600;margin-bottom:6px">Codes urgence Arduino</div>
+        motor_stall<br>sensor_fail<br>buffer_overflow<br>parsing_error<br>loop_too_slow
+      </div>
+      <div style="font-size:13px;color:var(--text2);line-height:1.8;padding:12px;background:var(--bg2);border-radius:var(--radius);border:1px solid var(--border)">
+        <div style="color:var(--amber);font-weight:600;margin-bottom:6px">Déblocage urgence</div>
+        Seul SP peut envoyer :<br>
+        <span style="font-family:monospace;color:var(--teal)">$V:CfgS:(emg):*:clear#</span><br><br>
+        ou<br><br>
+        <span style="font-family:monospace;color:var(--teal)">$V:Urg:clear:*:OK#</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Conventions C++ firmware</div>
+    <div class="code">// Pas de String() — utiliser char buf[] + snprintf()
+char buf[64];
+snprintf(buf, sizeof(buf), "$I:Mtr:speed:*:%d#", vitesse);
+
+// Pas de float sur le fil VPIV — entiers ×1000
+// scale = 0.85 s'envoie comme 850
+// kturn = 1.2 s'envoie comme 1200
+
+// sendInfo() pour ACK normaux (CAT=I)
+// sendError() pour événements et erreurs (CAT=E)
+
+// Chaque module = un namespace
+namespace Mtr {
+    bool dispatch(const char* prop, const char* inst, const char* value);
+}</div>
+  </div>
+
+</div>
+
+<div class="footer">
+  RobotRZ — Arduino V1 — Mai 2026 — Vincent Philippe &nbsp;·&nbsp;
+  <a href="index.html" style="color:var(--blue)">← Vue d'ensemble</a> &nbsp;·&nbsp;
+  <a href="se_smartphone_V1.html" style="color:var(--blue)">SE →</a>
+</div>
+</body>
+</html>

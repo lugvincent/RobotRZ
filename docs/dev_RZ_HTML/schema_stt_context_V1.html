@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Schéma Machine d'état STT — RobotRZ V1</title>
+<style>
+:root{--bg:#0f1117;--bg2:#171b26;--bg3:#1e2333;--text:#e8eaf0;--text2:#8b93a8;--text3:#555e78;--blue:#4d9ef7;--teal:#2ec4a0;--amber:#f0a836;--green:#5dbd6a;--red:#e85555;--purple:#9b7cf4;--coral:#f06a50;--border:rgba(255,255,255,0.07);--radius:10px}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;font-size:14px;line-height:1.6}
+.nav{background:var(--bg2);border-bottom:1px solid var(--border);padding:12px 24px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.nav-logo{font-size:16px;font-weight:700;color:var(--teal);letter-spacing:1px;text-decoration:none}
+.breadcrumb{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text3)}
+.breadcrumb a{color:var(--blue);text-decoration:none}
+.nav-links{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap}
+.nav-link{font-size:12px;color:var(--text2);text-decoration:none;padding:4px 10px;border-radius:6px;border:1px solid var(--border)}
+.nav-link:hover{background:var(--bg3)}
+.header{padding:28px 24px 16px;max-width:900px;margin:0 auto}
+.header h1{font-size:22px;font-weight:700;color:var(--teal);margin-bottom:4px}
+.header p{color:var(--text2);font-size:13px;margin-bottom:6px}
+.schema-wrap{max-width:900px;margin:0 auto;padding:0 24px 60px}
+.legend{display:flex;gap:16px;flex-wrap:wrap;padding:16px 20px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:20px}
+.leg-item{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text2)}
+.leg-box{width:14px;height:14px;border-radius:3px;flex-shrink:0}
+.info-box{background:rgba(77,158,247,.06);border:1px solid rgba(77,158,247,.2);border-radius:var(--radius);padding:12px 16px;font-size:13px;color:var(--text2);margin:16px 0}
+.footer{border-top:1px solid var(--border);padding:20px 24px;text-align:center;color:var(--text3);font-size:12px;max-width:900px;margin:0 auto}
+</style>
+</head>
+<body>
+<nav class="nav">
+  <a href="index.html" class="nav-logo">RobotRZ</a>
+  <div class="breadcrumb"><span>›</span><a href="index.html">Vue d'ensemble</a><span>›</span><a href="stt_voice_V2.html">STT &amp; Voice</a><span>›</span><span style="color:var(--teal)">Schéma Machine d'état</span></div>
+  <div class="nav-links">
+    <a href="stt_voice_V2.html" class="nav-link">← STT &amp; Voice</a>
+    <a href="tasker_V4.html" class="nav-link">Tasker</a>
+  </div>
+</nav>
+
+<div class="header">
+  <h1>Machine d'état STT — RZ_STT_Context</h1>
+  <p>Réception du contexte STT depuis SP via trigger.txt → RZ_STT_Context (tâche Tasker). %par = Inactif / Cmde / Conv / Mixte.</p>
+</div>
+
+<div class="schema-wrap">
+
+  <div class="legend">
+    <div class="leg-item"><div class="leg-box" style="background:rgba(93,189,106,.4);border:1px solid rgba(93,189,106,.6)"></div> Existant / validé</div>
+    <div class="leg-item"><div class="leg-box" style="background:rgba(155,124,244,.25);border:1px solid rgba(155,124,244,.5)"></div> Décision (Si/Sinon)</div>
+    <div class="leg-item"><div class="leg-box" style="background:rgba(240,168,54,.25);border:1px solid rgba(240,168,54,.5)"></div> AutoVoice</div>
+    <div class="leg-item"><div class="leg-box" style="background:rgba(240,106,80,.25);border:1px solid rgba(240,106,80,.5)"></div> Gemini</div>
+    <div class="leg-item"><div class="leg-box" style="background:rgba(232,85,85,.25);border:1px solid rgba(232,85,85,.5)"></div> Stop / Inactif</div>
+  </div>
+
+<svg viewBox="0 0 640 620" width="100%" xmlns="http://www.w3.org/2000/svg" style="display:block;max-width:640px;margin:0 auto">
+<defs>
+  <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+    <path d="M2 2L8 5L2 8" fill="none" stroke="rgba(139,147,168,0.7)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+  </marker>
+  <marker id="arr-g" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+    <path d="M2 2L8 5L2 8" fill="none" stroke="rgba(93,189,106,0.7)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+  </marker>
+  <marker id="arr-r" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+    <path d="M2 2L8 5L2 8" fill="none" stroke="rgba(232,85,85,0.7)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+  </marker>
+</defs>
+
+<!-- Titre haut -->
+<text x="320" y="22" text-anchor="middle" font-size="11" fill="rgba(139,147,168,0.6)" font-family="'Segoe UI',sans-serif">— réception STT.context depuis SP via trigger.txt → RZ_STT_Context —</text>
+
+<!-- ENTRÉE : STT.context reçu -->
+<rect x="170" y="34" width="300" height="44" rx="10" fill="rgba(30,35,51,1)" stroke="rgba(139,147,168,0.25)" stroke-width="1"/>
+<text x="320" y="52" text-anchor="middle" font-size="13" font-weight="600" fill="#e8eaf0" font-family="'Segoe UI',sans-serif">STT.context reçu</text>
+<text x="320" y="69" text-anchor="middle" font-size="11" fill="#8b93a8" font-family="'Segoe UI',sans-serif">%par = Inactif / Cmde / Conv / Mixte</text>
+
+<!-- Flèche vers set -->
+<line x1="320" y1="78" x2="320" y2="96" stroke="rgba(139,147,168,0.5)" stroke-width="1" marker-end="url(#arr)"/>
+
+<!-- SET %RZsttContext -->
+<rect x="190" y="96" width="260" height="36" rx="8" fill="rgba(46,196,160,0.12)" stroke="rgba(46,196,160,0.4)" stroke-width="1"/>
+<text x="320" y="119" text-anchor="middle" font-size="12" fill="#2ec4a0" font-family="'Segoe UI',sans-serif">%RZsttContext = %par</text>
+
+<!-- Flèche -->
+<line x1="320" y1="132" x2="320" y2="152" stroke="rgba(139,147,168,0.5)" stroke-width="1" marker-end="url(#arr)"/>
+
+<!-- DÉCISION 1 : Si %par ~ Inactif -->
+<rect x="160" y="152" width="320" height="38" rx="8" fill="rgba(155,124,244,0.12)" stroke="rgba(155,124,244,0.35)" stroke-width="1"/>
+<text x="320" y="172" text-anchor="middle" font-size="12" fill="#9b7cf4" font-family="'Segoe UI',sans-serif">Si %par ~ Inactif</text>
+<text x="320" y="184" text-anchor="middle" font-size="10" fill="rgba(139,147,168,0.6)" font-family="'Segoe UI',sans-serif"></text>
+
+<!-- OUI → RZ_AVStop (droite) -->
+<line x1="480" y1="171" x2="530" y2="171" stroke="rgba(93,189,106,0.6)" stroke-width="1" marker-end="url(#arr-g)"/>
+<text x="500" y="165" text-anchor="middle" font-size="10" fill="rgba(93,189,106,0.7)" font-family="'Segoe UI',sans-serif">oui</text>
+
+<rect x="530" y="152" width="90" height="40" rx="8" fill="rgba(232,85,85,0.12)" stroke="rgba(232,85,85,0.35)" stroke-width="1"/>
+<text x="575" y="169" text-anchor="middle" font-size="11" font-weight="600" fill="#e85555" font-family="'Segoe UI',sans-serif">RZ_AVStop</text>
+<text x="575" y="183" text-anchor="middle" font-size="10" fill="rgba(139,147,168,0.7)" font-family="'Segoe UI',sans-serif">%RZautoVoice</text>
+<text x="575" y="194" text-anchor="middle" font-size="10" fill="rgba(139,147,168,0.7)" font-family="'Segoe UI',sans-serif">= inactif</text>
+
+<!-- NON vers bas -->
+<line x1="320" y1="190" x2="320" y2="214" stroke="rgba(139,147,168,0.5)" stroke-width="1" marker-end="url(#arr)"/>
+<text x="296" y="206" font-size="10" fill="rgba(139,147,168,0.6)" font-family="'Segoe UI',sans-serif">non</text>
+
+<!-- %RZappliConv inchangé note -->
+<text x="50" y="220" text-anchor="middle" font-size="10" fill="rgba(139,147,168,0.45)" font-family="'Segoe UI',sans-serif">%RZappliConv</text>
+<text x="50" y="232" text-anchor="middle" font-size="10" fill="rgba(139,147,168,0.45)" font-family="'Segoe UI',sans-serif">inchangé</text>
+<line x1="88" y1="226" x2="148" y2="226" stroke="rgba(139,147,168,0.2)" stroke-width="1" stroke-dasharray="3 3"/>
+
+<!-- DÉCISION 2 : Sinon Si %par ~ Cmde -->
+<rect x="140" y="214" width="360" height="38" rx="8" fill="rgba(155,124,244,0.12)" stroke="rgba(155,124,244,0.35)" stroke-width="1"/>
+<text x="320" y="234" text-anchor="middle" font-size="12" fill="#9b7cf4" font-family="'Segoe UI',sans-serif">Sinon Si %par ~ Cmde</text>
+<text x="320" y="246" text-anchor="middle" font-size="10" fill="rgba(139,147,168,0.5)" font-family="'Segoe UI',sans-serif"></text>
+
+<!-- OUI branche Cmde -->
+<line x1="320" y1="252" x2="320" y2="272" stroke="rgba(93,189,106,0.6)" stroke-width="1" marker-end="url(#arr-g)"/>
+<text x="330" y="266" font-size="10" fill="rgba(93,189,106,0.7)" font-family="'Segoe UI',sans-serif">oui</text>
+
+<!-- RZ_AVStart + RZ_GeminiStop côte à côte -->
+<rect x="170" y="272" width="130" height="50" rx="8" fill="rgba(240,168,54,0.12)" stroke="rgba(240,168,54,0.35)" stroke-width="1"/>
+<text x="235" y="292" text-anchor="middle" font-size="11" font-weight="600" fill="#f0a836" font-family="'Segoe UI',sans-serif">RZ_AVStart</text>
+<text x="235" y="306" text-anchor="middle" font-size="10" fill="rgba(139,147,168,0.7)" font-family="'Segoe UI',sans-serif">%RZautoVoice</text>
+<text x="235" y="318" text-anchor="middle" font-size="10" fill="rgba(139,147,168,0.7)" font-family="'Segoe UI',sans-serif">= actif</text>
+
+<rect x="340" y="272" width="130" height="50" rx="8" fill="rgba(240,106,80,0.12)" stroke="rgba(240,106,80,0.35)" stroke-width="1"/>
+<text x="405" y="292" text-anchor="middle" font-size="11" font-weight="600" fill="#f06a50" font-family="'Segoe UI',sans-serif">RZ_GeminiStop</text>
+<text x="405" y="306" text-anchor="middle" font-size="10" fill="rgba(139,147,168,0.7)" font-family="'Segoe UI',sans-serif">%RZappliConv</text>
+<text x="405" y="318" text-anchor="middle" font-size="10" fill="rgba(139,147,168,0.7)" font-family="'Segoe UI',sans-serif">= ferme</text>
+
+<!-- NON branche vers bas -->
+<line x1="210" y1="233" x2="100" y2="233" stroke="rgba(139,147,168,0.4)" stroke-width="1"/>
+<line x1="100" y1="233" x2="100" y2="380" stroke="rgba(139,147,168,0.4)" stroke-width="1"/>
+<line x1="100" y1="380" x2="148" y2="380" stroke="rgba(139,147,168,0.4)" stroke-width="1" marker-end="url(#arr)"/>
+<text x="76" y="226" font-size="10" fill="rgba(139,147,168,0.6)" font-family="'Segoe UI',sans-serif">non</text>
+
+<!-- DÉCISION 3 : Sinon (Conv / Mixte) -->
+<rect x="148" y="362" width="344" height="38" rx="8" fill="rgba(155,124,244,0.12)" stroke="rgba(155,124,244,0.35)" stroke-width="1"/>
+<text x="320" y="382" text-anchor="middle" font-size="12" fill="#9b7cf4" font-family="'Segoe UI',sans-serif">Sinon (Conv / Mixte)</text>
+<text x="320" y="394" text-anchor="middle" font-size="10" fill="rgba(139,147,168,0.5)" font-family="'Segoe UI',sans-serif"></text>
+
+<!-- Flèche vers les deux tâches -->
+<line x1="320" y1="400" x2="320" y2="424" stroke="rgba(139,147,168,0.5)" stroke-width="1" marker-end="url(#arr)"/>
+
+<!-- RZ_AVStart + RZ_GeminiStart -->
+<rect x="170" y="424" width="130" height="50" rx="8" fill="rgba(240,168,54,0.12)" stroke="rgba(240,168,54,0.35)" stroke-width="1"/>
+<text x="235" y="444" text-anchor="middle" font-size="11" font-weight="600" fill="#f0a836" font-family="'Segoe UI',sans-serif">RZ_AVStart</text>
+<text x="235" y="458" text-anchor="middle" font-size="10" fill="rgba(139,147,168,0.7)" font-family="'Segoe UI',sans-serif">%RZautoVoice</text>
+<text x="235" y="470" text-anchor="middle" font-size="10" fill="rgba(139,147,168,0.7)" font-family="'Segoe UI',sans-serif">= actif</text>
+
+<rect x="340" y="424" width="130" height="50" rx="8" fill="rgba(240,106,80,0.12)" stroke="rgba(240,106,80,0.45)" stroke-width="1"/>
+<text x="405" y="444" text-anchor="middle" font-size="11" font-weight="600" fill="#f06a50" font-family="'Segoe UI',sans-serif">RZ_GeminiStart</text>
+<text x="405" y="458" text-anchor="middle" font-size="10" fill="rgba(139,147,168,0.7)" font-family="'Segoe UI',sans-serif">%RZappliConv</text>
+<text x="405" y="470" text-anchor="middle" font-size="10" fill="rgba(139,147,168,0.7)" font-family="'Segoe UI',sans-serif">actif</text>
+
+<!-- Note Gemini architecture -->
+<rect x="40" y="490" width="230" height="50" rx="8" fill="rgba(77,158,247,0.06)" stroke="rgba(77,158,247,0.2)" stroke-width="1" stroke-dasharray="4 3"/>
+<text x="155" y="510" text-anchor="middle" font-size="11" fill="#4d9ef7" font-family="'Segoe UI',sans-serif">⚠ Architecture Gemini</text>
+<text x="155" y="526" text-anchor="middle" font-size="10" fill="rgba(139,147,168,0.6)" font-family="'Segoe UI',sans-serif">persistant ou à la demande ?</text>
+<text x="155" y="540" text-anchor="middle" font-size="10" fill="rgba(139,147,168,0.6)" font-family="'Segoe UI',sans-serif">non encore tranché</text>
+
+<!-- Flèche finale -->
+<line x1="320" y1="474" x2="320" y2="560" stroke="rgba(139,147,168,0.3)" stroke-width="1" stroke-dasharray="4 3" marker-end="url(#arr)"/>
+<text x="338" y="522" font-size="10" fill="rgba(139,147,168,0.4)" font-family="'Segoe UI',sans-serif">Fin de tâche</text>
+
+<!-- Note bas -->
+<text x="320" y="580" text-anchor="middle" font-size="11" fill="rgba(139,147,168,0.4)" font-family="'Segoe UI',sans-serif">Tâche RZ_STT_Context (task204 v2) — déclenchée par RZ_Dispatch via trigger.txt</text>
+<text x="320" y="596" text-anchor="middle" font-size="11" fill="rgba(139,147,168,0.4)" font-family="'Segoe UI',sans-serif">Contexte calculé par rz_state-manager.sh après chaque changement modeRZ / typePtge</text>
+</svg>
+
+  <div class="info-box">
+    <strong>Note sur le schéma :</strong> La question de l'architecture Gemini (processus persistant vs appel à la demande) détermine ce que fait concrètement RZ_GeminiStart. Si persistant : RZ_GeminiStart lance rz_ai_conversation.py en background. Si à la demande : RZ_GeminiStart se contente de mettre %RZappliConv=actif — c'est rz_autovoice_bridge.sh qui appelera rz_ai_conversation.py directement quand nécessaire.
+  </div>
+</div>
+
+<div class="footer">
+  RobotRZ — Schéma Machine d'état STT V1 — Juin 2026 — Vincent Philippe &nbsp;·&nbsp;
+  <a href="stt_voice_V2.html" style="color:var(--blue)">← STT &amp; Voice</a>
+</div>
+</body>
+</html>

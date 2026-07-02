@@ -1,0 +1,1189 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vade-mecum — Gestion des tables RobotRZ</title>
+<style>
+:root {
+  --bg:      #0f1117;
+  --bg2:     #171b26;
+  --bg3:     #1e2333;
+  --bg4:     #242940;
+  --text:    #e8eaf0;
+  --text2:   #8b93a8;
+  --text3:   #555e78;
+  --teal:    #2ec4a0;
+  --blue:    #4d9ef7;
+  --amber:   #f0a836;
+  --green:   #5dbd6a;
+  --red:     #e85555;
+  --purple:  #9b7cf4;
+  --coral:   #f06a50;
+  --border:  rgba(255,255,255,0.07);
+  --border2: rgba(255,255,255,0.13);
+  --r:       10px;
+  --r2:      14px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  font-size: 14px;
+  line-height: 1.65;
+}
+
+/* ── NAV ── */
+.nav {
+  background: var(--bg2);
+  border-bottom: 1px solid var(--border);
+  padding: 12px 24px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+.nav-logo { font-size: 16px; font-weight: 700; color: var(--teal); letter-spacing: 1px; text-decoration: none; }
+.nav-badge {
+  font-size: 11px; color: var(--text3);
+  background: var(--bg3); padding: 2px 8px;
+  border-radius: 20px; border: 1px solid var(--border);
+}
+.nav-links { margin-left: auto; display: flex; gap: 8px; flex-wrap: wrap; }
+.nav-link {
+  font-size: 12px; color: var(--text2); text-decoration: none;
+  padding: 4px 10px; border-radius: 6px; border: 1px solid var(--border);
+}
+.nav-link:hover { background: var(--bg3); }
+
+/* ── HEADER ── */
+.page-header {
+  max-width: 1040px; margin: 0 auto;
+  padding: 36px 24px 20px;
+  border-bottom: 1px solid var(--border);
+}
+.page-header h1 { font-size: 28px; font-weight: 700; color: var(--teal); margin-bottom: 8px; }
+.page-header .sub { color: var(--text2); font-size: 13px; max-width: 700px; }
+
+/* ── SOMMAIRE ── */
+.toc {
+  max-width: 1040px; margin: 24px auto 0;
+  padding: 0 24px;
+}
+.toc-inner {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--r2);
+  padding: 18px 22px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 6px 24px;
+}
+.toc-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--text3); margin-bottom: 10px; grid-column: 1/-1; }
+.toc a { color: var(--blue); font-size: 13px; text-decoration: none; display: block; padding: 2px 0; }
+.toc a:hover { color: var(--teal); }
+
+/* ── MAIN ── */
+.main { max-width: 1040px; margin: 0 auto; padding: 32px 24px 80px; }
+
+/* ── SECTIONS ── */
+.section { margin-bottom: 48px; }
+.section-anchor { position: relative; top: -80px; }
+.section-label {
+  font-size: 11px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 1px; color: var(--text3);
+  padding-bottom: 10px; border-bottom: 1px solid var(--border);
+  margin-bottom: 20px;
+}
+.section-title { font-size: 20px; font-weight: 700; color: var(--text); margin-bottom: 6px; }
+.section-intro { color: var(--text2); font-size: 13px; margin-bottom: 20px; max-width: 780px; }
+
+/* ── CARDS ── */
+.card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--r2);
+  padding: 20px 22px;
+  margin-bottom: 16px;
+}
+.card-title {
+  font-size: 15px; font-weight: 700; margin-bottom: 10px;
+  display: flex; align-items: center; gap: 8px;
+}
+.card-body { font-size: 13px; color: var(--text2); line-height: 1.75; }
+
+/* ── CHAIN DIAGRAM ── */
+.chain {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
+  gap: 0;
+  margin: 16px 0;
+}
+.chain-node {
+  background: var(--bg3);
+  border: 1px solid var(--border2);
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 12px;
+  min-width: 130px;
+}
+.chain-node .cn-label { font-weight: 700; font-size: 13px; margin-bottom: 2px; }
+.chain-node .cn-sub { color: var(--text3); font-size: 11px; }
+.chain-arrow {
+  display: flex; align-items: center; justify-content: center;
+  padding: 0 6px; color: var(--text3); font-size: 18px;
+}
+.chain-note {
+  font-size: 11px; color: var(--text3);
+  padding: 6px 10px;
+  background: var(--bg4);
+  border-radius: 6px;
+  margin-top: 6px;
+  display: flex; align-items: center; gap: 6px;
+}
+
+/* ── TABLE MATRIX ── */
+.matrix {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+  margin: 12px 0;
+}
+.matrix th {
+  background: var(--bg4);
+  color: var(--text3);
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+  padding: 8px 10px;
+  text-align: left;
+  border-bottom: 1px solid var(--border2);
+}
+.matrix td {
+  padding: 9px 10px;
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+}
+.matrix tr:last-child td { border-bottom: none; }
+.matrix tr:hover td { background: var(--bg3); }
+.dot-yes { color: var(--green); font-weight: 700; }
+.dot-no  { color: var(--text3); }
+.dot-cond { color: var(--amber); }
+
+/* ── STEPS ── */
+.steps { display: flex; flex-direction: column; gap: 12px; margin: 16px 0; }
+.step {
+  display: grid;
+  grid-template-columns: 32px 1fr;
+  gap: 12px;
+  align-items: start;
+}
+.step-num {
+  width: 28px; height: 28px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 700; flex-shrink: 0;
+  border: 1px solid;
+}
+.step-body {}
+.step-title { font-weight: 700; font-size: 13px; margin-bottom: 4px; }
+.step-detail { font-size: 12px; color: var(--text2); line-height: 1.7; }
+
+/* Couleurs steps par type */
+.step-add .step-num  { background: rgba(93,189,106,.15);  color: var(--green);  border-color: rgba(93,189,106,.4); }
+.step-del .step-num  { background: rgba(232,85,85,.15);   color: var(--red);    border-color: rgba(232,85,85,.4); }
+.step-edit .step-num { background: rgba(77,158,247,.15);  color: var(--blue);   border-color: rgba(77,158,247,.4); }
+.step-warn .step-num { background: rgba(240,168,54,.15);  color: var(--amber);  border-color: rgba(240,168,54,.4); }
+.step-sync .step-num { background: rgba(46,196,160,.15);  color: var(--teal);   border-color: rgba(46,196,160,.4); }
+
+/* ── CODE BLOCKS ── */
+pre, code {
+  font-family: 'Cascadia Code', 'Consolas', monospace;
+}
+.code-block {
+  background: #0a0c12;
+  border: 1px solid var(--border2);
+  border-radius: var(--r);
+  padding: 14px 16px;
+  font-size: 12px;
+  color: #c9d1d9;
+  overflow-x: auto;
+  margin: 10px 0;
+  line-height: 1.6;
+  white-space: pre;
+}
+.code-block .cm  { color: var(--text3); }       /* commentaire */
+.code-block .ck  { color: #79b8ff; }            /* clé/nom */
+.code-block .cv  { color: var(--teal); }        /* valeur */
+.code-block .cd  { color: var(--amber); }       /* diff ajout */
+.code-block .cr  { color: var(--red); }         /* diff suppression */
+.code-block .cn  { color: var(--green); }       /* note */
+
+/* ── BOXES ── */
+.warn-box {
+  background: rgba(240,168,54,.07);
+  border: 1px solid rgba(240,168,54,.25);
+  border-radius: var(--r);
+  padding: 12px 16px;
+  font-size: 13px;
+  color: var(--text2);
+  margin: 12px 0;
+}
+.warn-box strong { color: var(--amber); }
+.info-box {
+  background: rgba(77,158,247,.06);
+  border: 1px solid rgba(77,158,247,.2);
+  border-radius: var(--r);
+  padding: 12px 16px;
+  font-size: 13px;
+  color: var(--text2);
+  margin: 12px 0;
+}
+.info-box strong { color: var(--blue); }
+.ok-box {
+  background: rgba(93,189,106,.06);
+  border: 1px solid rgba(93,189,106,.2);
+  border-radius: var(--r);
+  padding: 12px 16px;
+  font-size: 13px;
+  color: var(--text2);
+  margin: 12px 0;
+}
+.ok-box strong { color: var(--green); }
+.danger-box {
+  background: rgba(232,85,85,.07);
+  border: 1px solid rgba(232,85,85,.25);
+  border-radius: var(--r);
+  padding: 12px 16px;
+  font-size: 13px;
+  color: var(--text2);
+  margin: 12px 0;
+}
+.danger-box strong { color: var(--red); }
+
+/* ── TAGS ── */
+.tag {
+  display: inline-block;
+  font-size: 10px; font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 4px;
+  letter-spacing: .4px;
+  vertical-align: middle;
+  margin: 0 2px;
+}
+.tag-A  { background: rgba(93,189,106,.15);  color: var(--green); }
+.tag-B  { background: rgba(77,158,247,.15);  color: var(--blue); }
+.tag-C  { background: rgba(155,124,244,.15); color: var(--purple); }
+.tag-D  { background: rgba(240,168,54,.15);  color: var(--amber); }
+.tag-SE { background: rgba(46,196,160,.15);  color: var(--teal); }
+.tag-SP { background: rgba(240,106,80,.15);  color: var(--coral); }
+.tag-AR { background: rgba(139,147,168,.15); color: var(--text2); }
+.tag-TK { background: rgba(155,124,244,.15); color: var(--purple); }
+.tag-new { background: rgba(93,189,106,.2);  color: var(--green); border: 1px solid rgba(93,189,106,.4); }
+.tag-del { background: rgba(232,85,85,.2);   color: var(--red);   border: 1px solid rgba(232,85,85,.4); }
+
+/* ── GRID 2 ── */
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+@media(max-width:700px){ .grid2 { grid-template-columns: 1fr; } }
+
+/* ── SEPARATOR ── */
+.sep { border: none; border-top: 1px solid var(--border); margin: 32px 0; }
+
+/* ── CHECKLIST ── */
+.checklist { list-style: none; padding: 0; margin: 12px 0; }
+.checklist li {
+  padding: 6px 0 6px 28px;
+  position: relative;
+  font-size: 13px;
+  color: var(--text2);
+  border-bottom: 1px solid var(--border);
+}
+.checklist li:last-child { border-bottom: none; }
+.checklist li::before {
+  content: '☐';
+  position: absolute; left: 0;
+  color: var(--text3);
+  font-size: 15px;
+}
+.checklist li .file { font-family: monospace; color: var(--teal); font-size: 12px; }
+
+/* ── FOOTER ── */
+.footer {
+  border-top: 1px solid var(--border);
+  padding: 20px 24px;
+  text-align: center;
+  color: var(--text3);
+  font-size: 12px;
+  max-width: 1040px;
+  margin: 0 auto;
+}
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════ NAV ══════════════════════ -->
+<nav class="nav">
+  <a href="index.html" class="nav-logo">RobotRZ</a>
+  <span class="nav-badge">Vade-mecum Tables — V1 — Juin 2026</span>
+  <div class="nav-links">
+    <a href="tables_donnees_V1.html" class="nav-link">Tables</a>
+    <a href="sp_nodeRED_V1.html" class="nav-link">SP Node-RED</a>
+    <a href="se_smartphone_V2.html" class="nav-link">SE</a>
+  </div>
+</nav>
+
+<!-- ══════════════════════ HEADER ══════════════════════ -->
+<div class="page-header">
+  <h1>Vade-mecum — Gestion des tables</h1>
+  <p class="sub">Procédures de mise à jour des tables A→B→C et de leurs fichiers dérivés. Couvre l'ajout, la suppression et la modification de variables, avec deux cas concrets : ajout de <code style="color:var(--teal)">Appli.IA_conv</code> et suppression de <code style="color:var(--red)">Appli.Baby</code>.</p>
+</div>
+
+<!-- ══════════════════════ TOC ══════════════════════ -->
+<div class="toc">
+  <div class="toc-inner">
+    <div class="toc-title">Sommaire</div>
+    <a href="#s1">1. Architecture des tables</a>
+    <a href="#s2">2. Chaîne de dépendances</a>
+    <a href="#s3">3. Matrice des fichiers impactés</a>
+    <a href="#s4">4. Cas A — Ajouter une variable</a>
+    <a href="#s5">5. Cas B — Supprimer une variable</a>
+    <a href="#s6">6. Cas C — Modifier une valeur</a>
+    <a href="#s7">7. Exemple concret : ajout Appli.IA_conv</a>
+    <a href="#s8">8. Exemple concret : suppression Appli.Baby</a>
+    <a href="#s9">9. Synchronisation SP ↔ SE</a>
+    <a href="#s10">10. Pièges et règles absolues</a>
+    <a href="#s11">11. Checklist de clôture</a>
+  </div>
+</div>
+
+<!-- ══════════════════════ MAIN ══════════════════════ -->
+<div class="main">
+
+<!-- ─────────────── SECTION 1 ─────────────── -->
+<div class="section">
+  <a class="section-anchor" id="s1"></a>
+  <div class="section-label">Section 1</div>
+  <div class="section-title">Architecture des quatre tables</div>
+  <p class="section-intro">Chaque table a un rôle distinct et une autorité précise. Elles ne sont pas interchangeables.</p>
+
+  <div class="grid2">
+    <div class="card">
+      <div class="card-title"><span class="tag tag-A">A</span> Table A — Référence normative VPIV</div>
+      <div class="card-body">
+        Fichier : <code style="color:var(--teal)">table_A_SE_v3.ods</code> (LibreOffice Calc)<br><br>
+        Source de vérité du développement. Définit toutes les variables VPIV : CAT, VAR, PROP, TYPE, DIRECTION, CYCLE, NATURE, FORMAT, instances, codage, exemple VPIV, notes.<br><br>
+        <strong style="color:var(--text)">Jamais chargée à l'exécution.</strong> Consultée pour concevoir, jamais pour faire tourner le code.
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title"><span class="tag tag-C">C</span> Table C — courant_init (.sh → .json)</div>
+      <div class="card-body">
+        Source : <code style="color:var(--teal)">courant_init.sh</code> (v5.1)<br>
+        Sortie : <code style="color:var(--teal)">courant_init.json</code><br><br>
+        Configuration opérationnelle persistante de SE et Arduino. Seul fichier à éditer manuellement en développement. Contient les valeurs initiales de tous les modules. Synchronisée sur SP au démarrage.
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title"><span class="tag tag-B">B</span> Table B — enrichedVars (runtime Node-RED)</div>
+      <div class="card-body">
+        Fichier disque : <code style="color:var(--teal)">globalSave.json</code> (sur SP)<br>
+        En RAM : <code style="color:var(--teal)">global.get('enrichedVars')</code><br><br>
+        Variables runtime Node-RED. Chargées au démarrage de SP depuis globalSave.json. Éditables via <code style="color:var(--teal)">ui_VarG</code>. Ne pas confondre avec global.json de SE (variables transverses SE, structure différente).
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title"><span class="tag tag-D">D</span> Table D — Catalogue STT</div>
+      <div class="card-body">
+        Fichier : <code style="color:var(--teal)">tableD_catalogueV2.csv</code><br><br>
+        Catalogue des commandes vocales. Fait le pont entre ID vocaux et trames VPIV (VAR/PROP des autres tables). Générée par <code style="color:var(--teal)">original_init.sh</code>. Fera l'objet d'un vade-mecum séparé.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ─────────────── SECTION 2 ─────────────── -->
+<div class="section">
+  <a class="section-anchor" id="s2"></a>
+  <div class="section-label">Section 2</div>
+  <div class="section-title">Chaîne complète de dépendances</div>
+  <p class="section-intro">Toute modification de variable remonte ou descend cette chaîne. Ne jamais modifier un fichier dérivé directement — toujours remonter à la source.</p>
+
+  <div class="card">
+    <div class="card-title" style="color:var(--text3); font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.5px;">Chaîne SE</div>
+    <div class="chain">
+      <div class="chain-node"><div class="cn-label" style="color:var(--green)">Table A</div><div class="cn-sub">table_A_SE_v3.ods</div></div>
+      <div class="chain-arrow">→</div>
+      <div class="chain-node"><div class="cn-label" style="color:var(--purple)">courant_init.sh</div><div class="cn-sub">édition manuelle</div></div>
+      <div class="chain-arrow">→</div>
+      <div class="chain-node"><div class="cn-label" style="color:var(--purple)">courant_init.json</div><div class="cn-sub">bash courant_init.sh</div></div>
+      <div class="chain-arrow">→</div>
+      <div class="chain-node"><div class="cn-label" style="color:var(--purple)">*_runtime.json<br>*_config.json</div><div class="cn-sub">bash check_config.sh</div></div>
+      <div class="chain-arrow">→</div>
+      <div class="chain-node"><div class="cn-label" style="color:var(--teal)">Managers SE</div><div class="cn-sub">rz_*_manager.sh</div></div>
+    </div>
+    <div class="chain-note">⚠️ <strong style="color:var(--amber)">Règle absolue :</strong> courant_init.sh est LA SEULE source à éditer. courant_init.json est toujours généré, jamais édité à la main.</div>
+  </div>
+
+  <div class="card" style="margin-top:14px;">
+    <div class="card-title" style="color:var(--text3); font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.5px;">Chaîne SP (Node-RED)</div>
+    <div class="chain">
+      <div class="chain-node"><div class="cn-label" style="color:var(--green)">Table A</div><div class="cn-sub">référence</div></div>
+      <div class="chain-arrow">→</div>
+      <div class="chain-node"><div class="cn-label" style="color:var(--blue)">globalSave.json</div><div class="cn-sub">édition via ui_VarG</div></div>
+      <div class="chain-arrow">→</div>
+      <div class="chain-node"><div class="cn-label" style="color:var(--blue)">enrichedVars RAM</div><div class="cn-sub">flow admin → reload</div></div>
+      <div class="chain-arrow">→</div>
+      <div class="chain-node"><div class="cn-label" style="color:var(--coral)">SP → VPIV → SE</div><div class="cn-sub">après SE_READY</div></div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:14px;">
+    <div class="card-title" style="color:var(--text3); font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.5px;">Chaîne Installation (production smartphone)</div>
+    <div class="chain">
+      <div class="chain-node"><div class="cn-label" style="color:var(--amber)">original_init.sh</div><div class="cn-sub">exécuté 1 seule fois</div></div>
+      <div class="chain-arrow">→</div>
+      <div class="chain-node"><div class="cn-label" style="color:var(--purple)">courant_init.json</div><div class="cn-sub">valeurs production</div></div>
+      <div class="chain-arrow">→</div>
+      <div class="chain-node"><div class="cn-label" style="color:var(--amber)">tableD_catalogue.csv</div><div class="cn-sub">catalogue STT</div></div>
+      <div class="chain-arrow">→</div>
+      <div class="chain-node"><div class="cn-label" style="color:var(--amber)">stt_catalog.json<br>rz_words.txt<br>fr.dict</div><div class="cn-sub">rz_build_system.py<br>rz_build_dict.py</div></div>
+      <div class="chain-arrow">→</div>
+      <div class="chain-node"><div class="cn-label" style="color:var(--purple)">*_runtime.json<br>*_config.json</div><div class="cn-sub">check_config.sh</div></div>
+    </div>
+    <div class="chain-note">ℹ️ original_init.sh et courant_init.sh doivent être modifiés <strong>ensemble</strong> — ils couvrent les mêmes variables avec des valeurs différentes (dev vs production).</div>
+  </div>
+</div>
+
+<!-- ─────────────── SECTION 3 ─────────────── -->
+<div class="section">
+  <a class="section-anchor" id="s3"></a>
+  <div class="section-label">Section 3</div>
+  <div class="section-title">Matrice des fichiers impactés par type d'opération</div>
+  <p class="section-intro">Pour chaque opération (ajout / suppression / modification valeur), voici quels fichiers doivent être mis à jour. ✓ = obligatoire, ~ = si concerné, — = non impacté.</p>
+
+  <table class="matrix">
+    <thead>
+      <tr>
+        <th>Fichier</th>
+        <th>Rôle</th>
+        <th>Ajout var</th>
+        <th>Suppression var</th>
+        <th>Modif valeur</th>
+        <th>Où éditer</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code style="color:var(--green)">table_A_SE_v3.ods</code></td>
+        <td>Référence normative</td>
+        <td class="dot-yes">✓</td>
+        <td class="dot-yes">✓</td>
+        <td class="dot-yes">✓</td>
+        <td>LibreOffice Calc — en premier</td>
+      </tr>
+      <tr>
+        <td><code style="color:var(--purple)">courant_init.sh</code></td>
+        <td>Source Table C (dev)</td>
+        <td class="dot-yes">✓</td>
+        <td class="dot-yes">✓</td>
+        <td class="dot-yes">✓</td>
+        <td>Éditeur texte — section concernée</td>
+      </tr>
+      <tr>
+        <td><code style="color:var(--amber)">original_init.sh</code></td>
+        <td>Source Table C (prod)</td>
+        <td class="dot-yes">✓</td>
+        <td class="dot-yes">✓</td>
+        <td class="dot-yes">✓</td>
+        <td>Éditeur texte — même structure</td>
+      </tr>
+      <tr>
+        <td><code style="color:var(--purple)">courant_init.json</code></td>
+        <td>Table C générée</td>
+        <td class="dot-no">—</td>
+        <td class="dot-no">—</td>
+        <td class="dot-no">—</td>
+        <td><strong style="color:var(--red)">Jamais édité manuellement</strong></td>
+      </tr>
+      <tr>
+        <td><code style="color:var(--purple)">check_config.sh</code></td>
+        <td>Générateur *_config.json</td>
+        <td class="dot-cond">~ si nouveau bloc</td>
+        <td class="dot-cond">~ si champ validé</td>
+        <td class="dot-no">—</td>
+        <td>Éditeur texte — section APPLI ou concernée</td>
+      </tr>
+      <tr>
+        <td><code style="color:var(--purple)">appli_config.json</code></td>
+        <td>Config runtime Appli SE</td>
+        <td class="dot-no">—</td>
+        <td class="dot-no">—</td>
+        <td class="dot-no">—</td>
+        <td>Généré par check_config.sh</td>
+      </tr>
+      <tr>
+        <td><code style="color:var(--teal)">rz_appli_manager.sh</code></td>
+        <td>Routage VPIV→Tasker</td>
+        <td class="dot-yes">✓</td>
+        <td class="dot-yes">✓</td>
+        <td class="dot-no">—</td>
+        <td>Fonction route_appli(), table case</td>
+      </tr>
+      <tr>
+        <td><code style="color:var(--blue)">globalSave.json</code></td>
+        <td>Table B SP (enrichedVars)</td>
+        <td class="dot-yes">✓</td>
+        <td class="dot-yes">✓</td>
+        <td class="dot-yes">✓</td>
+        <td>Interface ui_VarG Node-RED → flow admin reload</td>
+      </tr>
+      <tr>
+        <td><code style="color:var(--teal)">global.json (SE)</code></td>
+        <td>Variables transverses SE</td>
+        <td class="dot-cond">~ si var transverse</td>
+        <td class="dot-cond">~ si var transverse</td>
+        <td class="dot-no">—</td>
+        <td>Via rz_state-manager.sh ou init SE</td>
+      </tr>
+      <tr>
+        <td><code style="color:var(--text2)">config.h / config.cpp</code></td>
+        <td>Variables Arduino</td>
+        <td class="dot-cond">~ si var Arduino</td>
+        <td class="dot-cond">~ si var Arduino</td>
+        <td class="dot-cond">~ si var Arduino</td>
+        <td>VS Code + PlatformIO</td>
+      </tr>
+      <tr>
+        <td><code style="color:var(--amber)">tableD_catalogueV2.csv</code></td>
+        <td>Catalogue STT</td>
+        <td class="dot-cond">~ si pilotable vocal</td>
+        <td class="dot-cond">~ si commande vocale</td>
+        <td class="dot-no">—</td>
+        <td>Dans original_init.sh (section STT)</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ─────────────── SECTION 4 ─────────────── -->
+<div class="section">
+  <a class="section-anchor" id="s4"></a>
+  <div class="section-label">Section 4</div>
+  <div class="section-title">Cas A — Ajouter une variable</div>
+
+  <div class="steps">
+    <div class="step step-add">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <div class="step-title">Table A — Ajouter la ligne dans l'ODS <span class="tag tag-A">A</span></div>
+        <div class="step-detail">
+          Ouvrir <code>table_A_SE_v3.ods</code> dans LibreOffice Calc. Ajouter une ligne dans la section VAR concernée (respecter l'ordre alphabétique des VAR). Renseigner tous les champs : SOURCE, VAR, PROP, CAT, TYPE, FORMAT_VALUE, CODAGE, DIRECTION, INSTANCE, COMPLEXE, CYCLE, NATURE, INTERFACE, VPIV_EX, NOTES.<br>
+          Si la variable a plusieurs CAT (V + I = commande + ACK), ajouter autant de lignes que nécessaire.
+        </div>
+      </div>
+    </div>
+    <div class="step step-add">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <div class="step-title">courant_init.sh — Ajouter la variable <span class="tag tag-C">C</span></div>
+        <div class="step-detail">
+          Dans le bloc de la section concernée, déclarer la variable Bash et l'ajouter dans le heredoc JSON de génération. Respecter la structure existante des autres variables du même bloc.<br>
+          Ajouter aussi un commentaire explicatif comme pour les autres variables.
+        </div>
+      </div>
+    </div>
+    <div class="step step-add">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <div class="step-title">original_init.sh — Même ajout <span class="tag tag-C">C</span></div>
+        <div class="step-detail">
+          Reproduire exactement les mêmes ajouts dans <code>original_init.sh</code>. Les deux fichiers doivent rester structurellement identiques — seules les valeurs peuvent différer (dev vs production).<br>
+          Si la variable est pilotable vocalement, ajouter aussi la ligne correspondante dans la section catalogue STT de original_init.sh.
+        </div>
+      </div>
+    </div>
+    <div class="step step-add">
+      <div class="step-num">4</div>
+      <div class="step-body">
+        <div class="step-title">check_config.sh — Ajouter la lecture et validation si nécessaire <span class="tag tag-SE">SE</span></div>
+        <div class="step-detail">
+          Si la variable doit être extraite et validée par check_config.sh (ex : champ d'un bloc existant comme <code>appli</code>), ajouter la ligne <code>lire_json</code> correspondante et la ligne de génération dans le heredoc JSON du fichier de sortie.
+        </div>
+      </div>
+    </div>
+    <div class="step step-add">
+      <div class="step-num">5</div>
+      <div class="step-body">
+        <div class="step-title">Régénérer courant_init.json <span class="tag tag-SE">SE</span></div>
+        <div class="step-detail">
+          <code style="color:var(--teal)">bash courant_init.sh</code><br>
+          Vérifier que le JSON généré est valide : <code style="color:var(--teal)">python3 -m json.tool courant_init.json</code>
+        </div>
+      </div>
+    </div>
+    <div class="step step-add">
+      <div class="step-num">6</div>
+      <div class="step-body">
+        <div class="step-title">Régénérer les *_config.json <span class="tag tag-SE">SE</span></div>
+        <div class="step-detail">
+          <code style="color:var(--teal)">bash check_config.sh</code><br>
+          Vérifier le log de sortie — aucune ligne ERREUR ne doit apparaître.
+        </div>
+      </div>
+    </div>
+    <div class="step step-add">
+      <div class="step-num">7</div>
+      <div class="step-body">
+        <div class="step-title">rz_appli_manager.sh — Ajouter le routage si CAT=A <span class="tag tag-SE">SE</span></div>
+        <div class="step-detail">
+          Si la nouvelle variable est de CAT=A (commande applicative Android), ajouter un <code>case</code> dans la fonction <code>route_appli()</code> avec la tâche Tasker correspondante. Mettre à jour l'entête du script (TABLE DE ROUTAGE et VPIV ENTRANTS).
+        </div>
+      </div>
+    </div>
+    <div class="step step-sync">
+      <div class="step-num">8</div>
+      <div class="step-body">
+        <div class="step-title">Table B — Mettre à jour globalSave.json via ui_VarG <span class="tag tag-SP">SP</span></div>
+        <div class="step-detail">
+          Dans Node-RED, utiliser l'interface <code>ui_VarG</code> pour ajouter la nouvelle variable dans enrichedVars. Puis déclencher le flow admin de rechargement (<em>reload globalSave</em>) pour que la variable soit disponible en RAM via <code>global.get('enrichedVars')</code>.
+        </div>
+      </div>
+    </div>
+    <div class="step step-sync">
+      <div class="step-num">9</div>
+      <div class="step-body">
+        <div class="step-title">Commit Git + déploiement SE <span class="tag tag-SE">SE</span> <span class="tag tag-SP">SP</span></div>
+        <div class="step-detail">
+          Commiter les fichiers modifiés. Déployer sur le smartphone SE via Git. Vérifier que la variable apparaît bien dans courant_init.json déployé.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ─────────────── SECTION 5 ─────────────── -->
+<div class="section">
+  <a class="section-anchor" id="s5"></a>
+  <div class="section-label">Section 5</div>
+  <div class="section-title">Cas B — Supprimer une variable</div>
+
+  <div class="danger-box">
+    <strong>⚠️ Précaution avant suppression :</strong> Vérifier dans tous les scripts SE (<code>rz_*_manager.sh</code>, <code>rz_vpiv_parser.sh</code>, <code>rz_state-manager.sh</code>, <code>rz_stt_handler.sh</code>) et dans les flows Node-RED qu'aucune référence à cette variable n'est active. Une suppression partielle laisse des références mortes qui causent des erreurs silencieuses.
+  </div>
+
+  <div class="steps">
+    <div class="step step-del">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <div class="step-title">Audit des références avant toute modification</div>
+        <div class="step-detail">
+          Rechercher le nom de la variable (PROP) dans tous les scripts SE et flows Node-RED.<br>
+          <code style="color:var(--teal)">grep -rn "NomVariable" ~/robotRZ-smartSE/termux/scripts/</code><br>
+          Lister toutes les occurrences à supprimer ou adapter.
+        </div>
+      </div>
+    </div>
+    <div class="step step-del">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <div class="step-title">Table A — Supprimer ou marquer la ligne <span class="tag tag-A">A</span></div>
+        <div class="step-detail">
+          Option 1 : supprimer la ligne directement.<br>
+          Option 2 (recommandée pendant la transition) : mettre la ligne en commentaire dans une couleur distincte et noter la date de suppression. Supprimer définitivement à la prochaine version de la table.
+        </div>
+      </div>
+    </div>
+    <div class="step step-del">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <div class="step-title">courant_init.sh — Supprimer la variable et sa ligne JSON <span class="tag tag-C">C</span></div>
+        <div class="step-detail">
+          Supprimer la déclaration Bash de la variable et la ligne correspondante dans le heredoc JSON. Vérifier que la virgule finale de la ligne précédente est correcte (JSON strict : pas de virgule trailing).
+        </div>
+      </div>
+    </div>
+    <div class="step step-del">
+      <div class="step-num">4</div>
+      <div class="step-body">
+        <div class="step-title">original_init.sh — Même suppression <span class="tag tag-C">C</span></div>
+        <div class="step-detail">
+          Reproduire exactement la même suppression. Si la variable avait une commande vocale dans la section catalogue STT, supprimer aussi la ligne CSV correspondante.
+        </div>
+      </div>
+    </div>
+    <div class="step step-del">
+      <div class="step-num">5</div>
+      <div class="step-body">
+        <div class="step-title">check_config.sh — Supprimer la lecture et la génération <span class="tag tag-SE">SE</span></div>
+        <div class="step-detail">
+          Supprimer la ligne <code>lire_json</code>, la validation éventuelle, et la ligne dans le heredoc JSON de génération. Vérifier les boucles de validation : si la variable était incluse dans une boucle <code>for app_state in ...</code>, la retirer.
+        </div>
+      </div>
+    </div>
+    <div class="step step-del">
+      <div class="step-num">6</div>
+      <div class="step-body">
+        <div class="step-title">rz_appli_manager.sh — Supprimer le case si CAT=A <span class="tag tag-SE">SE</span></div>
+        <div class="step-detail">
+          Retirer le bloc <code>case</code> correspondant dans <code>route_appli()</code>. Mettre à jour l'entête (TABLE DE ROUTAGE et VPIV ENTRANTS).
+        </div>
+      </div>
+    </div>
+    <div class="step step-del">
+      <div class="step-num">7</div>
+      <div class="step-body">
+        <div class="step-title">Régénérer courant_init.json et les *_config.json <span class="tag tag-SE">SE</span></div>
+        <div class="step-detail">
+          <code style="color:var(--teal)">bash courant_init.sh && bash check_config.sh</code><br>
+          Vérifier l'absence d'erreurs. Contrôler que la variable n'apparaît plus dans <code>appli_config.json</code>.
+        </div>
+      </div>
+    </div>
+    <div class="step step-del">
+      <div class="step-num">8</div>
+      <div class="step-body">
+        <div class="step-title">Table B — Supprimer la variable de globalSave.json <span class="tag tag-SP">SP</span></div>
+        <div class="step-detail">
+          Via <code>ui_VarG</code> dans Node-RED : supprimer l'entrée enrichedVars correspondante. Déclencher le flow admin de rechargement.
+        </div>
+      </div>
+    </div>
+    <div class="step step-del">
+      <div class="step-num">9</div>
+      <div class="step-body">
+        <div class="step-title">Flows Node-RED — Vérifier les références <span class="tag tag-SP">SP</span></div>
+        <div class="step-detail">
+          Rechercher la PROP supprimée dans tous les nœuds Function de Node-RED. Toute référence morte à <code>global.get('NomVariable')</code> doit être retirée ou remplacée.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ─────────────── SECTION 6 ─────────────── -->
+<div class="section">
+  <a class="section-anchor" id="s6"></a>
+  <div class="section-label">Section 6</div>
+  <div class="section-title">Cas C — Modifier une valeur (sans changer la structure)</div>
+  <p class="section-intro">C'est le cas le plus simple. La variable existe déjà partout, on change uniquement sa valeur initiale ou ses seuils.</p>
+
+  <div class="steps">
+    <div class="step step-edit">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <div class="step-title">courant_init.sh — Changer la valeur <span class="tag tag-C">C</span></div>
+        <div class="step-detail">Trouver la variable Bash et modifier sa valeur. Respecter les unités documentées en Table A (ex : degrés×10, Hz vs secondes selon le module).</div>
+      </div>
+    </div>
+    <div class="step step-edit">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <div class="step-title">original_init.sh — Adapter si besoin <span class="tag tag-C">C</span></div>
+        <div class="step-detail">Si la valeur de production doit aussi changer, modifier original_init.sh en cohérence.</div>
+      </div>
+    </div>
+    <div class="step step-edit">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <div class="step-title">Table A — Mettre à jour la colonne FORMAT_VALUE ou NOTES <span class="tag tag-A">A</span></div>
+        <div class="step-detail">Si la valeur par défaut ou la plage change, mettre à jour la Table A pour rester normative.</div>
+      </div>
+    </div>
+    <div class="step step-sync">
+      <div class="step-num">4</div>
+      <div class="step-body">
+        <div class="step-title">Régénérer + synchroniser <span class="tag tag-SE">SE</span> <span class="tag tag-SP">SP</span></div>
+        <div class="step-detail"><code style="color:var(--teal)">bash courant_init.sh && bash check_config.sh</code><br>Puis mettre à jour globalSave.json via ui_VarG si la valeur initiale enrichedVars doit aussi changer.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ─────────────── SECTION 7 ─────────────── -->
+<div class="section">
+  <a class="section-anchor" id="s7"></a>
+  <div class="section-label">Section 7 — Cas concret</div>
+  <div class="section-title">Ajout de <code style="color:var(--teal)">Appli.IA_conv</code> <span class="tag tag-new">NOUVEAU</span></div>
+  <p class="section-intro">Variable de contrôle de l'application de conversation IA (Gemini). SP commande l'état via CAT=A, SE acquitte via CAT=I.</p>
+
+  <div class="info-box">
+    <strong>Contexte :</strong> <code>IA_conv</code> est un nouveau PROP dans VAR=Appli. Elle permet à SP d'activer/désactiver la conversation IA sur SE (Gemini). Structure identique aux autres apps Appli : commande On|Off depuis SP (CAT=A), ACK OK|FAIL depuis SE (CAT=I).
+  </div>
+
+  <div class="card">
+    <div class="card-title" style="color:var(--green)">Étape 1 — Table A : ajouter 2 lignes</div>
+    <div class="card-body">
+      Dans <code>table_A_SE_v3.ods</code>, dans la section VAR=Appli, ajouter après la ligne ExprTasker :
+    </div>
+    <div class="code-block"><span class="cm">SOURCE  VAR     PROP     CAT  TYPE  FORMAT_VALUE  CODAGE  DIRECTION  INSTANCE  COMPLEXE  CYCLE  NATURE  INTERFACE</span>
+<span class="cd">P       Appli   IA_conv  A    enum  On|Off        _       SP→SE      *         _         Dyn    Config  oui</span>
+<span class="cd">                         VPIV_EX : $A:Appli:IA_conv:*:On#</span>
+<span class="cd">                         NOTES   : Active/désactive la conversation IA (Gemini) sur SE.</span>
+<span class="cd">                                   Tâche Tasker : RZ_IAConv. Package : com.google.android.googlequicksearchbox (ou selon install)</span>
+<span class="cd">                                   ⚠️ Tasker doit être actif. Appli_conv requiert pip install requests sur SE.</span>
+
+<span class="cd">S       Appli   IA_conv  I    enum  OK|FAIL       _       SE→SP      *         _         Dyn    ACK     oui</span>
+<span class="cd">                         VPIV_EX : $I:Appli:IA_conv:*:OK#</span>
+<span class="cd">                         NOTES   : ACK après lancement/arrêt Gemini. FAIL si Tasker OFF, urgence active, ou erreur bridge.</span></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title" style="color:var(--purple)">Étape 2 — courant_init.sh : ajouter les variables Bash et la ligne JSON</div>
+    <div class="card-body">Section APPLI (vers ligne 217), déclarer les variables :</div>
+    <div class="code-block"><span class="cm"># ── Appli (suite, vers ligne 217–235) ──</span>
+appli_Baby_state="Off"  ;  appli_tasker_state="Off"  ;  appli_zoom_state="Off"
+appli_BabyMonitor_state="Off"  ;  appli_NavGPS_state="Off"
+<span class="cd">appli_IAConv_state="Off"                   # État initial IA conversation</span>
+
+appli_Baby_task="RZ_Baby"
+appli_zoom_task="RZ_Zoom"
+appli_BabyMonitor_task="RZ_BabyMonitor"
+appli_NavGPS_task="RZ_NavGPS"
+<span class="cd">appli_IAConv_task="RZ_IAConv"              # Tâche Tasker pour IA conversation</span>
+
+appli_tasker_pkg="net.dinglisch.android.taskerm"
+appli_zoom_pkg="us.zoom.videomeetings"
+appli_NavGPS_pkg="com.google.android.apps.maps"
+<span class="cd">appli_IAConv_pkg=""                        # package vide : Tasker gère le lancement</span></div>
+    <div class="card-body" style="margin-top:12px;">Dans le heredoc JSON (vers ligne 403–410), ajouter la ligne IA_conv :</div>
+    <div class="code-block">  "appli": {
+    "Baby":        { "state": "$appli_Baby_state", ... },
+    ...
+    "NavGPS":      { "state": "$appli_NavGPS_state", ... },
+<span class="cd">    "IA_conv":     { "state": "$appli_IAConv_state", "tasker_task": "$appli_IAConv_task", "package": "$appli_IAConv_pkg", "last_change": "" },</span>
+    "bridge_timeout": $appli_bridge_timeout,
+    "ExprTasker": { "expr_task": "$appli_expr_task", "info_task": "$appli_info_task" }
+  }</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title" style="color:var(--amber)">Étape 3 — original_init.sh : même ajout (valeurs production identiques ici)</div>
+    <div class="card-body">Reproduire exactement les mêmes ajouts (lignes ~299–320 et heredoc JSON ~452–460). Si IA_conv doit être pilotable vocalement, ajouter dans la section catalogue STT de original_init.sh :</div>
+    <div class="code-block"><span class="cd">APP_IACONV_ON;SIMPLE;A;SE;0;lance gemini,active ia,conversation ia;;Appli;IA_conv;*;On;;Je lance la conversation IA.</span>
+<span class="cd">APP_IACONV_OFF;SIMPLE;A;SE;0;arrête gemini,stop ia,fin conversation;;Appli;IA_conv;*;Off;;Conversation IA arrêtée.</span></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title" style="color:var(--teal)">Étape 4 — check_config.sh : ajouter lecture, validation, génération</div>
+    <div class="card-body">Dans la section APPLI (vers ligne 468–521) :</div>
+    <div class="code-block"><span class="cm"># Lecture (vers ligne 468–483)</span>
+appli_Baby_state=$(  lire_json '.appli.Baby.state'   'Off')
+...
+appli_NavGPS_task=$( lire_json '.appli.NavGPS.tasker_task' 'RZ_NavGPS')
+<span class="cd">appli_IAConv_state=$(lire_json '.appli.IA_conv.state'       'Off')</span>
+<span class="cd">appli_IAConv_task=$( lire_json '.appli.IA_conv.tasker_task'  'RZ_IAConv')</span>
+
+<span class="cm"># Boucle de validation état (vers ligne 486–488) : ajouter IA_conv</span>
+for app_state in "$appli_Baby_state" "$appli_tasker_state" "$appli_zoom_state" \
+                 "$appli_BabyMonitor_state" "$appli_NavGPS_state" \
+<span class="cd">                 "$appli_IAConv_state"; do</span>
+
+<span class="cm"># Boucle de validation tâche non vide (vers ligne 498–499)</span>
+for task in "$appli_Baby_task" "$appli_zoom_task" "$appli_BabyMonitor_task" \
+<span class="cd">            "$appli_NavGPS_task" "$appli_IAConv_task"; do</span>
+
+<span class="cm"># Génération JSON (vers ligne 514–521)</span>
+  "appli": {
+    ...
+    "NavGPS":  { "state": "$appli_NavGPS_state",  "tasker_task": "$appli_NavGPS_task", ... },
+<span class="cd">    "IA_conv": { "state": "$appli_IAConv_state",  "tasker_task": "$appli_IAConv_task", "package": "", "last_change": "" },</span>
+    "bridge_timeout": $appli_bridge_timeout,
+    "ExprTasker": { ... }
+  }</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title" style="color:var(--teal)">Étape 5 — rz_appli_manager.sh : ajouter le case</div>
+    <div class="card-body">Dans la fonction <code>route_appli()</code>, après le case NavGPS (vers ligne 113) :</div>
+    <div class="code-block">        # ── Navigation GPS ────────────────────────────────────────────
+        "NavGPS")
+            TASK_NAME="RZ_NavGPS"
+            TASK_PARAM="$VAL"
+            ;;
+
+<span class="cd">        # ── Conversation IA (Gemini) ─────────────────────────────────</span>
+<span class="cd">        "IA_conv")</span>
+<span class="cd">            TASK_NAME="RZ_IAConv"</span>
+<span class="cd">            TASK_PARAM="$VAL"   # On | Off</span>
+<span class="cd">            ;;</span></div>
+    <div class="card-body" style="margin-top:10px;">Mettre à jour aussi l'entête du script (sections TABLE DE ROUTAGE et VPIV ENTRANTS) :</div>
+    <div class="code-block"><span class="cd">#   PROP=IA_conv     VAL=On/Off  → RZ_IAConv   On|Off</span>
+...
+<span class="cd">#   $A:Appli:IA_conv:*:On#</span>
+<span class="cd">#   $A:Appli:IA_conv:*:Off#</span></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title" style="color:var(--coral)">Étape 6 — Régénérer et synchroniser SP</div>
+    <div class="card-body">
+      <strong>Sur SE (terminal SSH ou Termux) :</strong>
+    </div>
+    <div class="code-block">bash courant_init.sh
+bash check_config.sh
+<span class="cm"># Vérifier : cat config/appli_config.json | python3 -m json.tool | grep IA_conv</span></div>
+    <div class="card-body" style="margin-top:10px;">
+      <strong>Sur SP (Node-RED) :</strong><br>
+      Ouvrir <code>ui_VarG</code> → ajouter l'entrée <code>IA_conv</code> dans enrichedVars avec sa structure (nomVarG, instances, proprietes…). Déclencher le flow admin <em>reload globalSave</em> pour charger en RAM.
+    </div>
+  </div>
+
+  <div class="ok-box">
+    <strong>✓ Validation finale :</strong> <code>global.get('enrichedVars').Appli</code> dans un nœud Function Node-RED doit contenir <code>IA_conv</code>. Dans appli_config.json sur SE, la clé <code>IA_conv</code> doit être présente avec <code>state: "Off"</code>.
+  </div>
+</div>
+
+<!-- ─────────────── SECTION 8 ─────────────── -->
+<div class="section">
+  <a class="section-anchor" id="s8"></a>
+  <div class="section-label">Section 8 — Cas concret</div>
+  <div class="section-title">Suppression de <code style="color:var(--red)">Appli.Baby</code> <span class="tag tag-del">SUPPRESSION</span></div>
+  <p class="section-intro">Baby est actuellement présente dans courant_init.sh, original_init.sh, check_config.sh, rz_appli_manager.sh, et dans le catalogue STT. Suppression complète à réaliser en une seule session.</p>
+
+  <div class="danger-box">
+    <strong>⚠️ Avant de commencer :</strong> vérifier que Baby n'est pas référencée dans des flows Node-RED actifs. Chercher <code>Baby</code> dans l'éditeur Node-RED (Ctrl+F sur les nœuds Function). Chercher aussi dans <code>rz_stt_handler.sh</code> si une commande vocale active pointe vers Baby.
+  </div>
+
+  <div class="card">
+    <div class="card-title" style="color:var(--green)">Étape 1 — Table A : marquer les 2 lignes Baby</div>
+    <div class="card-body">Dans <code>table_A_SE_v3.ods</code>, lignes SOURCE=P et SOURCE=S pour VAR=Appli PROP=Baby : mettre en commentaire (coloration grise + note "Supprimé vX.X — date"). Ne pas supprimer avant la prochaine version de la table.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title" style="color:var(--purple)">Étape 2 — courant_init.sh : supprimer Baby</div>
+    <div class="card-body">À la ligne ~217, supprimer :</div>
+    <div class="code-block"><span class="cr">appli_Baby_state="Off"  ;  </span>appli_tasker_state="Off"  ;  appli_zoom_state="Off"
+<span class="cm"># → devient :</span>
+appli_tasker_state="Off"  ;  appli_zoom_state="Off"
+
+<span class="cr">appli_Baby_task="RZ_Baby"</span>
+<span class="cm"># → supprimer cette ligne</span></div>
+    <div class="card-body" style="margin-top:10px;">Dans le heredoc JSON (vers ligne 404), supprimer la ligne Baby :</div>
+    <div class="code-block">  "appli": {
+<span class="cr">    "Baby":    { "state": "$appli_Baby_state", "tasker_task": "$appli_Baby_task", "package": "", "last_change": "" },</span>
+    "tasker":  { "state": "$appli_tasker_state", ... },
+    ...</div>
+    <div class="warn-box" style="margin-top:8px;"><strong>⚠️ Virgules JSON :</strong> vérifier que la ligne précédant la ligne supprimée ne se retrouve pas avec une virgule de trop en fin de bloc.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title" style="color:var(--amber)">Étape 3 — original_init.sh : mêmes suppressions</div>
+    <div class="card-body">Reproduire exactement les mêmes suppressions (lignes ~299–312 et heredoc ~452–458). Dans la section catalogue STT, supprimer les lignes Baby :</div>
+    <div class="code-block"><span class="cr">APP_BABY_ON;SIMPLE;A;SE;0;lance baby,surveillance bébé;;Appli;Baby;*;On;;Surveillance bébé démarrée.</span>
+<span class="cr">APP_BABY_OFF;SIMPLE;A;SE;0;arrête baby,stop bébé;;Appli;Baby;*;Off;;Surveillance bébé arrêtée.</span></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title" style="color:var(--teal)">Étape 4 — check_config.sh : supprimer Baby partout</div>
+    <div class="card-body">Trois zones à modifier :</div>
+    <div class="code-block"><span class="cm"># Zone 1 — Lecture (vers ligne 468)</span>
+<span class="cr">appli_Baby_state=$(lire_json '.appli.Baby.state'       'Off')</span>
+<span class="cr">appli_Baby_task=$( lire_json '.appli.Baby.tasker_task' 'RZ_Baby')</span>
+
+<span class="cm"># Zone 2 — Boucle validation état (vers ligne 486)</span>
+for app_state in <span class="cr">"$appli_Baby_state"</span> "$appli_tasker_state" "$appli_zoom_state" \
+                 "$appli_BabyMonitor_state" "$appli_NavGPS_state"; do
+
+<span class="cm"># Zone 3 — Boucle validation tâche (vers ligne 498)</span>
+for task in <span class="cr">"$appli_Baby_task"</span> "$appli_zoom_task" "$appli_BabyMonitor_task" "$appli_NavGPS_task"; do
+
+<span class="cm"># Zone 4 — Génération JSON (vers ligne 515)</span>
+  "appli": {
+<span class="cr">    "Baby":   { "state": "$appli_Baby_state", "tasker_task": "$appli_Baby_task", "package": "", "last_change": "" },</span>
+    "tasker": { ... },
+    ...</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title" style="color:var(--teal)">Étape 5 — rz_appli_manager.sh : supprimer le case Baby</div>
+    <div class="card-body">Dans la fonction <code>route_appli()</code>, supprimer :</div>
+    <div class="code-block"><span class="cr">        # ── BabyCam ──────────────────────────────────────────────────────────</span>
+<span class="cr">        "BabyCam"|"Baby")</span>
+<span class="cr">            TASK_NAME="RZ_Baby"</span>
+<span class="cr">            TASK_PARAM="$VAL"</span>
+<span class="cr">            ;;</span></div>
+    <div class="card-body" style="margin-top:8px;">Mettre à jour l'entête : retirer les lignes Baby de TABLE DE ROUTAGE et VPIV ENTRANTS.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title" style="color:var(--coral)">Étape 6 — Régénérer et vérifier</div>
+    <div class="code-block">bash courant_init.sh
+bash check_config.sh
+<span class="cm"># Vérifier l'absence de Baby :</span>
+grep "Baby" config/appli_config.json
+<span class="cm"># → aucun résultat attendu</span></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title" style="color:var(--coral)">Étape 7 — SP Node-RED : supprimer Baby de globalSave.json</div>
+    <div class="card-body">Via <code>ui_VarG</code> dans Node-RED, supprimer l'entrée Baby de enrichedVars. Déclencher le flow admin reload. Vérifier dans le panneau debug Node-RED que <code>global.get('enrichedVars').Appli</code> ne contient plus de clé Baby.</div>
+  </div>
+</div>
+
+<!-- ─────────────── SECTION 9 ─────────────── -->
+<div class="section">
+  <a class="section-anchor" id="s9"></a>
+  <div class="section-label">Section 9</div>
+  <div class="section-title">Synchronisation SP ↔ SE après modification</div>
+
+  <div class="card">
+    <div class="card-title">Flux de synchronisation au démarrage robot</div>
+    <div class="card-body">
+      Après toute modification de variable, voici l'ordre à respecter au prochain démarrage pour que SP et SE soient cohérents :
+    </div>
+    <div class="steps" style="margin-top:12px;">
+      <div class="step step-sync">
+        <div class="step-num">①</div>
+        <div class="step-body">
+          <div class="step-title">SE démarre — charge courant_init.json <span class="tag tag-SE">SE</span></div>
+          <div class="step-detail">rz_start.sh lit courant_init.json → démarre les managers avec les valeurs initiales. SE envoie <code>$I:COM:info:SE:SE_READY#</code> sur MQTT.</div>
+        </div>
+      </div>
+      <div class="step step-sync">
+        <div class="step-num">②</div>
+        <div class="step-body">
+          <div class="step-title">SP reçoit SE_READY — envoie la configuration via VPIV <span class="tag tag-SP">SP</span></div>
+          <div class="step-detail">SP (maître absolu) envoie depuis enrichedVars les trames VPIV de configuration vers SE. C'est la valeur SP qui écrase la valeur initiale de SE. SP est la source de vérité à l'exécution.</div>
+        </div>
+      </div>
+      <div class="step step-sync">
+        <div class="step-num">③</div>
+        <div class="step-body">
+          <div class="step-title">SE met à jour ses fichiers runtime <span class="tag tag-SE">SE</span></div>
+          <div class="step-detail">Chaque manager reçoit les nouvelles valeurs via VPIV et met à jour son fichier *_runtime.json / *_config.json local.</div>
+        </div>
+      </div>
+    </div>
+    <div class="warn-box">
+      <strong>⚠️ Conséquence pratique :</strong> si une variable est ajoutée dans courant_init.json de SE mais pas encore dans enrichedVars de SP, SE démarre avec la valeur locale mais SP ne l'enverra pas → incohérence. Il faut toujours mettre à jour globalSave.json (Table B) en même temps que courant_init.sh (Table C).
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:14px;">
+    <div class="card-title">Procédure de rechargement globalSave.json sur SP</div>
+    <div class="card-body">
+      Après modification de globalSave.json via ui_VarG :
+    </div>
+    <div class="code-block"><span class="cm">// Dans le flow admin Node-RED (nœud Function + Inject)</span>
+<span class="cm">// Déclencher : "reload globalSave"</span>
+
+<span class="ck">const nodeFs   = </span><span class="cv">global.get("nodeFs");</span>
+<span class="ck">const filePath = </span><span class="cv">global.get("rzPath");</span>
+<span class="ck">const raw      = </span><span class="cv">nodeFs.readFileSync(filePath, 'utf8');</span>
+<span class="ck">const parsed   = </span><span class="cv">JSON.parse(raw);</span>
+<span class="cv">global.set("enrichedVars", parsed.enrichedVars);</span>
+<span class="cm">// → enrichedVars en RAM est maintenant synchronisé avec le fichier disque</span></div>
+  </div>
+</div>
+
+<!-- ─────────────── SECTION 10 ─────────────── -->
+<div class="section">
+  <a class="section-anchor" id="s10"></a>
+  <div class="section-label">Section 10</div>
+  <div class="section-title">Pièges connus et règles absolues</div>
+
+  <div class="grid2">
+    <div class="card">
+      <div class="card-title" style="color:var(--red)">⚠️ Jamais éditer courant_init.json à la main</div>
+      <div class="card-body">Ce fichier est généré. Toute modification manuelle sera écrasée au prochain <code>bash courant_init.sh</code>. Source unique = courant_init.sh.</div>
+    </div>
+    <div class="card">
+      <div class="card-title" style="color:var(--amber)">⚠️ Virgules JSON dans les heredoc</div>
+      <div class="card-body">Lors d'un ajout ou d'une suppression dans un bloc JSON, vérifier que la dernière ligne du bloc n'a pas de virgule trainante — JSON strict ne le tolère pas. Valider avec <code>python3 -m json.tool</code>.</div>
+    </div>
+    <div class="card">
+      <div class="card-title" style="color:var(--amber)">⚠️ courant_init.sh ≠ original_init.sh — maintenir en parallèle</div>
+      <div class="card-body">Les deux fichiers ont la même structure mais des valeurs potentiellement différentes. Toute modification structurelle (ajout/suppression de variable) doit être répercutée dans les deux. Un script modifié sans l'autre → incohérence production/dev.</div>
+    </div>
+    <div class="card">
+      <div class="card-title" style="color:var(--amber)">⚠️ Unités fréquences — trois régimes différents</div>
+      <div class="card-body">Gyro/Mag : <code>freqCont</code> en Hz. Sys : <code>freqCont</code> en secondes. MicroSE : <code>freqCont</code> en ms. Ne pas mélanger — sens inverse selon le module. Voir Table A colonne CODAGE.</div>
+    </div>
+    <div class="card">
+      <div class="card-title" style="color:var(--amber)">⚠️ TorchSE — bug VAR connu</div>
+      <div class="card-body"><code>rz_torch_manager.sh</code> émet <code>$I:Torch:...</code> au lieu de <code>$I:TorchSE:...</code>. Signalé en Table A feuille Légende. À corriger avant d'ajouter des variables TorchSE.</div>
+    </div>
+    <div class="card">
+      <div class="card-title" style="color:var(--amber)">⚠️ enrichedVars ≠ courant_init.json en RAM</div>
+      <div class="card-body">enrichedVars (Table B) est la copie en RAM de globalSave.json côté SP. Ce n'est pas une copie de courant_init.json. Ne jamais copier courant_init.json dans globalSave.json directement — structures différentes.</div>
+    </div>
+    <div class="card">
+      <div class="card-title" style="color:var(--blue)">ℹ️ global.json SE ≠ globalSave.json SP</div>
+      <div class="card-body">global.json côté SE contient les variables transverses runtime (CfgS, Urg, Sys, STT…). globalSave.json côté SP contient enrichedVars. Deux fichiers distincts, structures différentes, ne pas confondre.</div>
+    </div>
+    <div class="card">
+      <div class="card-title" style="color:var(--blue)">ℹ️ Variables Tasker non stockées sur SP</div>
+      <div class="card-body">Les variables internes Tasker (pin Doro, numéros de task, etc.) ne transitent pas par VPIV et ne figurent pas dans les tables. Les packages Android et noms de tâches sont dans courant_init.sh et dans appli_config.json.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ─────────────── SECTION 11 ─────────────── -->
+<div class="section">
+  <a class="section-anchor" id="s11"></a>
+  <div class="section-label">Section 11</div>
+  <div class="section-title">Checklist de clôture après modification</div>
+  <p class="section-intro">À parcourir après chaque modification de variable, quelle que soit l'opération (ajout, suppression, modification valeur).</p>
+
+  <div class="card">
+    <div class="card-title" style="color:var(--green)">Fichiers sources</div>
+    <ul class="checklist">
+      <li><span class="file">table_A_SE_v3.ods</span> — ligne(s) ajoutée(s), supprimée(s) ou mise à jour</li>
+      <li><span class="file">courant_init.sh</span> — variable Bash + ligne heredoc JSON modifiées</li>
+      <li><span class="file">original_init.sh</span> — mêmes modifications (+ catalogue STT si pilotable vocal)</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <div class="card-title" style="color:var(--purple)">Génération SE</div>
+    <ul class="checklist">
+      <li><code>bash courant_init.sh</code> exécuté sans erreur</li>
+      <li><span class="file">courant_init.json</span> valide : <code>python3 -m json.tool courant_init.json</code></li>
+      <li><span class="file">check_config.sh</span> — lecture/validation/génération mises à jour si nécessaire</li>
+      <li><code>bash check_config.sh</code> exécuté sans erreur — aucune ligne ERREUR</li>
+      <li>Fichier *_config.json concerné vérifié (présence/absence de la variable)</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <div class="card-title" style="color:var(--teal)">Scripts SE</div>
+    <ul class="checklist">
+      <li><span class="file">rz_appli_manager.sh</span> — case ajouté/supprimé si CAT=A</li>
+      <li>Entête rz_appli_manager.sh mis à jour (TABLE DE ROUTAGE + VPIV ENTRANTS)</li>
+      <li>Autres managers SE concernés mis à jour si nécessaire</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <div class="card-title" style="color:var(--coral)">SP Node-RED</div>
+    <ul class="checklist">
+      <li><span class="file">globalSave.json</span> mis à jour via ui_VarG</li>
+      <li>Flow admin reload déclenché — <code>global.get('enrichedVars')</code> vérifié en debug</li>
+      <li>Flows Node-RED vérifiés — aucune référence morte</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <div class="card-title" style="color:var(--text2)">Git</div>
+    <ul class="checklist">
+      <li>Commit avec message explicite (ex : "feat: add Appli.IA_conv" ou "remove: Appli.Baby")</li>
+      <li>Déploiement sur SE via Git + <code>git pull</code> sur smartphone</li>
+      <li>Vérification post-déploiement : courant_init.json déployé contient la modification</li>
+    </ul>
+  </div>
+</div>
+
+</div><!-- /main -->
+
+<div class="footer">
+  RobotRZ — Vade-mecum Tables V1 — Juin 2026 — Vincent Philippe &nbsp;·&nbsp;
+  <a href="tables_donnees_V1.html" style="color:var(--blue)">← Tables de données</a> &nbsp;·&nbsp;
+  <a href="index.html" style="color:var(--blue)">Vue d'ensemble</a>
+</div>
+
+</body>
+</html>

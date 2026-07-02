@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Point réseau, SSH &amp; adressage IP — RobotRZ V1</title>
+<style>
+:root{--bg:#0f1117;--bg2:#171b26;--bg3:#1e2333;--text:#e8eaf0;--text2:#8b93a8;--text3:#555e78;--blue:#4d9ef7;--purple:#9b7cf4;--amber:#f0a836;--teal:#2ec4a0;--coral:#f06a50;--green:#5dbd6a;--red:#e85555;--border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.12);--radius:10px;--radius-lg:14px}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;font-size:14px;line-height:1.6}
+.nav{background:var(--bg2);border-bottom:1px solid var(--border);padding:12px 24px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:100;flex-wrap:wrap}
+.nav-logo{font-size:16px;font-weight:700;color:var(--coral);letter-spacing:1px;text-decoration:none}
+.nav-version{font-size:11px;color:var(--text3);background:var(--bg3);padding:2px 8px;border-radius:20px;border:1px solid var(--border)}
+.breadcrumb{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text3)}
+.breadcrumb a{color:var(--blue);text-decoration:none}
+.nav-links{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap}
+.nav-link{font-size:12px;color:var(--text2);text-decoration:none;padding:4px 10px;border-radius:6px;border:1px solid var(--border);transition:all .2s}
+.nav-link:hover{background:var(--bg3)}
+.header{padding:32px 24px 20px;max-width:1000px;margin:0 auto}
+.header h1{font-size:26px;font-weight:700;color:var(--coral);margin-bottom:6px}
+.header p{color:var(--text2);font-size:14px;max-width:760px}
+.main{max-width:1000px;margin:0 auto;padding:0 24px 60px}
+.section{margin-bottom:28px}
+.section-title{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:var(--text3);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--border)}
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:16px 18px;margin-bottom:10px}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.warn-box{background:rgba(240,168,54,.06);border:1px solid rgba(240,168,54,.2);border-radius:var(--radius);padding:12px 16px;font-size:13px;color:var(--text2);margin:12px 0}
+.err-box{background:rgba(232,85,85,.06);border:1px solid rgba(232,85,85,.25);border-radius:var(--radius);padding:12px 16px;font-size:13px;color:var(--text2);margin:12px 0}
+.info-box{background:rgba(77,158,247,.06);border:1px solid rgba(77,158,247,.2);border-radius:var(--radius);padding:12px 16px;font-size:13px;color:var(--text2);margin:12px 0}
+.ok-box{background:rgba(93,189,106,.06);border:1px solid rgba(93,189,106,.2);border-radius:var(--radius);padding:12px 16px;font-size:13px;color:var(--text2);margin:12px 0}
+.code{font-family:monospace;background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:12px 16px;font-size:12px;color:var(--teal);margin:10px 0;overflow-x:auto;line-height:1.7}
+table{width:100%;border-collapse:collapse;font-size:12.5px;margin:8px 0}
+th{background:var(--bg3);color:var(--text2);font-weight:500;padding:8px 12px;text-align:left;border-bottom:1px solid var(--border)}
+td{padding:7px 12px;border-bottom:1px solid var(--border);color:var(--text2);vertical-align:top}
+td:first-child{color:var(--text)}
+tr:last-child td{border-bottom:none}
+.tag{font-size:10px;padding:2px 7px;border-radius:20px;font-weight:500;display:inline-block}
+.tag-confirmed{background:rgba(93,189,106,.15);color:var(--green)}
+.tag-conflict{background:rgba(232,85,85,.15);color:var(--red)}
+.tag-unknown{background:rgba(240,168,54,.15);color:var(--amber)}
+.conflict-item{background:var(--bg3);border-left:3px solid var(--red);padding:10px 14px;border-radius:0 8px 8px 0;margin-bottom:8px;font-size:13px;color:var(--text2);line-height:1.6}
+.conflict-item strong{color:var(--text)}
+.res-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:12px 16px;margin-bottom:8px}
+.res-name{font-family:monospace;font-size:12px;color:var(--teal);font-weight:600;margin-bottom:3px}
+.res-desc{font-size:12px;color:var(--text2)}
+.step{display:flex;gap:10px;margin:8px 0;align-items:flex-start}
+.step-num{width:24px;height:24px;border-radius:50%;background:rgba(240,106,80,.2);color:var(--coral);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0}
+.step-body{font-size:13px;color:var(--text2);line-height:1.6}
+.footer{border-top:1px solid var(--border);padding:20px 24px;text-align:center;color:var(--text3);font-size:12px;max-width:1000px;margin:0 auto}
+@media(max-width:700px){.grid-2{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<nav class="nav">
+  <a href="index.html" class="nav-logo">RobotRZ</a>
+  <span class="nav-version">V2 — 28 Juin 2026</span>
+  <div class="breadcrumb"><span>›</span><a href="index.html">Vue d'ensemble</a><span>›</span><a href="mqtt_reseau_V1.html">Réseau MQTT</a><span>›</span><span style="color:var(--coral)">SSH &amp; adressage</span></div>
+  <div class="nav-links">
+    <a href="vademecum_reseau_RZ_V1.html" class="nav-link">📚 Vade-mecum réseau</a>
+    <a href="mqtt_reseau_V1.html" class="nav-link">← Réseau MQTT</a>
+    <a href="securite_V1.html" class="nav-link">Sécurité</a>
+  </div>
+</nav>
+
+<div class="header">
+  <h1>SSHD, serveur RPi &amp; adressage IP</h1>
+  <p>Cartographie des modes de connexion réseau du projet : les 4 modes SE↔SP, l'accès distant Node-RED, SSHD, DuckDNS, box/NAT, nginx. Issu d'une session dédiée (28/06/2026) ayant résolu plusieurs points laissés ouverts.</p>
+</div>
+
+<div class="main">
+
+  <a href="vademecum_reseau_RZ_V1.html" style="display:flex;align-items:center;gap:14px;background:rgba(46,196,160,.06);border:1px solid rgba(46,196,160,.3);border-radius:14px;padding:16px 20px;text-decoration:none;margin-bottom:16px;transition:all .2s" onmouseover="this.style.background='rgba(46,196,160,.12)'" onmouseout="this.style.background='rgba(46,196,160,.06)'">
+    <div style="font-size:26px;flex-shrink:0">📚</div>
+    <div>
+      <div style="font-size:14px;font-weight:600;color:var(--teal);margin-bottom:3px">Vade-mecum réseau — comprendre les notions employées ici</div>
+      <div style="font-size:13px;color:var(--text2)">IPv4/IPv6, NAT, NAT hairpin, DNS/DuckDNS, pare-feu Livebox, nginx — explications pédagogiques avec schémas et glossaire. → vademecum_reseau_RZ_V1.html</div>
+    </div>
+  </a>
+
+  <div class="ok-box" style="display:flex;align-items:flex-start;gap:14px;padding:16px 20px">
+    <div style="font-size:26px;flex-shrink:0">✅</div>
+    <div>
+      <div style="font-size:14px;font-weight:600;color:var(--green);margin-bottom:4px">Accès distant Node-RED résolu et validé (28/06/2026)</div>
+      <div style="font-size:13px;color:var(--text2);line-height:1.6">Dashboard accessible depuis n'importe quel réseau externe via <code style="color:var(--teal)">https://robotz-vincent.duckdns.org/dashboard/P_Accueil</code>. Cause root : désynchronisation NAT Livebox masquée par l'IPv6. Détail complet plus bas.</div>
+    </div>
+  </div>
+
+  <!-- LES 4 MODES DETAILLES -->
+  <div class="section">
+    <div class="section-title">Les 4 modes de connexion SE ↔ SP — avec implications SSH/IP</div>
+    <div class="card">
+      <p style="font-size:13px;color:var(--text2);line-height:1.7;margin:0 0 10px">
+        Rappel : SP est une <strong style="color:var(--text)">fonction</strong> (pilotage Node-RED), pas un appareil. Deux instances possibles : SP RPI (référence) et SP Smart (clone sur le Xiaomi, administré comme SE — Termux + SSHD). Vue complète des 4 scénarios : <a href="mqtt_reseau_V1.html" style="color:var(--blue)">mqtt_reseau_V1.html</a>.
+      </p>
+    </div>
+    <table>
+      <thead><tr><th>#</th><th>Contexte SE</th><th>SP actif</th><th>Accès SP RPI</th><th>Implication SSH/IP</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>Box Wi-Fi maison</td><td>SP RPI</td><td>Adresse locale directe</td><td>SSHD RPi pertinent — même LAN, IP locale stable attendue</td></tr>
+        <tr><td>2</td><td>Wi-Fi chez un tiers</td><td>SP RPI</td><td>DuckDNS (Internet)</td><td>SSHD RPi via NAT box — IP locale SE inconnue/hors de contrôle</td></tr>
+        <tr><td>3</td><td>Hotspot Xiaomi (4G active)</td><td>SP RPI</td><td>DuckDNS via passerelle 4G Xiaomi</td><td>SSHD RPi via NAT box — SE sur un subnet privé Xiaomi (hotspot), distinct du LAN du RPi</td></tr>
+        <tr><td>4</td><td>Hotspot Xiaomi (sans 4G)</td><td>SP Smart (Xiaomi)</td><td>— (RPI non joint)</td><td>SSHD <strong style="color:var(--text)">Xiaomi</strong> pertinent (Termux+SSHD, confirmé) — SE et SP Smart sur le même LAN local</td></tr>
+      </tbody>
+    </table>
+    <div class="info-box">
+      ℹ Les modes 3 et 4 se ressemblent (SE rejoint le même hotspot Xiaomi) mais diffèrent radicalement : en mode 3 le Xiaomi n'est qu'une <strong>passerelle</strong> vers Internet (SP reste le RPI) ; en mode 4 le Xiaomi <strong>devient SP</strong> lui-même, en pur local. Les questions SSH/IP à traiter sont donc différentes selon le mode : RPi (modes 1-3) vs Xiaomi (mode 4).
+    </div>
+  </div>
+
+  <!-- CAMERA DANS LES 4 MODES -->
+  <div class="section">
+    <div class="section-title">⚠ IP Webcam (visuel) à travers les 4 modes — problème réel identifié</div>
+    <div class="err-box">
+      <strong style="color:var(--red)">Le mécanisme actuel de StreamURL ne fonctionne probablement que dans 2 modes sur 4.</strong><br><br>
+      rz_camera_manager.sh construit l'URL caméra comme <code style="color:var(--teal)">http://{ip_locale_SE}:8080/video</code> — quel que soit le scénario (WifiInternetBox, Wifi4KSP, WifiSPSsI produisent toutes la même forme d'URL). Cette URL n'est <strong>joignable que si SP est sur le même réseau local que SE</strong> au moment où il essaie de la consulter.
+    </div>
+    <table>
+      <thead><tr><th>#</th><th>SP et SE partagent le même LAN ?</th><th>StreamURL joignable par SP ?</th></tr></thead>
+      <tbody>
+        <tr><td>1 — Box maison</td><td><span class="tag tag-confirmed">Oui</span> — SP RPI et SE sur la box maison</td><td><span class="tag tag-confirmed">✅ Fonctionne</span></td></tr>
+        <tr><td>2 — Wi-Fi tiers</td><td><span class="tag tag-conflict">Non</span> — SE sur le réseau du tiers, SP RPI chez Vincent</td><td><span class="tag tag-conflict">❌ Probablement injoignable</span></td></tr>
+        <tr><td>3 — Hotspot Xiaomi + 4G</td><td><span class="tag tag-conflict">Non</span> — SE sur le subnet privé du hotspot, SP RPI chez Vincent</td><td><span class="tag tag-conflict">❌ Probablement injoignable</span></td></tr>
+        <tr><td>4 — Hotspot Xiaomi sans 4G</td><td><span class="tag tag-confirmed">Oui</span> — SE et SP Smart sur le même hotspot</td><td><span class="tag tag-confirmed">✅ Fonctionne</span></td></tr>
+      </tbody>
+    </table>
+    <div class="warn-box">
+      En mode 2 et 3, SP (RPI) n'est tout simplement pas sur le réseau local où se trouve SE — aucune adresse locale ne peut le résoudre. C'est précisément le type de problème qu'un relai (nginx, tunnel, ou retour par MQTT plutôt que par HTTP direct) est censé résoudre. À ce jour, aucun mécanisme de ce type n'est implémenté — le commentaire RTMP/DuckDNS dans rz_camera_manager.sh (scénario "4K") est resté désactivé et ne couvre de toute façon que le cas d'une SIM dédiée, pas les modes 2/3 actuels.
+    </div>
+    <div class="info-box">
+      Pistes à explorer en session dédiée : (a) SE pousse l'IP/URL courante vers SP via MQTT (qui fonctionne dans tous les modes car basé sur DuckDNS+NAT, pas sur une IP locale) puis SP affiche cette URL dans son navigateur local — mais ne résout pas le problème si SP n'a pas non plus d'accès réseau direct à SE ; (b) un tunnel inverse initié par SE (puisque c'est SE qui sait toujours joindre SP, jamais l'inverse) vers le RPI, exposant alors la caméra via le RPI lui-même ; (c) accepter que la caméra ne soit utilisable qu'en modes 1 et 4, et le documenter comme limitation connue plutôt que comme bug à corriger.
+    </div>
+  </div>
+
+  <!-- BUG NAT RESOLU -->
+  <div class="section">
+    <div class="section-title">Bug résolu — accès distant cassé en IPv4, masqué par l'IPv6</div>
+    <div class="card">
+      <p style="font-size:13px;color:var(--text2);line-height:1.7;margin:0 0 10px">
+        <strong style="color:var(--text)">Symptôme :</strong> accès au dashboard fonctionnel en Wi-Fi domicile, mais "connexion réinitialisée" depuis tout réseau externe (4G, Wi-Fi tiers).
+      </p>
+      <p style="font-size:13px;color:var(--text2);line-height:1.7;margin:0 0 10px">
+        <strong style="color:var(--text)">Cause :</strong> <code style="color:var(--teal)">robotz-vincent.duckdns.org</code> résout l'IPv6 du RPi en priorité. Le Wi-Fi domicile a une connectivité IPv6 native (déléguée par la Livebox) — les tests y réussissaient toujours en IPv6, sans jamais valider l'IPv4. La règle NAT/PAT Livebox s'était désynchronisée en IPv4 (bug connu sur ce modèle de box) — silencieusement, sans signal visible dans l'interface. Le 4G (sans IPv6 fiable) révélait l'échec que le domicile masquait.
+      </p>
+      <p style="font-size:13px;color:var(--text2);line-height:1.7;margin:0">
+        <strong style="color:var(--text)">Correctif :</strong> supprimer puis recréer la règle NAT/PAT (renommée <code style="color:var(--teal)">httpsRPI3</code>, IP locale <code style="color:var(--teal)">192.168.1.40</code> saisie directement plutôt que via le nom d'équipement). Validé en conditions réelles (4G, Wi-Fi désactivé).
+      </p>
+    </div>
+    <div class="err-box">
+      <strong>🪤 Piège de diagnostic à connaître :</strong> ne jamais tester l'IP publique de la box depuis un appareil connecté à cette même box — le <strong>NAT hairpin</strong> (loopback) n'est pas supporté par la Livebox et produit un faux négatif (timeout), même quand l'accès réel depuis l'extérieur fonctionne. Toujours valider depuis un réseau réellement externe.
+    </div>
+    <div class="warn-box">
+      ⚠ <strong>Surveillance à prévoir :</strong> ce bug peut réapparaître (redémarrage box, mise à jour firmware). Mêmes symptômes si ça se reproduit : IPv6 OK, IPv4 cassé, échec visible seulement depuis un réseau sans IPv6 fiable. Même correctif : supprimer/recréer <code style="color:var(--teal)">httpsRPI3</code>.
+    </div>
+    <div class="info-box">
+      💡 <strong>Connexion avec le problème caméra (modes 2/3) :</strong> nginx confirmé actif sur le RPi comme reverse proxy (voir section nginx ci-dessous) — exactement le type de mécanisme envisagé comme piste de résolution pour la portée caméra. Le même principe (un service exposé sur le RPi via nginx+NAT+DuckDNS, joignable depuis n'importe quel réseau) pourrait potentiellement servir de relai pour la caméra, via un tunnel initié par SE vers le RPi. À creuser en session dédiée caméra.
+    </div>
+  </div>
+
+  <!-- FORMULAIRE MOBILE -->
+  <div class="section">
+    <div class="section-title">Connexion mobile au dashboard — réglage navigateur requis</div>
+    <div class="warn-box">
+      Sur smartphone (Firefox Android testé), le formulaire de connexion natif Node-RED (<code style="color:var(--teal)">adminAuth</code>) peut s'afficher tronqué/inaccessible. <strong>Solution :</strong> activer « Affichage pour ordinateur » dans le menu du navigateur pour cette page avant de se connecter.
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Inventaire des éléments réseau connus — mis à jour 28/06</div>
+    <table>
+      <thead><tr><th>Élément</th><th>Valeur confirmée</th><th>Source</th><th>Fiabilité</th></tr></thead>
+      <tbody>
+        <tr><td>SSH Termux (SE)</td><td>port 8022, mot de passe</td><td>installation_v2.md / securite_V1.html</td><td><span class="tag tag-confirmed">Confirmé</span></td></tr>
+        <tr><td>SSH via NAT box</td><td>port 5800 → redirige vers 8022 Termux</td><td>installation_v2.md / securite_V1.html</td><td><span class="tag tag-unknown">À reconfirmer</span></td></tr>
+        <tr><td>DuckDNS hostname</td><td><strong>robotz-vincent</strong>.duckdns.org (Z après "robot" — volontaire, ne pas corriger)</td><td>session 28/06 — confirmé</td><td><span class="tag tag-confirmed">Confirmé</span></td></tr>
+        <tr><td>DuckDNS — résolution</td><td>IPv6 en priorité (préfixe 2a01:cb08:930f:cb00::/56) + IPv4 90.27.242.153</td><td>session 28/06</td><td><span class="tag tag-confirmed">Confirmé</span></td></tr>
+        <tr><td>Broker MQTT (SP RPI)</td><td>192.168.1.40:1883 — <strong>seule IP valide</strong></td><td>architecture.md + bail DHCP statique confirmé 28/06</td><td><span class="tag tag-confirmed">✅ Tranché</span></td></tr>
+        <tr><td>Bail DHCP RPi</td><td>serveurRZrpi3 → 192.168.1.40, MAC B8:27:EB:72:DD:54</td><td>session 28/06 — confirmé stable</td><td><span class="tag tag-confirmed">Confirmé</span></td></tr>
+        <tr><td>Règle NAT/PAT Livebox</td><td>httpsRPI3 (renommée depuis SitePerso) — 443→443 TCP → 192.168.1.40 (IP directe)</td><td>session 28/06</td><td><span class="tag tag-confirmed">✅ Validée fonctionnelle</span></td></tr>
+        <tr><td>nginx (RPi)</td><td>Actif — reverse proxy vers Node-RED (127.0.0.1:1880), écoute 0.0.0.0:443 et [::]:443</td><td>session 28/06 — sudo ss -tlnp</td><td><span class="tag tag-confirmed">✅ Confirmé</span></td></tr>
+        <tr><td>Certificat TLS</td><td>Let's Encrypt, CN=robotz-vincent.duckdns.org, 10/06→08/09/2026</td><td>session 28/06</td><td><span class="tag tag-confirmed">Confirmé — renouvellement auto à surveiller</span></td></tr>
+        <tr><td>Pare-feu local RPi</td><td>Absent — iptables/ufw non installés</td><td>session 28/06</td><td><span class="tag tag-confirmed">Confirmé — non bloquant</span></td></tr>
+        <tr><td>Pare-feu IPv6 Livebox</td><td>1 seule règle existante, sans rapport (liée au PC, protocole AH) — rien sur port 443</td><td>session 28/06</td><td><span class="tag tag-confirmed">Confirmé</span></td></tr>
+        <tr><td>RTMP (camera distante)</td><td>rtmp://duckdns/live/rz — toujours commenté, jamais activé</td><td>rz_camera_manager.sh</td><td><span class="tag tag-unknown">Prévu, jamais implémenté</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- INCOHERENCES -->
+  <div class="section">
+    <div class="section-title">Incohérences réelles détectées entre les sources</div>
+
+    <div class="conflict-item">
+      <strong>🔴 IP du broker RPi : 192.168.1.40 vs 192.168.1.37/38</strong><br>
+      <span class="tag tag-confirmed" style="margin-left:8px">✅ Tranché 28/06</span> — 192.168.1.40 est la seule IP valide, confirmée par le bail DHCP statique. <code style="color:var(--teal)">rz_network_init.sh</code> est confirmé <strong>obsolète</strong> (chemin ancien dépôt). Décision encore en attente : abandonner définitivement, ou récupérer sa logique de bascule Wi-Fi local → DuckDNS pour l'intégrer dans <code style="color:var(--teal)">Gtion_Init</code> (SF_Init_2, actuellement STUB) côté Node-RED.
+    </div>
+
+    <div class="conflict-item">
+      <strong>🟡 Casse de typeReseau : WifiSPSsI vs WifiSPSSI</strong><br>
+      Le commentaire dans <code style="color:var(--teal)">rz_camera_manager.sh</code> (mai 2026) utilise <code style="color:var(--coral)">WifiSPSSI</code> (SSI majuscules), alors que <code style="color:var(--teal)">courant_init.sh</code>, <code style="color:var(--teal)">global.json</code> et toute la documentation utilisent <code style="color:var(--teal)">WifiSPSsI</code> (s minuscule). Non traité le 28/06 — reste à vérifier qu'aucun code ne compare réellement la chaîne avec la mauvaise casse.
+    </div>
+
+    <div class="conflict-item">
+      <strong>🟡 rz_camera_manager.sh — versions multiples en circulation</strong><br>
+      <span class="tag tag-conflict" style="margin-left:0">⚠ Nouveau 28/06</span> — la version présente dans le dossier projet est v2.1 (12/03/2026), obsolète par rapport à la v3.1 connue (architecture Tasker/IP Webcam Pro, pattern LockSE). Ne pas s'y référer pour le code actuel ; demander la version à jour si besoin d'une relecture.
+    </div>
+
+    <div class="conflict-item">
+      <strong>🟡 URL caméra par scénario — toujours non résolu</strong><br>
+      Dans rz_camera_manager.sh : WifiInternetBox, Wifi4KSP et WifiSPSsI produisent tous la <strong>même</strong> URL (<code style="color:var(--teal)">http://{ip_se}:8080/video</code>) — alors que SP ne peut la joindre que s'il partage le LAN de SE (modes 1 et 4 uniquement, cf. section caméra plus haut). Non traité le 28/06 — cette session portait sur l'accès au dashboard Node-RED, pas sur la caméra. Piste de relai via nginx maintenant plus concrète (nginx confirmé fonctionnel comme reverse proxy sur le RPi).
+    </div>
+
+    <div class="conflict-item">
+      <strong>🔵 Cohérence à vérifier</strong><br>
+      Confirmer qu'aucune autre référence à une IP RPi autre que 192.168.1.40 ne subsiste ailleurs dans les scripts actifs — le balayage du 28/06 n'a couvert que les fichiers présents dans le projet à cette date.
+    </div>
+  </div>
+
+  <!-- NGINX CONFIRME -->
+  <div class="section">
+    <div class="section-title">nginx — configuration confirmée (28/06)</div>
+    <div class="ok-box">
+      ✅ nginx est actif sur le RPi. Reverse proxy vers Node-RED (<code style="color:var(--teal)">127.0.0.1:1880</code>), écoute <code style="color:var(--teal)">0.0.0.0:443</code> et <code style="color:var(--teal)">[::]:443</code> (IPv4 + IPv6). Certificat Let's Encrypt valide. C'est ce mécanisme qui rend le dashboard joignable depuis l'extérieur.
+    </div>
+    <div class="info-box">
+      Question encore ouverte : nginx ne sert aujourd'hui qu'à exposer Node-RED. Le commentaire RTMP trouvé dans rz_camera_manager.sh (scénario "4K", jamais activé) suggère un usage futur pour la caméra — et la piste de relai pour les modes 2/3 (voir section caméra) en serait un autre. Les deux restent à instruire.
+    </div>
+  </div>
+
+
+  <!-- RESSOURCES -->
+  <div class="section">
+    <div class="section-title">Ressources à apporter dans la nouvelle conversation</div>
+    <div class="res-card">
+      <div class="res-name">Export sshd_config (RPi)</div>
+      <div class="res-desc">/etc/ssh/sshd_config — pour confirmer ports, méthodes d'authentification, restrictions d'accès actuelles.</div>
+    </div>
+    <div class="res-card">
+      <div class="res-name">Configuration box / NAT</div>
+      <div class="res-desc">Liste des redirections de ports actives (capture d'écran ou export suffit) — confirmer le port 5800→8022 et toute autre redirection (DuckDNS, MQTT distant, éventuel nginx).</div>
+    </div>
+    <div class="res-card">
+      <div class="res-name">ip addr / hostname -I sur le RPi</div>
+      <div class="res-desc">Confirmer l'IP locale actuelle du RPi — trancher le conflit 192.168.1.40 vs .37/.38.</div>
+    </div>
+    <div class="res-card">
+      <div class="res-name">mqtt_reseau_V1.html · securite_V1.html</div>
+      <div class="res-desc">Pages doc existantes — base de référence pour les 4 scénarios déjà actés.</div>
+    </div>
+  </div>
+
+  <!-- PLAN PROPOSE -->
+  <div class="section">
+    <div class="section-title">Items restants — pour une prochaine session ciblée</div>
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body"><strong style="color:var(--text)">Trancher le problème caméra modes 2/3</strong> — décider entre tunnel inverse via nginx (maintenant confirmé fonctionnel comme reverse proxy), relai MQTT, ou limitation documentée (caméra utilisable seulement en modes 1 et 4).</div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body"><strong style="color:var(--text)">Décider du sort de rz_network_init.sh</strong> — abandon définitif, ou récupération de sa logique de bascule Wi-Fi/DuckDNS pour Gtion_Init/SF_Init_2 (cf. <a href="roadmap_nodered_V1.html" style="color:var(--blue)">feuille de route Node-RED</a>, Phase 1).</div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-body"><strong style="color:var(--text)">Vérifier la casse WifiSPSsI/WifiSPSSI</strong> — confirmer qu'aucune comparaison Bash n'échoue silencieusement à cause de cette différence.</div>
+    </div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-body"><strong style="color:var(--text)">Balayage complet des IP RPi</strong> — étendre la vérification du 28/06 (limitée aux fichiers présents ce jour-là) à l'ensemble du dépôt actuel.</div>
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">
+  RobotRZ — SSHD, serveur RPi &amp; adressage IP V2 — Vincent Philippe &nbsp;·&nbsp;
+  <a href="vademecum_reseau_RZ_V1.html" style="color:var(--blue)">Vade-mecum réseau</a> &nbsp;·&nbsp;
+  <a href="mqtt_reseau_V1.html" style="color:var(--blue)">← Réseau MQTT</a> &nbsp;·&nbsp;
+  <a href="index.html" style="color:var(--blue)">Vue d'ensemble</a>
+</div>
+</body>
+</html>

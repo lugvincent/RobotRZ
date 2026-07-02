@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SE — Smartphone Embarqué RobotRZ V2</title>
+<style>
+:root{--bg:#0f1117;--bg2:#171b26;--bg3:#1e2333;--text:#e8eaf0;--text2:#8b93a8;--text3:#555e78;--blue:#4d9ef7;--purple:#9b7cf4;--amber:#f0a836;--teal:#2ec4a0;--coral:#f06a50;--green:#5dbd6a;--red:#e85555;--border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.12);--radius:10px;--radius-lg:14px}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;font-size:14px;line-height:1.6}
+.nav{background:var(--bg2);border-bottom:1px solid var(--border);padding:12px 24px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:100;flex-wrap:wrap}
+.nav-logo{font-size:16px;font-weight:700;color:var(--purple);letter-spacing:1px;text-decoration:none}
+.nav-version{font-size:11px;color:var(--text3);background:var(--bg3);padding:2px 8px;border-radius:20px;border:1px solid var(--border)}
+.breadcrumb{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text3)}
+.breadcrumb a{color:var(--blue);text-decoration:none}
+.nav-links{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap}
+.nav-link{font-size:12px;color:var(--text2);text-decoration:none;padding:4px 10px;border-radius:6px;border:1px solid var(--border);transition:all .2s}
+.nav-link:hover{background:var(--bg3)}
+.header{padding:32px 24px 20px;max-width:1000px;margin:0 auto}
+.header h1{font-size:26px;font-weight:700;color:var(--purple);margin-bottom:6px}
+.header p{color:var(--text2);font-size:14px;max-width:700px}
+.main{max-width:1000px;margin:0 auto;padding:0 24px 60px}
+.section{margin-bottom:28px}
+.section-title{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:var(--text3);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--border)}
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:16px 18px;margin-bottom:10px}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.st{width:8px;height:8px;border-radius:50%;display:inline-block;flex-shrink:0;margin-right:4px}
+.st-ok{background:var(--green)}.st-wip{background:var(--amber)}.st-todo{background:var(--red)}
+.tag{font-size:10px;padding:2px 7px;border-radius:20px;font-weight:500;display:inline-block}
+.tag-ok{background:rgba(93,189,106,.15);color:var(--green)}
+.tag-wip{background:rgba(240,168,54,.15);color:var(--amber)}
+.tag-todo{background:rgba(232,85,85,.15);color:var(--red)}
+.tag-new{background:rgba(77,158,247,.15);color:var(--blue)}
+.script-block{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:14px 16px;margin-bottom:8px}
+.script-header{display:flex;align-items:center;gap:8px;margin-bottom:6px;flex-wrap:wrap}
+.script-name{font-family:monospace;font-size:13px;font-weight:600;color:var(--purple)}
+.script-desc{font-size:13px;color:var(--text2);line-height:1.7}
+.fifo-row{display:flex;align-items:center;gap:8px;padding:8px 12px;background:var(--bg3);border-radius:8px;margin-bottom:6px;font-size:12px}
+.fifo-name{font-family:monospace;color:var(--teal);font-weight:600;min-width:140px}
+.manager-block{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px;margin-bottom:8px}
+.manager-header{display:flex;align-items:center;gap:8px;margin-bottom:4px;flex-wrap:wrap}
+.manager-name{font-family:monospace;font-size:12px;font-weight:600;color:var(--purple)}
+.manager-desc{font-size:12px;color:var(--text2);line-height:1.6}
+.code{font-family:monospace;background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:12px 16px;font-size:12px;color:var(--teal);margin:10px 0;overflow-x:auto;line-height:1.7}
+.warn-box{background:rgba(240,168,54,.06);border:1px solid rgba(240,168,54,.2);border-radius:var(--radius);padding:12px 16px;font-size:13px;color:var(--text2);margin:12px 0}
+.ok-box{background:rgba(93,189,106,.06);border:1px solid rgba(93,189,106,.2);border-radius:var(--radius);padding:12px 16px;font-size:13px;color:var(--text2);margin:12px 0}
+.pipeline{display:flex;flex-direction:column;gap:4px;padding:12px;background:var(--bg3);border-radius:var(--radius);margin:10px 0}
+.pipeline-step{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text2)}
+.pipeline-arrow{color:var(--text3)}
+.footer{border-top:1px solid var(--border);padding:20px 24px;text-align:center;color:var(--text3);font-size:12px;max-width:1000px;margin:0 auto}
+@media(max-width:700px){.grid-2,.grid-3{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<nav class="nav">
+  <a href="index.html" class="nav-logo">RobotRZ</a>
+  <span class="nav-version">V2 — Juin 2026</span>
+  <div class="breadcrumb"><span>›</span><a href="index.html">Vue d'ensemble</a><span>›</span><span style="color:var(--purple)">SE — Smartphone</span></div>
+  <div class="nav-links">
+    <a href="sp_nodeRED_V1.html" class="nav-link">SP</a>
+    <a href="arduino_V1.html" class="nav-link">Arduino</a>
+    <a href="tasker_V4.html" class="nav-link">Tasker</a>
+    <a href="stt_voice_V2.html" class="nav-link">STT &amp; Voice</a>
+    <a href="mqtt_reseau_V1.html" class="nav-link">Réseau</a>
+  </div>
+</nav>
+
+<div class="header">
+  <h1>SE — Smartphone Embarqué</h1>
+  <p>Cerveau local mobile du robot. Bridge entre Arduino et SP. Gère capteurs, STT/TTS, caméra et applications Android. Doro Android sans SIM — IP locale 192.168.1.12.</p>
+</div>
+
+<div class="main">
+
+  <div class="section">
+    <div class="section-title">Environnement logiciel</div>
+    <div class="grid-3">
+      <div class="card"><div style="color:var(--purple);font-weight:600;margin-bottom:6px">Termux</div><div style="font-size:13px;color:var(--text2)">Linux sur Android. Exécute tous les scripts Bash et Python. Port SSH : 8022. Répertoire : ~/robotRZ-smartSE/</div></div>
+      <div class="card"><div style="color:var(--teal);font-weight:600;margin-bottom:6px">Tasker</div><div style="font-size:13px;color:var(--text2)">Automatisation Android. Gère apps, UI, AutoVoice, TTS. Reçoit ordres via trigger.txt, envoie commandes via vpiv_out.txt.</div></div>
+      <div class="card"><div style="color:var(--blue);font-weight:600;margin-bottom:6px">Termux:API</div><div style="font-size:13px;color:var(--text2)">Passerelle Termux↔Android. TTS via termux-tts-speak. Torche. Capteurs (termux-sensor).</div></div>
+    </div>
+    <div class="grid-3" style="margin-top:10px">
+      <div class="card"><div style="color:var(--amber);font-weight:600;margin-bottom:6px">IP Webcam Pro</div><div style="font-size:13px;color:var(--text2)">Streaming HTTP port 8080. Démarré/arrêté par Tasker (RZ_CamStart/Stop).</div></div>
+      <div class="card"><div style="color:var(--green);font-weight:600;margin-bottom:6px">AutoVoice</div><div style="font-size:13px;color:var(--text2)">STT via moteur Android. v4.0.14. PocketSphinx abandonné (OpenSL ES inaccessible Android 9). <a href="stt_voice_V2.html" style="color:var(--blue)">Voir STT →</a></div></div>
+      <div class="card"><div style="color:var(--coral);font-weight:600;margin-bottom:6px">Connectivité</div><div style="font-size:13px;color:var(--text2)">4 scénarios réseau. Priorité : Wi-Fi maison → Wi-Fi ext → Hotspot 4G → Hotspot local. <a href="mqtt_reseau_V1.html" style="color:var(--blue)">Détail →</a></div></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Scripts core — noyau SE</div>
+
+    <div class="script-block">
+      <div class="script-header"><span class="st st-ok"></span><span class="script-name">rz_start.sh</span><span class="tag tag-ok">v1.3</span></div>
+      <div class="script-desc">Point d'entrée unique. Démarre les daemons dans l'ordre : parser → state-manager → rz_appli_manager.sh → rz_tasker_out.sh → managers actifs selon courant_init.json. Lance rz_voice_manager.sh AVANT rz_stt_manager.sh (sleep 1 pour laisser fifo_voice_in s'ouvrir). Envoie $I:COM:info:SE:SE_READY# quand tout est opérationnel. Supporte --stop et --status.</div>
+      <div class="ok-box" style="margin-top:8px">✅ v1.2 (22 juin) — bug corrigé : lançait rz_camera_manager.sh comme un <strong>daemon de fond</strong> alors qu'il est conçu comme <strong>one-shot</strong> invoqué par rz_vpiv_parser.sh avec 3 arguments. Conséquence (sans casse fonctionnelle réelle) : exit 1 immédiat, logs pollués. Retiré des 3 emplacements concernés + doublon tasker/rz_start.sh supprimé. Déployé et vérifié fonctionnellement sur Doro.</div>
+      <div class="err-box" style="margin-top:8px;background:rgba(232,85,85,.06);border:1px solid rgba(232,85,85,.25);border-radius:var(--radius);padding:12px 16px;font-size:13px;color:var(--text2)">🔴 <strong>v1.3 (29 juin) — bug majeur découvert et corrigé :</strong> rz_appli_manager.sh n'était démarré par <strong>aucun mécanisme automatique</strong> — absent de rz_start.sh depuis la création du projet, et absent de RZ_Init_Tasker.tsk.xml. Conséquence : <strong>aucune commande SP→SE de type Appli (Zoom, NavGPS, IA_Conv, ExprTasker, tasker) n'a jamais pu fonctionner</strong>, sans symptôme visible (silence, pas d'erreur — seul le sens retour Tasker→SP via vpiv_out.txt fonctionnait). Corrigé : ajout dans start_core()/cmd_stop()/cmd_status(). Vérifié sur Doro : --status liste désormais rz_appli_manager sans intervention manuelle.</div>
+      <div class="ok-box" style="margin-top:8px">✅ rz_stt_manager.sh v2.1 (21 juin) : vérifie modeSTT en début de main() — arrêt propre si OFF, sans lancer PocketSphinx. Corrige un TTS parasite répétitif qui survenait par erreur.</div>
+    </div>
+
+    <div class="script-block">
+      <div class="script-header"><span class="st st-ok"></span><span class="script-name">rz_vpiv_parser.sh</span><span class="tag tag-ok">v2.2</span></div>
+      <div class="script-desc">Routeur central. Écoute SE/commande via MQTT en continu.</div>
+      <div class="pipeline">
+        <div class="pipeline-step"><span style="color:var(--coral)">CAT=E · Urg · etat · danger</span><span class="pipeline-arrow">→</span><span>safety_stop.sh (priorité absolue)</span></div>
+        <div class="pipeline-step"><span style="color:var(--purple)">CAT=V/F · CamSE</span><span class="pipeline-arrow">→</span><span>appel direct rz_camera_manager.sh ($PROP $VAL $INST) — qui délègue ensuite à Tasker en interne</span></div>
+        <div class="pipeline-step"><span style="color:var(--purple)">CAT=V/F · CfgS et autres</span><span class="pipeline-arrow">→</span><span>fifo_termux_in → state-manager</span></div>
+        <div class="pipeline-step"><span style="color:var(--teal)">CAT=A · Appli, Voice, TorchSE, ExprTasker…</span><span class="pipeline-arrow">→</span><span>fifo_tasker_in → rz_tasker_bridge.sh</span></div>
+        <div class="pipeline-step"><span style="color:var(--blue)">typePtge ≠ 0 · COM:error/info</span><span class="pipeline-arrow">→</span><span>TTS via termux-tts-speak</span></div>
+      </div>
+    </div>
+
+    <div class="script-block">
+      <div class="script-header"><span class="st st-ok"></span><span class="script-name">rz_state-manager.sh</span><span class="tag tag-ok">v1.5</span></div>
+      <div class="script-desc">Gardien de l'état global. Lit fifo_termux_in. Met à jour global.json. Émet les ACK VPIV. Nouveautés v1.5 :</div>
+      <div style="font-size:13px;color:var(--text2);margin:8px 0 4px;padding-left:4px">• <strong style="color:var(--text)">sync_to_tasker()</strong> — copie global.json vers /sdcard/Tasker/RobotRZ/global.json après chaque écriture. Requis par RZ_OuvreEtat. Appelée à 4 endroits.</div>
+      <div style="font-size:13px;color:var(--text2);margin:4px 0;padding-left:4px">• <strong style="color:var(--text)">calculate_stt_context()</strong> — calcule le contexte STT (Inactif/Cmde/Conv/Mixte) et écrit trigger.txt avec champ ts (timestamp). Appelée après chaque changement de modeRZ ou typePtge.</div>
+      <div style="font-size:13px;color:var(--text2);margin:4px 0;padding-left:4px">• <strong style="color:var(--text)">Cas STT dans le switch :</strong> modeSTT=OFF → STT.context=Inactif · modeSTT=KWS → recalcul contexte · paraSTT={...} → écrit dans STT.paraSTT</div>
+      <div class="code">// trigger.txt — écrit par calculate_stt_context() après sync_to_tasker()
+printf '{"task":"RZ_STT_Context","param":"%s","ts":"%s"}' "$context" "$(date +%s)" > "/sdcard/Tasker/RobotRZ/trigger.txt"
+// ts obligatoire — garantit la détection même si le contexte est identique</div>
+    </div>
+
+    <div class="script-block">
+      <div class="script-header"><span class="st st-ok"></span><span class="script-name">rz_tasker_out.sh</span><span class="tag tag-new">Nouveau v1.0</span></div>
+      <div class="script-desc">Daemon de retour Tasker→SP. Surveille vpiv_out.txt (écrit par Tasker via JavaScriplet). Quand modification détectée : lit la trame VPIV → mosquitto_pub vers SE/statut → SP. Utilise inotifywait.</div>
+      <div class="code">// Pipeline Tasker → SP (nouveau canal bidirectionnel)
+Bouton menu Tasker → writeFile() JavaScriplet → vpiv_out.txt
+→ rz_tasker_out.sh (inotifywait) → mosquitto_pub SE/statut → SP</div>
+    </div>
+
+    <div class="script-block">
+      <div class="script-header"><span class="st st-ok"></span><span class="script-name">rz_tasker_bridge.sh</span><span class="tag tag-ok">v2.0</span></div>
+      <div class="script-desc">Écrit trigger.txt surveillé par Tasker. Utilise printf (jamais echo). Chemin absolu obligatoire.</div>
+    </div>
+
+    <div class="script-block">
+      <div class="script-header"><span class="st st-ok"></span><span class="script-name">mqtt_bridge.py</span><span class="tag tag-ok">v2.0</span></div>
+      <div class="script-desc">Pont Arduino USB-C ↔ MQTT. Credentials depuis keys.json.</div>
+    </div>
+
+    <div class="script-block">
+      <div class="script-header"><span class="st st-ok"></span><span class="script-name">safety_stop.sh / error_handler.sh</span><span class="tag tag-ok">v3.0 / v2.0</span></div>
+      <div class="script-desc">Urgence absolue (CAT=E+danger) et gestion erreurs centralisée via FIFO.</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">FIFOs — artères internes</div>
+    <div class="warn-box">Règle absolue : aucun manager n'appelle mosquitto_pub directement. Tout transit par les FIFOs.</div>
+    <div class="fifo-row"><span class="fifo-name">fifo_termux_in</span><span>Tous managers → rz_state-manager.sh → MQTT SE/statut</span></div>
+    <div class="fifo-row"><span class="fifo-name">fifo_tasker_in</span><span>rz_vpiv_parser → rz_tasker_bridge.sh → trigger.txt → Tasker</span></div>
+    <div class="fifo-row"><span class="fifo-name">fifo_voice_in</span><span>rz_vpiv_parser / rz_autovoice_bridge → rz_voice_manager.sh → TTS</span></div>
+    <div class="fifo-row"><span class="fifo-name">fifo_appli_in</span><span>rz_vpiv_parser → rz_appli_manager.sh</span></div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Managers capteurs — état de développement</div>
+    <div class="manager-block"><div class="manager-header"><span class="st st-ok"></span><span class="manager-name">rz_sys_monitor.sh</span><span class="tag tag-ok">✅</span></div><div class="manager-desc">CPU, RAM, Batt, Temp, Stockage. Seuils warn/urg.</div></div>
+    <div class="manager-block"><div class="manager-header"><span class="st st-ok"></span><span class="manager-name">rz_gyro_manager.sh</span><span class="tag tag-ok">✅</span></div><div class="manager-desc">LSM6DS3C via termux-sensor. rad/s×100.</div></div>
+    <div class="manager-block"><div class="manager-header"><span class="st st-ok"></span><span class="manager-name">rz_mg_manager.sh</span><span class="tag tag-ok">✅</span></div><div class="manager-desc">MMC3630KJ. Cap degrés×10.</div></div>
+    <div class="manager-block"><div class="manager-header"><span class="st st-ok"></span><span class="manager-name">rz_voice_manager.sh</span><span class="tag tag-ok">✅ Lancé v1.1</span></div><div class="manager-desc">TTS via termux-tts-speak. Lit fifo_voice_in. Lancé avant STT dans rz_start.sh v1.1. Courant_init.json : section .voice ajoutée (voice_vol, voice_output, voice_ttsRate).</div></div>
+    <div class="manager-block"><div class="manager-header"><span class="st st-ok"></span><span class="manager-name">rz_camera_manager.sh</span><span class="tag tag-ok">✅ v3.1 — déployé et vérifié 29 juin</span></div><div class="manager-desc">Point d'entrée caméra : appelé en <strong>one-shot</strong> directement par rz_vpiv_parser.sh sur réception d'une trame CAT=V/F · VAR=CamSE (pas un daemon — bug corrigé v1.2 de rz_start.sh). Délègue ensuite <strong>en interne</strong> à Tasker (RZ_CamStart/RZ_CamStop, plugin IP Webcam Pro, package com.pas.webcam.pro) via rz_tasker_bridge.sh pour le lancement effectif de l'appli. Gère par ailleurs : sélection profil qualité (normal/optimized selon CPU), détection port 8080, publication StreamURL vers SP. <strong>v3.1</strong> : intègre le verrou caméra (pattern LockSE) + ajoute dynamiquement le champ status.active (recalculé dans send_mode_state() à partir de l'état réel front/rear). <strong>Testé en conditions réelles sur le Doro (29 juin)</strong> via mosquitto_pub — séquence bidirectionnelle caméra↔Zoom confirmée. <a href="stt_voice_V2.html" style="color:var(--blue)">→ Voir STT &amp; Voice</a></div></div>
+    <div class="manager-block"><div class="manager-header"><span class="st st-ok"></span><span class="manager-name">rz_appli_manager.sh</span><span class="tag tag-ok">✅ v1.2 → v1.3 — démarrage auto corrigé 29 juin</span></div><div class="manager-desc">Routeur CAT=A pour Zoom, NavGPS, IA_Conv, ExprTasker, tasker. <strong>v1.2</strong> : verrou camera+microphone pour Zoom (pattern LockSE, logique "tout ou rien" — si l'une échoue, l'autre est libérée). <strong>Bug critique découvert le 29 juin</strong> : ce script n'était démarré par aucun mécanisme automatique depuis la création du projet (absent de rz_start.sh et de RZ_Init_Tasker.tsk.xml) — corrigé via rz_start.sh v1.3. <strong>Limite connue acceptée :</strong> si Zoom est fermé manuellement sur l'écran (pas via VPIV), le verrou n'est pas levé automatiquement — pas de détection d'état réel du process dans cette V1.</div></div>
+    <div class="manager-block"><div class="manager-header"><span class="st st-ok"></span><span class="manager-name">rz_torch_manager.sh</span><span class="tag tag-ok">✅ Vérifié — aucune modification nécessaire</span></div><div class="manager-desc">Vérifié le 29 juin : la VAR TorchSE (pas Torch) était déjà correctement nommée depuis la v2.1. La lecture de status.active fonctionne désormais correctement grâce au champ ajouté par rz_camera_manager.sh v3.1. Délégué à Tasker (RZ_TorchOn/Off).</div></div>
+    <div class="manager-block"><div class="manager-header"><span class="st st-todo"></span><span class="manager-name">rz_resource_lock.sh</span><span class="tag tag-new">Nouveau v1.0 — 22 juin</span></div><div class="manager-desc">Verrouillage transversal des ressources physiques partagées (caméra, microphone). Fonctions : lock_resource() / unlock_resource() / check_resource(). Principe : SE est la source de vérité sur l'état réel des ressources — SP ne peut pas savoir si une appli a été fermée manuellement hors VPIV. Testé en sandbox (8 scénarios : pose, refus, idempotence, libération protégée, indépendance inter-ressources). Pas encore déployé sur Doro.</div></div>
+    <div class="manager-block"><div class="manager-header"><span class="st st-ok"></span><span class="manager-name">rz_autovoice_bridge.sh</span><span class="tag tag-ok">✅ v3.0 — Option B validée 21 juin</span></div><div class="manager-desc">Cœur du routage Cmde/Conv/Mixte. Lit STT.context dans global.json, applique la table de routage. Exception sécurité "stop"/"top" même en Conv. <strong>chmod +x obligatoire</strong> après tout remplacement. <a href="stt_voice_V2.html" style="color:var(--blue)">→ Voir STT &amp; Voice</a></div></div>
+    <div class="manager-block"><div class="manager-header"><span class="st st-ok"></span><span class="manager-name">rz_stt_manager.sh</span><span class="tag tag-ok">v2.1 — modeSTT check ajouté</span></div><div class="manager-desc">PocketSphinx abandonné (OpenSL ES inaccessible Android 9). Toujours lancé par rz_start.sh mais s'arrête proprement si modeSTT=OFF (courant_init.json). N'engage plus PocketSphinx par erreur.</div></div>
+    <div class="manager-block"><div class="manager-header"><span class="st st-todo"></span><span class="manager-name">rz_microSe_manager.sh</span><span class="tag tag-todo">📋</span></div><div class="manager-desc">À développer. Quand fonctionnel, à câbler sur le pattern LockSE (owner=microSe) — microphone aussi mobilisé par Zoom.</div></div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Versions des fichiers de configuration — état 22 juin 2026</div>
+
+    <div class="warn-box" style="margin-bottom:14px">
+      ⚠️ <strong>Point de vigilance — avant d'ajouter un manager à rz_start.sh :</strong> vérifier s'il est conçu comme <strong>daemon</strong> ou <strong>one-shot</strong>. Certains scripts SE (rz_camera_manager.sh, rz_torch_manager.sh, probablement d'autres à vérifier) sont des one-shot invoqués à la demande par rz_vpiv_parser.sh avec arguments (PROP VAL INST), pas des daemons à lancer en arrière-plan sans argument. Le confondre produit un exit 1 silencieux sans casse fonctionnelle majeure, mais pollue les logs et fausse cmd_status(). Le commentaire d'en-tête du script ("appelé à la demande, one-shot, pas daemon") est le signal à chercher avant toute intégration.
+    </div>
+    <div class="warn-box" style="margin-bottom:14px">
+      ⚠️ <strong>Point de vigilance — vérifier le démarrage automatique d'un daemon attendu :</strong> avant de supposer qu'une fonctionnalité ne marche pas pour une raison logique, vérifier qu'elle est bien lancée par un mécanisme automatique (rz_start.sh ou tâche Tasker de boot). rz_appli_manager.sh n'a jamais été dans rz_start.sh ni dans RZ_Init_Tasker.tsk.xml depuis la création du projet — aucune commande Appli n'a donc jamais pu fonctionner, sans symptôme visible. <code style="color:var(--teal)">pgrep -f &lt;nom_script&gt;</code> est le réflexe de vérification simple avant tout diagnostic plus poussé.
+    </div>
+
+    <div class="card" style="border-color:rgba(46,196,160,.25);margin-bottom:14px">
+      <div style="color:var(--teal);font-weight:600;margin-bottom:6px;font-size:14px">🔒 Pattern LockSE — verrouillage ressources partagées <span class="tag tag-ok" style="margin-left:6px">✅ Déployé et vérifié 29 juin</span></div>
+      <div style="font-size:13px;color:var(--text2);line-height:1.7">
+        Nouvelle VAR Table A : <code style="color:var(--teal)">LockSE</code> (CAT=I, propriétés <code style="color:var(--teal)">camera</code> et <code style="color:var(--teal)">microphone</code>), état exposé à SP. Conçu pour tout module mobilisant une ressource physique partagée : la caméra (IP Webcam Pro) et le microphone, potentiellement utilisés simultanément par Zoom.<br><br>
+        2 bugs réels corrigés : rz_torch_manager.sh lisait un champ inexistant (status.active) pour basculer caméra/torche — bascule jamais fonctionnelle. Les verrous zoom_active/security_app_active existaient dans cam_config.json mais n'étaient jamais lus ni écrits par aucun script.<br><br>
+        <strong style="color:var(--text)">Test réel sur le Doro (29 juin), via mosquitto_pub, bidirectionnel :</strong> caméra active → Zoom refusé ("REFUS zoom : caméra déjà détenue par 'ipwebcam'", microphone resté libre — comportement "tout ou rien" confirmé). Zoom actif → caméra refusée ("CAM_LOCKED_zoom", modeCam passe à error).
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+      <div style="background:var(--bg3);border-radius:8px;padding:10px 14px;font-size:12px;color:var(--text2)"><strong style="color:var(--teal)">courant_init.sh v6.0</strong><br>Baby/BabyMonitor supprimés · IA_Conv ajouté · STT=OFF · ttsRate float</div>
+      <div style="background:var(--bg3);border-radius:8px;padding:10px 14px;font-size:12px;color:var(--text2)"><strong style="color:var(--teal)">original_init.sh v2.3</strong><br>71 commandes catalogue (était 61) · APP_IA_CONV ajouté · corrections CAM/Lring/SYS · pipe confirmé séparateur Alias</div>
+      <div style="background:var(--bg3);border-radius:8px;padding:10px 14px;font-size:12px;color:var(--text2)"><strong style="color:var(--teal)">check_config.sh v10.0</strong><br>Baby supprimé · IA_Conv ajouté · chemin robotRZ-smartSE corrigé</div>
+      <div style="background:var(--bg3);border-radius:8px;padding:10px 14px;font-size:12px;color:var(--text2)"><strong style="color:var(--teal)">rz_appli_manager.sh v1.2</strong><br>Verrou camera+microphone pour Zoom (pattern LockSE, 22 juin) — Zoom mobilise les deux ressources à la fois</div>
+      <div style="background:var(--bg3);border-radius:8px;padding:10px 14px;font-size:12px;color:var(--text2)"><strong style="color:var(--teal)">rz_state-manager.sh v1.6</strong><br>calculate_stt_context() appelée au démarrage de main() · table modeRZ→STT.context définitive · lecture Mtr.state</div>
+      <div style="background:var(--bg3);border-radius:8px;padding:10px 14px;font-size:12px;color:var(--text2)"><strong style="color:var(--teal)">rz_stt_handler.sh</strong><br>Bug jq corrigé : <code style="color:var(--teal)">| first</code> ajouté pour éviter multi-résultats</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Chemins clés — confirmés 16 juin 2026</div>
+    <div style="background:var(--bg3);border-radius:var(--radius);padding:12px 16px;font-family:monospace;font-size:12px;color:var(--teal);line-height:2">
+      rz_start.sh → ~/robotRZ-smartSE/termux/scripts/core/<br>
+      rz_state-manager.sh → ~/robotRZ-smartSE/termux/scripts/core/<br>
+      rz_autovoice_bridge.sh → ~/robotRZ-smartSE/termux/scripts/sensors/stt/ (copie réelle dans ~/.termux/tasker/ — symlinks INTERDITS, refusés par Termux:Tasker après reboot)<br>
+      rz_stt_handler.sh → ~/robotRZ-smartSE/termux/scripts/sensors/stt/<br>
+      rz_voice_manager.sh → ~/robotRZ-smartSE/termux/scripts/sensors/voice/<br>
+      rz_appli_manager.sh → ~/robotRZ-smartSE/termux/scripts/appli/<br>
+      courant_init.sh · check_config.sh → ~/robotRZ-smartSE/termux/config/<br>
+      stt_catalog.json → ~/robotRZ-smartSE/termux/scripts/sensors/stt/
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">
+  RobotRZ — SE Smartphone V2 — Juin 2026 — Vincent Philippe &nbsp;·&nbsp;
+  <a href="index.html" style="color:var(--blue)">← Vue d'ensemble</a> &nbsp;·&nbsp;
+  <a href="tasker_V4.html" style="color:var(--blue)">Tasker →</a>
+</div>
+</body>
+</html>

@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vademecum Réseau — RobotRZ</title>
+<style>
+  :root {
+    --bg: #0f1419;
+    --panel: #161d27;
+    --panel2: #1c2530;
+    --border: #2a3441;
+    --text: #dbe2ea;
+    --text-dim: #8a96a3;
+    --accent: #4fa3e0;
+    --accent2: #5ec98f;
+    --warn: #e0a64f;
+    --danger: #e06060;
+    --code-bg: #0c1116;
+  }
+  * { box-sizing: border-box; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1.6;
+    margin: 0;
+    padding: 0;
+  }
+  .wrap { max-width: 880px; margin: 0 auto; padding: 32px 20px 80px; }
+  header.page {
+    border-bottom: 2px solid var(--accent);
+    padding-bottom: 18px;
+    margin-bottom: 32px;
+  }
+  header.page h1 { margin: 0 0 6px; font-size: 1.7em; color: #fff; }
+  header.page .subtitle { color: var(--text-dim); font-size: 0.95em; }
+  header.page .meta {
+    margin-top: 12px;
+    font-size: 0.82em;
+    color: var(--text-dim);
+    display: flex;
+    gap: 18px;
+    flex-wrap: wrap;
+  }
+  nav.toc {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 18px 22px;
+    margin-bottom: 36px;
+  }
+  nav.toc h2 { font-size: 1em; margin: 0 0 10px; color: var(--accent); text-transform: uppercase; letter-spacing: 0.05em; }
+  nav.toc ol { margin: 0; padding-left: 22px; }
+  nav.toc li { margin-bottom: 4px; }
+  nav.toc a { color: var(--text); text-decoration: none; }
+  nav.toc a:hover { color: var(--accent); text-decoration: underline; }
+
+  section { margin-bottom: 44px; }
+  h2 {
+    color: #fff;
+    font-size: 1.35em;
+    border-left: 4px solid var(--accent);
+    padding-left: 12px;
+    margin-top: 0;
+  }
+  h3 { color: var(--accent); font-size: 1.08em; margin-top: 28px; }
+  p { margin: 12px 0; }
+  .analogy {
+    background: var(--panel2);
+    border-left: 4px solid var(--accent2);
+    padding: 14px 18px;
+    border-radius: 0 8px 8px 0;
+    margin: 16px 0;
+  }
+  .analogy .label { color: var(--accent2); font-weight: 600; font-size: 0.82em; text-transform: uppercase; letter-spacing: 0.04em; display: block; margin-bottom: 6px; }
+  .callout {
+    background: var(--panel2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 18px;
+    margin: 16px 0;
+  }
+  .callout.warn { border-color: var(--warn); }
+  .callout.warn .label { color: var(--warn); }
+  .callout.danger { border-color: var(--danger); }
+  .callout.danger .label { color: var(--danger); }
+  .callout .label { font-weight: 600; font-size: 0.82em; text-transform: uppercase; letter-spacing: 0.04em; display: block; margin-bottom: 6px; color: var(--accent); }
+
+  table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 0.92em; }
+  th, td { border: 1px solid var(--border); padding: 8px 12px; text-align: left; }
+  th { background: var(--panel2); color: var(--accent); }
+  tr:nth-child(even) td { background: rgba(255,255,255,0.02); }
+
+  code { background: var(--code-bg); color: var(--accent2); padding: 2px 6px; border-radius: 4px; font-size: 0.92em; }
+  pre {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 16px;
+    overflow-x: auto;
+    font-size: 0.88em;
+  }
+  pre code { background: none; padding: 0; color: var(--text); }
+
+  .schema {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 18px;
+    margin: 18px 0;
+    font-family: "SF Mono", Consolas, monospace;
+    font-size: 0.85em;
+    white-space: pre;
+    overflow-x: auto;
+    color: var(--text-dim);
+  }
+  .schema .hl1 { color: var(--accent); }
+  .schema .hl2 { color: var(--accent2); }
+  .schema .hl3 { color: var(--warn); }
+
+  .glossaire dt { color: var(--accent); font-weight: 600; margin-top: 14px; }
+  .glossaire dd { margin-left: 0; color: var(--text-dim); }
+
+  footer.page {
+    border-top: 1px solid var(--border);
+    margin-top: 50px;
+    padding-top: 18px;
+    color: var(--text-dim);
+    font-size: 0.82em;
+  }
+  a { color: var(--accent); }
+  .badge { display: inline-block; background: var(--accent); color: #06121c; font-size: 0.75em; font-weight: 700; padding: 2px 8px; border-radius: 999px; margin-left: 8px; vertical-align: middle; }
+  .domaine-attention { color: var(--warn); font-weight: 600; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="page">
+  <h1>Vademecum Réseau — RobotRZ <span class="badge">V1</span></h1>
+  <div class="subtitle">Comprendre IPv4, IPv6, NAT, DNS et le pare-feu pour ne plus subir le réseau — appliqué au cas concret SE↔SP du projet</div>
+  <div class="meta">
+    <span>Session : 28/06/2026</span>
+    <span>Auteur : Claude (assistant), pour Vincent</span>
+    <span>Lié à : <code>point_reseau_ssh_V1.html</code>, <code>session_2026-06-28_acces_distant.html</code></span>
+  </div>
+</header>
+
+<nav class="toc">
+  <h2>Sommaire</h2>
+  <ol>
+    <li><a href="#intro">Pourquoi ce document</a></li>
+    <li><a href="#ipv4-vs-ipv6">IPv4 vs IPv6 — la différence qui explique tout</a></li>
+    <li><a href="#nat">Le NAT — pourquoi il existe et pourquoi il complique tout en IPv4</a></li>
+    <li><a href="#hairpin">Le piège du "NAT hairpin" — pourquoi tester depuis chez soi peut mentir</a></li>
+    <li><a href="#dns-duckdns">DNS et DuckDNS — qui sait quoi, et qui ne sait rien</a></li>
+    <li><a href="#parefeu">Le pare-feu de la Livebox — NAT et filtrage sont deux choses différentes</a></li>
+    <li><a href="#nginx">nginx et le port 443 — le dernier maillon, côté RPi</a></li>
+    <li><a href="#schema-global">Schéma global — le trajet complet d'une requête</a></li>
+    <li><a href="#nom-domaine">Point d'attention — le nom de domaine</a></li>
+    <li><a href="#glossaire">Glossaire express</a></li>
+    <li><a href="#checklist">Checklist de diagnostic réseau réutilisable</a></li>
+  </ol>
+</nav>
+
+<section id="intro">
+<h2>1. Pourquoi ce document</h2>
+<p>
+Pendant la session du 28/06/2026, plusieurs notions réseau se sont enchaînées vite : IPv4, IPv6, NAT, DuckDNS, pare-feu Livebox, nginx... Tu as très bien suivi le fil du diagnostic, mais tu as exprimé le souhait de mieux comprendre <strong>le pourquoi</strong> derrière chaque test, pas seulement le résultat. C'est l'objet de ce document : reprendre chaque brique, avec des analogies, pour que la prochaine fois que quelque chose casse sur ce terrain, tu puisses raisonner par toi-même avant même de me solliciter.
+</p>
+<p>
+Ce vademecum est un complément pédagogique — il ne remplace pas <code>point_reseau_ssh_V1.html</code> (qui documente l'architecture réseau spécifique au projet) ni la synthèse de session (qui documente ce qui a été testé et corrigé ce jour-là).
+</p>
+</section>
+
+<section id="ipv4-vs-ipv6">
+<h2>2. IPv4 vs IPv6 — la différence qui explique tout</h2>
+
+<p>
+Une adresse IP est l'équivalent d'une adresse postale pour un appareil sur un réseau. Il existe deux "systèmes d'adressage" qui coexistent aujourd'hui :
+</p>
+
+<table>
+<tr><th></th><th>IPv4</th><th>IPv6</th></tr>
+<tr><td>Apparence</td><td><code>90.27.242.153</code></td><td><code>2a01:cb08:930f:cb00:ba27:ebff:fe72:dd54</code></td></tr>
+<tr><td>Nombre d'adresses possibles</td><td>~4 milliards (épuisé depuis longtemps)</td><td>Astronomique (340 sextillions)</td></tr>
+<tr><td>Adresse publique par appareil ?</td><td>Non — une seule adresse publique pour toute la maison (celle de la box)</td><td>Oui — chaque appareil peut avoir sa propre adresse publique mondiale</td></tr>
+<tr><td>Besoin de NAT ?</td><td>Oui, presque toujours</td><td>Non, en général</td></tr>
+</table>
+
+<div class="analogy">
+<span class="label">Analogie</span>
+L'IPv4, c'est l'adresse d'un immeuble : <code>90.27.242.153</code> est l'adresse de l'immeuble entier (ta box), et il faut un concierge (le NAT) pour savoir à quel appartement (quel appareil derrière la box) remettre le courrier qui arrive pour le numéro de porte 443.
+L'IPv6, c'est comme si chaque appartement avait sa propre adresse postale complète et unique au monde — le facteur (le réseau Internet) livre directement à la bonne porte, sans concierge intermédiaire.
+</div>
+
+<p>
+C'est exactement ce qu'on a observé dans le projet : ton Raspberry Pi a une adresse IPv6 globale (<code>2a01:cb08:930f:cb00:ba27:ebff:fe72:dd54</code>) qui le désigne <strong>lui, et lui seul</strong>, directement joignable depuis l'extérieur sans rien configurer côté box. Alors qu'en IPv4, ton RPi n'a qu'une adresse <strong>locale</strong> (<code>192.168.1.40</code>), invisible depuis Internet — c'est l'adresse publique de la box (<code>90.27.242.153</code>) qui est visible, et il faut une règle pour rediriger vers le RPi.
+</p>
+
+<div class="callout">
+<span class="label">À retenir</span>
+Quand un test échoue en IPv4 mais réussit en IPv6 (ou l'inverse), ce n'est presque jamais "le réseau qui bug" au sens large — ce sont littéralement deux chemins différents, avec des règles différentes, qui peuvent être en bon état d'un côté et cassés de l'autre <strong>indépendamment</strong>.
+</div>
+</section>
+
+<section id="nat">
+<h2>3. Le NAT — pourquoi il existe et pourquoi il complique tout en IPv4</h2>
+
+<p>
+NAT signifie <em>Network Address Translation</em> (traduction d'adresse réseau). Puisqu'il n'y a qu'une seule adresse IPv4 publique pour toute la maison, la box doit "traduire" : quand une requête entrante arrive sur le port 443 de l'adresse publique, la box doit décider <strong>vers quel appareil du réseau local</strong> la renvoyer, et sur quel port.
+</p>
+
+<p>
+C'est exactement le rôle de la table que tu as vue dans l'admin Livebox — chaque ligne dit : "tout ce qui arrive sur le port externe X doit être redirigé vers l'IP locale Y, port interne Z". Sans cette règle, la box ne saurait pas quoi faire d'une requête entrante et la rejetterait par défaut (c'est d'ailleurs voulu, pour la sécurité : sans règle explicite, rien ne peut entrer depuis Internet vers ton réseau local).
+</p>
+
+<div class="schema">┌─────────────┐        443         ┌──────────────┐   443    ┌─────────────────┐
+│  Internet   │ ─────────────────▶ │   Livebox    │ ───────▶ │ <span class="hl1">RPi (192.168.1.40)</span> │
+│ (4G, autre  │   90.27.242.153    │  (NAT/PAT)   │  (règle  │   nginx :443    │
+│  Wi-Fi...)  │                    │              │   httpsRPI3)│              │
+└─────────────┘                    └──────────────┘          └─────────────────┘
+</div>
+
+<p>
+Le problème qu'on a rencontré le 28/06 : la règle <em>existait</em>, semblait correcte visuellement (bon port, bonne IP), mais ne fonctionnait plus. C'est un comportement documenté sur les Livebox : la règle peut se "désynchroniser" en interne sans que l'affichage ne le révèle. La solution qui a fonctionné a été d'<strong>effacer puis recréer</strong> la règle, ce qui force la box à reconstruire son association interne depuis zéro.
+</p>
+</section>
+
+<section id="hairpin">
+<h2>4. Le piège du "NAT hairpin" — pourquoi tester depuis chez soi peut mentir</h2>
+
+<p>
+On a buté sur un comportement déroutant : <code>curl https://90.27.242.153</code> exécuté <strong>depuis le RPi lui-même</strong> restait bloqué indéfiniment sur <code>Trying...</code> — alors que l'accès réel en 4G, lui, fonctionnait. Ce n'est pas une contradiction, c'est un phénomène connu.
+</p>
+
+<div class="analogy">
+<span class="label">Analogie</span>
+Imagine que tu t'envoies une lettre à toi-même, mais que tu écris sur l'enveloppe l'adresse de la <em>façade de ton immeuble</em> (l'adresse publique) plutôt que ton numéro d'appartement. Le facteur du quartier (Internet) saurait très bien la livrer à la bonne porte. Mais si tu la déposes toi-même dans la boîte aux lettres de la loge du concierge en bas (la box), bien souvent <strong>la loge ne sait pas se faire ce relais à elle-même</strong> — elle attend une lettre qui vient vraiment de la rue, pas une qu'elle reçoit depuis l'intérieur de l'immeuble. C'est ce qu'on appelle le "NAT hairpin" (en épingle à cheveux : la requête doit faire un aller-retour sur elle-même), et beaucoup de box grand public, dont la Livebox, ne le gèrent pas.
+</div>
+
+<div class="callout warn">
+<span class="label">Conséquence pratique</span>
+<strong>Ne jamais tester l'IP publique de la box depuis un appareil qui est lui-même connecté à cette box.</strong> Le test le plus fiable est toujours depuis un réseau réellement extérieur (4G avec Wi-Fi désactivé, comme tu l'as fait). C'est ce qui a permis de distinguer "ça ne marche jamais" de "ça ne marche que vu depuis l'intérieur, ce qui est normal".
+</div>
+</section>
+
+<section id="dns-duckdns">
+<h2>5. DNS et DuckDNS — qui sait quoi, et qui ne sait rien</h2>
+
+<p>
+Le DNS (<em>Domain Name System</em>) est l'annuaire qui transforme un nom lisible (<code>robotz-vincent.duckdns.org</code>) en adresse IP. DuckDNS est un service gratuit qui te permet d'avoir un nom de domaine fixe même si ton adresse IPv4 publique change (ce qui arrive régulièrement chez les FAI grand public, dont Orange).
+</p>
+
+<p>
+Un domaine peut avoir <strong>deux enregistrements séparés et indépendants</strong> :
+</p>
+<ul>
+<li><strong>Enregistrement A</strong> (IPv4) — ce que renvoie <code>nslookup -type=A</code></li>
+<li><strong>Enregistrement AAAA</strong> (IPv6) — ce que renvoie <code>nslookup</code> sans filtre, en priorité sur l'IPv4 quand les deux existent</li>
+</ul>
+
+<p>
+Chacun est mis à jour <strong>séparément</strong>, en général par un petit script (souvent une tâche cron) qui tourne sur le RPi et qui appelle l'API DuckDNS pour dire "voici mon IPv4 actuelle" et/ou "voici mon IPv6 actuelle". Le RPi connaît ses propres adresses (via <code>hostname -I</code>) et les transmet lui-même à DuckDNS — DuckDNS ne les "devine" jamais.
+</p>
+
+<div class="callout">
+<span class="label">Pourquoi la Livebox ne "voit" pas cette IPv6 dans sa propre interface</span>
+La Livebox et DuckDNS sont deux systèmes totalement indépendants qui ne se consultent jamais. La Livebox ne sait pas que tu utilises DuckDNS, et DuckDNS ne demande jamais rien à la Livebox. Par ailleurs, la page "équipements avec délégation de préfixe" de la Livebox ne liste que les appareils utilisant un mécanisme précis (DHCPv6-PD), différent de celui qu'utilise probablement ton RPi pour obtenir son IPv6 (SLAAC — auto-configuration à partir du préfixe annoncé et de l'adresse MAC). Donc l'absence du RPi dans cette liste précise est normale, pas un signe de panne.
+</div>
+</section>
+
+<section id="parefeu">
+<h2>6. Le pare-feu de la Livebox — NAT et filtrage sont deux choses différentes</h2>
+
+<p>
+Il est facile de confondre deux écrans différents de l'admin Livebox :
+</p>
+<ul>
+<li><strong>NAT/PAT</strong> : décide <em>où</em> rediriger une requête entrante (vers quelle IP locale, quel port)</li>
+<li><strong>Pare-feu</strong> : décide <em>si</em> une requête entrante est autorisée à passer, indépendamment de la redirection</li>
+</ul>
+<p>
+Une règle NAT parfaitement configurée peut être inutile si le pare-feu bloque le trafic avant même que le NAT ne s'applique. Sur la Livebox, le pare-feu a généralement trois niveaux (Minimum / Moyen / Maximum), le niveau Moyen étant celui recommandé par défaut. En théorie, une règle NAT explicite passe ce filtrage par défaut — mais plusieurs témoignages d'utilisateurs Orange rapportent des comportements buggés où ce n'est pas toujours le cas en pratique.
+</p>
+<p>
+On a aussi vu un onglet <strong>pare-feu spécifique IPv6</strong>, séparé du pare-feu IPv4 — avec ses propres règles, sans lien avec la table NAT (qui ne concerne que l'IPv4, puisque l'IPv6 n'a pas besoin de redirection de port).
+</p>
+</section>
+
+<section id="nginx">
+<h2>7. nginx et le port 443 — le dernier maillon, côté RPi</h2>
+
+<p>
+nginx est un logiciel installé sur le RPi qui joue le rôle de <strong>reverse proxy</strong> : il reçoit les requêtes HTTPS sur le port 443, gère le certificat de chiffrement (TLS), puis relaie la requête vers Node-RED qui, lui, n'écoute qu'en local sur le port 1880 (donc invisible directement depuis l'extérieur).
+</p>
+<div class="schema">Requête HTTPS:443  ──▶  <span class="hl2">nginx</span>  ──▶  Node-RED (localhost:1880)
+                          │
+                          └─ gère le certificat TLS (Let's Encrypt)
+                             pour robotz-vincent.duckdns.org
+</div>
+<p>
+On a confirmé pendant la session que nginx fonctionne parfaitement (réponse <code>HTTP/1.1 200 OK</code>, certificat valide, négociation TLS 1.3 complète) — donc ce maillon n'était jamais en cause. C'est ce test qui a permis d'isoler le problème : tout ce qui est "avant" nginx (Livebox, NAT) était suspect ; tout ce qui est "après" (nginx, Node-RED) était sain.
+</p>
+</section>
+
+<section id="schema-global">
+<h2>8. Schéma global — le trajet complet d'une requête</h2>
+
+<div class="schema">Toi (4G, Wi-Fi externe, ou Wi-Fi maison)
+   │
+   │  1. Résolution DNS : robotz-vincent.duckdns.org → IPv4 et/ou IPv6
+   ▼
+DuckDNS  (sait ce que le RPi lui a dit, indépendant de la box)
+   │
+   ▼
+┌───────────────────────── Si IPv6 ─────────────────────────┐
+│  2a. Adresse publique → routée directement vers le RPi    │
+│      (pas de NAT, juste un éventuel pare-feu IPv6)        │
+└─────────────────────────────────────────────────────────┘
+┌───────────────────────── Si IPv4 ─────────────────────────┐
+│  2b. Adresse publique de la BOX → règle NAT (httpsRPI3)   │
+│      → 192.168.1.40:443 → éventuel pare-feu IPv4          │
+└─────────────────────────────────────────────────────────┘
+   │
+   ▼
+RPi : nginx :443 (TLS, certificat Let's Encrypt)
+   │
+   ▼
+Node-RED : 127.0.0.1:1880 (dashboard, adminAuth)
+</div>
+</section>
+
+<section id="nom-domaine">
+<h2>9. Point d'attention — le nom de domaine</h2>
+<div class="callout warn">
+<span class="label">À ne pas oublier</span>
+Le domaine DuckDNS utilisé pour le projet est <span class="domaine-attention">robotz-vincent.duckdns.org</span> — avec un <strong>Z</strong> après "robot", pas "robotrz-vincent" comme on pourrait s'y attendre par réflexe avec le nom du projet RobotRZ. Le nom n'a pas été corrigé car en changer impliquerait de regénérer le certificat TLS, mettre à jour tous les scripts/configs qui s'y réfèrent, et reconfigurer la règle NAT. Le toujours garder en tête lors de tests manuels ou de la rédaction de scripts/documentation, pour éviter des recherches DNS qui échouent silencieusement sur un nom mal orthographié.
+</div>
+</section>
+
+<section id="glossaire">
+<h2>10. Glossaire express</h2>
+<dl class="glossaire">
+  <dt>IP (adresse)</dt><dd>Identifiant numérique d'un appareil sur un réseau, équivalent d'une adresse postale.</dd>
+  <dt>IPv4 / IPv6</dt><dd>Deux générations du système d'adressage IP ; IPv6 est plus récent, offre des adresses publiques individuelles par appareil, ne nécessite généralement pas de NAT.</dd>
+  <dt>NAT</dt><dd>Mécanisme de traduction d'adresse permettant à plusieurs appareils locaux de partager une seule adresse IPv4 publique.</dd>
+  <dt>NAT/PAT, redirection de port, port forwarding</dt><dd>Synonymes désignant la règle qui dit "ce qui arrive sur le port externe X va vers telle IP locale, port Y".</dd>
+  <dt>NAT hairpin (loopback)</dt><dd>Cas particulier où un appareil du réseau local essaie d'atteindre sa propre IP publique ; souvent mal géré par les box grand public.</dd>
+  <dt>DNS</dt><dd>Système qui traduit un nom de domaine en adresse IP.</dd>
+  <dt>Enregistrement A / AAAA</dt><dd>Type d'enregistrement DNS : A pour IPv4, AAAA pour IPv6.</dd>
+  <dt>DuckDNS</dt><dd>Service gratuit de nom de domaine dynamique, mis à jour par un script qui tourne côté serveur (ici, le RPi).</dd>
+  <dt>Pare-feu (firewall)</dt><dd>Filtre qui autorise ou bloque le trafic réseau selon des règles, indépendamment du NAT.</dd>
+  <dt>nginx</dt><dd>Logiciel serveur web, utilisé ici comme reverse proxy devant Node-RED, gérant aussi le certificat TLS.</dd>
+  <dt>TLS / HTTPS</dt><dd>Protocole de chiffrement des échanges web ; HTTPS = HTTP + TLS.</dd>
+  <dt>Certificat (Let's Encrypt)</dt><dd>Preuve cryptographique d'identité d'un site, ici délivrée gratuitement par Let's Encrypt, renouvelée tous les ~3 mois.</dd>
+  <dt>SLAAC</dt><dd>Mécanisme par lequel un appareil IPv6 se construit lui-même son adresse à partir du préfixe annoncé par le routeur, sans négociation explicite comme en DHCP classique.</dd>
+  <dt>DHCP (bail statique)</dt><dd>Attribution d'une adresse IP locale fixe à un appareil identifié par son adresse MAC, pour qu'elle ne change jamais.</dd>
+  <dt>Adresse MAC</dt><dd>Identifiant matériel unique d'une carte réseau, gravé en usine.</dd>
+</dl>
+</section>
+
+<section id="checklist">
+<h2>11. Checklist de diagnostic réseau réutilisable</h2>
+<p>La prochaine fois qu'un accès distant casse, voici l'ordre de test le plus efficace (du plus simple au plus profond) :</p>
+<table>
+<tr><th>#</th><th>Test</th><th>Où</th><th>Ce que ça isole</th></tr>
+<tr><td>1</td><td><code>nslookup domaine</code> puis <code>nslookup -type=A domaine</code></td><td>PC, Wi-Fi maison</td><td>DNS fonctionne, et on connaît l'IPv4 ET l'IPv6 séparément</td></tr>
+<tr><td>2</td><td>Test de connexion sur le <strong>nom de domaine</strong></td><td>Réseau réellement externe (4G, Wi-Fi désactivé)</td><td>Le cas réel d'usage, sans faux négatif de hairpin NAT</td></tr>
+<tr><td>3</td><td><code>curl -v -k https://IP_LOCALE:443/...</code></td><td>En SSH/VNC sur le RPi</td><td>nginx + TLS + Node-RED fonctionnent localement</td></tr>
+<tr><td>4</td><td><code>sudo ss -tlnp</code></td><td>Sur le RPi</td><td>Qui écoute sur quel port, et sur quelle famille d'adresse (IPv4/IPv6)</td></tr>
+<tr><td>5</td><td>Vérifier la table NAT/PAT de la box</td><td>Admin Livebox</td><td>La règle existe, est activée, bon port, bonne IP locale</td></tr>
+<tr><td>6</td><td>Si doute, supprimer et recréer la règle NAT</td><td>Admin Livebox</td><td>Corrige un bug connu de désynchronisation interne</td></tr>
+<tr><td>7</td><td>Vérifier les baux DHCP statiques</td><td>Admin Livebox</td><td>L'IP locale de l'appareil n'a pas dérivé</td></tr>
+</table>
+<div class="callout">
+<span class="label">Règle d'or</span>
+Ne jamais tester l'IP publique depuis un appareil connecté à la même box — utiliser systématiquement soit l'IP/le nom locaux (depuis l'intérieur), soit un réseau réellement externe comme la 4G avec Wi-Fi coupé (depuis l'extérieur). Tout test "entre les deux" peut donner un résultat trompeur à cause du NAT hairpin.
+</div>
+</section>
+
+<footer class="page">
+  Document pédagogique complémentaire — projet RobotRZ. Généré en session du 28/06/2026, à mettre à jour si la configuration réseau évolue (passage MQTT TLS 8883, ajout SP Smart distant, etc.).
+</footer>
+
+</div>
+</body>
+</html>

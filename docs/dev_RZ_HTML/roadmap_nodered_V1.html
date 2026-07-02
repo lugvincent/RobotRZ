@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Feuille de route Node-RED (SP) — RobotRZ V1</title>
+<style>
+:root{--bg:#0f1117;--bg2:#171b26;--bg3:#1e2333;--bg4:#252a3a;--text:#e8eaf0;--text2:#8b93a8;--text3:#555e78;--blue:#4d9ef7;--purple:#9b7cf4;--amber:#f0a836;--teal:#2ec4a0;--coral:#f06a50;--green:#5dbd6a;--red:#e85555;--border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.12);--radius:10px;--radius-lg:14px}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;font-size:14px;line-height:1.6}
+.nav{background:var(--bg2);border-bottom:1px solid var(--border);padding:12px 24px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:100;flex-wrap:wrap}
+.nav-logo{font-size:16px;font-weight:700;color:var(--blue);letter-spacing:1px;text-decoration:none}
+.nav-version{font-size:11px;color:var(--text3);background:var(--bg3);padding:2px 8px;border-radius:20px;border:1px solid var(--border)}
+.breadcrumb{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text3)}
+.breadcrumb a{color:var(--blue);text-decoration:none}
+.nav-links{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap}
+.nav-link{font-size:12px;color:var(--text2);text-decoration:none;padding:4px 10px;border-radius:6px;border:1px solid var(--border);transition:all .2s}
+.nav-link:hover{background:var(--bg3)}
+.header{padding:32px 24px 20px;max-width:1040px;margin:0 auto}
+.header h1{font-size:26px;font-weight:700;color:var(--blue);margin-bottom:6px}
+.header p{color:var(--text2);font-size:14px;max-width:760px}
+.main{max-width:1040px;margin:0 auto;padding:0 24px 60px}
+.section{margin-bottom:32px}
+.section-title{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:var(--text3);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:16px 18px;margin-bottom:10px}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.st{width:8px;height:8px;border-radius:50%;display:inline-block;flex-shrink:0;margin-right:4px}
+.st-ok{background:var(--green)}.st-wip{background:var(--amber)}.st-todo{background:var(--red)}.st-stub{background:var(--purple)}
+.tag{font-size:10px;padding:2px 7px;border-radius:20px;font-weight:500;display:inline-block}
+.tag-ok{background:rgba(93,189,106,.15);color:var(--green)}
+.tag-wip{background:rgba(240,168,54,.15);color:var(--amber)}
+.tag-todo{background:rgba(232,85,85,.15);color:var(--red)}
+.tag-stub{background:rgba(155,124,244,.15);color:var(--purple)}
+.tag-new{background:rgba(77,158,247,.15);color:var(--blue)}
+.code{font-family:monospace;background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:12px 16px;font-size:12px;color:var(--teal);margin:10px 0;overflow-x:auto;line-height:1.7}
+.warn-box{background:rgba(240,168,54,.06);border:1px solid rgba(240,168,54,.2);border-radius:var(--radius);padding:12px 16px;font-size:13px;color:var(--text2);margin:12px 0}
+.err-box{background:rgba(232,85,85,.06);border:1px solid rgba(232,85,85,.2);border-radius:var(--radius);padding:12px 16px;font-size:13px;color:var(--text2);margin:12px 0}
+.ok-box{background:rgba(93,189,106,.06);border:1px solid rgba(93,189,106,.2);border-radius:var(--radius);padding:12px 16px;font-size:13px;color:var(--text2);margin:12px 0}
+.info-box{background:rgba(77,158,247,.06);border:1px solid rgba(77,158,247,.2);border-radius:var(--radius);padding:12px 16px;font-size:13px;color:var(--text2);margin:12px 0}
+table{width:100%;border-collapse:collapse;font-size:12.5px;margin:8px 0}
+th{background:var(--bg3);color:var(--text2);font-weight:500;padding:8px 12px;text-align:left;border-bottom:1px solid var(--border)}
+td{padding:7px 12px;border-bottom:1px solid var(--border);color:var(--text2);vertical-align:top}
+td:first-child{color:var(--text)}
+tr:last-child td{border-bottom:none}
+.footer{border-top:1px solid var(--border);padding:20px 24px;text-align:center;color:var(--text3);font-size:12px;max-width:1040px;margin:0 auto}
+
+/* PHASE CARDS */
+.phase{border-radius:var(--radius-lg);border:1px solid var(--border);margin-bottom:14px;overflow:hidden}
+.phase-header{padding:14px 20px;display:flex;align-items:center;gap:12px;background:var(--bg2);border-bottom:1px solid var(--border)}
+.phase-num{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0}
+.phase-title{font-size:15px;font-weight:600;color:var(--text)}
+.phase-sub{font-size:12px;color:var(--text3);margin-top:1px}
+.phase-body{padding:16px 20px;background:var(--bg2)}
+.phase-body p{font-size:13px;color:var(--text2);line-height:1.7;margin-bottom:10px}
+.phase-list{margin:8px 0 0;padding-left:0;list-style:none}
+.phase-list li{font-size:12.5px;color:var(--text2);padding:5px 0 5px 22px;position:relative;border-bottom:1px solid var(--border)}
+.phase-list li:last-child{border-bottom:none}
+.phase-list li::before{content:'→';position:absolute;left:0;color:var(--text3)}
+.phase-deps{font-size:11px;color:var(--text3);margin-top:10px;padding-top:10px;border-top:1px dashed var(--border)}
+
+/* RESOURCE CARDS */
+.res-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:12px 16px;margin-bottom:8px}
+.res-name{font-family:monospace;font-size:12px;color:var(--teal);font-weight:600;margin-bottom:3px}
+.res-desc{font-size:12px;color:var(--text2)}
+
+.milestone{background:rgba(77,158,247,.06);border:1px solid rgba(77,158,247,.3);border-radius:12px;padding:16px 20px;margin-bottom:16px;display:flex;align-items:flex-start;gap:14px}
+.milestone-icon{font-size:26px;flex-shrink:0}
+.milestone-title{font-size:15px;font-weight:600;color:var(--blue);margin-bottom:4px}
+.milestone-desc{font-size:13px;color:var(--text2);line-height:1.6}
+
+@media(max-width:700px){.grid-2,.grid-3{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<nav class="nav">
+  <a href="index.html" class="nav-logo">RobotRZ</a>
+  <span class="nav-version">V1 — Préparatoire</span>
+  <div class="breadcrumb"><span>›</span><a href="index.html">Vue d'ensemble</a><span>›</span><a href="sp_nodeRED_V1.html">SP — Node-RED</a><span>›</span><span style="color:var(--blue)">Feuille de route</span></div>
+  <div class="nav-links">
+    <a href="sp_nodeRED_V1.html" class="nav-link">SP détaillé</a>
+    <a href="se_smartphone_V2.html" class="nav-link">SE</a>
+    <a href="arduino_V1.html" class="nav-link">Arduino</a>
+    <a href="stt_voice_V2.html" class="nav-link">STT &amp; Voice</a>
+  </div>
+</nav>
+
+<div class="header">
+  <h1>Feuille de route — Développement Node-RED (SP)</h1>
+  <p>Document préparatoire pour reprendre le développement de SP. Synthétise l'état réel du code existant, ce que les autres sous-systèmes attendent désormais de SP, et propose une séquence de travail structurée.</p>
+</div>
+
+<div class="main">
+
+  <!-- POURQUOI MAINTENANT -->
+  <div class="milestone">
+    <div class="milestone-icon">🎯</div>
+    <div>
+      <div class="milestone-title">Pourquoi Node-RED devient le chantier prioritaire</div>
+      <div class="milestone-desc">Arduino, SE et Tasker sont aujourd'hui les sous-systèmes les plus avancés du projet. Les modules capteurs/actionneurs/applications sont définis, les Tables A à D sont stabilisées, le pipeline vocal Option B est validé. SP (Node-RED) est désormais le <strong style="color:var(--text)">goulot d'étranglement</strong> : c'est le seul maillon qui n'a pas suivi le même rythme de maturation, alors qu'il est le maître absolu du système.</div>
+    </div>
+  </div>
+
+  <!-- RÔLE DE SP -->
+  <div class="section">
+    <div class="section-title">Rôle de SP — rappel synthétique</div>
+    <div class="card">
+      <p style="font-size:13px;color:var(--text2);line-height:1.7;margin:0">
+        SP est le maître absolu du système. Il décide, SE et Arduino exécutent. SP désigne une <strong style="color:var(--text)">fonction</strong> (pilotage Node-RED) assurée par SP RPI (référence) ou SP Smart (Xiaomi, secours local). Tout le détail architectural — broker MQTT, onglets, contexte global, convention de nommage des flows — est dans <a href="sp_nodeRED_V1.html" style="color:var(--blue)">sp_nodeRED_V1.html</a>. Ce document-ci se concentre sur <strong style="color:var(--text)">la suite des opérations</strong>, pas sur la description de l'existant.
+      </p>
+    </div>
+  </div>
+
+  <!-- ETAT DES LIEUX -->
+  <div class="section">
+    <div class="section-title">État des lieux — code Node-RED réel (dernier export, mars 2026)
+      <a href="schema_sp_flows_V1.html" style="margin-left:12px;display:inline-flex;align-items:center;gap:6px;font-size:11px;color:var(--blue);text-decoration:none;background:rgba(77,158,247,.08);border:1px solid rgba(77,158,247,.25);padding:3px 10px;border-radius:20px;text-transform:none;letter-spacing:0;font-weight:500">📊 Voir le schéma</a>
+    </div>
+    <div class="warn-box">⚠ La dernière version de référence disponible est <code style="color:var(--teal)">flows-sauvMarsV1.json</code> (mars 2026). Avant de démarrer la prochaine session, exporter et fournir le <strong>flows.json actuel</strong> du RPI — il a pu évoluer depuis sans qu'une synthèse n'ait été produite. C'est le point de départ factuel indispensable.</div>
+
+    <table>
+      <thead><tr><th>Flow</th><th>État réel constaté</th><th>Ce qu'il manque</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><span class="st st-ok"></span>RZ_GestionFlux_V1<br><span style="font-size:11px;color:var(--text3)">(→ Bus_GestionFlux)</span></td>
+          <td>Structure validée par audit : 1 seul point de sortie (EVT_RAW_IN), encodage VPIV, contrat de message clair. <span class="tag tag-ok">Sain structurellement</span></td>
+          <td>Utilise un format de message <strong>interne théorique</strong> (source/eventType/intent/payload) — pas encore branché sur les <strong>vrais topics MQTT</strong> (SE/statut, SE/commande) ni sur le <strong>vrai format VPIV</strong> ($CAT:VAR:PROP:INST:VAL#). À reconnecter à la réalité du terrain.</td>
+        </tr>
+        <tr>
+          <td><span class="st st-ok"></span>Gtion_EtatGlobal_V1</td>
+          <td>Chaîne complète et auditée : Dispatcher → GestionUrgence → ReglesMinimales → ValidationIntent → Stabilisation. 7 invariants validés (ARRET prioritaire, retour VEILLE toujours possible, UI jamais source de vérité…). <span class="tag tag-ok">Robuste</span></td>
+          <td>SF_ReglesDynamiques volontairement débranché (prévu V2). N'a jamais été testé avec de vraies données SE — fonctionne pour l'instant en théorie/audit, pas en conditions réelles.</td>
+        </tr>
+        <tr>
+          <td><span class="st st-stub"></span>Gtion_Init</td>
+          <td>SF_Init_1 à 4 existent mais sont explicitement marqués <strong>STUB</strong> dans le code. SF_Init_1 ne charge pas un vrai fichier enrichedVars, SF_Init_2 ne fait pas de vraie détection réseau, SF_Init_4 n'envoie pas de vraies trames VPIV. <span class="tag tag-stub">Squelette uniquement</span></td>
+          <td>Tout le contenu fonctionnel. C'est le flow le moins avancé alors qu'il est sur le chemin critique (rien ne démarre sans lui).</td>
+        </tr>
+        <tr>
+          <td><span class="st st-ok"></span>Gtion_Statut SE<br><span style="font-size:11px;color:var(--text3)">(Diag_SE_Statut v3)</span></td>
+          <td>Seul flow réellement opérationnel avec de vraies données : Sys, Gyro, Mag affichés en temps réel. <span class="tag tag-ok">Fonctionnel</span></td>
+          <td>Rien côté Sys/Gyro/Mag. Manque la supervision Arduino (US, Odom, Mic, SecMvt) — non commencée.</td>
+        </tr>
+        <tr>
+          <td><span class="st st-ok"></span>ui_VarG</td>
+          <td>Éditeur enrichedVars opérationnel. <span class="tag tag-ok">Fonctionnel</span></td>
+          <td>—</td>
+        </tr>
+        <tr>
+          <td><span class="st st-wip"></span>ui_Accueil</td>
+          <td>Existe comme concept (rôle défini : émettre des intents, afficher l'état validé par Gtion_EtatGlobal). <span class="tag tag-wip">Embryonnaire</span></td>
+          <td>Liens vers Gtion_EtatGlobal non complétés. Pas de pilotage réel.</td>
+        </tr>
+        <tr>
+          <td><span class="st st-todo"></span>M_Capt_ / M_Act_ (tous)</td>
+          <td>N'existent pas en tant que flows dédiés.</td>
+          <td>Tout — supervision et commande de chaque module Arduino (13 VAR) et SE restant (CamSE, MicroSE, Appli, STT).</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- CE QUI A CHANGÉ -->
+  <div class="section">
+    <div class="section-title">Ce qui a changé depuis mars — à absorber maintenant</div>
+    <p style="font-size:13px;color:var(--text2);margin-bottom:10px">Le code Node-RED date de mars. Depuis, plusieurs décisions structurantes ont été prises côté SE/Tasker que Gtion_Init et Gtion_EtatGlobal doivent désormais intégrer :</p>
+
+    <div class="card">
+      <div style="font-weight:600;color:var(--teal);margin-bottom:4px;font-size:13px">Architecture STT Option B (21 juin)</div>
+      <div style="font-size:12.5px;color:var(--text2)">SE calcule désormais STT.context (Inactif/Cmde/Conv/Mixte) à partir de modeRZ ET de Mtr.state. <strong style="color:var(--text)">SP doit relayer Mtr.state reçu d'Arduino vers SE</strong> — sans ce câblage, la sécurité "VEILLE + mouvement" ne fonctionne pas. C'est un input direct pour Gtion_Init ou un sous-flow dédié.</div>
+    </div>
+    <div class="card">
+      <div style="font-weight:600;color:var(--teal);margin-bottom:4px;font-size:13px">Garde-fous STTcontext (identifiés 21 juin, jamais implémentés)</div>
+      <div style="font-size:12.5px;color:var(--text2)">Bloquer Mixte si typePtge=3 (laisse) ET modeRZ=3 (déplacement). Avertir si VEILLE+Mixte. Ce sont des règles métier — leur place naturelle est Gtion_EtatGlobal / SF_ReglesMinimales, pas SE.</div>
+    </div>
+    <div class="card">
+      <div style="font-weight:600;color:var(--teal);margin-bottom:4px;font-size:13px">Appli.IA_Conv (créé côté SE/Tasker mi-juin, jamais intégré côté SP)</div>
+      <div style="font-size:12.5px;color:var(--text2)">RZ_IA_Conv existe et fonctionne dans Tasker. Côté SP : aucune ligne Table A (CAT=A/I), aucune entrée enrichedVars via ui_VarG. SP ne peut donc pas encore piloter ce module depuis l'extérieur (UI, autre logique).</div>
+    </div>
+    <div class="card">
+      <div style="font-weight:600;color:var(--teal);margin-bottom:4px;font-size:13px">Table D stabilisée à 71 commandes</div>
+      <div style="font-size:12.5px;color:var(--text2)">Référence catalogue désormais fiable (séparateur pipe confirmé, CAM/Lring/SYS corrigés). Utile pour valider que chaque commande catalogue a bien son pendant dans Gtion_EtatGlobal / les futurs M_Act_.</div>
+    </div>
+  </div>
+
+  <!-- FEUILLE DE ROUTE -->
+  <div class="section">
+    <div class="section-title">Feuille de route proposée — 6 phases</div>
+    <p style="font-size:13px;color:var(--text2);margin-bottom:16px">Cette séquence combine l'ordre de priorité que tu avais toi-même fixé en mars (CfgS → Urg → COM → Sys → Gyro/Mag → CamSE → MicroSE → Appli → STT) avec la convention de nommage validée en mai (Bus_/Gtion_/M_Capt_/M_Act_/ui_) et les besoins fonctionnels apparus en juin. Chaque phase est testable indépendamment avant de passer à la suivante.</p>
+
+    <!-- PHASE 0 -->
+    <div class="phase">
+      <div class="phase-header">
+        <div class="phase-num" style="background:rgba(232,85,85,.2);color:var(--red)">0</div>
+        <div>
+          <div class="phase-title">Reconnecter le Bus à la réalité</div>
+          <div class="phase-sub">Bus_GestionFlux (ex RZ_GestionFlux_V1) — prérequis absolu</div>
+        </div>
+      </div>
+      <div class="phase-body">
+        <p>Le bus est structurellement sain mais parle un langage interne théorique. Avant toute chose, il doit parler le vrai protocole.</p>
+        <ul class="phase-list">
+          <li>Remplacer le contrat de message interne (source/eventType/intent/payload) par un vrai parsing VPIV ($CAT:VAR:PROP:INST:VAL#)</li>
+          <li>Brancher sur les vrais topics MQTT : SE/statut (in), SE/commande (out), SE/arduino/data (in), SE/arduino (out)</li>
+          <li>Alimenter le contexte global réel <code style="color:var(--teal)">global.RZ_&lt;VAR&gt;</code> à chaque trame reçue (déjà conçu, à implémenter concrètement)</li>
+          <li>Renommer la tab en <code style="color:var(--teal)">Bus_GestionFlux</code> (convention mai)</li>
+        </ul>
+        <div class="phase-deps">Sans cette phase, rien de ce qui suit ne peut être testé avec de vraies données.</div>
+      </div>
+    </div>
+
+    <!-- PHASE 1 -->
+    <div class="phase">
+      <div class="phase-header">
+        <div class="phase-num" style="background:rgba(240,168,54,.2);color:var(--amber)">1</div>
+        <div>
+          <div class="phase-title">Rendre Gtion_Init réellement fonctionnel</div>
+          <div class="phase-sub">SF_Init_1 à 4 — sortir du STUB</div>
+        </div>
+      </div>
+      <div class="phase-body">
+        <p>C'est le flow le moins mûr alors qu'il est sur le chemin critique. La séquence exacte à implémenter existe déjà — rédigée par toi en mars (section 15 de <code style="color:var(--teal)">doc_prep_SE_nodeRED.docx</code>).</p>
+        <ul class="phase-list">
+          <li>SF_Init_1 : charger un vrai fichier enrichedVars (Table B), pas un stub</li>
+          <li>SF_Init_2 : détection réseau réelle (au minimum lire la config, le scan actif peut attendre)</li>
+          <li>SF_Init_3 : attendre le vrai SE_READY (déjà émis par rz_start.sh — confirmé dans le code SE) + boot Arduino</li>
+          <li>SF_Init_4 : envoyer la séquence VPIV réelle vers SE — <strong>9 étapes déjà spécifiées</strong> : typeReseau → typePtge → modeRZ=VEILLE → Sys.modeSys → Gyro/Mag → MicroSE/CamSE → STT.modeSTT → modeRZ final</li>
+          <li>Prévoir le délai/retry au boot (SE peut ne pas encore écouter MQTT quand SP envoie — paradoxe d'amorçage documenté)</li>
+        </ul>
+        <div class="phase-deps">Dépend de la Phase 0 (Bus réel) pour pouvoir effectivement envoyer/recevoir les trames.</div>
+      </div>
+    </div>
+
+    <!-- PHASE 2 -->
+    <div class="phase">
+      <div class="phase-header">
+        <div class="phase-num" style="background:rgba(77,158,247,.2);color:var(--blue)">2</div>
+        <div>
+          <div class="phase-title">Valider Gtion_EtatGlobal avec de vraies données</div>
+          <div class="phase-sub">CfgS (modeRZ, typePtge) puis Urg — priorité métier n°1</div>
+        </div>
+      </div>
+      <div class="phase-body">
+        <p>Le cœur décisionnel existe et est audité positivement. Il n'a simplement jamais tourné en conditions réelles. C'est ici qu'on le branche et qu'on le teste pour de vrai.</p>
+        <ul class="phase-list">
+          <li>Tester les transitions modeRZ avec un SE réel connecté (ARRET↔VEILLE↔FIXE↔DEPLACEMENT↔AUTONOME)</li>
+          <li>Vérifier les invariants en conditions réelles (retour VEILLE toujours possible, ARRET prioritaire…)</li>
+          <li>Brancher Urg : réception source(E)/etat(I), commande clear(V) — priorité 0 du flow, déjà structurée</li>
+          <li>Brancher COM : debug/info/warn/error pour affichage console SP</li>
+        </ul>
+        <div class="phase-deps">Dépend des Phases 0 et 1. C'est le premier moment où le système devient réellement piloté de bout en bout.</div>
+      </div>
+    </div>
+
+    <!-- PHASE 3 -->
+    <div class="phase">
+      <div class="phase-header">
+        <div class="phase-num" style="background:rgba(46,196,160,.2);color:var(--teal)">3</div>
+        <div>
+          <div class="phase-title">Câblage Mtr.state et garde-fous STTcontext</div>
+          <div class="phase-sub">Les 2 chantiers identifiés le 21 juin — leur place naturelle</div>
+        </div>
+      </div>
+      <div class="phase-body">
+        <p>Ces deux chantiers ont été identifiés en aval (côté STT) mais leur implémentation est entièrement côté SP. Ils prennent place ici car ils dépendent de CfgS/Urg fonctionnels.</p>
+        <ul class="phase-list">
+          <li>Relayer la trame Mtr.state reçue d'Arduino vers SE : <code style="color:var(--teal)">$I:Mtr:state:*:L,R,A#</code> sur SE/commande</li>
+          <li>Règle Gtion_EtatGlobal : bloquer STTcontext=Mixte si typePtge=3 (laisse) ET modeRZ=3 (déplacement)</li>
+          <li>Règle Gtion_EtatGlobal : avertissement (pas blocage) si modeRZ=1 (VEILLE) avec Mixte actif</li>
+        </ul>
+        <div class="phase-deps">Dépend de la Phase 2. Sans Mtr réellement câblé (Arduino→SP), Mtr.state n'a pas de valeur réelle à relayer.</div>
+      </div>
+    </div>
+
+    <!-- PHASE 4 -->
+    <div class="phase">
+      <div class="phase-header">
+        <div class="phase-num" style="background:rgba(155,124,244,.2);color:var(--purple)">4</div>
+        <div>
+          <div class="phase-title">Modules de supervision et commande — M_Capt_ / M_Act_</div>
+          <div class="phase-sub">Ordre suggéré : Sys (✓) → Gyro/Mag (✓) → Mtr/US/SecMvt → Srv/Lring/Lrub → CamSE → MicroSE → Appli → STT</div>
+        </div>
+      </div>
+      <div class="phase-body">
+        <p>Sys, Gyro et Mag sont déjà couverts par Gtion_Statut SE (opérationnel). Le travail restant porte sur les modules Arduino et les modules SE encore non instrumentés côté SP.</p>
+        <div class="grid-2" style="margin:10px 0">
+          <div>
+            <div style="font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">Arduino restants (10 VAR)</div>
+            <div style="font-size:12px;color:var(--text2);line-height:1.8">Mtr · US · SecMvt · Odom · Srv · Lring · Lrub · Mic · FS · IRmvt</div>
+          </div>
+          <div>
+            <div style="font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">SE restants (4 VAR)</div>
+            <div style="font-size:12px;color:var(--text2);line-height:1.8">CamSE · MicroSE · Appli (dont IA_Conv) · STT</div>
+          </div>
+        </div>
+        <ul class="phase-list">
+          <li>Pour chaque VAR : un flow M_Capt_ (lecture/supervision) ou M_Act_ (commande) selon la nature</li>
+          <li>Mtr et US en premier — nécessaires pour exploiter pleinement les garde-fous de la Phase 3</li>
+          <li>Appli.IA_Conv : ajouter la ligne Table A manquante (CAT=A et CAT=I) + entrée ui_VarG — déverrouille le pilotage SP de la conversation Gemini</li>
+        </ul>
+        <div class="phase-deps">Peut démarrer dès la Phase 2 validée — les modules sont indépendants entre eux, priorisables librement selon l'envie du moment.</div>
+      </div>
+    </div>
+
+    <!-- PHASE 5 -->
+    <div class="phase">
+      <div class="phase-header">
+        <div class="phase-num" style="background:rgba(93,189,106,.2);color:var(--green)">5</div>
+        <div>
+          <div class="phase-title">Interfaces utilisateur — ui_</div>
+          <div class="phase-sub">ui_Accueil, ui_Pilotage, ui_STT, ui_Joystick</div>
+        </div>
+      </div>
+      <div class="phase-body">
+        <p>Volontairement en dernier — l'UI ne doit jamais être source de vérité (invariant déjà validé), donc elle n'a de sens qu'une fois la logique métier réellement opérationnelle derrière.</p>
+        <ul class="phase-list">
+          <li>Finaliser ui_Accueil — liens vers Gtion_EtatGlobal via UI_Map_StateLevel</li>
+          <li>ui_Pilotage — interface pilotage temps réel (retour caméra, état Mtr/Odom)</li>
+          <li>ui_STT — visualisation contexte vocal, debug routage Cmde/Conv/Mixte</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- RESSOURCES -->
+  <div class="section">
+    <div class="section-title">Ressources mobilisables pour la prochaine conversation</div>
+
+    <div style="font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin:8px 0 8px">Documents de référence existants (déjà rédigés par toi)</div>
+    <div class="res-card">
+      <div class="res-name">doc_prep_SE_nodeRED.docx</div>
+      <div class="res-desc"><strong style="color:var(--text)">Le document le plus directement actionnable.</strong> Contient déjà : l'ordre de priorité de développement (section 1.2), la table VPIV SE complète normative (section 2), les conventions Node-RED à respecter — unités, pas de float (section 5), <strong>la séquence exacte des 9 étapes de boot SP→SE</strong> (section 15), le récapitulatif des unités (section 16).</div>
+    </div>
+    <div class="res-card">
+      <div class="res-name">doc_admin_dev_RZ.docx</div>
+      <div class="res-desc">Table VPIV Arduino complète — 13 modules (CfgS, Urg, Mtr, Odom, Mic, US, SecMvt, Srv, IRmvt, FS, Lring, Lrub, Ctrl_L) avec leurs propriétés et fichiers dispatch_*.cpp correspondants.</div>
+    </div>
+    <div class="res-card">
+      <div class="res-name">doc_SE_ref_nodeRED.docx</div>
+      <div class="res-desc">Référence VPIV SE détaillée, vérifiée sur les fichiers sources réels (mars 2026) — CfgS, modes, valeurs légales par module.</div>
+    </div>
+    <div class="res-card">
+      <div class="res-name">table_A_structure_regles.md</div>
+      <div class="res-desc">Structure normative des 15 champs de la Table A (SOURCE, VAR, PROP, CAT, TYPE, FORMAT_VALUE, CODAGE, DIRECTION, INSTANCE…). Référence pour toute nouvelle ligne à ajouter (ex. IA_Conv).</div>
+    </div>
+    <div class="res-card">
+      <div class="res-name">node-red/flows/flows-sauvMarsV1.json</div>
+      <div class="res-desc">Le code Node-RED réel le plus récent disponible. Contient les audits détaillés déjà faits flow par flow (commentaires "Audit conformité" dans le JSON lui-même) — très utile pour reprendre exactement où ça s'est arrêté.</div>
+    </div>
+
+    <div style="font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin:18px 0 8px">Pages de documentation du projet</div>
+    <div class="res-card">
+      <div class="res-name">sp_nodeRED_V1.html</div>
+      <div class="res-desc">Vue d'ensemble par couche (Bus_/Gtion_/M_Capt_/M_Act_/ui_) avec état 🟢🟡🔴 — sert de tableau de bord pendant le développement.</div>
+    </div>
+    <div class="res-card">
+      <div class="res-name">vpiv_protocol_V1.html · mqtt_reseau_V1.html · tables_donnees_V1.html</div>
+      <div class="res-desc">Rappels protocole, topics, et rôle des 4 tables — utiles en consultation rapide pendant le développement.</div>
+    </div>
+    <div class="res-card">
+      <div class="res-name">stt_voice_V2.html</div>
+      <div class="res-desc">Détail des décisions Option B (table modeRZ→STT.context, raffinement Mtr.state) — direct input pour les Phases 1 et 3.</div>
+    </div>
+
+    <div style="font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin:18px 0 8px">À apporter en début de session</div>
+    <div class="ok-box">
+      <strong>Export flows.json actuel du RPI</strong> — pour confirmer ou corriger l'état des lieux décrit dans ce document (basé sur l'export de mars). C'est la première chose à fournir.
+    </div>
+  </div>
+
+  <!-- DECISIONS A PRENDRE -->
+  <div class="section">
+    <div class="section-title">Décisions à prendre avant de commencer</div>
+    <div class="warn-box">
+      <strong>1. Repartir du code de mars ou recommencer le Bus à neuf ?</strong><br>
+      Le format de message interne théorique (source/eventType/intent/payload) de RZ_GestionFlux_V1 a-t-il un intérêt à être conservé, ou vaut-il mieux l'abandonner directement pour un parsing VPIV réel plus simple ? La structure générale (1 seul point de sortie EVT_RAW_IN) reste valable dans les deux cas.
+    </div>
+    <div class="warn-box">
+      <strong>2. Granularité des flows M_Capt_/M_Act_</strong><br>
+      Un flow Node-RED par VAR (13 pour Arduino) ou des flows groupés par catégorie (ex. un seul flow "Capteurs Arduino" couvrant Mic/US/FS/IRmvt) ? Impacte directement le volume de travail de la Phase 4.
+    </div>
+    <div class="info-box">
+      <strong>3. SF_ReglesDynamiques — la rebrancher maintenant ou rester V1 ?</strong><br>
+      Volontairement débranchée jusqu'ici. Les garde-fous STTcontext (Phase 3) pourraient être une première occasion concrète de la réactiver, ou rester des règles minimales codées en dur pour l'instant.
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">
+  RobotRZ — Feuille de route Node-RED V1 — Document préparatoire — Vincent Philippe &nbsp;·&nbsp;
+  <a href="sp_nodeRED_V1.html" style="color:var(--blue)">← SP détaillé</a> &nbsp;·&nbsp;
+  <a href="index.html" style="color:var(--blue)">Vue d'ensemble</a>
+</div>
+</body>
+</html>

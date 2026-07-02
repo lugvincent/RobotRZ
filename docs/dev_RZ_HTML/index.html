@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RobotRZ — Documentation</title>
+<style>
+:root{
+  --bg:#0f1117;--bg2:#171b26;--bg3:#1e2333;--bg4:#252a3a;
+  --text:#e8eaf0;--text2:#8b93a8;--text3:#555e78;
+  --blue:#4d9ef7;--purple:#9b7cf4;--amber:#f0a836;
+  --teal:#2ec4a0;--coral:#f06a50;--green:#5dbd6a;--red:#e85555;
+  --border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.13);
+  --radius:10px;--radius-lg:14px
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;font-size:14px;line-height:1.6;min-height:100vh}
+
+/* NAV */
+.nav{background:var(--bg2);border-bottom:1px solid var(--border);padding:14px 28px;display:flex;align-items:center;gap:12px}
+.nav-logo{font-size:18px;font-weight:800;color:var(--blue);letter-spacing:1.5px}
+.nav-sub{font-size:12px;color:var(--text3);background:var(--bg3);padding:2px 10px;border-radius:20px;border:1px solid var(--border)}
+.nav-date{font-size:11px;color:var(--text3);margin-left:auto}
+
+/* HEADER */
+.header{padding:40px 28px 28px;max-width:960px;margin:0 auto}
+.header h1{font-size:28px;font-weight:700;color:var(--text);margin-bottom:8px}
+.header p{color:var(--text2);font-size:14px;max-width:620px;line-height:1.7}
+.header-badges{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.hbadge{font-size:11px;padding:4px 12px;border-radius:20px;border:1px solid var(--border2);color:var(--text2);background:var(--bg2)}
+.hbadge.blue{border-color:rgba(77,158,247,.3);color:var(--blue);background:rgba(77,158,247,.07)}
+.hbadge.green{border-color:rgba(93,189,106,.3);color:var(--green);background:rgba(93,189,106,.07)}
+.hbadge.amber{border-color:rgba(240,168,54,.3);color:var(--amber);background:rgba(240,168,54,.07)}
+
+/* MAIN */
+.main{max-width:960px;margin:0 auto;padding:0 28px 72px}
+
+/* SECTION */
+.cat{margin-bottom:36px}
+.cat-title{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:var(--text3);margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
+.cat-title span{color:var(--text3)}
+
+/* CARDS GRID */
+.cards{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.cards.single{grid-template-columns:1fr}
+.cards.triple{grid-template-columns:1fr 1fr 1fr}
+
+/* DOC CARD */
+.doc-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:18px 20px;text-decoration:none;display:block;transition:all .2s;position:relative;overflow:hidden}
+.doc-card:hover{border-color:var(--border2);background:var(--bg3);transform:translateY(-1px)}
+.doc-card-top{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:6px}
+.doc-card-title{font-size:15px;font-weight:600;color:var(--text)}
+.doc-card-file{font-family:monospace;font-size:11px;color:var(--text3);margin-top:3px}
+.doc-card-desc{font-size:13px;color:var(--text2);line-height:1.6;margin-top:6px}
+.doc-card-tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.tag{font-size:10px;padding:2px 8px;border-radius:20px;font-weight:500}
+.tag-blue{background:rgba(77,158,247,.12);color:var(--blue)}
+.tag-purple{background:rgba(155,124,244,.12);color:var(--purple)}
+.tag-amber{background:rgba(240,168,54,.12);color:var(--amber)}
+.tag-teal{background:rgba(46,196,160,.12);color:var(--teal)}
+.tag-coral{background:rgba(240,106,80,.12);color:var(--coral)}
+.tag-green{background:rgba(93,189,106,.12);color:var(--green)}
+.tag-new{background:rgba(77,158,247,.15);color:var(--blue);border:1px solid rgba(77,158,247,.3)}
+.tag-upd{background:rgba(240,168,54,.15);color:var(--amber);border:1px solid rgba(240,168,54,.3)}
+.tag-stable{background:rgba(93,189,106,.1);color:rgba(93,189,106,.7)}
+.ver{font-size:11px;padding:2px 8px;border-radius:20px;font-weight:600;white-space:nowrap}
+.ver-new{background:rgba(77,158,247,.15);color:var(--blue)}
+.ver-upd{background:rgba(240,168,54,.15);color:var(--amber)}
+.ver-stable{background:rgba(139,147,168,.1);color:var(--text3)}
+
+/* SCHEMA CARD */
+.schema-card{background:var(--bg2);border:1px solid rgba(77,158,247,.2);border-radius:var(--radius-lg);padding:16px 20px;text-decoration:none;display:flex;align-items:center;gap:14px;transition:all .2s}
+.schema-card:hover{border-color:rgba(77,158,247,.4);background:var(--bg3)}
+.schema-icon{font-size:22px;flex-shrink:0}
+.schema-body{}
+.schema-title{font-size:14px;font-weight:600;color:var(--blue)}
+.schema-file{font-family:monospace;font-size:11px;color:var(--text3);margin-top:2px}
+.schema-desc{font-size:12px;color:var(--text2);margin-top:4px}
+
+/* VPIV REMINDER */
+.vpiv-strip{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:12px 18px;margin-bottom:28px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.vpiv-label{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;flex-shrink:0}
+.vpiv-format{font-family:monospace;font-size:14px;color:var(--teal)}
+.vpiv-warn{font-size:11px;color:var(--amber)}
+
+/* NOTE BOX */
+.note-box{background:rgba(240,168,54,.05);border:1px solid rgba(240,168,54,.2);border-radius:var(--radius);padding:11px 16px;font-size:12px;color:var(--text2);margin-bottom:20px;display:flex;align-items:flex-start;gap:8px}
+
+/* LEGEND */
+.legend{display:flex;gap:16px;flex-wrap:wrap;padding:12px 18px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:28px}
+.leg-item{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text2)}
+
+/* FOOTER */
+.footer{border-top:1px solid var(--border);padding:20px 28px;max-width:960px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
+.footer-left{font-size:12px;color:var(--text3)}
+.footer-link{font-size:12px;color:var(--blue);text-decoration:none}
+.footer-link:hover{text-decoration:underline}
+
+@media(max-width:700px){.cards,.cards.triple{grid-template-columns:1fr}.vpiv-strip{flex-direction:column;align-items:flex-start}}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <span class="nav-logo">RobotRZ</span>
+  <span class="nav-sub">Documentation technique</span>
+  <span class="nav-date">Mise à jour : Juillet 2026</span>
+</nav>
+
+<div class="header">
+  <h1>Documentation RobotRZ</h1>
+  <p>Architecture complète, protocoles, modules et état de développement du robot compagnon mobile RobotRZ. Cliquer sur un bloc pour accéder à la page détaillée.</p>
+  <div class="header-badges">
+    <span class="hbadge blue">4 sous-systèmes : SP · SE · Arduino · Tasker</span>
+    <span class="hbadge green">Protocole VPIV sur MQTT</span>
+    <span class="hbadge amber">AutoVoice remplace PocketSphinx — Juin 2026</span>
+  </div>
+</div>
+
+<div class="main">
+
+  <div class="vpiv-strip">
+    <span class="vpiv-label">Protocole</span>
+    <span class="vpiv-format">$CAT : VAR : PROP : INST : VAL#</span>
+    <span class="vpiv-warn">⚠ PROP = position 2 · INST = position 3 — ne jamais inverser</span>
+    <a href="vpiv_protocol_V1.html" style="font-size:11px;color:var(--blue);text-decoration:none;margin-left:auto;white-space:nowrap">Voir protocole →</a>
+  </div>
+
+  <div class="legend">
+    <span class="leg-item"><span class="tag ver-new">Juin 2026</span> Nouveau cette mise à jour</span>
+    <span class="leg-item"><span class="tag ver-upd">Mis à jour</span> Version plus récente</span>
+    <span class="leg-item"><span class="tag ver-stable">Stable</span> Inchangé depuis V1</span>
+  </div>
+
+  <!-- ARCHITECTURE GLOBALE -->
+  <div class="cat">
+    <div class="cat-title"><span>Architecture globale</span></div>
+    <div class="cards single">
+      <a href="index.html" class="doc-card" style="border-color:rgba(77,158,247,.25)">
+        <div class="doc-card-top">
+          <div>
+            <div class="doc-card-title">Vue d'ensemble — Architecture RobotRZ</div>
+            <div class="doc-card-file">index.html (ce fichier)</div>
+          </div>
+          <span class="tag ver-upd">Juin 2026</span>
+        </div>
+        <div class="doc-card-desc">4 sous-systèmes, broker MQTT, topics, tables de données. Point d'entrée de la documentation. Liens vers toutes les pages.</div>
+        <div class="doc-card-tags">
+          <span class="tag tag-blue">SP</span>
+          <span class="tag tag-purple">SE</span>
+          <span class="tag tag-amber">Arduino</span>
+          <span class="tag tag-teal">Tasker</span>
+        </div>
+      </a>
+    </div>
+  </div>
+
+  <!-- SOUS-SYSTÈMES -->
+  <div class="cat">
+    <div class="cat-title"><span>Sous-systèmes</span></div>
+    <div class="cards">
+
+      <a href="sp_nodeRED_V1.html" class="doc-card">
+        <div class="doc-card-top">
+          <div>
+            <div class="doc-card-title" style="color:var(--blue)">SP — Système Pilote</div>
+            <div class="doc-card-file">sp_nodeRED_V1.html</div>
+          </div>
+          <span class="tag ver-stable">V1 — stable</span>
+        </div>
+        <div class="doc-card-desc">Node-RED maître absolu. Deux instances : SP RPI (référence) et SP Smart (Xiaomi). Flows par couche : Bus_, Gtion_, M_Capt_, M_Act_, ui_. Contexte global.</div>
+        <div class="doc-card-tags">
+          <span class="tag tag-blue">Node-RED</span>
+          <span class="tag tag-blue">Broker MQTT</span>
+        </div>
+      </a>
+
+      <a href="roadmap_nodered_V1.html" class="doc-card" style="border-color:rgba(77,158,247,.3)">
+        <div class="doc-card-top">
+          <div>
+            <div class="doc-card-title" style="color:var(--blue)">🎯 Feuille de route — Développement Node-RED</div>
+            <div class="doc-card-file">roadmap_nodered_V1.html</div>
+          </div>
+          <span class="tag ver-new">V2 — Prêt pour la session dédiée</span>
+        </div>
+        <div class="doc-card-desc">Document de préparation à jour (juillet) : état réel du code (mars), tout ce qui a changé depuis (STT Option B, LockSE testé réel, bug rz_appli_manager.sh corrigé, Table A v3, Mtr clos, sécurité/réseau résolus), feuille de route en 6 phases.</div>
+        <div class="doc-card-tags">
+          <span class="tag tag-blue">Roadmap</span>
+          <span class="tag tag-purple">Gtion_Init</span>
+          <span class="tag tag-amber">M_Capt_/M_Act_</span>
+        </div>
+      </a>
+
+      <a href="se_smartphone_V2.html" class="doc-card">
+        <div class="doc-card-top">
+          <div>
+            <div class="doc-card-title" style="color:var(--purple)">SE — Smartphone Embarqué</div>
+            <div class="doc-card-file">se_smartphone_V2.html</div>
+          </div>
+          <span class="tag ver-upd">V2 — Juin 2026</span>
+        </div>
+        <div class="doc-card-desc">Doro Android sans SIM. rz_start.sh v1.1, rz_state-manager v1.5 (sync_to_tasker, STT context), rz_tasker_out.sh (nouveau canal bidirectionnel). AutoVoice remplace PocketSphinx.</div>
+        <div class="doc-card-tags">
+          <span class="tag tag-purple">Termux</span>
+          <span class="tag tag-teal">Tasker</span>
+          <span class="tag tag-green">AutoVoice</span>
+        </div>
+      </a>
+
+      <a href="arduino_V1.html" class="doc-card">
+        <div class="doc-card-top">
+          <div>
+            <div class="doc-card-title" style="color:var(--amber)">Arduino Mega + UNO</div>
+            <div class="doc-card-file">arduino_V1.html</div>
+          </div>
+          <span class="tag ver-stable">V1 — stable</span>
+        </div>
+        <div class="doc-card-desc">Contrôleur temps-réel. Loop max 80ms. 3 couches strictes : dispatch / métier / hardware. Capteurs US×9, Mic×3, FS, Odom. Actionneurs Mtr, Srv, Lring, Lrub.</div>
+        <div class="doc-card-tags">
+          <span class="tag tag-amber">C++ / PlatformIO</span>
+          <span class="tag tag-amber">UART → UNO</span>
+        </div>
+      </a>
+
+      <a href="tasker_V4.html" class="doc-card">
+        <div class="doc-card-top">
+          <div>
+            <div class="doc-card-title" style="color:var(--teal)">Tasker — Couche Android</div>
+            <div class="doc-card-file">tasker_V4.html</div>
+          </div>
+          <span class="tag ver-upd">V4 — Juin 2026</span>
+        </div>
+        <div class="doc-card-desc">Pipeline bidirectionnel. Profils AutoVoice, machine d'état STT, tâches RZ_STT_Context, Rz_Traite_Ecoute, RZ_GeminiStart/Stop, RZ_AVStart/Stop. Variables %RZsttContext, %RZautoVoice, %RZappliConv.</div>
+        <div class="doc-card-tags">
+          <span class="tag tag-teal">Android</span>
+          <span class="tag tag-green">AutoVoice</span>
+          <span class="tag tag-amber">CAT=A</span>
+        </div>
+      </a>
+
+    </div>
+  </div>
+
+  <!-- MODULE VOCAL -->
+  <div class="cat">
+    <div class="cat-title"><span>Module vocal — nouveau Juin 2026</span></div>
+    <div class="cards">
+
+      <a href="stt_voice_V2.html" class="doc-card" style="border-color:rgba(46,196,160,.25)">
+        <div class="doc-card-top">
+          <div>
+            <div class="doc-card-title" style="color:var(--teal)">STT &amp; Voice</div>
+            <div class="doc-card-file">stt_voice_V2.html</div>
+          </div>
+          <span class="tag ver-new">Option B validée 21/06</span>
+        </div>
+        <div class="doc-card-desc">Architecture Option B testée : routage Cmde/Conv/Mixte décidé par rz_autovoice_bridge.sh v3.0. Table modeRZ→STT.context définitive. Gemini (gemini-2.5-flash). Incident sécurité clé API résolu.</div>
+        <div class="doc-card-tags">
+          <span class="tag tag-green">AutoVoice</span>
+          <span class="tag tag-teal">rz_stt_handler</span>
+          <span class="tag tag-coral">Gemini</span>
+        </div>
+      </a>
+
+      <a href="schema_stt_context_V1.html" class="doc-card" style="border-color:rgba(77,158,247,.2)">
+        <div class="doc-card-top">
+          <div>
+            <div class="doc-card-title" style="color:var(--blue)">📊 Schéma — Machine d'état STT</div>
+            <div class="doc-card-file">schema_stt_context_V1.html</div>
+          </div>
+          <span class="tag ver-new">Nouveau</span>
+        </div>
+        <div class="doc-card-desc">Diagramme de la tâche RZ_STT_Context. Flux Inactif / Cmde / Conv / Mixte → RZ_AVStop, RZ_AVStart, RZ_GeminiStart, RZ_GeminiStop. Déclenché par trigger.txt depuis rz_state-manager.sh.</div>
+        <div class="doc-card-tags">
+          <span class="tag tag-blue">Schéma SVG</span>
+          <span class="tag tag-teal">Tasker</span>
+        </div>
+      </a>
+
+    </div>
+  </div>
+
+  <!-- PROTOCOLE ET RÉSEAU -->
+  <div class="cat">
+    <div class="cat-title"><span>Protocole &amp; Réseau</span></div>
+    <div class="cards">
+
+      <a href="vpiv_protocol_V1.html" class="doc-card">
+        <div class="doc-card-top">
+          <div>
+            <div class="doc-card-title" style="color:var(--teal)">Protocole VPIV</div>
+            <div class="doc-card-file">vpiv_protocol_V1.html</div>
+          </div>
+          <span class="tag ver-stable">V1 — stable</span>
+        </div>
+        <div class="doc-card-desc">Format $CAT:VAR:PROP:INST:VAL#. Les 5 catégories (V I E F A). Cycle complet d'une trame aller/retour en 6 étapes. Exemples réels. Conventions entiers (×10, ×100, ×1000).</div>
+        <div class="doc-card-tags">
+          <span class="tag tag-teal">MQTT</span>
+          <span class="tag tag-blue">Bus VPIV</span>
+        </div>
+      </a>
+
+      <a href="mqtt_reseau_V1.html" class="doc-card">
+        <div class="doc-card-top">
+          <div>
+            <div class="doc-card-title" style="color:var(--coral)">Réseau MQTT</div>
+            <div class="doc-card-file">mqtt_reseau_V1.html</div>
+          </div>
+          <span class="tag ver-upd">V2 — Juillet 2026</span>
+        </div>
+        <div class="doc-card-desc">4 scénarios de connectivité SE (Wi-Fi maison / externe / Hotspot 4G / Hotspot local). Le broker suit le SP actif. Topics SE/statut, SE/commande, SE/arduino. + Procédure de régénération MQTT_PASS (3 emplacements).</div>
+        <div class="doc-card-tags">
+          <span class="tag tag-coral">Broker MQTT</span>
+          <span class="tag tag-blue">DuckDNS</span>
+        </div>
+      </a>
+
+      <a href="point_reseau_ssh_V1.html" class="doc-card" style="border-color:rgba(240,106,80,.3)">
+        <div class="doc-card-top">
+          <div>
+            <div class="doc-card-title" style="color:var(--coral)">🔧 SSHD, serveur RPi &amp; adressage IP</div>
+            <div class="doc-card-file">point_reseau_ssh_V1.html</div>
+          </div>
+          <span class="tag ver-upd">Accès distant résolu 28/06</span>
+        </div>
+        <div class="doc-card-desc">Bug NAT Livebox masqué par l'IPv6 — résolu et validé. nginx confirmé actif. Reste ouvert : portée caméra (modes 2/3), sort de rz_network_init.sh.</div>
+        <div class="doc-card-tags">
+          <span class="tag tag-coral">SSH</span>
+          <span class="tag tag-amber">nginx</span>
+          <span class="tag tag-blue">DuckDNS</span>
+        </div>
+      </a>
+
+    </div>
+  </div>
+
+  <!-- VADE-MECUM -->
+  <div class="cat">
+    <div class="cat-title"><span>📚 Vade-mecum — mes fiches de compréhension</span></div>
+    <div class="cards">
+
+      <a href="vademecum_tables_V1.html" class="doc-card" style="border-color:rgba(46,196,160,.2)">
+        <div class="doc-card-top">
+          <div>
+            <div class="doc-card-title" style="color:var(--teal)">Tables — gestion des variables</div>
+            <div class="doc-card-file">vademecum_tables_V1.html</div>
+          </div>
+        </div>
+        <div class="doc-card-desc">Procédures ajout/suppression/modification de variable, chaîne A→B→C, exemples concrets.</div>
+      </a>
+
+      <a href="vademecum_reseau_RZ_V1.html" class="doc-card" style="border-color:rgba(46,196,160,.2)">
+        <div class="doc-card-top">
+          <div>
+            <div class="doc-card-title" style="color:var(--teal)">Réseau — IPv4/IPv6, NAT, DNS</div>
+            <div class="doc-card-file">vademecum_reseau_RZ_V1.html</div>
+          </div>
+        </div>
+        <div class="doc-card-desc">NAT, NAT hairpin, DNS/DuckDNS, pare-feu Livebox, nginx — avec schémas et glossaire.</div>
+      </a>
+
+    </div>
+  </div>
+
+  <!-- RÉFÉRENCE -->
+  <div class="cat">
+    <div class="cat-title"><span>Référence</span></div>
+    <div class="cards">
+
+      <a href="tables_donnees_V1.html" class="doc-card">
+        <div class="doc-card-top">
+          <div>
+            <div class="doc-card-title" style="color:var(--green)">Tables de données</div>
+            <div class="doc-card-file">tables_donnees_V1.html</div>
+          </div>
+          <span class="tag ver-stable">V1 — stable</span>
+        </div>
+        <div class="doc-card-desc">Table A — référence normative VPIV (dev) · Table B — enrichedVars runtime Node-RED · Table C — courant_init.json (init SE+Arduino) · Table D — catalogue commandes STT (70 commandes, tableD_catalogueV2.csv)</div>
+        <div class="doc-card-tags">
+          <span class="tag tag-green">Table A</span>
+          <span class="tag tag-blue">Table B</span>
+          <span class="tag tag-purple">Table C</span>
+          <span class="tag tag-amber">Table D</span>
+        </div>
+      </a>
+
+      <a href="vademecum_tables_V1.html" class="doc-card" style="border-color:rgba(46,196,160,.2)">
+        <div class="doc-card-top">
+          <div>
+            <div class="doc-card-title" style="color:var(--teal)">📋 Vade-mecum — Gestion des tables</div>
+            <div class="doc-card-file">vademecum_tables_V1.html</div>
+          </div>
+          <span class="tag ver-new">Nouveau</span>
+        </div>
+        <div class="doc-card-desc">Procédures pour ajouter, supprimer, modifier une variable. Chaîne A→B→C, matrice des fichiers impactés, exemples concrets (Appli.IA_conv, Appli.Baby), pièges et checklist de clôture.</div>
+        <div class="doc-card-tags">
+          <span class="tag tag-teal">Procédures</span>
+          <span class="tag tag-green">Table A→C</span>
+          <span class="tag tag-blue">Node-RED</span>
+        </div>
+      </a>
+
+      <a href="securite_V1.html" class="doc-card" style="border-color:rgba(232,85,85,.3)">
+        <div class="doc-card-top">
+          <div>
+            <div class="doc-card-title" style="color:var(--red)">Sécurité</div>
+            <div class="doc-card-file">securite_V1.html</div>
+          </div>
+          <span class="tag ver-upd">V2 — Juillet 2026</span>
+        </div>
+        <div class="doc-card-desc">4 incidents documentés — tous résolus, y compris la rotation complète des credentials (GitHub, Gemini, MQTT, DuckDNS) du 01/07. Nouvelle règle absolue : ne jamais coller git remote -v. keys.json format étendu (7 clés).</div>
+        <div class="doc-card-tags">
+          <span class="tag tag-coral">keys.json</span>
+          <span class="tag tag-coral">git remote</span>
+          <span class="tag tag-coral">rotation credentials</span>
+        </div>
+      </a>
+
+    </div>
+  </div>
+
+  <!-- RAPPEL ARCHITECTURE NODE-RED -->
+  <div class="cat">
+    <div class="cat-title"><span>Convention nommage flows Node-RED</span></div>
+    <div class="cards triple">
+      <div class="doc-card" style="cursor:default">
+        <div style="font-family:monospace;font-size:13px;color:var(--blue);font-weight:600;margin-bottom:6px">Bus_</div>
+        <div style="font-size:12px;color:var(--text2)">Infrastructure VPIV<br><span style="color:var(--text3)">Bus_GestionFlux</span></div>
+      </div>
+      <div class="doc-card" style="cursor:default">
+        <div style="font-family:monospace;font-size:13px;color:var(--blue);font-weight:600;margin-bottom:6px">Gtion_</div>
+        <div style="font-size:12px;color:var(--text2)">Gestion globale<br><span style="color:var(--text3)">Gtion_Init · Gtion_EtatGlobal · Gtion_Statut SE</span></div>
+      </div>
+      <div class="doc-card" style="cursor:default">
+        <div style="font-family:monospace;font-size:13px;color:var(--amber);font-weight:600;margin-bottom:6px">M_Capt_ · M_Act_</div>
+        <div style="font-size:12px;color:var(--text2)">Modules capteurs/actionneurs<br><span style="color:var(--text3)">M_Capt_Gyro · M_Act_Mtr · M_Pil_Vocale…</span></div>
+      </div>
+      <div class="doc-card" style="cursor:default">
+        <div style="font-family:monospace;font-size:13px;color:var(--teal);font-weight:600;margin-bottom:6px">ui_</div>
+        <div style="font-size:12px;color:var(--text2)">Interfaces utilisateur<br><span style="color:var(--text3)">ui_Accueil · ui_VarG · ui_Rules · ui_Pilotage</span></div>
+      </div>
+      <div class="doc-card" style="cursor:default">
+        <div style="font-family:monospace;font-size:13px;color:var(--purple);font-weight:600;margin-bottom:6px">Diag_</div>
+        <div style="font-size:12px;color:var(--text2)">Diagnostic transversal<br><span style="color:var(--text3)">Diag_SE_Statut · Diag_Arduino</span></div>
+      </div>
+      <div class="doc-card" style="cursor:default">
+        <div style="font-family:monospace;font-size:13px;color:var(--text3);font-weight:600;margin-bottom:6px">Dev_</div>
+        <div style="font-size:12px;color:var(--text2)">Flows de travail/atelier<br><span style="color:var(--text3)">travail_joystick · travail_chatAdmin…</span></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">
+  <span class="footer-left">RobotRZ — Documentation — Juillet 2026 — Vincent Philippe</span>
+  <a href="https://github.com/lugvincent/RobotRZ" class="footer-link">GitHub lugvincent/RobotRZ →</a>
+</div>
+
+</body>
+</html>

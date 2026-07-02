@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tasker — RobotRZ V4</title>
+<style>
+:root{--bg:#0f1117;--bg2:#171b26;--bg3:#1e2333;--bg4:#252a3a;--text:#e8eaf0;--text2:#8b93a8;--text3:#555e78;--blue:#4d9ef7;--purple:#9b7cf4;--amber:#f0a836;--teal:#2ec4a0;--coral:#f06a50;--green:#5dbd6a;--red:#e85555;--border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.12);--radius:10px;--radius-lg:14px}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;font-size:14px;line-height:1.6}
+.nav{background:var(--bg2);border-bottom:1px solid var(--border);padding:12px 24px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:100;flex-wrap:wrap}
+.nav-logo{font-size:16px;font-weight:700;color:var(--teal);letter-spacing:1px;text-decoration:none}
+.nav-version{font-size:11px;color:var(--text3);background:var(--bg3);padding:2px 8px;border-radius:20px;border:1px solid var(--border)}
+.breadcrumb{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text3)}
+.breadcrumb a{color:var(--blue);text-decoration:none}
+.nav-links{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap}
+.nav-link{font-size:12px;color:var(--text2);text-decoration:none;padding:4px 10px;border-radius:6px;border:1px solid var(--border);transition:all .2s}
+.nav-link:hover{background:var(--bg3)}
+.header{padding:32px 24px 20px;max-width:1000px;margin:0 auto}
+.header h1{font-size:26px;font-weight:700;color:var(--teal);margin-bottom:6px}
+.header p{color:var(--text2);font-size:14px;max-width:700px}
+.main{max-width:1000px;margin:0 auto;padding:0 24px 60px}
+.section{margin-bottom:28px}
+.section-title{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:var(--text3);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:16px 18px;margin-bottom:10px}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.st{width:8px;height:8px;border-radius:50%;display:inline-block;flex-shrink:0;margin-right:4px}
+.st-ok{background:var(--green)}.st-wip{background:var(--amber)}.st-todo{background:var(--red)}
+.tag{font-size:10px;padding:2px 7px;border-radius:20px;font-weight:500;display:inline-block}
+.tag-ok{background:rgba(93,189,106,.15);color:var(--green)}
+.tag-wip{background:rgba(240,168,54,.15);color:var(--amber)}
+.tag-todo{background:rgba(232,85,85,.15);color:var(--red)}
+.tag-new{background:rgba(77,158,247,.15);color:var(--blue)}
+.task-block{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:14px 16px;margin-bottom:8px}
+.task-header{display:flex;align-items:center;gap:8px;margin-bottom:6px;flex-wrap:wrap}
+.task-name{font-family:monospace;font-size:13px;font-weight:600;color:var(--teal)}
+.task-desc{font-size:13px;color:var(--text2);line-height:1.7}
+.code{font-family:monospace;background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:12px 16px;font-size:12px;color:var(--teal);margin:10px 0;overflow-x:auto;line-height:1.7}
+.warn-box{background:rgba(240,168,54,.06);border:1px solid rgba(240,168,54,.2);border-radius:var(--radius);padding:12px 16px;font-size:13px;color:var(--text2);margin:12px 0}
+.err-box{background:rgba(232,85,85,.06);border:1px solid rgba(232,85,85,.2);border-radius:var(--radius);padding:12px 16px;font-size:13px;color:var(--text2);margin:12px 0}
+.info-box{background:rgba(77,158,247,.06);border:1px solid rgba(77,158,247,.2);border-radius:var(--radius);padding:12px 16px;font-size:13px;color:var(--text2);margin:12px 0}
+.pipeline{display:flex;flex-direction:column;gap:4px;padding:12px;background:var(--bg3);border-radius:var(--radius);margin:10px 0}
+.pipeline-step{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text2)}
+.pipeline-arrow{color:var(--text3)}
+.rule{background:var(--bg3);border-left:3px solid var(--teal);padding:8px 12px;border-radius:0 8px 8px 0;margin-bottom:6px;font-size:12px;color:var(--text2)}
+.rule-bad{background:var(--bg3);border-left:3px solid var(--red);padding:8px 12px;border-radius:0 8px 8px 0;margin-bottom:6px;font-size:12px;color:var(--text2)}
+.schema-link{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--blue);text-decoration:none;background:rgba(77,158,247,.08);border:1px solid rgba(77,158,247,.25);padding:4px 12px;border-radius:20px;transition:all .2s}
+.schema-link:hover{background:rgba(77,158,247,.15)}
+table{width:100%;border-collapse:collapse;font-size:12.5px;margin:8px 0}
+th{background:var(--bg3);color:var(--text2);font-weight:500;padding:8px 12px;text-align:left;border-bottom:1px solid var(--border)}
+td{padding:7px 12px;border-bottom:1px solid var(--border);color:var(--text2);vertical-align:top}
+td:first-child{color:var(--text);font-family:monospace;font-size:12px}
+tr:last-child td{border-bottom:none}
+.footer{border-top:1px solid var(--border);padding:20px 24px;text-align:center;color:var(--text3);font-size:12px;max-width:1000px;margin:0 auto}
+@media(max-width:700px){.grid-2{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<nav class="nav">
+  <a href="index.html" class="nav-logo">RobotRZ</a>
+  <span class="nav-version">V4 — Juin 2026</span>
+  <div class="breadcrumb"><span>›</span><a href="index.html">Vue d'ensemble</a><span>›</span><span style="color:var(--teal)">Tasker</span></div>
+  <div class="nav-links">
+    <a href="sp_nodeRED_V1.html" class="nav-link">SP</a>
+    <a href="se_smartphone_V2.html" class="nav-link">SE</a>
+    <a href="stt_voice_V2.html" class="nav-link">STT &amp; Voice</a>
+    <a href="arduino_V1.html" class="nav-link">Arduino</a>
+    <a href="vpiv_protocol_V1.html" class="nav-link">VPIV</a>
+  </div>
+</nav>
+
+<div class="header">
+  <h1>Tasker — Couche Android V4</h1>
+  <p>Gère les apps Android et l'UI du robot. Pipeline bidirectionnel : reçoit VPIV CAT=A via trigger.txt, envoie commandes via vpiv_out.txt → SP. Tasker 6.6.20 sur Doro.</p>
+</div>
+
+<div class="main">
+
+  <!-- PIPELINES BIDIRECTIONNELS -->
+  <div class="section">
+    <div class="section-title">Pipelines — bidirectionnels (V4)</div>
+
+    <div style="font-size:12px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin:8px 0 6px">SP → SE → Tasker (commandes reçues)</div>
+    <div class="pipeline">
+      <div class="pipeline-step"><span style="color:var(--blue)">SP publie VPIV CAT=A sur SE/commande</span><span class="pipeline-arrow">→</span><span>$A:TorchSE:etat:*:on#</span></div>
+      <div class="pipeline-step"><span style="color:var(--purple)">rz_vpiv_parser.sh détecte CAT=A</span><span class="pipeline-arrow">→</span><span>fifo_tasker_in → rz_tasker_bridge.sh</span></div>
+      <div class="pipeline-step"><span style="color:var(--purple)">rz_tasker_bridge.sh</span><span class="pipeline-arrow">→</span><span>écrit trigger.txt via printf (avec ts)</span></div>
+      <div class="pipeline-step"><span style="color:var(--teal)">Profil Fichier_ModifieParSE surveille trigger.txt</span><span class="pipeline-arrow">→</span><span>RZ_Dispatch</span></div>
+      <div class="pipeline-step"><span style="color:var(--teal)">RZ_Dispatch JavaScriplet</span><span class="pipeline-arrow">→</span><span>parse JSON → %RZtask / %RZparam → Effectuer tâche</span></div>
+    </div>
+    <div class="info-box">ℹ️ <strong>Cas particulier CamSE :</strong> $V/F:CamSE:modeCam:rear:stream# n'est <strong>pas</strong> CAT=A — appel direct rz_camera_manager.sh par rz_vpiv_parser.sh, qui délègue ensuite à Tasker en interne (RZ_CamStart/Stop) via rz_tasker_bridge.sh. Voir détail dans la section RZ_CamStart ci-dessous.</div>
+
+    <div style="font-size:12px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin:14px 0 6px">Tasker → SE → SP (commandes envoyées) <span class="tag tag-new" style="margin-left:6px">Nouveau V3</span></div>
+    <div class="pipeline">
+      <div class="pipeline-step"><span style="color:var(--teal)">Bouton menu / action Tasker</span><span class="pipeline-arrow">→</span><span>writeFile() JavaScriplet → vpiv_out.txt</span></div>
+      <div class="pipeline-step"><span style="color:var(--purple)">rz_tasker_out.sh (inotifywait)</span><span class="pipeline-arrow">→</span><span>détecte modification vpiv_out.txt</span></div>
+      <div class="pipeline-step"><span style="color:var(--blue)">mosquitto_pub SE/statut</span><span class="pipeline-arrow">→</span><span>Node-RED SP → parseVPIV → Gtion_EtatGlobal</span></div>
+    </div>
+
+    <div class="code">// trigger.txt — écrit par rz_tasker_bridge.sh (printf obligatoire, jamais echo)
+// Champ ts = timestamp — garantit détection même si contenu identique
+printf '{"task":"RZ_STT_Context","param":"Cmde","ts":"%s"}' "$(date +%s)" > ...trigger.txt
+
+// vpiv_out.txt — écrit par Tasker via writeFile() JavaScriplet
+$V:CfgS:modeRZ:*:1# // VEILLE depuis menu
+$I:TorchSE:active:SE:On# // ACK torche allumée</div>
+  </div>
+
+  <!-- PROFILS -->
+  <div class="section">
+    <div class="section-title">Profils Tasker — état final 16 juin 2026</div>
+    <table>
+      <thead><tr><th>ID</th><th>Profil</th><th>Déclencheur</th><th>Tâche</th><th>État</th></tr></thead>
+      <tbody>
+        <tr><td>16</td><td>Fichier_ModifieParSE</td><td>Modification trigger.txt</td><td>RZ_Dispatch (114)</td><td><span class="tag tag-ok">✅ Actif</span></td></tr>
+        <tr><td>17</td><td>Menu_Commande</td><td>Modification menu_cmd.json</td><td>RZ_MenuCmd (2)</td><td><span class="tag tag-ok">✅ Actif</span></td></tr>
+        <tr><td>36</td><td>RZ_RecFailed</td><td>AutoVoice Recognition Failed</td><td>RZ_VoiceError (29)</td><td><span class="tag tag-ok">✅ Actif</span></td></tr>
+        <tr><td>100</td><td>RZ_EcouteVoix</td><td>AutoVoice Recognized · Continuous · NotOnCont=false</td><td>Rz_Traite_Ecoute (62)</td><td><span class="tag tag-ok">✅ Validé 16 juin</span></td></tr>
+      </tbody>
+    </table>
+    <div class="ok-box" style="margin-top:8px">✅ Nettoyage effectué le 16 juin — profils 31 (RZ_EcouteCommandes), 34 (RZ_EcouteConversation), 35 (RZ_NoMatch), 42 (TestVoice) supprimés.</div>
+  </div>
+
+  <!-- TÂCHES CORE -->
+  <div class="section">
+    <div class="section-title">Tâches — Core</div>
+
+    <div class="task-block">
+      <div class="task-header"><span class="st st-ok"></span><span class="task-name">RZ_Init_Tasker</span><span class="tag tag-ok">✅ Complet — 16 juin</span></div>
+      <div class="task-desc">Lance rz_start.sh via Termux:Tasker → attente 4s → init variables → IP Webcam Pro en veille → Détruire RZ_Expression → Afficher RZ_Expression → emoji neutre. Actions act16–act19 ajoutées : init %RZiAConvOnOff=Off · %RZautoVoice=inactif · %RZappliConv=ferme · appel RZ_AVStart.</div>
+    </div>
+
+    <div class="task-block">
+      <div class="task-header"><span class="st st-ok"></span><span class="task-name">RZ_Dispatch</span><span class="tag tag-ok">✅ Validé</span></div>
+      <div class="task-desc">Déclenché par Profil Fichier_ModifieParSE. Parse trigger.txt, extrait task et param, appelle la tâche nommée.</div>
+      <div class="code">var data = JSON.parse(readFile('/storage/emulated/0/Tasker/RobotRZ/trigger.txt'));
+setLocal('RZtask', data.task);
+setLocal('RZparam', data.param);
+// JAMAIS return hors d'une fonction → crash Tasker
+// global('NomSansPourcent') — sans %</div>
+    </div>
+
+    <div class="task-block">
+      <div class="task-header"><span class="st st-ok"></span><span class="task-name">RZ_AppStart (task145) / RZ_AppStop (task146)</span><span class="tag tag-ok">✅ Importé</span></div>
+      <div class="task-desc">Tâches centralisées de lancement/fermeture d'applications. RZ_AppStart : met à jour variables + lance app + affiche overlay. RZ_AppStop : destroy overlay + kill appli (%RZappliActive) + nettoie variables + RZ_ExprNeutre.</div>
+      <div class="err-box" style="margin-top:8px">🔴 P1 — %RZappliActive vide au moment du tap overlay. Fix : ajouter Set %RZappliActive=NomApp dans chaque bouton app du menu (task35/36/37/19) AVANT Détruire RZ_Menu.</div>
+    </div>
+
+    <div class="task-block">
+      <div class="task-header"><span class="st st-ok"></span><span class="task-name">RZ_CamStart / RZ_CamStop</span><span class="tag tag-ok">✅ Confirmé — 22 juin, précisé 24 juin</span></div>
+      <div class="task-desc">Pilotage caméra. <strong>RZ_CamStart</strong> : Launch App <code style="color:var(--teal)">com.pas.webcam.pro</code> → Wait 2s → Plugin IP Webcam Pro natif : Start Server. <strong>RZ_CamStop</strong> : Plugin Stop Server → Kill App. Confirmé par lecture du XML Tasker réel sur le Doro — pas d'appel Android Intent direct.</div>
+      <div class="warn-box" style="margin-top:8px">⚠️ <strong>Précision 24 juin :</strong> la trame VPIV entrante CamSE reste <strong>CAT=V/F</strong>, pas CAT=A. Ces tâches Tasker ne sont pas déclenchées par le pipeline trigger.txt/RZ_Dispatch standard des commandes CAT=A — elles sont appelées <strong>en interne</strong> par <code style="color:var(--teal)">rz_camera_manager.sh</code> (lui-même invoqué directement par rz_vpiv_parser.sh sur CAT=V/F) via rz_tasker_bridge.sh. Tasker intervient dans la chaîne, mais à un second niveau, pas comme catégorie VPIV de la trame d'origine.</div>
+      <div class="info-box" style="margin-top:8px">ℹ Après le lancement Tasker, rz_camera_manager.sh prend le relai côté SE (one-shot, pas un daemon) : sélection profil qualité, verrou ressource via le pattern LockSE, détection port 8080, publication StreamURL vers SP. <a href="se_smartphone_V2.html" style="color:var(--blue)">→ Voir SE</a></div>
+    </div>
+  </div>
+
+  <!-- TÂCHES STT/VOICE -->
+  <div class="section">
+    <div class="section-title">Tâches — STT &amp; Voice
+      <a href="stt_voice_V2.html" class="schema-link">→ Page STT &amp; Voice</a>
+      <a href="schema_stt_context_V1.html" class="schema-link">📊 Schéma</a>
+    </div>
+
+    <div class="task-block">
+      <div class="task-header"><span class="st st-ok"></span><span class="task-name">Rz_Traite_Ecoute</span><span class="tag tag-ok">task62 — Validé 16 juin</span></div>
+      <div class="task-desc">Tâche associée à RZ_EcouteVoix. Filtre (?i)^rz\b sur %avcommnofilter. Variable Search Replace extrait la commande → %PhraseRZRetire. Appelle rz_autovoice_bridge.sh via Termux:Tasker.</div>
+    </div>
+
+    <div class="task-block">
+      <div class="task-header"><span class="st st-ok"></span><span class="task-name">RZ_STT_Context</span><span class="tag tag-ok">task204 v2</span><span class="tag tag-new">Remplace task27</span></div>
+      <div class="task-desc">Reçoit %par (Inactif/Cmde/Conv/Mixte) depuis RZ_Dispatch. Met %RZsttContext. Appelle RZ_AVStop/Start et RZ_GeminiStop/Start selon le contexte.</div>
+    </div>
+
+    <div class="task-block">
+      <div class="task-header"><span class="st st-ok"></span><span class="task-name">RZ_AVStart (task63) / RZ_AVStop (task64)</span><span class="tag tag-ok">✅ Créés en UI — 16 juin</span></div>
+      <div class="task-desc">Plugin AutoVoice Continuous. RZ_AVStart : Start=✅, Persistent Notification=✅, %RZautoVoice=actif. RZ_AVStop : Start=❌, %RZautoVoice=inactif. Appelés par RZ_STT_Context selon le contexte.</div>
+    </div>
+
+    <div class="task-block">
+      <div class="task-header"><span class="st st-ok"></span><span class="task-name">RZ_GeminiStart (task202) / RZ_GeminiStop (task203)</span><span class="tag tag-ok">✅ Importé</span></div>
+      <div class="task-desc">Activation/désactivation du mode conversation Gemini. %RZappliConv = actif / ferme.</div>
+    </div>
+  </div>
+
+  <!-- VARIABLES GLOBALES -->
+  <div class="section">
+    <div class="section-title">Variables globales Tasker — état complet</div>
+    <table>
+      <thead><tr><th>Variable</th><th>Init</th><th>Rôle</th><th>Mis à jour par</th></tr></thead>
+      <tbody>
+        <tr><td>%RZecranEtat</td><td>A</td><td>A=bouton, B=expression, C=appli active</td><td>RZ_AppStart, Init_Tasker</td></tr>
+        <tr><td>%RZappliActive</td><td>""</td><td>Nom appli active (BabyCam/Zoom/NavGPS)</td><td>RZ_AppStart, RZ_AppStop</td></tr>
+        <tr><td>%RZappliTask</td><td>""</td><td>Nom tâche appli active</td><td>RZ_AppStart — à init dans Init_Tasker</td></tr>
+        <tr><td>%RZtorchEtat</td><td>Off</td><td>Toggle torche</td><td>RZ_TorchOn, RZ_TorchOff</td></tr>
+        <tr><td>%RZsttContext</td><td>Inactif</td><td>Contexte STT (Inactif/Cmde/Conv/Mixte)</td><td>RZ_STT_Context</td></tr>
+        <tr><td>%RZautoVoice</td><td>inactif</td><td>État AutoVoice</td><td>RZ_AVStart, RZ_AVStop</td></tr>
+        <tr><td>%RZappliConv</td><td>ferme</td><td>État Gemini conversation</td><td>RZ_GeminiStart, RZ_GeminiStop</td></tr>
+        <tr><td>%RZiAConvOnOff</td><td>Off</td><td>Intent IA On/Off (init uniquement)</td><td>RZ_Init_Tasker</td></tr>
+        <tr><td>%RZparam</td><td>—</td><td>Paramètre transmis aux tâches</td><td>RZ_Dispatch, boutons menu</td></tr>
+        <tr><td>%RZemoji_defaut</td><td>😐</td><td>Emoji neutre de référence</td><td>RZ_ExprNeutre</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- RÈGLES CRITIQUES -->
+  <div class="section">
+    <div class="section-title">Règles critiques</div>
+    <div class="rule">Variables locales <code style="color:var(--teal)">%minuscules</code> — globales <code style="color:var(--teal)">%AuMoinsUneMajuscule</code></div>
+    <div class="rule">JavaScriplet : <code style="color:var(--teal)">global('NomSansPourcent')</code> — JAMAIS de % dans global()</div>
+    <div class="rule-bad">JAMAIS <code style="color:var(--red)">return</code> hors d'une fonction en JavaScriplet → crash Tasker silencieux</div>
+    <div class="rule">trigger.txt écrit avec <code style="color:var(--teal)">printf</code> + champ <code style="color:var(--teal)">ts</code> (timestamp) — garantit détection même si contenu identique</div>
+    <div class="rule">Séquence scène OBLIGATOIRE : Détruire (49) → Afficher (47) → Wait 500ms → Définir éléments (51)</div>
+    <div class="rule">Code 547 : arg5=3 (global) et arg6=1 — les deux obligatoires</div>
+    <div class="rule-bad">JAMAIS de second contexte variable sur un profil AutoVoice — bloque le déclenchement</div>
+    <div class="rule">Opérateur "ou" dans conditions Tasker : <code style="color:var(--teal)">/</code> — pas <code style="color:var(--red)">|</code></div>
+    <div class="rule">%avcomm et %avcommnofilter disponibles UNIQUEMENT dans la tâche directe du profil — ne traversent pas "Effectuer la tâche"</div>
+    <div class="rule">Scripts Termux:Tasker dans <code style="color:var(--teal)">~/.termux/tasker/</code> — symlinks requis, <strong>chmod +x obligatoire</strong> après tout remplacement de fichier</div>
+    <div class="rule-bad"><strong>VARIABLE_REPLACE_KEYS (import XML)</strong> — quand une action Termux:Tasker est importée via XML, ce champ peut être absent → les variables Tasker arrivent comme chaînes littérales non résolues (ex: %PhraseRZRetire arrive comme la chaîne "%PhraseRZRetire"). Toujours re-saisir manuellement les arguments dans Tasker UI après tout import XML d'une action Termux:Tasker.</div>
+    <div class="rule"><strong>Git Tasker XML</strong> — les XML dans tasker/tasks/ et tasker/profiles/ ne se mettent pas à jour automatiquement. Après modification dans Tasker UI → exporter depuis Tasker → <code style="color:var(--teal)">cp /storage/emulated/0/Tasker/tasks/*.tsk.xml ~/robotRZ-smartSE/tasker/tasks/</code> → commit.</div>
+  </div>
+
+  <!-- CODES TASKER -->
+  <div class="section">
+    <div class="section-title">Codes Tasker — Doro 6.6.20</div>
+    <div class="grid-2">
+      <div>
+        <div style="font-size:11px;color:var(--green);margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px">✅ Validés</div>
+        <table>
+          <thead><tr><th>Code</th><th>Action</th></tr></thead>
+          <tbody>
+            <tr><td>20</td><td>Charger une appli</td></tr>
+            <tr><td>18</td><td>Tuer une appli</td></tr>
+            <tr><td>47</td><td>Afficher scène</td></tr>
+            <tr><td>49</td><td>Détruire scène (toujours avant 47)</td></tr>
+            <tr><td>51</td><td>Élément Texte scène</td></tr>
+            <tr><td>129</td><td>JavaScriplet</td></tr>
+            <tr><td>130</td><td>Effectuer tâche</td></tr>
+            <tr><td>410</td><td>Écrire dans fichier</td></tr>
+            <tr><td>417</td><td>Lire fichier</td></tr>
+            <tr><td>547</td><td>Régler variable (arg5=3, arg6=1)</td></tr>
+            <tr><td>1256900802</td><td>Termux:Tasker plugin</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div>
+        <div style="font-size:11px;color:var(--red);margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px">🚫 Interdits / problématiques</div>
+        <table>
+          <thead><tr><th>Code</th><th>Problème</th></tr></thead>
+          <tbody>
+            <tr><td>664</td><td>= Java Function (pas Run Shell)</td></tr>
+            <tr><td>498</td><td>N'existe pas → "Missing action type"</td></tr>
+            <tr><td>269</td><td>Ancienne Variable Set → erreur</td></tr>
+            <tr><td>195</td><td>Non validé — utiliser 51</td></tr>
+          </tbody>
+        </table>
+        <div class="warn-box" style="margin-top:10px">⚠ <strong>Piège XML import :</strong> IDs clickTask réassignés à l'import. Vérifier avec grep après chaque import — boutons silencieux si IDs ne correspondent pas.</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">
+  RobotRZ — Tasker V4 — Juin 2026 — Vincent Philippe &nbsp;·&nbsp;
+  <a href="index.html" style="color:var(--blue)">← Vue d'ensemble</a> &nbsp;·&nbsp;
+  <a href="stt_voice_V2.html" style="color:var(--blue)">STT &amp; Voice →</a>
+</div>
+</body>
+</html>

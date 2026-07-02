@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Réseau MQTT — RobotRZ V1</title>
+<style>
+:root{--bg:#0f1117;--bg2:#171b26;--bg3:#1e2333;--text:#e8eaf0;--text2:#8b93a8;--text3:#555e78;--blue:#4d9ef7;--purple:#9b7cf4;--amber:#f0a836;--teal:#2ec4a0;--coral:#f06a50;--green:#5dbd6a;--red:#e85555;--border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.12);--radius:10px;--radius-lg:14px}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;font-size:14px;line-height:1.6}
+.nav{background:var(--bg2);border-bottom:1px solid var(--border);padding:12px 24px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:100;flex-wrap:wrap}
+.nav-logo{font-size:16px;font-weight:700;color:var(--coral);letter-spacing:1px;text-decoration:none}
+.nav-version{font-size:11px;color:var(--text3);background:var(--bg3);padding:2px 8px;border-radius:20px;border:1px solid var(--border)}
+.breadcrumb{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text3)}
+.breadcrumb a{color:var(--blue);text-decoration:none}
+.nav-links{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap}
+.nav-link{font-size:12px;color:var(--text2);text-decoration:none;padding:4px 10px;border-radius:6px;border:1px solid var(--border);transition:all .2s}
+.nav-link:hover{background:var(--bg3)}
+.header{padding:32px 24px 20px;max-width:1000px;margin:0 auto}
+.header h1{font-size:26px;font-weight:700;color:var(--coral);margin-bottom:6px}
+.main{max-width:1000px;margin:0 auto;padding:0 24px 60px}
+.section{margin-bottom:28px}
+.section-title{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:var(--text3);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--border)}
+.scenario{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:16px 18px;margin-bottom:10px}
+.scenario-num{display:inline-block;width:24px;height:24px;border-radius:50%;background:rgba(240,106,80,.2);color:var(--coral);text-align:center;line-height:24px;font-size:12px;font-weight:700;margin-right:8px}
+.scenario-title{font-size:15px;font-weight:600;display:inline}
+.scenario-body{font-size:13px;color:var(--text2);line-height:1.7;margin-top:10px}
+.scenario-tag{display:inline-block;font-family:monospace;font-size:11px;background:var(--bg3);padding:2px 8px;border-radius:4px;color:var(--teal);margin-top:6px}
+.topic-row{display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:8px}
+.topic-name{font-family:monospace;font-size:13px;font-weight:600;color:var(--coral);min-width:160px}
+.topic-dir{font-size:12px;color:var(--text3);min-width:80px}
+.topic-desc{font-size:12px;color:var(--text2)}
+.warn-box{background:rgba(240,106,80,.06);border:1px solid rgba(240,106,80,.2);border-radius:var(--radius);padding:12px 16px;font-size:13px;color:var(--text2);margin:12px 0}
+.footer{border-top:1px solid var(--border);padding:20px 24px;text-align:center;color:var(--text3);font-size:12px;max-width:1000px;margin:0 auto}
+</style>
+</head>
+<body>
+<nav class="nav">
+  <a href="index.html" class="nav-logo">RobotRZ</a>
+  <span class="nav-version">V2 — Juillet 2026</span>
+  <div class="breadcrumb"><span>›</span><a href="index.html">Vue d'ensemble</a><span>›</span><span style="color:var(--coral)">Réseau MQTT</span></div>
+  <div class="nav-links">
+    <a href="vpiv_protocol_V1.html" class="nav-link">VPIV</a>
+    <a href="sp_nodeRED_V1.html" class="nav-link">SP</a>
+    <a href="securite_V1.html" class="nav-link">Sécurité</a>
+  </div>
+</nav>
+<div class="header">
+  <h1>Réseau MQTT — 4 scénarios de connectivité</h1>
+  <p>SE (Doro, sans SIM) cherche toujours à joindre un SP Node-RED et un broker MQTT. 4 scénarios par ordre de priorité. Le broker suit toujours le SP actif.</p>
+</div>
+<div class="main">
+
+  <a href="point_reseau_ssh_V1.html" style="display:flex;align-items:center;gap:14px;background:rgba(240,106,80,.06);border:1px solid rgba(240,106,80,.3);border-radius:14px;padding:16px 20px;text-decoration:none;margin-bottom:12px;transition:all .2s" onmouseover="this.style.background='rgba(240,106,80,.12)'" onmouseout="this.style.background='rgba(240,106,80,.06)'">
+    <div style="font-size:26px;flex-shrink:0">🔧</div>
+    <div>
+      <div style="font-size:14px;font-weight:600;color:var(--coral);margin-bottom:3px">SSHD, serveur RPi &amp; adressage IP — accès distant résolu (28/06)</div>
+      <div style="font-size:13px;color:var(--text2)">Bug NAT Livebox masqué par l'IPv6, nginx confirmé actif. Reste ouvert : portée caméra. → point_reseau_ssh_V1.html</div>
+    </div>
+  </a>
+
+  <a href="vademecum_reseau_RZ_V1.html" style="display:flex;align-items:center;gap:14px;background:rgba(46,196,160,.06);border:1px solid rgba(46,196,160,.3);border-radius:14px;padding:16px 20px;text-decoration:none;margin-bottom:24px;transition:all .2s" onmouseover="this.style.background='rgba(46,196,160,.12)'" onmouseout="this.style.background='rgba(46,196,160,.06)'">
+    <div style="font-size:26px;flex-shrink:0">📚</div>
+    <div>
+      <div style="font-size:14px;font-weight:600;color:var(--teal);margin-bottom:3px">Vade-mecum réseau — comprendre IPv4/IPv6, NAT, DNS, nginx</div>
+      <div style="font-size:13px;color:var(--text2)">Explications pédagogiques avec schémas et glossaire. → vademecum_reseau_RZ_V1.html</div>
+    </div>
+  </a>
+
+  <div class="section">
+    <div class="section-title">Les 4 scénarios — par ordre de priorité</div>
+    <div class="scenario">
+      <span class="scenario-num">1</span><span class="scenario-title" style="color:var(--green)">Wi-Fi maison</span>
+      <div class="scenario-body">SE se connecte à la box domestique. Joint SP RPI directement en local sans passer par internet. Mode nominal, le plus stable et le plus rapide.<br><br>SE IP : 192.168.1.12 · SP RPI IP : 192.168.1.40 · Broker : 192.168.1.40:1883</div>
+      <div class="scenario-tag">CfgS.typeReseau = WifiInternetBox</div>
+    </div>
+    <div class="scenario">
+      <span class="scenario-num">2</span><span class="scenario-title" style="color:var(--blue)">Wi-Fi externe (chez des connaissances)</span>
+      <div class="scenario-body">SE se connecte à la box d'un tiers. SP RPI est toujours le maître mais accessible uniquement via internet (DuckDNS). La data consommée est celle de la box du tiers.</div>
+      <div class="scenario-tag">CfgS.typeReseau = WifiInternetBox</div>
+    </div>
+    <div class="scenario">
+      <span class="scenario-num">3</span><span class="scenario-title" style="color:var(--amber)">Hotspot SP Smart — 4G active</span>
+      <div class="scenario-body">Pas de Wi-Fi disponible. SE se connecte au hotspot du Xiaomi (SP Smart). SP RPI reste le maître, accessible via DuckDNS. La data consommée est celle du forfait SP Smart (Xiaomi). SP Smart sert uniquement de passerelle réseau — il ne pilote pas.</div>
+      <div class="scenario-tag">CfgS.typeReseau = Wifi4KSP</div>
+    </div>
+    <div class="scenario">
+      <span class="scenario-num">4</span><span class="scenario-title" style="color:var(--coral)">Hotspot SP Smart — sans 4G (réseau local)</span>
+      <div class="scenario-body">Pas de réseau, ou volonté d'économiser le forfait. SE se connecte au hotspot du Xiaomi <strong>sans activation de la 4G</strong>. SP Smart (Node-RED sur Xiaomi) devient le SP actif — il remplace SP RPI. Le broker MQTT tourne lui aussi sur le Xiaomi. Échange purement local, zéro consommation data.</div>
+      <div class="scenario-tag">CfgS.typeReseau = WifiSPSsI</div>
+    </div>
+    <div class="warn-box">⚠ En scénario 4, le broker MQTT n'est plus 192.168.1.40 — il est sur le Xiaomi. SP Smart doit donc héberger un broker Mosquitto local. La variable CfgS.typeReseau = WifiSPSsI permet à SE de savoir quel broker contacter.</div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Topics MQTT</div>
+    <div class="topic-row"><span class="topic-name">SE/statut</span><span class="topic-dir">SE → SP</span><span class="topic-desc">Capteurs (CAT=F), ACKs (CAT=I), urgences (CAT=E), états</span></div>
+    <div class="topic-row"><span class="topic-name">SE/commande</span><span class="topic-dir">SP → SE</span><span class="topic-desc">Commandes (CAT=V), config, urgences SP, CAT=A pour Tasker</span></div>
+    <div class="topic-row"><span class="topic-name">SE/arduino/data</span><span class="topic-dir">Arduino → SP</span><span class="topic-desc">Données Arduino relayées par mqtt_bridge.py sur SE</span></div>
+    <div class="topic-row"><span class="topic-name">SE/arduino</span><span class="topic-dir">SP → Arduino</span><span class="topic-desc">Commandes Arduino via bridge — SP écrit, SE relaie en série</span></div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Tableau récapitulatif</div>
+    <table style="width:100%;border-collapse:collapse;font-size:13px">
+      <thead><tr style="background:var(--bg3)">
+        <th style="padding:10px 12px;text-align:left;color:var(--text3);font-weight:500;border-bottom:1px solid var(--border)">Scénario</th>
+        <th style="padding:10px 12px;text-align:left;color:var(--text3);font-weight:500;border-bottom:1px solid var(--border)">Réseau SE</th>
+        <th style="padding:10px 12px;text-align:left;color:var(--text3);font-weight:500;border-bottom:1px solid var(--border)">SP actif</th>
+        <th style="padding:10px 12px;text-align:left;color:var(--text3);font-weight:500;border-bottom:1px solid var(--border)">Broker MQTT</th>
+        <th style="padding:10px 12px;text-align:left;color:var(--text3);font-weight:500;border-bottom:1px solid var(--border)">typeReseau</th>
+      </tr></thead>
+      <tbody>
+        <tr style="border-bottom:1px solid var(--border)"><td style="padding:10px 12px;color:var(--text2)">Wi-Fi maison</td><td style="padding:10px 12px;color:var(--text2)">Box locale</td><td style="padding:10px 12px;color:var(--text2)">SP RPI</td><td style="padding:10px 12px;font-family:monospace;font-size:12px;color:var(--teal)">192.168.1.40</td><td style="padding:10px 12px;font-family:monospace;font-size:12px;color:var(--teal)">WifiInternetBox</td></tr>
+        <tr style="border-bottom:1px solid var(--border)"><td style="padding:10px 12px;color:var(--text2)">Wi-Fi externe</td><td style="padding:10px 12px;color:var(--text2)">Box tiers</td><td style="padding:10px 12px;color:var(--text2)">SP RPI via DuckDNS</td><td style="padding:10px 12px;font-family:monospace;font-size:12px;color:var(--teal)">DuckDNS</td><td style="padding:10px 12px;font-family:monospace;font-size:12px;color:var(--teal)">WifiInternetBox</td></tr>
+        <tr style="border-bottom:1px solid var(--border)"><td style="padding:10px 12px;color:var(--text2)">Hotspot 4G</td><td style="padding:10px 12px;color:var(--text2)">Partage Xiaomi</td><td style="padding:10px 12px;color:var(--text2)">SP RPI via DuckDNS</td><td style="padding:10px 12px;font-family:monospace;font-size:12px;color:var(--teal)">DuckDNS</td><td style="padding:10px 12px;font-family:monospace;font-size:12px;color:var(--teal)">Wifi4KSP</td></tr>
+        <tr><td style="padding:10px 12px;color:var(--text2)">Hotspot sans 4G</td><td style="padding:10px 12px;color:var(--text2)">Wi-Fi local Xiaomi</td><td style="padding:10px 12px;color:var(--coral);font-weight:600">SP Smart (local)</td><td style="padding:10px 12px;font-family:monospace;font-size:12px;color:var(--coral)">Broker Xiaomi</td><td style="padding:10px 12px;font-family:monospace;font-size:12px;color:var(--teal)">WifiSPSsI</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Configuration broker Node-RED (SP RPI)</div>
+    <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:16px 18px;font-size:13px;color:var(--text2);line-height:1.8">
+      ID broker Node-RED : <span style="font-family:monospace;color:var(--teal)">ad09248d7131b4e0</span><br>
+      Adresse : <span style="font-family:monospace;color:var(--teal)">192.168.1.40:1883</span><br>
+      Credentials : stockés dans la configuration du broker Node-RED (pas dans flows.json)<br>
+      Accès externe : DuckDNS (port NAT box)<br>
+      Accès SSH Termux : port 8022 (local) · port 5800 via NAT
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Régénérer MQTT_PASS — procédure (3 emplacements)</div>
+    <div class="warn-box">⚠ MQTT_PASS doit être mis à jour <strong>simultanément</strong> à 3 endroits — un oubli casse la connexion broker sans message d'erreur évident côté client.</div>
+    <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:16px 18px;margin-bottom:10px">
+      <div style="color:var(--coral);font-weight:600;margin-bottom:6px">1. Mosquitto — RPi (SP RPI)</div>
+      <div class="code" style="margin:8px 0 0">sudo mosquitto_passwd /etc/mosquitto/passwd rpibrokerUser
+sudo systemctl restart mosquitto
+# Rappel : systemctl status est paginé — taper "q" pour quitter l'affichage</div>
+    </div>
+    <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:16px 18px;margin-bottom:10px">
+      <div style="color:var(--coral);font-weight:600;margin-bottom:6px">2. keys.json — Doro (SE)</div>
+      <div style="font-size:13px;color:var(--text2)">Mettre à jour la valeur <span style="font-family:monospace;color:var(--teal)">MQTT_PASS</span> dans <span style="font-family:monospace;color:var(--teal)">~/robotRZ-smartSE/termux/config/keys.json</span>.</div>
+    </div>
+    <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:16px 18px;margin-bottom:10px">
+      <div style="color:var(--coral);font-weight:600;margin-bottom:6px">3. Node-RED — SP RPI</div>
+      <div style="font-size:13px;color:var(--text2)">Nœud broker MQTT → onglet Sécurité → nouveau mot de passe → <strong>Deploy</strong>.</div>
+    </div>
+    <div class="warn-box" style="border-color:rgba(93,189,106,.3);background:rgba(93,189,106,.06)">
+      ✅ <strong>Validation :</strong> <span style="font-family:monospace;color:var(--teal)">mosquitto_pub</span> depuis le Doro avec les variables lues depuis keys.json → succès sans erreur.<br>
+      ⚠ <strong>Piège :</strong> éviter les caractères spéciaux (<span style="font-family:monospace">! @ $ # %</span>) dans le mot de passe — ils posent problème dans les variables shell bash. Préférer lettres + chiffres uniquement pour tout credential qui transite par un script.
+    </div>
+    <div style="font-size:12px;color:var(--text3);margin-top:10px">Procédure exécutée et validée le 01/07/2026. Règles générales : <a href="securite_V1.html" style="color:var(--blue)">securite_V1.html</a></div>
+  </div>
+
+</div>
+<div class="footer">
+  RobotRZ — Réseau MQTT V2 — Juillet 2026 — Vincent Philippe &nbsp;·&nbsp;
+  <a href="index.html" style="color:var(--blue)">← Vue d'ensemble</a> &nbsp;·&nbsp;
+  <a href="securite_V1.html" style="color:var(--blue)">Sécurité →</a>
+</div>
+</body>
+</html>

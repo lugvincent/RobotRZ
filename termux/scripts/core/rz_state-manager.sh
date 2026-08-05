@@ -61,6 +61,11 @@
 # - Jamais de pattern A && B || C (SC2015) -- utiliser if/then/else
 # - Robot.speed N'EXISTE PAS dans Table A -- ne jamais l'utiliser (corrige juin 2026,
 #   remplace par Mtr.state qui est la variable VPIV reelle et documentee)
+# - (13/07/2026) mosquitto_sub tourne desormais en boucle de reconnexion (-C1 +
+#   while true + sleep 0.5) -- AVANT ce correctif, une seule coupure MQTT faisait
+#   sortir tout le script sans redemarrage automatique. Confirme en conditions
+#   reelles : script reste mort du 29/06 au 13/07/2026 (2 semaines) suite a une
+#   coupure reseau, sans autre signe que "Connection error" dans le log.
 #
 # DEPENDANCES
 # -----------
@@ -68,9 +73,11 @@
 #   config/keys.json, config/global.json
 #
 # AUTEUR  : Vincent Philippe
-# VERSION : 1.6  (revision table modeRZ/STTcontext, detection mouvement via
-#                  Mtr.state au lieu de Robot.speed inexistant dans Table A)
-# DATE    : 2026-06-19
+# VERSION : 1.7  (13/07/2026 -- correctif Claude : boucle de reconnexion MQTT
+#           ajoutee dans main(), sur le meme principe que rz_vpiv_parser.sh v2.4.
+#           Aucun autre changement -- process_mqtt_command, handle_state_transition,
+#           calculate_stt_context inchanges.)
+# DATE PRECEDENTE : 2026-06-19 (v1.6)
 # =============================================================================
 
 # --- CONFIGURATION DES CHEMINS ---
@@ -310,10 +317,24 @@ main() {
     calculate_stt_context
 
     log "En attente de commandes sur SE/commande..."
-    mosquitto_sub -h "$MQTT_HOST" -p 1883 \
-        -u "$MQTT_USER" -P "$MQTT_PASS" \
-        -t "SE/commande" | while read -r msg; do
-        process_mqtt_command "$msg"
+
+    # Boucle de reconnexion : mosquitto_sub -C 1 lit un message puis sort,
+    # ce qui permet de relancer proprement en cas de coupure reseau, sans
+    # rester mort indefiniment si la connexion tombe (meme principe que
+    # rz_vpiv_parser.sh v2.4 - coherence entre les deux daemons core).
+    # AVANT ce correctif (13/07/2026) : mosquitto_sub sans -C1 ni boucle
+    # de reprise - une seule coupure faisait sortir tout le script, sans
+    # aucun signalement autre que le "Connection error" dans le log, et
+    # sans redemarrage automatique. Confirme en test reel : script mort
+    # du 29/06 au 13/07/2026 (2 semaines) suite a une coupure MQTT.
+    while true; do
+        mosquitto_sub -h "$MQTT_HOST" -p 1883 \
+            -u "$MQTT_USER" -P "$MQTT_PASS" \
+            -t "SE/commande" -C 1 \
+        | while read -r msg; do
+            process_mqtt_command "$msg"
+        done
+        sleep 0.5
     done
 }
 main

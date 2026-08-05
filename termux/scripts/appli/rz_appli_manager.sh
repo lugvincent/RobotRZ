@@ -73,8 +73,15 @@
 #   rz_resource_lock.sh (V1.2)
 #
 # AUTEUR  : Vincent Philippe
-# VERSION : 1.2  (juin 2026 — verrou camera/microphone pour Zoom)
-# DATE    : 2026-06-22
+# VERSION : 1.3  (13/07/2026 — correctif Claude : bloc source/else corrompu
+#           lors d'un copier-coller précédent — "source" s'était retrouvé
+#           sans argument et "else" collé au chemin sans espace, syntaxe
+#           bash invalide. Chemin shellcheck corrigé (../utils/, pas ./ —
+#           rz_resource_lock.sh est dans scripts/utils/, pas scripts/appli/).
+#           SC2181 : les deux tests $? après lock_resource remplacés par
+#           `if ! var=$(...); then` — plus robuste si une ligne s'intercale
+#           un jour entre l'appel et le test.)
+# DATE PRÉCÉDENTE : 2026-06-22
 # =============================================================================
 
 # =============================================================================
@@ -104,8 +111,9 @@ log() {
 }
 
 # Chargement des fonctions de verrou ressource (V1.2)
+# Chemin relatif shellcheck : scripts/appli/ -> scripts/utils/ = ../utils/
 if [ -f "$RESOURCE_LOCK_SCRIPT" ]; then
-    # shellcheck source=./rz_resource_lock.sh
+    # shellcheck source=../utils/rz_resource_lock.sh
     source "$RESOURCE_LOCK_SCRIPT"
 else
     log "WARN : rz_resource_lock.sh introuvable ($RESOURCE_LOCK_SCRIPT) — verrouillage désactivé"
@@ -156,16 +164,14 @@ route_appli() {
                 if command -v lock_resource &>/dev/null; then
                     local holder_cam holder_mic
 
-                    holder_cam=$(lock_resource camera "$ZOOM_LOCK_OWNER")
-                    if [ $? -ne 0 ]; then
+                    if ! holder_cam=$(lock_resource camera "$ZOOM_LOCK_OWNER"); then
                         log "REFUS zoom : caméra déjà détenue par '$holder_cam'"
                         send_vpiv_direct "\$E:CamSE:error:*:CAM_LOCKED_${holder_cam}#"
                         send_vpiv_direct "\$I:COM:error:SE:\"Zoom indisponible : caméra utilisée par ${holder_cam}\"#"
                         return 1
                     fi
 
-                    holder_mic=$(lock_resource microphone "$ZOOM_LOCK_OWNER")
-                    if [ $? -ne 0 ]; then
+                    if ! holder_mic=$(lock_resource microphone "$ZOOM_LOCK_OWNER"); then
                         log "REFUS zoom : microphone déjà détenu par '$holder_mic'"
                         unlock_resource camera "$ZOOM_LOCK_OWNER" > /dev/null
                         send_vpiv_direct "\$I:COM:error:SE:\"Zoom indisponible : microphone utilisé par ${holder_mic}\"#"
@@ -254,7 +260,7 @@ process_trame() {
 
 main() {
     log "=========================================="
-    log "Démarrage rz_appli_manager.sh v1.2"
+    log "Démarrage rz_appli_manager.sh v1.3"
     log "=========================================="
 
     # Vérifications

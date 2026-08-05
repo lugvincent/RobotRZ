@@ -28,7 +28,10 @@
 #        autres              → fifo_termux_in
 #    - CAT=A (Voice intent)  → fifo_tasker_in si MODULE=Voice
 #    - CAT=I/E               → fifo_termux_in
-# 6. ACK VPIV (COM:info) envoyé sur SE/statut pour chaque trame traitée.
+#      EXCEPTION (v2.4) : MODULE=STT + PROP=intent → fichier de
+#      corrélation dédié, PAS fifo_termux_in (voir NOUVEAUTÉS v2.4)
+# 6. ACK VPIV (COM:info) envoyé sur SE/statut pour chaque trame traitée
+#    (sauf exception STT.intent v2.4, voir ci-dessus).
 #
 # TABLE A — VPIV TRAITÉS (CAT entrants)
 # --------------------------------------
@@ -45,6 +48,7 @@
 #   Écrit   : fifo/fifo_tasker_in     (Tasker bridge)
 #   Écrit   : fifo/fifo_appli_in      (rz_appli_manager.sh — CAT=A)
 #   Écrit   : fifo/fifo_voice_in    (rz_voice_manager.sh — TTS, vol, output)
+#   Écrit   : fifo/stt_ack/<id_requete>.ack  (v2.4 — voir NOUVEAUTÉS)
 #   Lit     : config/global.json      (typePtge, pour retour vocal)
 #   Lit     : fifo/fifo_termux_in     (trames SE→SP : managers capteurs)#   Appelle : scripts/core/safety_stop.sh  (Point C urgence)
 #   Appelle : scripts/sensors/cam/rz_camera_manager.sh
@@ -56,6 +60,13 @@
 #   sans modification ni validation du contenu (délégué à rz_appli_manager.sh).
 # - En cas de FIFO plein ou bloqué : l'écriture est non-bloquante (timeout 1s).
 # - La boucle MQTT se relance automatiquement après chaque déconnexion (sleep 0.5s).
+# - v2.4 : le dossier fifo/stt_ack/ est créé à la volée (mkdir -p) — pas
+#   besoin de l'ajouter à fifo_manager.sh create.
+# - v2.4 : une trame $I:STT:intent:<id>:...# ne repart JAMAIS vers SP
+#   (ni fifo_termux_in, ni l'ACK générique de fin de fonction) — c'est
+#   une réponse déjà destinée à SE (rz_stt_handler.sh), pas un événement
+#   à faire remonter. Vérifié : le `return` dans ce cas précis saute bien
+#   le bloc ACK générique en fin de process_command().
 #
 # DÉPENDANCES
 # -----------
@@ -65,11 +76,28 @@
 #                               fallback polling 300ms si absent
 #
 # AUTEUR  : Vincent Philippe
-# VERSION : 2.3  (ajout watcher vpiv_out.txt — canal Tasker→SP)
-# DATE    : 2026-05-09
+# VERSION : 2.4  (ajout dispatch dédié STT.intent → fichier de corrélation)
+# DATE    : 2026-07-07
 #
-# NOUVEAUTÉS v2.3
+# NOUVEAUTÉS v2.4
 # ---------------
+# - Ajout d'un cas spécial dans process_command(), au tout début du bloc
+#   CAT="I"|"E" : si MODULE=STT et PROP=intent, la trame ne suit PAS le
+#   chemin générique (write_fifo FIFO_TERMUX, qui la republierait vers
+#   SP sur SE/statut). Elle est écrite dans un fichier dédié
+#   fifo/stt_ack/<INST>.ack (INST porte l'id_requete de corrélation,
+#   généré par rz_stt_handler.sh v3.1 à l'émission de la capsule
+#   STT.intent d'origine). C'est ce fichier que wait_for_ack() (nouveau
+#   dans rz_stt_handler.sh v3.1) surveille pour savoir si SP a validé ou
+#   rejeté une commande vocale nécessitant une résolution côté SP
+#   (TRADUCTION/CALCUL/MACRO — voir schema_mecanisme_resolution_
+#   intents_V1.html). Un `return` explicite évite que cette trame tombe
+#   aussi dans l'ACK générique de fin de process_command().
+# - Les NOUVEAUTÉS v2.3 (watch_vpiv_out) sont conservées à l'identique
+#   ci-dessous, aucune modification.
+#
+# NOUVEAUTÉS v2.3 (conservées)
+# -----------------------------
 # - Ajout constante VPIV_OUT_FILE : /storage/emulated/0/Tasker/RobotRZ/vpiv_out.txt
 # - Ajout fonction watch_vpiv_out() : surveille vpiv_out.txt écrit par Tasker
 #   (scènes menu, boutons user) et injecte la trame dans fifo_termux_in
@@ -97,6 +125,7 @@ FIFO_TERMUX="$FIFO_DIR/fifo_termux_in"
 FIFO_APPLI="$FIFO_DIR/fifo_appli_in"      # ← Ajout : CAT=A Applications
 FIFO_VOICE="$FIFO_DIR/fifo_voice_in"   # module Voice (TTS, vol, output)
 FIFO_RETURN="$FIFO_DIR/fifo_return"
+STT_ACK_DIR="$FIFO_DIR/stt_ack"           # v2.4 — fichiers de corrélation ACK STT
 VPIV_OUT_FILE="/storage/emulated/0/Tasker/RobotRZ/vpiv_out.txt"
 LOG_FILE="$LOG_DIR/vpiv_parser.log"
 
@@ -187,6 +216,7 @@ watch_vpiv_out() {
 
 init_fifo() {
     mkdir -p "$FIFO_DIR"
+    mkdir -p "$STT_ACK_DIR"
     [ -p "$FIFO_TASKER"  ] || mkfifo "$FIFO_TASKER"
     [ -p "$FIFO_TERMUX"  ] || mkfifo "$FIFO_TERMUX"
     [ -p "$FIFO_APPLI"   ] || mkfifo "$FIFO_APPLI"
@@ -331,9 +361,28 @@ process_command() {
         # ---------------------------------------------------------------------
         # CAT = I (Information) ou E (Événement)
         # → fifo_termux_in pour traitement state-manager
-        # Exception : Urg → ACK systématique en plus
+        # Exceptions :
+        #   - STT.intent (v2.4) → fichier de corrélation dédié, PAS fifo_termux_in
+        #   - Urg → ACK systématique en plus
         # ---------------------------------------------------------------------
         "I"|"E")
+            # ---------------------------------------------------------------
+            # v2.4 — ACK de résolution STT (corrélation par id_requete)
+            # Ne doit PAS repartir vers SP : cette trame est la réponse de
+            # SP à une capsule STT.intent envoyée plus tôt par
+            # rz_stt_handler.sh (v3.1, process_raw/wait_for_ack). Elle est
+            # destinée à CETTE invocation précise du script, identifiée
+            # par INST (= id_requete). `return` explicite pour ne PAS
+            # tomber dans le write_fifo générique juste en dessous, ni
+            # dans l'ACK MQTT générique en fin de fonction.
+            # ---------------------------------------------------------------
+            if [[ "$MODULE" == "STT" && "$PROP" == "intent" ]]; then
+                mkdir -p "$STT_ACK_DIR"
+                echo "$VAL" > "$STT_ACK_DIR/${INST}.ack"
+                log "ACK STT.intent reçu — id_requete=$INST → $VAL"
+                return
+            fi
+
             # ACK urgence systématique
             if [[ "$MODULE" == "Urg" ]]; then
                 write_fifo "$FIFO_TERMUX" "\$I:Urg:${PROP}:SE:${VAL}#"
@@ -363,6 +412,7 @@ process_command() {
     # =========================================================================
     # ACK MQTT — Confirmation de réception (optionnel, utile pour debug SP)
     # Format allégé : 4 premiers champs de la trame
+    # (v2.4 : STT.intent ne passe jamais ici, cf. `return` ci-dessus)
     # =========================================================================
     local short_msg
     short_msg=$(echo "$msg" | cut -d':' -f1-4)
@@ -380,7 +430,7 @@ process_command() {
 
 main() {
     log "=========================================="
-    log "Démarrage rz_vpiv_parser.sh  v2.0"
+    log "Démarrage rz_vpiv_parser.sh  v2.4"
     log "=========================================="
 
     # Vérification dépendances

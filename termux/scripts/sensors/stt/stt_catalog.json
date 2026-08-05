@@ -148,7 +148,8 @@
         },
         {
             "id": "MTR_TURN_RIGHT",
-            "traitement": "PLAN",
+            "traitement": "CALCUL",
+            "id_traitement": "CALC_MTR_ANGLE",
             "cat": "V",
             "destinataire": "A",
             "moteurActif": 1,
@@ -171,7 +172,8 @@
         },
         {
             "id": "MTR_TURN_LEFT",
-            "traitement": "PLAN",
+            "traitement": "CALCUL",
+            "id_traitement": "CALC_MTR_ANGLE",
             "cat": "V",
             "destinataire": "A",
             "moteurActif": 1,
@@ -194,7 +196,8 @@
         },
         {
             "id": "MTR_TURN_ANGLE",
-            "traitement": "PLAN",
+            "traitement": "CALCUL",
+            "id_traitement": "CALC_MTR_ANGLE",
             "cat": "V",
             "destinataire": "A",
             "moteurActif": 1,
@@ -216,7 +219,8 @@
         },
         {
             "id": "MTR_SPEED_SET",
-            "traitement": "PLAN",
+            "traitement": "CALCUL",
+            "id_traitement": "CALC_MTR_VITESSE",
             "cat": "V",
             "destinataire": "A",
             "moteurActif": 1,
@@ -238,7 +242,8 @@
         },
         {
             "id": "MTR_ADVANCE_DIST",
-            "traitement": "PLAN",
+            "traitement": "CALCUL",
+            "id_traitement": "CALC_MTR_DISTANCE",
             "cat": "V",
             "destinataire": "A",
             "moteurActif": 1,
@@ -420,7 +425,8 @@
         },
         {
             "id": "SYS_SET_PILOT",
-            "traitement": "PLAN",
+            "traitement": "TRADUCTION",
+            "id_traitement": "CONV_TYPEPTGE",
             "cat": "V",
             "destinataire": "SE",
             "moteurActif": 0,
@@ -764,7 +770,8 @@
         },
         {
             "id": "LRING_BRIGHTNESS",
-            "traitement": "PLAN",
+            "traitement": "CALCUL",
+            "id_traitement": "CALC_LRING_LUMIN",
             "cat": "V",
             "destinataire": "A",
             "moteurActif": 0,
@@ -786,7 +793,8 @@
         },
         {
             "id": "LRUB_SET_RGB",
-            "traitement": "SIMPLE",
+            "traitement": "TRADUCTION",
+            "id_traitement": "CONV_COULEUR_BASE",
             "cat": "V",
             "destinataire": "A",
             "moteurActif": 0,
@@ -798,7 +806,7 @@
             "id_fils": [],
             "vpiv_parts": {
                 "var": "Lrub",
-                "prop": "mode",
+                "prop": "col",
                 "inst": "*",
                 "val": "2",
                 "encodage": ""
@@ -922,7 +930,8 @@
         },
         {
             "id": "SRV_HEAD_ANGLE",
-            "traitement": "PLAN",
+            "traitement": "CALCUL",
+            "id_traitement": "CALC_SRV_ANGLE",
             "cat": "V",
             "destinataire": "A",
             "moteurActif": 0,
@@ -1258,7 +1267,7 @@
         },
         {
             "id": "SYS_STATUS",
-            "traitement": "LOCAL",
+            "traitement": "LocalSE",
             "cat": "I",
             "destinataire": "SE",
             "moteurActif": 0,
@@ -1282,7 +1291,7 @@
         },
         {
             "id": "SYS_BATTERY",
-            "traitement": "LOCAL",
+            "traitement": "LocalSE",
             "cat": "I",
             "destinataire": "SE",
             "moteurActif": 0,
@@ -1306,7 +1315,7 @@
         },
         {
             "id": "SYS_GET_TEMP",
-            "traitement": "LOCAL",
+            "traitement": "LocalSE",
             "cat": "I",
             "destinataire": "SE",
             "moteurActif": 0,
@@ -1329,7 +1338,7 @@
         },
         {
             "id": "NAV_GET_HEADING",
-            "traitement": "LOCAL",
+            "traitement": "LocalSE",
             "cat": "I",
             "destinataire": "SE",
             "moteurActif": 0,
@@ -1352,7 +1361,7 @@
         },
         {
             "id": "GYRO_GET_PITCH",
-            "traitement": "LOCAL",
+            "traitement": "LocalSE",
             "cat": "I",
             "destinataire": "SE",
             "moteurActif": 0,
@@ -1375,7 +1384,7 @@
         },
         {
             "id": "COM_GET_STATE",
-            "traitement": "LOCAL",
+            "traitement": "LocalSE",
             "cat": "I",
             "destinataire": "SE",
             "moteurActif": 0,
@@ -1443,7 +1452,7 @@
         },
         {
             "id": "AI_START_CONV",
-            "traitement": "LOCAL",
+            "traitement": "LocalSE",
             "cat": "A",
             "destinataire": "SE",
             "moteurActif": 0,
@@ -1466,7 +1475,8 @@
         },
         {
             "id": "VOICE_VOL_SET",
-            "traitement": "PLAN",
+            "traitement": "CALCUL",
+            "id_traitement": "CALC_VOICE_VOL",
             "cat": "V",
             "destinataire": "SE",
             "moteurActif": 0,
@@ -1490,7 +1500,7 @@
         },
         {
             "id": "VOICE_SAY_ID",
-            "traitement": "LOCAL",
+            "traitement": "LocalSE",
             "cat": "I",
             "destinataire": "SE",
             "moteurActif": 0,
@@ -1513,7 +1523,7 @@
         },
         {
             "id": "MACRO_PAUSE",
-            "traitement": "COMPLEXE",
+            "traitement": "MACRO",
             "cat": "V",
             "destinataire": "A",
             "moteurActif": 0,
@@ -1536,7 +1546,7 @@
         },
         {
             "id": "MACRO_HELLO",
-            "traitement": "COMPLEXE",
+            "traitement": "MACRO",
             "cat": "V",
             "destinataire": "SE",
             "moteurActif": 0,
@@ -1561,7 +1571,7 @@
         },
         {
             "id": "MACRO_SLEEP",
-            "traitement": "COMPLEXE",
+            "traitement": "MACRO",
             "cat": "V",
             "destinataire": "SE",
             "moteurActif": 0,
@@ -1586,7 +1596,7 @@
         },
         {
             "id": "MACRO_WAKE",
-            "traitement": "COMPLEXE",
+            "traitement": "MACRO",
             "cat": "V",
             "destinataire": "SE",
             "moteurActif": 0,

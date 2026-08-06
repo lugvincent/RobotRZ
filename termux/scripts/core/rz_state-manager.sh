@@ -73,10 +73,16 @@
 #   config/keys.json, config/global.json
 #
 # AUTEUR  : Vincent Philippe
-# VERSION : 1.7  (13/07/2026 -- correctif Claude : boucle de reconnexion MQTT
-#           ajoutee dans main(), sur le meme principe que rz_vpiv_parser.sh v2.4.
-#           Aucun autre changement -- process_mqtt_command, handle_state_transition,
-#           calculate_stt_context inchanges.)
+# VERSION : 1.8  (06/08/2026 -- correctif Claude : calculate_stt_context()
+#           ne publiait jamais son resultat vers SP (MQTT SE/statut) --
+#           seul trigger.txt (SE->Tasker local) etait ecrit. Ajout d'un
+#           mosquitto_pub direct, meme principe que le cas "modeSTT" un
+#           peu plus bas dans ce fichier. Confirme en test reel : sans ce
+#           correctif, RZ_STT.context._last restait bloque sur "Inactif"
+#           cote SP indefiniment, meme quand SE calculait correctement
+#           "Mixte"/"Cmde" en interne.
+#           v1.7 (13/07/2026) -- boucle de reconnexion MQTT ajoutee dans
+#           main(), sur le meme principe que rz_vpiv_parser.sh v2.4.
 # DATE PRECEDENTE : 2026-06-19 (v1.6)
 # =============================================================================
 
@@ -179,6 +185,19 @@ calculate_stt_context() {
     && mv "${GLOBAL_CONFIG}.tmp" "$GLOBAL_CONFIG"
 
     log "STT.context defini sur : $context"
+
+    # (06/08/2026) ACK direct vers SP -- meme principe que le cas "modeSTT"
+    # juste plus bas dans ce fichier. AVANT ce correctif : cette fonction ne
+    # publiait jamais rien vers MQTT SE/statut pour STT.context -- seul
+    # trigger.txt (SE -> Tasker, local) etait ecrit. RZ_STT_Context (Tasker)
+    # demarre bien AutoVoice/Gemini localement, mais aucune action n'y
+    # renvoie de confirmation vers SP. Consequence confirmee en test reel :
+    # RZ_STT.context._last restait bloque sur "Inactif" cote SP, quel que
+    # soit le contexte reellement calcule cote SE.
+    mosquitto_pub -h "$MQTT_HOST" -p 1883 \
+        -u "$MQTT_USER" -P "$MQTT_PASS" \
+        -t "SE/statut" -m "\$I:STT:context:SE:${context}#"
+
     sync_to_tasker
     # Notifier Tasker du changement de contexte STT
     # -> met a jour %RZsttContext via profil Fichier_ModifieParSE -> RZ_Dispatch -> RZ_STT_Context

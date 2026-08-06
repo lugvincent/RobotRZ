@@ -76,8 +76,12 @@
 #                               fallback polling 300ms si absent
 #
 # AUTEUR  : Vincent Philippe
-# VERSION : 2.4  (ajout dispatch dédié STT.intent → fichier de corrélation)
-# DATE    : 2026-07-07
+# VERSION : 2.5  (06/08/2026 -- correctif Claude : suppression du -C1 dans
+#           la boucle MQTT principale, remplace par une connexion
+#           persistante. Meme defaut et meme correctif que rz_state-
+#           manager.sh v1.9 le meme jour -- fenetre morte ~0.5s apres
+#           chaque message pouvait faire perdre un second message
+#           rapproche du premier.
 #
 # NOUVEAUTÉS v2.4
 # ---------------
@@ -430,7 +434,7 @@ process_command() {
 
 main() {
     log "=========================================="
-    log "Démarrage rz_vpiv_parser.sh  v2.4"
+    log "Démarrage rz_vpiv_parser.sh  v2.5"
     log "=========================================="
 
     # Vérification dépendances
@@ -463,12 +467,20 @@ FIFO_READER_PID=$!
     VPIV_WATCHER_PID=$!
     log "Watcher vpiv_out.txt démarré (PID $VPIV_WATCHER_PID)"
     
-    # Boucle de reconnexion : mosquitto_sub -C 1 lit un message puis sort,
-    # ce qui permet de relancer proprement en cas de coupure réseau.
+    # Boucle de reconnexion : connexion persistante, PAS de -C1.
+    # (06/08/2026) AVANT ce correctif : -C1 forcait une reconnexion
+    # complete apres CHAQUE message, creant une fenetre morte ~0.5s.
+    # Meme defaut que celui trouve et corrige dans rz_state-manager.sh
+    # v1.9 le meme jour -- deux messages rapproches sur SE/commande
+    # pouvaient laisser le second se perdre si il tombait dans cette
+    # fenetre. Cette version garde la connexion ouverte en continu et
+    # ne relance que si mosquitto_sub sort reellement (coupure reseau
+    # reelle) -- protection contre une coupure reelle toujours assuree,
+    # sans la fenetre morte entre deux messages consecutifs.
     while true; do
         mosquitto_sub -h "$MQTT_BROKER" -p 1883 \
             -u "$MQTT_USER" -P "$MQTT_PASS" \
-            -t "$MQTT_TOPIC" -C 1 \
+            -t "$MQTT_TOPIC" \
         | while read -r msg; do
             if validate_vpiv "$msg"; then
                 process_command "$msg"
@@ -481,6 +493,7 @@ FIFO_READER_PID=$!
                     -q 0 >/dev/null 2>&1
             fi
         done
+        log "Connexion MQTT perdue -- reconnexion..."
         # Pause courte avant reconnexion (évite boucle CPU si réseau absent)
         sleep 0.5
     done

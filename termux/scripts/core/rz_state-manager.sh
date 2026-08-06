@@ -73,14 +73,16 @@
 #   config/keys.json, config/global.json
 #
 # AUTEUR  : Vincent Philippe
-# VERSION : 1.8  (06/08/2026 -- correctif Claude : calculate_stt_context()
-#           ne publiait jamais son resultat vers SP (MQTT SE/statut) --
-#           seul trigger.txt (SE->Tasker local) etait ecrit. Ajout d'un
-#           mosquitto_pub direct, meme principe que le cas "modeSTT" un
-#           peu plus bas dans ce fichier. Confirme en test reel : sans ce
-#           correctif, RZ_STT.context._last restait bloque sur "Inactif"
-#           cote SP indefiniment, meme quand SE calculait correctement
-#           "Mixte"/"Cmde" en interne.
+# VERSION : 1.9  (06/08/2026 -- correctif Claude : suppression du -C1 dans
+#           la boucle MQTT principale, remplace par une connexion
+#           persistante. -C1 (introduit en v1.7) forcait une reconnexion
+#           apres chaque message, creant une fenetre morte ~0.5s pendant
+#           laquelle un message rapproche du precedent pouvait etre perdu
+#           en silence -- confirme en test reel (typePtge perdu quand
+#           envoye juste apres modeRZ par INTENT_Valider_Config).
+#           v1.8 (06/08/2026) -- calculate_stt_context() ne publiait
+#           jamais son resultat vers SP (MQTT SE/statut). Ajout d'un
+#           mosquitto_pub direct, meme principe que le cas "modeSTT".
 #           v1.7 (13/07/2026) -- boucle de reconnexion MQTT ajoutee dans
 #           main(), sur le meme principe que rz_vpiv_parser.sh v2.4.
 # DATE PRECEDENTE : 2026-06-19 (v1.6)
@@ -337,22 +339,26 @@ main() {
 
     log "En attente de commandes sur SE/commande..."
 
-    # Boucle de reconnexion : mosquitto_sub -C 1 lit un message puis sort,
-    # ce qui permet de relancer proprement en cas de coupure reseau, sans
-    # rester mort indefiniment si la connexion tombe (meme principe que
-    # rz_vpiv_parser.sh v2.4 - coherence entre les deux daemons core).
-    # AVANT ce correctif (13/07/2026) : mosquitto_sub sans -C1 ni boucle
-    # de reprise - une seule coupure faisait sortir tout le script, sans
-    # aucun signalement autre que le "Connection error" dans le log, et
-    # sans redemarrage automatique. Confirme en test reel : script mort
-    # du 29/06 au 13/07/2026 (2 semaines) suite a une coupure MQTT.
+    # (06/08/2026) Connexion persistante, PAS de -C1. AVANT ce correctif
+    # (v1.7, 13/07/2026) : -C1 forcait une reconnexion complete apres
+    # CHAQUE message, creant une fenetre morte d'environ 0.5s. Confirme
+    # en test reel : quand INTENT_Valider_Config envoie deux commandes
+    # coup sur coup (modeRZ puis typePtge, sans delai volontaire), la
+    # seconde pouvait arriver pendant cette fenetre et etre perdue en
+    # silence -- typePtge restait alors sur son ancienne valeur, sans
+    # aucune erreur visible nulle part. Cette version garde la connexion
+    # ouverte en continu (donc aucune fenetre morte entre deux messages
+    # consecutifs) et ne relance que si mosquitto_sub sort reellement
+    # (coupure reseau reelle) -- protection contre le blocage silencieux
+    # du 29/06-13/07/2026 toujours assuree, sans le nouvel effet de bord.
     while true; do
         mosquitto_sub -h "$MQTT_HOST" -p 1883 \
             -u "$MQTT_USER" -P "$MQTT_PASS" \
-            -t "SE/commande" -C 1 \
+            -t "SE/commande" \
         | while read -r msg; do
             process_mqtt_command "$msg"
         done
+        log "Connexion MQTT perdue -- reconnexion..." "WARN"
         sleep 0.5
     done
 }

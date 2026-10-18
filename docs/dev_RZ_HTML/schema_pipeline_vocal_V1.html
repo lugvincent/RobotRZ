@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RobotRZ — Schéma de circulation d'un ordre vocal</title>
+<!--
+=============================================================================
+FICHIER   : schema_pipeline_vocal_V1.html
+CHEMIN    : docs/dev_RZ_HTML/schema_pipeline_vocal_V1.html (à déposer manuellement
+            — Claude ne peut pas écrire dans le projet)
+
+OBJECTIF
+--------
+Retracer, étape par étape et avec les noms de canaux réels (topics MQTT,
+FIFO, fichiers trigger), la circulation complète d'un ordre vocal :
+depuis le déclenchement de RZ_AVStart (%RZautoVoice=actif) côté Tasker,
+jusqu'à la décision finale dans Gtion_EtatGlobal_V1 côté SP.
+Construit comme réponse à une demande de traçage précise du pipeline STT
+"cas commande" (STT.context=Cmde), avec vérification directe du code.
+
+ARTICULATION
+------------
+Complète (ne remplace pas) :
+  - circulation_donnees_robotrz.html  → vue générale toutes données confondues
+  - schema_stt_context_V1.html        → zoom sur la seule tâche Tasker RZ_STT_Context
+Ce fichier est le seul à tracer la totalité de la chaîne vocale, y compris
+la construction de la capsule VPIV et son décodage côté Node-RED.
+
+SOURCES ET FIABILITÉ (important — voir notes couleur dans la page)
+-------------------------------------------------------------------
+  - Blocs SP (bleu/vert) : vérifiés directement sur l'export frais
+    flows_complet_5_juillet.json (câblage réel des nœuds, testé dashboard
+    le 05/07/2026).
+  - Blocs SE/Tasker (teal/ambre) : reconstruits depuis Project Knowledge
+    (scripts .sh, tâches Tasker .xml), PAS un export frais du dépôt.
+    Rappel explicite déjà présent dans instructions_projet_RobotRZ.md :
+    ne pas assumer que Project Knowledge reflète l'état réel déployé sur
+    le Doro sans vérification ponctuelle.
+
+PRÉCAUTIONS
+-----------
+  - Le point rouge (branche PLAN absente de rz_stt_handler.sh) est une
+    lecture directe du code (case sans clause PLAN), pas une supposition —
+    mais la version lue est celle de Project Knowledge (v2.6), à confirmer
+    sur le script réellement déployé avant toute correction.
+  - Si le pipeline évolue (ex: branche PLAN écrite), ce schéma devient
+    obsolète sur ce point précis — penser à le mettre à jour.
+
+VERSION : 1.0 — 06/07/2026 — Vincent Philippe / Claude
+=============================================================================
+-->
+<style>
+:root{
+  --bg:#12141c; --bg2:#1a1d27; --bg3:#20232f;
+  --border:rgba(255,255,255,.09); --border-strong:rgba(255,255,255,.2);
+  --text:#e8e9ed; --text2:#a8acb8; --text3:#6b6f7d;
+  --blue:#4d9ef7; --blue-bg:rgba(77,158,247,.1); --blue-bd:rgba(77,158,247,.4);
+  --teal:#2ec4a0; --teal-bg:rgba(46,196,160,.1); --teal-bd:rgba(46,196,160,.4);
+  --amber:#f0a836; --amber-bg:rgba(240,168,54,.1); --amber-bd:rgba(240,168,54,.45);
+  --purple:#9b7cf4; --purple-bg:rgba(155,124,244,.1); --purple-bd:rgba(155,124,244,.45);
+  --red:#e85555; --red-bg:rgba(232,85,85,.1); --red-bd:rgba(232,85,85,.4);
+  --green:#5dbd6a; --green-bg:rgba(93,189,106,.1); --green-bd:rgba(93,189,106,.4);
+  --coral:#f06a50; --coral-bg:rgba(240,106,80,.1); --coral-bd:rgba(240,106,80,.4);
+  --line:rgba(168,172,184,.55);
+  --radius:10px; --radius-lg:14px;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;line-height:1.6}
+a{color:var(--blue)}
+.topnav{position:sticky;top:0;z-index:10;display:flex;align-items:center;gap:6px;padding:12px 20px;background:rgba(18,20,28,.94);backdrop-filter:blur(8px);border-bottom:1px solid var(--border);flex-wrap:wrap}
+.topnav .logo{font-weight:700;font-size:15px;margin-right:12px}
+.navbtn{background:none;border:1px solid var(--border);color:var(--text2);padding:7px 14px;border-radius:20px;font-size:13px;cursor:pointer}
+.navbtn:hover{border-color:var(--border-strong);color:var(--text)}
+.navbtn.active{background:var(--blue-bg);border-color:var(--blue-bd);color:var(--blue)}
+.wrap{max-width:1000px;margin:0 auto;padding:26px 20px 60px}
+.view{display:none}
+.view.active{display:block;animation:fade .2s ease}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+h1{font-size:21px;font-weight:600;margin:0 0 6px}
+.subtitle{color:var(--text2);font-size:13.5px;margin:0 0 18px}
+.crumb{font-size:12px;color:var(--text3);margin-bottom:14px}
+.crumb a{color:var(--text2);text-decoration:none}
+.crumb a:hover{color:var(--blue)}
+.diagram-wrap{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:14px;overflow-x:auto}
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:11.5px;color:var(--text2);margin:12px 0 20px}
+.leg-item{display:flex;align-items:center;gap:6px}
+.dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+.ln{display:inline-block;width:18px;height:0;border-top:1.5px solid var(--line)}
+.ln.dash{border-top-style:dashed}
+.section-title{font-size:11px;text-transform:uppercase;letter-spacing:.6px;color:var(--text3);margin:26px 0 8px}
+.note{background:var(--bg2);border-left:3px solid var(--amber);border-radius:0 var(--radius) var(--radius) 0;padding:9px 14px;font-size:12.5px;color:var(--text2);margin:12px 0}
+table{width:100%;border-collapse:collapse;font-size:12px;margin-top:6px}
+th{text-align:left;color:var(--text3);font-weight:500;padding:5px 9px;border-bottom:1px solid var(--border)}
+td{padding:5px 9px;border-bottom:1px solid var(--border);color:var(--text2)}
+.mono{font-family:Consolas,monospace;color:var(--teal);font-size:11px}
+svg text{font-family:'Segoe UI',system-ui,sans-serif}
+.t{font-size:13px;fill:var(--text)}
+.ts{font-size:11px;fill:var(--text2)}
+.th{font-size:13px;fill:var(--text);font-weight:600}
+svg text.mono{font-family:Consolas,monospace;fill:var(--teal);font-size:10.5px}
+svg text.mono-red{font-family:Consolas,monospace;fill:var(--red);font-size:10.5px}
+.footer{text-align:center;color:var(--text3);font-size:11.5px;padding:30px 0 10px}
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <span class="logo">RobotRZ</span>
+  <button class="navbtn active" data-view="ensemble" onclick="showView('ensemble',this)">Vue d'ensemble</button>
+  <button class="navbtn" data-view="detail-se" onclick="showView('detail-se',this)">Détail SE — rz_stt_handler.sh</button>
+  <button class="navbtn" data-view="detail-sp" onclick="showView('detail-sp',this)">Détail SP — fn_stt_intent_router</button>
+</nav>
+
+<div class="wrap">
+
+<!-- ============ VUE D'ENSEMBLE ============ -->
+<section class="view active" id="view-ensemble">
+  <h1>Circulation d'un ordre vocal — cas STT.context = Cmde</h1>
+  <p class="subtitle">Du déclenchement local de <span class="mono">RZ_AVStart</span> (<span class="mono">%RZautoVoice=actif</span>) jusqu'à la décision dans <span class="mono">Gtion_EtatGlobal_V1</span>. Chaque flèche porte le nom réel du canal (topic MQTT, FIFO, fichier trigger).</p>
+
+  <div class="legend">
+    <div class="leg-item"><span class="dot" style="background:var(--blue)"></span>SP — émission</div>
+    <div class="leg-item"><span class="dot" style="background:var(--teal)"></span>SE — scripts cœur</div>
+    <div class="leg-item"><span class="dot" style="background:var(--amber)"></span>Tasker / Android (local, jamais transmis à SP)</div>
+    <div class="leg-item"><span class="dot" style="background:var(--green)"></span>SP — réception / décision</div>
+    <div class="leg-item"><span class="dot" style="background:var(--red)"></span>Point bloquant identifié</div>
+    <div class="leg-item"><span class="ln"></span>Flux principal réel</div>
+    <div class="leg-item"><span class="ln dash"></span>Sortie secondaire / ponctuelle</div>
+  </div>
+
+  <div class="diagram-wrap">
+  <svg viewBox="0 0 1000 1150" width="100%">
+    <defs>
+      <marker id="e1" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="var(--line)" stroke-width="1.5"/></marker>
+    </defs>
+
+    <!-- B1 : SP décide -->
+    <rect x="150" y="20" width="580" height="62" rx="10" fill="var(--blue-bg)" stroke="var(--blue-bd)" stroke-width="1.3"/>
+    <text class="th" x="440" y="46" text-anchor="middle" fill="var(--blue)">SP — décision (ex : passage modeRZ → 3 DEPLACEMENT)</text>
+    <text class="ts" x="440" y="66" text-anchor="middle">MQTT OUT → SE/commande</text>
+    <text class="mono" x="440" y="80" text-anchor="middle">$V:CfgS:modeRZ:*:3#</text>
+
+    <line x1="440" y1="82" x2="440" y2="122" stroke="var(--line)" stroke-width="1.3" marker-end="url(#e1)"/>
+    <text class="ts" x="455" y="106">SE/commande</text>
+
+    <!-- B2 : rz_state-manager.sh -->
+    <rect x="150" y="122" width="580" height="78" rx="10" fill="var(--teal-bg)" stroke="var(--teal-bd)" stroke-width="1.3"/>
+    <text class="th" x="440" y="146" text-anchor="middle" fill="var(--teal)">SE — rz_state-manager.sh (v1.6)</text>
+    <text class="ts" x="440" y="164" text-anchor="middle">handle_state_transition → calculate_stt_context()</text>
+    <text class="ts" x="440" y="182" text-anchor="middle">Table modeRZ→STT.context : 3 DEPLACEMENT → <tspan fill="var(--teal)" font-weight="600">Cmde</tspan></text>
+
+    <line x1="440" y1="200" x2="440" y2="240" stroke="var(--line)" stroke-width="1.3" marker-end="url(#e1)"/>
+    <text class="ts" x="455" y="224">trigger.txt (local, sync_to_tasker)</text>
+
+    <!-- B3 : Tasker RZ_STT_Context -->
+    <rect x="150" y="240" width="580" height="62" rx="10" fill="var(--amber-bg)" stroke="var(--amber-bd)" stroke-width="1.3"/>
+    <text class="th" x="440" y="266" text-anchor="middle" fill="var(--amber)">Tasker — RZ_STT_Context (branche Cmde)</text>
+    <text class="ts" x="440" y="286" text-anchor="middle">RZ_AVStart → %RZautoVoice=actif (local) + RZ_GeminiStop</text>
+
+    <line x1="440" y1="302" x2="440" y2="342" stroke="var(--line)" stroke-width="1.3" marker-end="url(#e1)"/>
+    <text class="ts" x="455" y="326">AutoVoice Continuous démarré (rien vers SP)</text>
+
+    <!-- B4 : AutoVoice + Rz_Traite_Ecoute -->
+    <rect x="150" y="342" width="580" height="62" rx="10" fill="var(--amber-bg)" stroke="var(--amber-bd)" stroke-width="1.3"/>
+    <text class="th" x="440" y="368" text-anchor="middle" fill="var(--amber)">AutoVoice écoute → l'utilisateur dit « rz ... »</text>
+    <text class="ts" x="440" y="388" text-anchor="middle">Rz_Traite_Ecoute (task62) — filtre ^rz, retire préfixe → %PhraseRZRetire</text>
+
+    <line x1="440" y1="404" x2="440" y2="444" stroke="var(--line)" stroke-width="1.3" marker-end="url(#e1)"/>
+    <text class="ts" x="455" y="428">appel Termux:Tasker (texte phrase)</text>
+
+    <!-- B5 : bridge -->
+    <rect x="150" y="444" width="580" height="62" rx="10" fill="var(--teal-bg)" stroke="var(--teal-bd)" stroke-width="1.3"/>
+    <text class="th" x="440" y="470" text-anchor="middle" fill="var(--teal)">SE — rz_autovoice_bridge.sh (v3.0)</text>
+    <text class="ts" x="440" y="490" text-anchor="middle">lit STT.context="Cmde" dans global.json → catalogue seul, jamais Gemini</text>
+
+    <line x1="440" y1="506" x2="440" y2="546" stroke="var(--line)" stroke-width="1.3" marker-end="url(#e1)"/>
+    <text class="ts" x="455" y="530">appel direct (phrase + val numérique)</text>
+
+    <!-- B6 : handler -->
+    <rect x="150" y="546" width="580" height="78" rx="10" fill="var(--teal-bg)" stroke="var(--teal-bd)" stroke-width="1.3"/>
+    <text class="th" x="440" y="570" text-anchor="middle" fill="var(--teal)">SE — rz_stt_handler.sh (v2.6)</text>
+    <text class="ts" x="440" y="588" text-anchor="middle">Sécurités CPU/modeRZ/laisse → lookup stt_catalog.json (Table D)</text>
+    <text class="ts" x="440" y="606" text-anchor="middle">SIMPLE / COMPLEXE ✅ &#160;·&#160; <tspan fill="var(--red)" font-weight="600">PLAN ⛔ case absente du script</tspan></text>
+
+    <line x1="440" y1="624" x2="440" y2="664" stroke="var(--line)" stroke-width="1.3" marker-end="url(#e1)"/>
+    <text class="ts" x="455" y="648">capsule VPIV → FIFO fifo_termux_in</text>
+    <text class="mono" x="455" y="662">$A:STT:intent:*:{V:CfgS:modeRZ:*:2}#</text>
+
+    <!-- B7 : FIFO + parser + MQTT pub -->
+    <rect x="150" y="680" width="580" height="62" rx="10" fill="var(--bg3)" stroke="var(--border-strong)" stroke-width="1.2"/>
+    <text class="th" x="440" y="706" text-anchor="middle">fifo_termux_in → rz_vpiv_parser.sh → MQTT</text>
+    <text class="ts" x="440" y="726" text-anchor="middle">boucle FIFO→MQTT : mosquitto_pub -t SE/statut -m &lt;capsule&gt;</text>
+
+    <line x1="440" y1="742" x2="440" y2="782" stroke="var(--line)" stroke-width="1.3" marker-end="url(#e1)"/>
+    <text class="ts" x="455" y="766">MQTT SE/statut (broker 192.168.1.40)</text>
+
+    <!-- B8 : fn_parse_vpiv_v3 -->
+    <rect x="150" y="782" width="580" height="62" rx="10" fill="var(--green-bg)" stroke="var(--green-bd)" stroke-width="1.3"/>
+    <text class="th" x="440" y="808" text-anchor="middle" fill="var(--green)">SP — fn_parse_vpiv_v3 (Bus_GestionFlux_V3)</text>
+    <text class="ts" x="440" y="828" text-anchor="middle">parse outer VPIV, alimente global.RZ_STT · var==='STT' → sortie 3</text>
+
+    <line x1="440" y1="844" x2="440" y2="884" stroke="var(--line)" stroke-width="1.3" marker-end="url(#e1)"/>
+    <text class="ts" x="455" y="868">switch "Séparation STT Voice"</text>
+
+    <!-- B9 : fn_stt_intent_router + branche ACK -->
+    <rect x="150" y="884" width="580" height="78" rx="10" fill="var(--green-bg)" stroke="var(--green-bd)" stroke-width="1.3"/>
+    <text class="th" x="440" y="908" text-anchor="middle" fill="var(--green)">SP — fn_stt_intent_router (v1.1)</text>
+    <text class="ts" x="440" y="926" text-anchor="middle">déballe {...}, whitelist CAT interne V/I/A</text>
+    <text class="ts" x="440" y="944" text-anchor="middle">→ msg.vpiv={cat,var,prop,inst,val} + msg.origine="STT"</text>
+
+    <line x1="730" y1="923" x2="770" y2="923" stroke="var(--line)" stroke-width="1.2" stroke-dasharray="3 3" marker-end="url(#e1)"/>
+    <rect x="770" y="893" width="200" height="60" rx="10" fill="var(--purple-bg)" stroke="var(--purple-bd)" stroke-width="1.2"/>
+    <text class="th" x="870" y="915" text-anchor="middle" fill="var(--purple)">sortie 2 (ACK)</text>
+    <text class="ts" x="870" y="932" text-anchor="middle">fn_stt_status_store</text>
+    <text class="ts" x="870" y="946" text-anchor="middle">(modeSTT / context)</text>
+
+    <line x1="440" y1="962" x2="440" y2="1002" stroke="var(--line)" stroke-width="1.3" marker-end="url(#e1)"/>
+    <text class="ts" x="455" y="986">sortie 1 → link out EVT_RAW_IN</text>
+
+    <!-- B10 : Gtion_EtatGlobal_V1 -->
+    <rect x="150" y="1002" width="580" height="96" rx="10" fill="var(--green-bg)" stroke="var(--green-bd)" stroke-width="1.3"/>
+    <text class="th" x="440" y="1026" text-anchor="middle" fill="var(--green)">SP — Gtion_EtatGlobal_V1</text>
+    <text class="ts" x="440" y="1046" text-anchor="middle">Dispatcher → GestionUrgence → ReglesMinimales → ValidationIntent → Stabilisation</text>
+    <text class="ts" x="440" y="1066" text-anchor="middle" fill="var(--purple)">ValidationIntent = garde-fou seulement ici</text>
+    <text class="ts" x="440" y="1084" text-anchor="middle">(l'arbitrage Cmde/Conv/Mixte est déjà fait côté SE — cf. bridge v3.0)</text>
+  </svg>
+  </div>
+
+  <div class="note" style="border-left-color:var(--blue)">✅ <strong>Blocs bleu/vert (SP) :</strong> vérifiés directement sur l'export frais <span class="mono">flows_complet_5_juillet.json</span> — câblage réel des nœuds, chaîne testée depuis le dashboard le 05/07/2026.</div>
+  <div class="note">✅ <strong>Blocs teal/ambre (SE, Tasker) :</strong> reconstruits depuis Project Knowledge (scripts <span class="mono">.sh</span>, tâches Tasker <span class="mono">.xml</span>) — pas un export frais du dépôt. Comme le rappellent tes propres instructions projet : ne pas assumer que Project Knowledge reflète l'état réel déployé sur le Doro sans vérification ponctuelle.</div>
+  <div class="note" style="border-left-color:var(--red)">⚠️ <strong>Point bloquant identifié en lisant le code</strong> (pas une déduction) : dans <span class="mono">rz_stt_handler.sh</span> v2.6, le <span class="mono">case "$TRAITEMENT" in ... esac</span> ne contient que <span class="mono">SIMPLE|LOCAL</span> et <span class="mono">COMPLEXE</span>. Les commandes <span class="mono">traitement:"PLAN"</span> du catalogue (<span class="mono">MTR_TURN_ANGLE</span>, <span class="mono">MTR_SPEED_SET</span>, <span class="mono">MTR_ADVANCE_DIST</span>) tombent dans le vide : ni trame VPIV, ni retour TTS. Voir détail dans l'onglet "Détail SE".</div>
+
+  <div class="section-title">Exemple de trajet complet — même variable, deux formats de trame</div>
+  <div class="note" style="border-left-color:var(--teal)">Une commande vocale reconnue (ex. CFG_VEILLE) devient côté SE la capsule <span class="mono">$A:STT:intent:*:{V:CfgS:modeRZ:*:1}#</span>, publiée sur <span class="mono">SE/statut</span>. Côté SP, <span class="mono">fn_stt_intent_router</span> la déballe et ne conserve que la trame interne : <span class="mono">msg.vpiv = {cat:'V', var:'CfgS', prop:'modeRZ', inst:'*', val:'1'}</span> — c'est cette forme "nue", identique à celle d'une commande dashboard, qui entre dans <span class="mono">Gtion_EtatGlobal_V1</span>. Le marqueur <span class="mono">msg.origine="STT"</span> est la seule trace qu'il s'agissait d'une commande vocale.</div>
+</section>
+
+<!-- ============ DÉTAIL SE ============ -->
+<section class="view" id="view-detail-se">
+  <div class="crumb"><a href="#" onclick="showView('ensemble', document.querySelector('[data-view=ensemble]'));return false">Vue d'ensemble</a> › Détail SE</div>
+  <h1>SE — détail interne de rz_stt_handler.sh (v2.6)</h1>
+  <p class="subtitle">Cœur décisionnel du traitement vocal — sécurités, lookup catalogue, aiguillage par type de traitement.</p>
+
+  <div class="legend">
+    <div class="leg-item"><span class="dot" style="background:var(--purple)"></span>Décision (Si)</div>
+    <div class="leg-item"><span class="dot" style="background:var(--green)"></span>Chemin fonctionnel</div>
+    <div class="leg-item"><span class="dot" style="background:var(--red)"></span>Blocage / abandon / gap</div>
+    <div class="leg-item"><span class="dot" style="background:var(--amber)"></span>Bascule IA (hors Cmde)</div>
+    <div class="leg-item"><span class="ln dash"></span>Branche "oui" (sortie de fonction)</div>
+  </div>
+
+  <div class="diagram-wrap">
+  <svg viewBox="0 0 900 850" width="100%">
+    <defs>
+      <marker id="e2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="var(--line)" stroke-width="1.5"/></marker>
+    </defs>
+
+    <!-- Entrée -->
+    <rect x="150" y="14" width="380" height="48" rx="9" fill="var(--bg3)" stroke="var(--border-strong)" stroke-width="1.2"/>
+    <text class="ts" x="340" y="42" text-anchor="middle">Entrée : $TEXT_RAW (phrase), $VAL_NUMERIQUE (option)</text>
+
+    <line x1="340" y1="62" x2="340" y2="94" stroke="var(--line)" stroke-width="1.2" marker-end="url(#e2)"/>
+
+    <!-- Décision CPU -->
+    <rect x="150" y="94" width="380" height="46" rx="9" fill="var(--purple-bg)" stroke="var(--purple-bd)" stroke-width="1.2"/>
+    <text class="ts" x="340" y="122" text-anchor="middle">Si CPU_LOAD &gt; 90% ?</text>
+    <line x1="530" y1="117" x2="580" y2="117" stroke="var(--line)" stroke-width="1.1" stroke-dasharray="3 3" marker-end="url(#e2)"/>
+    <text class="ts" x="545" y="110">oui</text>
+    <rect x="580" y="92" width="280" height="48" rx="9" fill="var(--red-bg)" stroke="var(--red-bd)" stroke-width="1.2"/>
+    <text class="ts" x="720" y="112" text-anchor="middle" fill="var(--red)">exit 0 — TTS « je suis trop chargé »</text>
+    <text class="ts" x="720" y="130" text-anchor="middle">fin de script</text>
+
+    <line x1="340" y1="140" x2="340" y2="172" stroke="var(--line)" stroke-width="1.2" marker-end="url(#e2)"/>
+    <text class="ts" x="352" y="160">non</text>
+
+    <!-- Décision modeRZ -->
+    <rect x="150" y="172" width="380" height="46" rx="9" fill="var(--purple-bg)" stroke="var(--purple-bd)" stroke-width="1.2"/>
+    <text class="ts" x="340" y="200" text-anchor="middle">Si modeRZ ∈ {0,5} et cmd ≠ URGENCY_STOP ?</text>
+    <line x1="530" y1="195" x2="580" y2="195" stroke="var(--line)" stroke-width="1.1" stroke-dasharray="3 3" marker-end="url(#e2)"/>
+    <text class="ts" x="545" y="188">oui</text>
+    <rect x="580" y="170" width="280" height="48" rx="9" fill="var(--red-bg)" stroke="var(--red-bd)" stroke-width="1.2"/>
+    <text class="ts" x="720" y="190" text-anchor="middle" fill="var(--red)">exit 0 — TTS « système indisponible »</text>
+    <text class="ts" x="720" y="208" text-anchor="middle">fin de script</text>
+
+    <line x1="340" y1="218" x2="340" y2="250" stroke="var(--line)" stroke-width="1.2" marker-end="url(#e2)"/>
+    <text class="ts" x="352" y="238">non</text>
+
+    <!-- Décision laisse -->
+    <rect x="150" y="250" width="380" height="46" rx="9" fill="var(--purple-bg)" stroke="var(--purple-bd)" stroke-width="1.2"/>
+    <text class="ts" x="340" y="272" text-anchor="middle">Si laisse (typePtge=4) + moteurActif=1</text>
+    <text class="ts" x="340" y="288" text-anchor="middle">et cmd ne contient pas "STOP" ?</text>
+    <line x1="530" y1="273" x2="580" y2="273" stroke="var(--line)" stroke-width="1.1" stroke-dasharray="3 3" marker-end="url(#e2)"/>
+    <text class="ts" x="545" y="266">oui</text>
+    <rect x="580" y="248" width="280" height="48" rx="9" fill="var(--red-bg)" stroke="var(--red-bd)" stroke-width="1.2"/>
+    <text class="ts" x="720" y="268" text-anchor="middle" fill="var(--red)">exit 0 — TTS « mouvement bloqué par la laisse »</text>
+    <text class="ts" x="720" y="286" text-anchor="middle">fin de script</text>
+
+    <line x1="340" y1="296" x2="340" y2="328" stroke="var(--line)" stroke-width="1.2" marker-end="url(#e2)"/>
+    <text class="ts" x="352" y="316">non</text>
+
+    <!-- Lookup catalogue -->
+    <rect x="150" y="328" width="380" height="50" rx="9" fill="var(--teal-bg)" stroke="var(--teal-bd)" stroke-width="1.2"/>
+    <text class="ts" x="340" y="350" text-anchor="middle" fill="var(--teal)">Lookup exact du synonyme</text>
+    <text class="ts" x="340" y="366" text-anchor="middle">dans stt_catalog.json (Table D)</text>
+
+    <line x1="340" y1="378" x2="340" y2="410" stroke="var(--line)" stroke-width="1.2" marker-end="url(#e2)"/>
+
+    <!-- Décision CMD_ID trouvé -->
+    <rect x="150" y="410" width="380" height="46" rx="9" fill="var(--purple-bg)" stroke="var(--purple-bd)" stroke-width="1.2"/>
+    <text class="ts" x="340" y="438" text-anchor="middle">CMD_ID trouvé ?</text>
+    <line x1="530" y1="433" x2="580" y2="433" stroke="var(--line)" stroke-width="1.1" stroke-dasharray="3 3" marker-end="url(#e2)"/>
+    <text class="ts" x="545" y="426">non</text>
+    <rect x="580" y="408" width="280" height="48" rx="9" fill="var(--amber-bg)" stroke="var(--amber-bd)" stroke-width="1.2"/>
+    <text class="ts" x="720" y="428" text-anchor="middle" fill="var(--amber)">exit 1 → bascule IA cloud</text>
+    <text class="ts" x="720" y="446" text-anchor="middle">(utile seulement si contexte Mixte)</text>
+
+    <line x1="340" y1="456" x2="340" y2="488" stroke="var(--line)" stroke-width="1.2" marker-end="url(#e2)"/>
+    <text class="ts" x="352" y="476">oui</text>
+
+    <!-- Décision TRAITEMENT -->
+    <rect x="150" y="488" width="380" height="50" rx="9" fill="var(--purple-bg)" stroke="var(--purple-bd)" stroke-width="1.2"/>
+    <text class="ts" x="340" y="510" text-anchor="middle">case "$TRAITEMENT" in ... esac</text>
+    <text class="ts" x="340" y="526" text-anchor="middle">(valeur lue depuis le catalogue)</text>
+
+    <!-- 3 branches -->
+    <line x1="240" y1="538" x2="150" y2="576" stroke="var(--line)" stroke-width="1.2" marker-end="url(#e2)"/>
+    <line x1="340" y1="538" x2="340" y2="576" stroke="var(--line)" stroke-width="1.2" marker-end="url(#e2)"/>
+    <line x1="440" y1="538" x2="730" y2="576" stroke="var(--red)" stroke-width="1.2" marker-end="url(#e2)"/>
+
+    <rect x="30" y="576" width="220" height="62" rx="9" fill="var(--green-bg)" stroke="var(--green-bd)" stroke-width="1.2"/>
+    <text class="ts" x="140" y="598" text-anchor="middle" fill="var(--green)">SIMPLE | LOCAL</text>
+    <text class="ts" x="140" y="616" text-anchor="middle">process_simple(CMD_ID)</text>
+
+    <rect x="260" y="576" width="220" height="62" rx="9" fill="var(--green-bg)" stroke="var(--green-bd)" stroke-width="1.2"/>
+    <text class="ts" x="370" y="598" text-anchor="middle" fill="var(--green)">COMPLEXE</text>
+    <text class="ts" x="370" y="616" text-anchor="middle">boucle process_simple(id_fils)</text>
+    <text class="ts" x="370" y="630" text-anchor="middle">sleep 0.2 entre chaque</text>
+
+    <rect x="600" y="576" width="260" height="62" rx="9" fill="var(--red-bg)" stroke="var(--red-bd)" stroke-width="1.4"/>
+    <text class="ts" x="730" y="596" text-anchor="middle" fill="var(--red)" font-weight="600">PLAN — ⛔ case absente</text>
+    <text class="ts" x="730" y="613" text-anchor="middle">sort du switch sans rien faire</text>
+    <text class="ts" x="730" y="628" text-anchor="middle">(pas de TTS, pas de trame VPIV)</text>
+
+    <!-- Convergence SIMPLE + COMPLEXE -->
+    <line x1="140" y1="638" x2="140" y2="660" stroke="var(--line)" stroke-width="1.2"/>
+    <line x1="370" y1="638" x2="370" y2="660" stroke="var(--line)" stroke-width="1.2"/>
+    <line x1="140" y1="660" x2="370" y2="660" stroke="var(--line)" stroke-width="1.2"/>
+    <line x1="255" y1="660" x2="255" y2="690" stroke="var(--line)" stroke-width="1.2" marker-end="url(#e2)"/>
+
+    <!-- process_simple detail -->
+    <rect x="60" y="690" width="670" height="66" rx="10" fill="var(--teal-bg)" stroke="var(--teal-bd)" stroke-width="1.3"/>
+    <text class="th" x="395" y="712" text-anchor="middle" fill="var(--teal)">process_simple() — construction de la trame</text>
+    <text class="ts" x="395" y="730" text-anchor="middle">lookup vpiv_parts (cat/var/prop/inst/val_defaut) → final_val = VAL_NUMERIQUE ?? val_defaut</text>
+    <text class="mono" x="395" y="746" text-anchor="middle">inner_vpiv = "cat:var:prop:inst:final_val"</text>
+
+    <line x1="395" y1="756" x2="395" y2="788" stroke="var(--line)" stroke-width="1.2" marker-end="url(#e2)"/>
+
+    <!-- capsule + FIFO -->
+    <rect x="60" y="788" width="670" height="54" rx="10" fill="var(--teal-bg)" stroke="var(--teal-bd)" stroke-width="1.3"/>
+    <text class="ts" x="395" y="808" text-anchor="middle">→ FIFO fifo_termux_in + TTS aléatoire (alias_tts, si présent)</text>
+    <text class="mono" x="395" y="826" text-anchor="middle">$A:STT:intent:*:{inner_vpiv}#</text>
+  </svg>
+  </div>
+
+  <div class="note" style="border-left-color:var(--red)">⚠️ C'est ici, précisément, que se situe le point en attente déjà noté par ailleurs (<span class="mono">MTR_INPUT_SCALE=100</span> / <span class="mono">MTR_OUTPUT_SCALE=400</span> à coder en dur, branche PLAN jamais écrite) : le catalogue promet des commandes PLAN (tourner d'un angle, régler une vitesse, avancer d'une distance) que le handler ne sait aujourd'hui pas exécuter.</div>
+</section>
+
+<!-- ============ DÉTAIL SP ============ -->
+<section class="view" id="view-detail-sp">
+  <div class="crumb"><a href="#" onclick="showView('ensemble', document.querySelector('[data-view=ensemble]'));return false">Vue d'ensemble</a> › Détail SP</div>
+  <h1>SP — détail interne de fn_stt_intent_router (v1.1, 05/07)</h1>
+  <p class="subtitle">Décodage de la capsule STT.intent et aiguillage vers Gtion_EtatGlobal_V1 ou vers le simple suivi d'état STT.</p>
+
+  <div class="legend">
+    <div class="leg-item"><span class="dot" style="background:var(--purple)"></span>Test (if)</div>
+    <div class="leg-item"><span class="dot" style="background:var(--green)"></span>Chemin nominal (intent)</div>
+    <div class="leg-item"><span class="dot" style="background:var(--amber)"></span>Chemin ACK (info)</div>
+    <div class="leg-item"><span class="dot" style="background:var(--red)"></span>Rejet / arrêt du nœud</div>
+  </div>
+
+  <div class="diagram-wrap">
+  <svg viewBox="0 0 900 780" width="100%">
+    <defs>
+      <marker id="e3" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="var(--line)" stroke-width="1.5"/></marker>
+    </defs>
+
+    <rect x="150" y="14" width="500" height="48" rx="9" fill="var(--bg3)" stroke="var(--border-strong)" stroke-width="1.2"/>
+    <text class="ts" x="400" y="42" text-anchor="middle">Entrée : msg.vpiv = {cat:'A', var:'STT', prop, inst, val} (déjà rempli par fn_parse_vpiv_v3)</text>
+
+    <line x1="340" y1="62" x2="340" y2="94" stroke="var(--line)" stroke-width="1.2" marker-end="url(#e3)"/>
+
+    <rect x="150" y="94" width="380" height="46" rx="9" fill="var(--purple-bg)" stroke="var(--purple-bd)" stroke-width="1.2"/>
+    <text class="ts" x="340" y="122" text-anchor="middle">vpiv absent ou vpiv.var ≠ 'STT' ?</text>
+    <line x1="530" y1="117" x2="580" y2="117" stroke="var(--line)" stroke-width="1.1" stroke-dasharray="3 3" marker-end="url(#e3)"/>
+    <text class="ts" x="545" y="110">oui</text>
+    <rect x="580" y="92" width="280" height="48" rx="9" fill="var(--red-bg)" stroke="var(--red-bd)" stroke-width="1.2"/>
+    <text class="ts" x="720" y="112" text-anchor="middle" fill="var(--red)">node.warn + return [null,null]</text>
+    <text class="ts" x="720" y="130" text-anchor="middle">arrêt du nœud</text>
+
+    <line x1="340" y1="140" x2="340" y2="172" stroke="var(--line)" stroke-width="1.2" marker-end="url(#e3)"/>
+    <text class="ts" x="352" y="160">non</text>
+
+    <rect x="150" y="172" width="380" height="46" rx="9" fill="var(--purple-bg)" stroke="var(--purple-bd)" stroke-width="1.2"/>
+    <text class="ts" x="340" y="200" text-anchor="middle">prop ∈ {'modeSTT','context'} ?</text>
+    <line x1="530" y1="195" x2="580" y2="195" stroke="var(--line)" stroke-width="1.1" stroke-dasharray="3 3" marker-end="url(#e3)"/>
+    <text class="ts" x="545" y="188">oui</text>
+    <rect x="580" y="170" width="280" height="60" rx="9" fill="var(--amber-bg)" stroke="var(--amber-bd)" stroke-width="1.2"/>
+    <text class="ts" x="720" y="190" text-anchor="middle" fill="var(--amber)">sortie 2 : msg.stt_status={prop,val,ts}</text>
+    <text class="ts" x="720" y="206" text-anchor="middle">→ fn_stt_status_store</text>
+    <text class="ts" x="720" y="222" text-anchor="middle">→ flow.set('stt_state')</text>
+
+    <line x1="340" y1="218" x2="340" y2="250" stroke="var(--line)" stroke-width="1.2" marker-end="url(#e3)"/>
+    <text class="ts" x="352" y="238">non</text>
+
+    <rect x="150" y="250" width="380" height="46" rx="9" fill="var(--purple-bg)" stroke="var(--purple-bd)" stroke-width="1.2"/>
+    <text class="ts" x="340" y="278" text-anchor="middle">prop ≠ 'intent' ?</text>
+    <line x1="530" y1="273" x2="580" y2="273" stroke="var(--line)" stroke-width="1.1" stroke-dasharray="3 3" marker-end="url(#e3)"/>
+    <text class="ts" x="545" y="266">oui</text>
+    <rect x="580" y="248" width="280" height="48" rx="9" fill="var(--red-bg)" stroke="var(--red-bd)" stroke-width="1.2"/>
+    <text class="ts" x="720" y="268" text-anchor="middle" fill="var(--red)">node.warn + return [null,null]</text>
+    <text class="ts" x="720" y="286" text-anchor="middle">PROP inconnue ignorée</text>
+
+    <line x1="340" y1="296" x2="340" y2="328" stroke="var(--line)" stroke-width="1.2" marker-end="url(#e3)"/>
+    <text class="ts" x="352" y="316">non (prop==='intent')</text>
+
+    <rect x="150" y="328" width="380" height="50" rx="9" fill="var(--teal-bg)" stroke="var(--teal-bd)" stroke-width="1.2"/>
+    <text class="ts" x="340" y="350" text-anchor="middle" fill="var(--teal)">strip { }, split(':')</text>
+    <text class="ts" x="340" y="366" text-anchor="middle">→ [iCat, iVar, iProp, iInst, iVal]</text>
+
+    <line x1="340" y1="378" x2="340" y2="410" stroke="var(--line)" stroke-width="1.2" marker-end="url(#e3)"/>
+
+    <rect x="150" y="410" width="380" height="46" rx="9" fill="var(--purple-bg)" stroke="var(--purple-bd)" stroke-width="1.2"/>
+    <text class="ts" x="340" y="438" text-anchor="middle">parts.length ≠ 5 ?</text>
+    <line x1="530" y1="433" x2="580" y2="433" stroke="var(--line)" stroke-width="1.1" stroke-dasharray="3 3" marker-end="url(#e3)"/>
+    <text class="ts" x="545" y="426">oui</text>
+    <rect x="580" y="408" width="280" height="48" rx="9" fill="var(--red-bg)" stroke="var(--red-bd)" stroke-width="1.2"/>
+    <text class="ts" x="720" y="428" text-anchor="middle" fill="var(--red)">node.warn : intent mal formé</text>
+    <text class="ts" x="720" y="446" text-anchor="middle">return [null,null]</text>
+
+    <line x1="340" y1="456" x2="340" y2="488" stroke="var(--line)" stroke-width="1.2" marker-end="url(#e3)"/>
+    <text class="ts" x="352" y="476">non</text>
+
+    <rect x="150" y="488" width="380" height="46" rx="9" fill="var(--purple-bg)" stroke="var(--purple-bd)" stroke-width="1.2"/>
+    <text class="ts" x="340" y="516" text-anchor="middle">iCat ∉ ['V','I','A'] ?</text>
+    <line x1="530" y1="511" x2="580" y2="511" stroke="var(--line)" stroke-width="1.1" stroke-dasharray="3 3" marker-end="url(#e3)"/>
+    <text class="ts" x="545" y="504">oui</text>
+    <rect x="580" y="486" width="280" height="48" rx="9" fill="var(--red-bg)" stroke="var(--red-bd)" stroke-width="1.2"/>
+    <text class="ts" x="720" y="506" text-anchor="middle" fill="var(--red)">node.warn : CAT interne refusée</text>
+    <text class="ts" x="720" y="524" text-anchor="middle">return [null,null] — sécurité</text>
+
+    <line x1="340" y1="534" x2="340" y2="566" stroke="var(--line)" stroke-width="1.2" marker-end="url(#e3)"/>
+    <text class="ts" x="352" y="554">non (V, I ou A)</text>
+
+    <rect x="120" y="566" width="500" height="66" rx="10" fill="var(--green-bg)" stroke="var(--green-bd)" stroke-width="1.3"/>
+    <text class="th" x="370" y="588" text-anchor="middle" fill="var(--green)">Reconstruction de la trame interne</text>
+    <text class="mono" x="370" y="606" text-anchor="middle">msg.vpiv = {cat:iCat, var:iVar, prop:iProp, inst:iInst, val:iVal}</text>
+    <text class="ts" x="370" y="622" text-anchor="middle">+ msg.origine='STT' + msg.topic='stt_intent'</text>
+
+    <line x1="370" y1="632" x2="370" y2="664" stroke="var(--line)" stroke-width="1.2" marker-end="url(#e3)"/>
+    <text class="ts" x="385" y="652">sortie 1 → link out EVT_RAW_IN</text>
+
+    <rect x="120" y="664" width="500" height="90" rx="10" fill="var(--green-bg)" stroke="var(--green-bd)" stroke-width="1.3"/>
+    <text class="th" x="370" y="688" text-anchor="middle" fill="var(--green)">Gtion_EtatGlobal_V1</text>
+    <text class="ts" x="370" y="706" text-anchor="middle">Dispatcher → GestionUrgence → ReglesMinimales</text>
+    <text class="ts" x="370" y="722" text-anchor="middle">→ ValidationIntent → Stabilisation</text>
+    <text class="ts" x="370" y="740" text-anchor="middle" fill="var(--purple)">ValidationIntent : garde-fou uniquement pour msg.origine='STT'</text>
+  </svg>
+  </div>
+
+  <div class="note">✅ Chaîne relue directement dans <span class="mono">flows_complet_5_juillet.json</span> — les deux sorties (intent / ACK) et le câblage vers <span class="mono">fn_stt_status_store</span> et <span class="mono">link out EVT_RAW_IN</span> correspondent au code réel du nœud.</div>
+</section>
+
+</div>
+
+<div class="footer">RobotRZ — Schéma de circulation d'un ordre vocal — Version 1.0 — 06/07/2026 — Vincent Philippe / Claude</div>
+
+<script>
+function showView(id, btn){
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.getElementById('view-'+id).classList.add('active');
+  document.querySelectorAll('.navbtn').forEach(b=>b.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+  window.scrollTo(0,0);
+}
+</script>
+</body>
+</html>

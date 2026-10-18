@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vade-mecum — Modifier ACK_TIMEOUT_SEC</title>
+<!--
+=============================================================================
+FICHIER   : vademecum_ack_timeout_V1.html
+CHEMIN    : docs/dev_RZ_HTML/vademecum_ack_timeout_V1.html
+            (a deposer manuellement + ajouter l'entree dans index.html,
+            section Vade-mecum, comme les autres)
+
+OBJECTIF
+--------
+Lister, en un seul endroit, tous les fichiers a toucher si la valeur du
+delai d'attente ACK_TIMEOUT_SEC (cote SE, rz_stt_handler.sh) doit changer.
+Fait suite a la decision du 06/07/2026 : 4 secondes retenu comme valeur de
+depart non mesuree, a ajuster apres tests reels si besoin - ce vade-mecum
+evite d'avoir a re-chercher ou la valeur est utilisee le jour ou on la
+change.
+
+ARTICULATION
+------------
+Complete schema_mecanisme_resolution_intents_V1.html (qui explique POURQUOI
+ce timeout existe - mecanisme ACK pour STT.intent) sans le remplacer. Ce
+vade-mecum ne traite QUE la question pratique : ou est la valeur, quoi
+verifier si on la change.
+
+PRECAUTIONS
+-----------
+  - A ce jour (06/07/2026), le mecanisme ACK complet n'est pas encore
+    cable (voir schema_mecanisme_resolution_intents_V1.html) : ce
+    vade-mecum documente la valeur telle qu'elle existe dans
+    rz_stt_handler.sh v3.0, pas un comportement deja teste en conditions
+    reelles.
+  - Si un jour le delai doit differer selon le type de traitement
+    (TRADUCTION/CALCUL rapides vs MACRO potentiellement plus long a
+    valider), ce vade-mecum devra etre mis a jour en consequence - ce
+    n'est pas le cas aujourd'hui (une seule valeur, un seul endroit).
+
+VERSION : 1.0 — 06/07/2026 — Vincent Philippe / Claude
+=============================================================================
+-->
+<style>
+:root {
+  --bg: #0f1117; --bg2: #171b26; --bg3: #1e2333; --bg4: #242940;
+  --text: #e8eaf0; --text2: #8b93a8; --text3: #555e78;
+  --teal: #2ec4a0; --blue: #4d9ef7; --amber: #f0a836; --green: #5dbd6a;
+  --red: #e85555; --purple: #9b7cf4; --coral: #f06a50;
+  --border: rgba(255,255,255,0.07); --border2: rgba(255,255,255,0.13);
+  --r: 10px; --r2: 14px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', system-ui, sans-serif; font-size: 14px; line-height: 1.65; }
+
+.nav { background: var(--bg2); border-bottom: 1px solid var(--border); padding: 12px 24px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; position: sticky; top: 0; z-index: 100; }
+.nav-logo { font-size: 16px; font-weight: 700; color: var(--teal); letter-spacing: 1px; text-decoration: none; }
+.nav-badge { font-size: 11px; color: var(--text3); background: var(--bg3); padding: 2px 8px; border-radius: 20px; border: 1px solid var(--border); }
+.nav-links { margin-left: auto; display: flex; gap: 8px; flex-wrap: wrap; }
+.nav-link { font-size: 12px; color: var(--text2); text-decoration: none; padding: 4px 10px; border-radius: 6px; border: 1px solid var(--border); }
+.nav-link:hover { background: var(--bg3); }
+
+.page-header { max-width: 900px; margin: 0 auto; padding: 36px 24px 20px; border-bottom: 1px solid var(--border); }
+.page-header h1 { font-size: 24px; font-weight: 700; color: var(--teal); margin-bottom: 8px; }
+.page-header .sub { color: var(--text2); font-size: 13px; max-width: 700px; }
+
+.section { max-width: 900px; margin: 28px auto; padding: 0 24px; }
+.section-label { font-size: 11px; text-transform: uppercase; letter-spacing: .6px; color: var(--text3); margin-bottom: 6px; }
+.section-title { font-size: 16px; font-weight: 700; margin-bottom: 10px; }
+.section-intro { color: var(--text2); font-size: 13px; margin-bottom: 14px; }
+
+.steps { display: flex; flex-direction: column; gap: 12px; margin: 16px 0; }
+.step { display: grid; grid-template-columns: 32px 1fr; gap: 12px; align-items: start; }
+.step-num { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; flex-shrink: 0; border: 1px solid; }
+.step-title { font-weight: 700; font-size: 13px; margin-bottom: 4px; }
+.step-detail { font-size: 12px; color: var(--text2); line-height: 1.7; }
+.step-edit .step-num { background: rgba(77,158,247,.15); color: var(--blue); border-color: rgba(77,158,247,.4); }
+.step-warn .step-num { background: rgba(240,168,54,.15); color: var(--amber); border-color: rgba(240,168,54,.4); }
+
+.tag { display: inline-block; font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 4px; letter-spacing: .4px; vertical-align: middle; margin: 0 2px; }
+.tag-SE { background: rgba(46,196,160,.15); color: var(--teal); }
+.tag-SP { background: rgba(240,106,80,.15); color: var(--coral); }
+.tag-pending { background: rgba(155,124,244,.15); color: var(--purple); }
+
+code { font-family: 'Cascadia Code', 'Consolas', monospace; font-size: 12px; color: var(--teal); background: var(--bg3); padding: 2px 6px; border-radius: 4px; }
+.warn-box { background: rgba(240,168,54,.07); border: 1px solid rgba(240,168,54,.25); border-radius: var(--r); padding: 12px 16px; font-size: 13px; color: var(--text2); margin: 16px 0; }
+.warn-box strong { color: var(--amber); }
+.info-box { background: rgba(77,158,247,.06); border: 1px solid rgba(77,158,247,.2); border-radius: var(--r); padding: 12px 16px; font-size: 13px; color: var(--text2); margin: 16px 0; }
+.info-box strong { color: var(--blue); }
+
+.footer { border-top: 1px solid var(--border); padding: 20px 24px; text-align: center; color: var(--text3); font-size: 12px; max-width: 900px; margin: 0 auto; }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a href="index.html" class="nav-logo">RobotRZ</a>
+  <span class="nav-badge">Vade-mecum ACK_TIMEOUT_SEC — V1 — 06/07/2026</span>
+  <div class="nav-links">
+    <a href="schema_mecanisme_resolution_intents_V1.html" class="nav-link">Mécanisme de résolution</a>
+    <a href="schema_pipeline_vocal_V1.html" class="nav-link">Pipeline vocal</a>
+  </div>
+</nav>
+
+<div class="page-header">
+  <h1>Vade-mecum — Modifier le délai ACK_TIMEOUT_SEC</h1>
+  <p class="sub">Une seule valeur, un seul endroit aujourd'hui — mais à re-vérifier ici si le mécanisme évolue (ex : délai différent selon TRADUCTION/CALCUL vs MACRO).</p>
+</div>
+
+<div class="section">
+  <div class="section-label">Contexte</div>
+  <div class="section-title">Pourquoi cette valeur existe</div>
+  <p class="section-intro">Quand SE envoie une capsule STT.intent nécessitant une résolution côté SP (TRADUCTION / CALCUL / MACRO), il attend un ACK de SP avant de parler à l'utilisateur — pas de TTS optimiste dans ce cas (décision du 06/07/2026). <code>ACK_TIMEOUT_SEC</code> fixe combien de temps SE attend avant de considérer la demande sans réponse.</p>
+  <div class="info-box"><strong>Valeur actuelle : 4 secondes.</strong> Choisie par prudence (aller-retour MQTT + parcours complet de la chaîne de validation SP + marge réseau 4G/DuckDNS), <strong>non mesurée</strong> — c'est un point de départ, pas un résultat de test.</div>
+</div>
+
+<div class="section">
+  <div class="section-label">Procédure</div>
+  <div class="section-title">Si tu veux changer cette valeur</div>
+  <div class="steps">
+    <div class="step step-edit">
+      <div class="step-num">1</div>
+      <div>
+        <div class="step-title">rz_stt_handler.sh — changer la valeur <span class="tag tag-SE">SE</span></div>
+        <div class="step-detail">Chercher <code>ACK_TIMEOUT_SEC=4</code> en tête de fichier (juste après la définition des chemins). C'est le seul endroit où la valeur est définie — pas de duplication ailleurs à ce jour.</div>
+      </div>
+    </div>
+    <div class="step step-warn">
+      <div class="step-num">2</div>
+      <div>
+        <div class="step-title">Vérifier qu'aucun timeout côté SP n'a été ajouté depuis <span class="tag tag-SP">SP</span> <span class="tag tag-pending">à surveiller</span></div>
+        <div class="step-detail">Au 06/07/2026, SP ne garde aucun état "requête en attente" — l'id_requete voyage avec le message, l'ACK est émis dès que la chaîne de validation se termine, sans notion de délai côté SP. Si ça change un jour (ex : SP se met à surveiller lui-même un délai), ce vade-mecum devra gagner une étape 3.</div>
+      </div>
+    </div>
+  </div>
+  <div class="warn-box"><strong>⚠️ Pas encore vérifiable en conditions réelles :</strong> au 06/07/2026, <code>wait_for_ack()</code> est un squelette qui renvoie toujours <code>TIMEOUT</code> (le câblage réel dépend de <code>rz_vpiv_parser.sh</code>, pas encore fourni). Ne pas tirer de conclusion sur la pertinence des 4 secondes avant que le mécanisme soit réellement câblé et testé.</div>
+</div>
+
+<div class="footer">RobotRZ — Vade-mecum ACK_TIMEOUT_SEC — Version 1.0 — 06/07/2026 — Vincent Philippe / Claude</div>
+
+</body>
+</html>

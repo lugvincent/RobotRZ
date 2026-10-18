@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RobotRZ — Mécanisme de résolution des intents &amp; structure des tables</title>
+<!--
+=============================================================================
+FICHIER   : schema_mecanisme_resolution_intents_V1.html
+CHEMIN    : docs/dev_RZ_HTML/schema_mecanisme_resolution_intents_V1.html
+            (à déposer manuellement — Claude ne peut pas écrire dans le projet)
+
+OBJECTIF
+--------
+Formaliser la proposition d'unification des intents nécessitant un
+traitement particulier, et situer cette proposition dans la structure
+d'ensemble des tables (A/B/C/D + nouvelle table ui_Traitement).
+Fait suite au cadrage_plan_regles_dynamiques.html (05/07/2026) — confronté
+et jugé toujours valide, avec un raffinement : la « résolution PLAN côté
+SP » devient un mécanisme générique piloté par une table admin dédiée
+(ui_Traitement), plutôt qu'un traitement spécifique au seul STT.
+
+RÉVISION V1.1 (06/07/2026)
+--------------------------
+Simplification actée : le mécanisme ne distingue plus 4 « types » de
+traitement au niveau du routage. Une ligne Table D qui référence un
+id_traitement appelle une fonction générique (ref_fonction + param,
+définis dans ui_Traitement) qui retourne TOUJOURS un tableau d'intents.
+Le routage (chemin normal vs pré-validation groupée) ne regarde que la
+LONGUEUR de ce tableau — jamais un type déclaré à l'avance, qui risquerait
+de devenir un mensonge non vérifié avec le temps.
+Terminologie Table D retenue : LocalSE (traitement 100% SE, jamais dans
+ui_Traitement) · SIMPLE (pas de id_traitement) · TRADUCTION (liste
+d'équivalence) · CALCUL (fonction de calcul) · MACRO (déroulé d'intents).
+
+ARTICULATION
+------------
+  - Onglet 1 : le mécanisme lui-même (lookup ui_Traitement → aiguillage
+    par type → chemin simple ou pré-validation groupée).
+  - Onglet 2 : où ce mécanisme s'insère dans la structure générale des
+    tables (A→C→B, D→D opérationnelle, nouvelle ui_Traitement) et des
+    flows d'initialisation.
+  - Complète schema_pipeline_vocal_V1.html (qui détaille l'amont : de la
+    voix jusqu'à l'intent brut) sans le remplacer.
+
+PRÉCAUTIONS
+-----------
+  - Point encore ouvert (voir note rouge onglet 1) : SF_ReglesMinimales_V1
+    mélange aujourd'hui vérification et effet de bord (R7, R13) — il doit
+    être corrigé avant d'être réutilisé pour la pré-validation groupée.
+  - Point encore ouvert : confirmation à obtenir sur le comportement exact
+    de Table B lors d'un changement de mode (rechargement complet vs
+    recalcul d'indicateurs) avant de figer ce schéma comme référence.
+  - Terminologie Table D validée par Vincent le 06/07/2026 : LocalSE,
+    SIMPLE, TRADUCTION, CALCUL, MACRO (voir révision V1.1 ci-dessous).
+
+VERSION : 1.0 — 06/07/2026 — Vincent Philippe / Claude
+=============================================================================
+-->
+<style>
+:root{
+  --bg:#12141c; --bg2:#1a1d27; --bg3:#20232f;
+  --border:rgba(255,255,255,.09); --border-strong:rgba(255,255,255,.2);
+  --text:#e8e9ed; --text2:#a8acb8; --text3:#6b6f7d;
+  --blue:#4d9ef7; --blue-bg:rgba(77,158,247,.1); --blue-bd:rgba(77,158,247,.4);
+  --teal:#2ec4a0; --teal-bg:rgba(46,196,160,.1); --teal-bd:rgba(46,196,160,.4);
+  --amber:#f0a836; --amber-bg:rgba(240,168,54,.1); --amber-bd:rgba(240,168,54,.45);
+  --purple:#9b7cf4; --purple-bg:rgba(155,124,244,.1); --purple-bd:rgba(155,124,244,.45);
+  --red:#e85555; --red-bg:rgba(232,85,85,.1); --red-bd:rgba(232,85,85,.4);
+  --green:#5dbd6a; --green-bg:rgba(93,189,106,.1); --green-bd:rgba(93,189,106,.4);
+  --line:rgba(168,172,184,.55);
+  --radius:10px; --radius-lg:14px;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;line-height:1.6}
+.topnav{position:sticky;top:0;z-index:10;display:flex;align-items:center;gap:6px;padding:12px 20px;background:rgba(18,20,28,.94);backdrop-filter:blur(8px);border-bottom:1px solid var(--border);flex-wrap:wrap}
+.topnav .logo{font-weight:700;font-size:15px;margin-right:12px}
+.navbtn{background:none;border:1px solid var(--border);color:var(--text2);padding:7px 14px;border-radius:20px;font-size:13px;cursor:pointer}
+.navbtn:hover{border-color:var(--border-strong);color:var(--text)}
+.navbtn.active{background:var(--blue-bg);border-color:var(--blue-bd);color:var(--blue)}
+.wrap{max-width:1040px;margin:0 auto;padding:26px 20px 60px}
+.view{display:none}
+.view.active{display:block;animation:fade .2s ease}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+h1{font-size:21px;font-weight:600;margin:0 0 6px}
+.subtitle{color:var(--text2);font-size:13.5px;margin:0 0 18px}
+.diagram-wrap{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:14px;overflow-x:auto}
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:11.5px;color:var(--text2);margin:12px 0 20px}
+.leg-item{display:flex;align-items:center;gap:6px}
+.dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+.dot.dash{border:1.5px dashed var(--purple);background:none}
+.note{background:var(--bg2);border-left:3px solid var(--amber);border-radius:0 var(--radius) var(--radius) 0;padding:9px 14px;font-size:12.5px;color:var(--text2);margin:12px 0}
+.mono{font-family:Consolas,monospace;color:var(--teal);font-size:11px}
+.inset{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:16px 18px;margin:16px 0}
+.inset h3{font-size:12px;text-transform:uppercase;letter-spacing:.6px;color:var(--purple);margin:0 0 10px}
+table.struct{width:100%;border-collapse:collapse;font-size:12px}
+table.struct th{text-align:left;color:var(--text3);font-weight:500;padding:6px 10px;border-bottom:1px solid var(--border-strong)}
+table.struct td{padding:6px 10px;border-bottom:1px solid var(--border);color:var(--text2)}
+table.struct tr:last-child td{border-bottom:none}
+svg text{font-family:'Segoe UI',system-ui,sans-serif}
+.ts{font-size:11px;fill:var(--text2)}
+.th{font-size:13px;fill:var(--text);font-weight:600}
+.footer{text-align:center;color:var(--text3);font-size:11.5px;padding:30px 0 10px}
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <span class="logo">RobotRZ</span>
+  <button class="navbtn active" data-view="mecanisme" onclick="showView('mecanisme',this)">Mécanisme de résolution</button>
+  <button class="navbtn" data-view="tables" onclick="showView('tables',this)">Vue d'ensemble des tables</button>
+</nav>
+
+<div class="wrap">
+
+<!-- ============ ONGLET 1 : MÉCANISME ============ -->
+<section class="view active" id="view-mecanisme">
+  <h1>Mécanisme de résolution des intents à traitement particulier</h1>
+  <p class="subtitle">Un seul mécanisme générique (<span class="mono">ui_Traitement</span>) pour TRADUCTION, CALCUL et MACRO — le routage ne regarde que la longueur du tableau d'intents retourné, jamais un type déclaré à l'avance.</p>
+
+  <div class="legend">
+    <div class="leg-item"><span class="dot" style="background:var(--blue)"></span>Entrée / neutre</div>
+    <div class="leg-item"><span class="dot" style="background:var(--purple)"></span>Décision / mécanisme générique</div>
+    <div class="leg-item"><span class="dot" style="background:var(--amber)"></span>Cas &gt; 1 intent (pré-validation groupée)</div>
+    <div class="leg-item"><span class="dot" style="background:var(--green)"></span>Chemin normal</div>
+    <div class="leg-item"><span class="dot" style="background:var(--red)"></span>Rejet / point ouvert</div>
+  </div>
+
+  <div class="diagram-wrap">
+  <svg viewBox="0 0 1000 800" width="100%">
+    <defs>
+      <marker id="m1" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="var(--line)" stroke-width="1.5"/></marker>
+    </defs>
+
+    <!-- Entrée -->
+    <rect x="280" y="20" width="440" height="54" rx="10" fill="var(--bg3)" stroke="var(--border-strong)" stroke-width="1.2"/>
+    <text class="th" x="500" y="42" text-anchor="middle">Intent brut à résoudre</text>
+    <text class="ts" x="500" y="60" text-anchor="middle">origine : capsule STT (fn_stt_intent_router) — ou fabriqué ailleurs dans SP</text>
+
+    <line x1="500" y1="74" x2="500" y2="110" stroke="var(--line)" stroke-width="1.3" marker-end="url(#m1)"/>
+
+    <!-- Décision 1 : id_traitement renseigné ? -->
+    <rect x="280" y="110" width="440" height="64" rx="10" fill="var(--purple-bg)" stroke="var(--purple-bd)" stroke-width="1.4" stroke-dasharray="5 3"/>
+    <text class="th" x="500" y="134" text-anchor="middle" fill="var(--purple)">Table D : id_traitement renseigné pour ce CMD_ID ?</text>
+    <text class="ts" x="500" y="152" text-anchor="middle">SIMPLE / LocalSE → jamais renseigné</text>
+    <text class="ts" x="500" y="166" text-anchor="middle">indifférent à l'origine (STT ou interne SP)</text>
+
+    <line x1="380" y1="174" x2="270" y2="228" stroke="var(--line)" stroke-width="1.2" marker-end="url(#m1)"/>
+    <text class="ts" x="290" y="205">non — vide</text>
+    <line x1="620" y1="174" x2="830" y2="228" stroke="var(--line)" stroke-width="1.2" marker-end="url(#m1)"/>
+    <text class="ts" x="720" y="205">oui — renseigné</text>
+
+    <rect x="60" y="228" width="420" height="64" rx="10" fill="var(--green-bg)" stroke="var(--green-bd)" stroke-width="1.3"/>
+    <text class="th" x="270" y="252" text-anchor="middle" fill="var(--green)">SIMPLE / LocalSE</text>
+    <text class="ts" x="270" y="270" text-anchor="middle">déjà exploitable tel quel</text>
+    <text class="ts" x="270" y="284" text-anchor="middle">(ou 100% résolu côté SE pour LocalSE)</text>
+
+    <rect x="680" y="228" width="300" height="64" rx="10" fill="var(--purple-bg)" stroke="var(--purple-bd)" stroke-width="1.3"/>
+    <text class="th" x="830" y="250" text-anchor="middle" fill="var(--purple)">appelle ref_fonction(valeur, param)</text>
+    <text class="ts" x="830" y="268" text-anchor="middle">définie dans ui_Traitement</text>
+    <text class="ts" x="830" y="282" text-anchor="middle">retourne TOUJOURS un tableau d'intents</text>
+
+    <line x1="270" y1="292" x2="270" y2="520" stroke="var(--line)" stroke-width="1.2" marker-end="url(#m1)"/>
+    <line x1="830" y1="292" x2="830" y2="340" stroke="var(--line)" stroke-width="1.2" marker-end="url(#m1)"/>
+
+    <rect x="680" y="340" width="300" height="50" rx="9" fill="var(--purple-bg)" stroke="var(--purple-bd)" stroke-width="1.2"/>
+    <text class="ts" x="830" y="368" text-anchor="middle">tableau retourné : longueur ?</text>
+
+    <line x1="680" y1="365" x2="400" y2="365" stroke="var(--line)" stroke-width="1.2"/>
+    <line x1="400" y1="365" x2="400" y2="520" stroke="var(--line)" stroke-width="1.2" marker-end="url(#m1)"/>
+    <text class="ts" x="410" y="355">= 1</text>
+    <text class="ts" x="845" y="405">&gt; 1</text>
+
+    <rect x="140" y="520" width="620" height="56" rx="10" fill="var(--green-bg)" stroke="var(--green-bd)" stroke-width="1.3"/>
+    <text class="th" x="450" y="544" text-anchor="middle" fill="var(--green)">→ 1 intent → chemin normal</text>
+    <text class="ts" x="450" y="562" text-anchor="middle">SF_ReglesMinimales_V1 → SF_ValidationIntent_V1 → Stabilisation, comme un intent classique</text>
+
+    <!-- Branche > 1 (déroulé multi-intents) -->
+    <line x1="830" y1="390" x2="870" y2="424" stroke="var(--line)" stroke-width="1.2" marker-end="url(#m1)"/>
+    <rect x="760" y="424" width="220" height="56" rx="10" fill="var(--amber-bg)" stroke="var(--amber-bd)" stroke-width="1.3"/>
+    <text class="th" x="870" y="448" text-anchor="middle" fill="var(--amber)">flow dédié</text>
+    <text class="ts" x="870" y="466" text-anchor="middle">pré-validation groupée</text>
+
+    <line x1="870" y1="480" x2="870" y2="522" stroke="var(--line)" stroke-width="1.2" marker-end="url(#m1)"/>
+
+    <rect x="700" y="522" width="280" height="66" rx="10" fill="var(--purple-bg)" stroke="var(--purple-bd)" stroke-width="1.3"/>
+    <text class="th" x="840" y="544" text-anchor="middle" fill="var(--purple)">2ᵉ instance de SF_ReglesMinimales_V1</text>
+    <text class="ts" x="840" y="562" text-anchor="middle">exécutée sur chaque intent du lot</text>
+    <text class="ts" x="840" y="578" text-anchor="middle">(même sous-flow, réutilisé tel quel)</text>
+
+    <line x1="840" y1="588" x2="840" y2="622" stroke="var(--line)" stroke-width="1.2" marker-end="url(#m1)"/>
+
+    <rect x="700" y="622" width="280" height="46" rx="9" fill="var(--purple-bg)" stroke="var(--purple-bd)" stroke-width="1.2"/>
+    <text class="ts" x="840" y="650" text-anchor="middle">tous les intents du lot valides ?</text>
+
+    <line x1="840" y1="668" x2="840" y2="700" stroke="var(--line)" stroke-width="1.2" marker-end="url(#m1)"/>
+    <text class="ts" x="855" y="688">oui</text>
+    <rect x="700" y="700" width="280" height="66" rx="10" fill="var(--green-bg)" stroke="var(--green-bd)" stroke-width="1.3"/>
+    <text class="ts" x="840" y="722" text-anchor="middle">chaque intent repart individuellement</text>
+    <text class="ts" x="840" y="738" text-anchor="middle">à partir de SF_ValidationIntent_V1</text>
+    <text class="ts" x="840" y="754" text-anchor="middle">(pas de repassage par ReglesMinimales)</text>
+
+    <line x1="700" y1="655" x2="480" y2="700" stroke="var(--line)" stroke-width="1.2" marker-end="url(#m1)"/>
+    <text class="ts" x="600" y="675">non</text>
+    <rect x="340" y="700" width="280" height="66" rx="10" fill="var(--red-bg)" stroke="var(--red-bd)" stroke-width="1.3"/>
+    <text class="ts" x="480" y="724" text-anchor="middle" fill="var(--red)">rejet du lot entier</text>
+    <text class="ts" x="480" y="740" text-anchor="middle">log + TTS d'échec (optionnel)</text>
+    <text class="ts" x="480" y="754" text-anchor="middle">aucun intent du lot ne part</text>
+  </svg>
+  </div>
+
+  <div class="note" style="border-left-color:var(--red)">⚠️ <strong>Point bloquant pour la pré-validation groupée :</strong> <span class="mono">SF_ReglesMinimales_V1</span> mélange aujourd'hui vérification et effet de bord — R7 fait un <span class="mono">global.set</span> dans sa branche de rejet, et R13 dépend d'un flag positionné juste avant par R5+R9 dans la même exécution. Utiliser ce sous-flow tel quel pour "essayer" un lot avant de savoir si on le garde modifierait déjà l'état pour rien en cas de rejet. À corriger avant de construire ce mécanisme, pas après.</div>
+
+  <div class="inset">
+    <h3>Structure de la table ui_Traitement (inventaire des fonctions de résolution)</h3>
+    <table class="struct">
+      <tr><th>id_traitement</th><th>ref_fonction</th><th>param</th><th>label (info admin)</th></tr>
+      <tr><td class="mono">CONV_COULEUR_BASE</td><td class="mono">lookup_liste</td><td class="mono">{liste:"LISTE_COULEURS_RGB"}</td><td>traduction couleur</td></tr>
+      <tr><td class="mono">SCALE_LINEAIRE</td><td class="mono">scale_lineaire</td><td class="mono">{min:0, max:255}</td><td>calcul (ex : LRING_BRIGHTNESS)</td></tr>
+      <tr><td class="mono">EXPAND_MACRO</td><td class="mono">expand_macro</td><td class="mono">{} (lit id_fils du contexte)</td><td>macro (ex : MACRO_PAUSE)</td></tr>
+      <tr><td class="mono">EXPR_EMOTION</td><td class="mono">expr_emotion_multi</td><td class="mono">{liste:"LISTE_EMOTIONS_RENDU"}</td><td>macro paramétrée (ex : joie → 3 intents)</td></tr>
+    </table>
+    <p style="color:var(--text2);font-size:11.5px;margin-top:10px">Un petit nombre de fonctions génériques, réutilisées via <span class="mono">param</span> — pas une ligne par commande. <span class="mono">label</span> est purement descriptif : il n'influence jamais le routage, qui ne dépend que du nombre d'intents réellement retourné par <span class="mono">ref_fonction</span>.</p>
+  </div>
+
+  <div class="note">Terminologie Table D (colonne <span class="mono">Traitement</span>) : <strong>LocalSE</strong> (100% résolu sur SE, jamais de <span class="mono">id_traitement</span>) · <strong>SIMPLE</strong> (pas de <span class="mono">id_traitement</span>) · <strong>TRADUCTION</strong> · <strong>CALCUL</strong> · <strong>MACRO</strong> — ces trois derniers renseignent tous un <span class="mono">id_traitement</span> et suivent le même mécanisme ci-dessus.</div>
+</section>
+
+<!-- ============ ONGLET 2 : TABLES ============ -->
+<section class="view" id="view-tables">
+  <h1>Vue d'ensemble — tables et flux d'initialisation</h1>
+  <p class="subtitle">Où le mécanisme de résolution s'insère par rapport aux tables A/B/C/D et à la nouvelle table ui_Traitement.</p>
+
+  <div class="legend">
+    <div class="leg-item"><span class="dot" style="background:var(--blue)"></span>Normative, statique (CSV)</div>
+    <div class="leg-item"><span class="dot" style="background:var(--teal)"></span>Copie opérationnelle, admin</div>
+    <div class="leg-item"><span class="dot" style="background:var(--green)"></span>Mémoire vive, dynamique</div>
+    <div class="leg-item"><span class="dot dash"></span>Nouveau / pas encore construit</div>
+    <div class="leg-item"><span class="dot" style="background:var(--amber)"></span>Côté SE</div>
+  </div>
+
+  <div class="diagram-wrap">
+  <svg viewBox="0 0 1000 620" width="100%">
+    <defs>
+      <marker id="m2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="var(--line)" stroke-width="1.5"/></marker>
+    </defs>
+
+    <!-- Lane 1 : A -> C -> B -->
+    <rect x="30" y="20" width="300" height="56" rx="10" fill="var(--blue-bg)" stroke="var(--blue-bd)" stroke-width="1.3"/>
+    <text class="th" x="180" y="44" text-anchor="middle" fill="var(--blue)">Table A</text>
+    <text class="ts" x="180" y="62" text-anchor="middle">TableA_updatedV3_corrige.csv — normative, statique</text>
+
+    <line x1="180" y1="76" x2="180" y2="138" stroke="var(--line)" stroke-width="1.2" marker-end="url(#m2)"/>
+    <text class="ts" x="192" y="112">génère (routine / ui_VarG)</text>
+
+    <rect x="30" y="138" width="300" height="64" rx="10" fill="var(--teal-bg)" stroke="var(--teal-bd)" stroke-width="1.3"/>
+    <text class="th" x="180" y="162" text-anchor="middle" fill="var(--teal)">Table C</text>
+    <text class="ts" x="180" y="180" text-anchor="middle">courant_init.json</text>
+    <text class="ts" x="180" y="194" text-anchor="middle">admin via ui_VarG</text>
+
+    <line x1="180" y1="202" x2="180" y2="266" stroke="var(--line)" stroke-width="1.2" marker-end="url(#m2)"/>
+    <text class="ts" x="192" y="238">copiée à l'init → SE</text>
+
+    <rect x="30" y="266" width="300" height="56" rx="10" fill="var(--green-bg)" stroke="var(--green-bd)" stroke-width="1.3"/>
+    <text class="th" x="180" y="290" text-anchor="middle" fill="var(--green)">Table B</text>
+    <text class="ts" x="180" y="308" text-anchor="middle">global.RZ_&lt;VAR&gt; — mémoire vive, dynamique</text>
+
+    <!-- Lane 2 : D -> D opérationnelle -> SE -->
+    <rect x="365" y="20" width="300" height="56" rx="10" fill="var(--blue-bg)" stroke="var(--blue-bd)" stroke-width="1.3"/>
+    <text class="th" x="515" y="44" text-anchor="middle" fill="var(--blue)">Table D</text>
+    <text class="ts" x="515" y="62" text-anchor="middle">tableD_catalogueV2_corrige.csv — normative</text>
+
+    <line x1="515" y1="76" x2="515" y2="138" stroke="var(--line)" stroke-width="1.2" marker-end="url(#m2)"/>
+    <text class="ts" x="527" y="112">génère (routine / futur ui_STT)</text>
+
+    <rect x="365" y="138" width="300" height="64" rx="10" fill="var(--teal-bg)" stroke="var(--teal-bd)" stroke-width="1.4" stroke-dasharray="5 3"/>
+    <text class="th" x="515" y="162" text-anchor="middle" fill="var(--teal)">Table D opérationnelle</text>
+    <text class="ts" x="515" y="180" text-anchor="middle">stt_catalog.json</text>
+    <text class="ts" x="515" y="194" text-anchor="middle">admin via ui_STT — à construire</text>
+
+    <line x1="515" y1="202" x2="515" y2="266" stroke="var(--line)" stroke-width="1.2" marker-end="url(#m2)"/>
+    <text class="ts" x="527" y="238">copiée à l'init → SE</text>
+
+    <rect x="365" y="266" width="300" height="56" rx="10" fill="var(--amber-bg)" stroke="var(--amber-bd)" stroke-width="1.3"/>
+    <text class="th" x="515" y="290" text-anchor="middle" fill="var(--amber)">SE — rz_stt_handler.sh</text>
+    <text class="ts" x="515" y="308" text-anchor="middle">lookup + sécurités (CPU / modeRZ / laisse)</text>
+
+    <!-- Lane 3 : ui_Traitement -->
+    <rect x="700" y="138" width="270" height="64" rx="10" fill="var(--purple-bg)" stroke="var(--purple-bd)" stroke-width="1.4" stroke-dasharray="5 3"/>
+    <text class="th" x="835" y="162" text-anchor="middle" fill="var(--purple)">ui_Traitement</text>
+    <text class="ts" x="835" y="180" text-anchor="middle">table admin — nouvelle</text>
+    <text class="ts" x="835" y="194" text-anchor="middle">id_traitement → ref_fonction + param</text>
+
+    <line x1="835" y1="202" x2="835" y2="266" stroke="var(--line)" stroke-width="1.2" marker-end="url(#m2)"/>
+    <text class="ts" x="847" y="238">reste côté SP uniquement</text>
+
+    <rect x="700" y="266" width="270" height="56" rx="10" fill="var(--purple-bg)" stroke="var(--purple-bd)" stroke-width="1.3"/>
+    <text class="th" x="835" y="290" text-anchor="middle" fill="var(--purple)">Mécanisme de résolution</text>
+    <text class="ts" x="835" y="308" text-anchor="middle">voir onglet "Mécanisme"</text>
+
+    <!-- Convergence vers Gtion_Init / Gtion_EtatGlobal_V1 -->
+    <line x1="180" y1="322" x2="180" y2="360" stroke="var(--line)" stroke-width="1.2"/>
+    <line x1="835" y1="322" x2="835" y2="360" stroke="var(--line)" stroke-width="1.2"/>
+    <line x1="180" y1="360" x2="835" y2="360" stroke="var(--line)" stroke-width="1.2"/>
+    <line x1="500" y1="360" x2="500" y2="384" stroke="var(--line)" stroke-width="1.2" marker-end="url(#m2)"/>
+
+    <rect x="60" y="384" width="880" height="52" rx="10" fill="var(--bg3)" stroke="var(--border-strong)" stroke-width="1.2"/>
+    <text class="ts" x="500" y="415" text-anchor="middle">Gtion_Init — charge Table A → C → B au boot / reset (SF_Init_1)</text>
+
+    <line x1="500" y1="436" x2="500" y2="468" stroke="var(--line)" stroke-width="1.2" marker-end="url(#m2)"/>
+
+    <rect x="60" y="468" width="880" height="66" rx="10" fill="var(--bg3)" stroke="var(--border-strong)" stroke-width="1.2"/>
+    <text class="th" x="500" y="492" text-anchor="middle">Gtion_EtatGlobal_V1</text>
+    <text class="ts" x="500" y="510" text-anchor="middle">lit Table B en continu (règles, indicateurs) + consulte ui_Traitement pour</text>
+    <text class="ts" x="500" y="524" text-anchor="middle">tout intent à transformer, quelle que soit son origine (STT ou interne SP)</text>
+
+    <!-- Lien pointillé SE -> Gtion_EtatGlobal (capsule STT) -->
+    <line x1="515" y1="322" x2="515" y2="500" stroke="var(--line)" stroke-width="1.1" stroke-dasharray="3 3"/>
+    <line x1="515" y1="500" x2="700" y2="500" stroke="var(--line)" stroke-width="1.1" stroke-dasharray="3 3" marker-end="url(#m2)"/>
+    <text class="ts" x="600" y="493">capsule STT → MQTT SE/statut</text>
+  </svg>
+  </div>
+
+  <div class="note">✅ Confirmé : seul un <span class="mono">reset</span> recharge Table B en entier. Un changement de <span class="mono">modeRZ</span> ne fait que recalculer les indicateurs (<span class="mono">flag_*</span>) à chaque passage, comme le fait déjà R5+R9. Table B reste la mémoire vive tenue à jour en continu pendant tout le fonctionnement — c'est elle que lisent les écrans (manette virtuelle, voyants) pour s'actualiser.</div>
+  <div class="note">Rappel : <strong>LocalSE</strong> n'existe que dans la colonne <span class="mono">Traitement</span> de Table D — jamais dans <span class="mono">ui_Traitement</span>, puisqu'aucun intent n'en sort vers SP.</div>
+</section>
+
+</div>
+
+<div class="footer">RobotRZ — Mécanisme de résolution des intents &amp; structure des tables — Version 1.1 — 06/07/2026 — Vincent Philippe / Claude</div>
+
+<script>
+function showView(id, btn){
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.getElementById('view-'+id).classList.add('active');
+  document.querySelectorAll('.navbtn').forEach(b=>b.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+  window.scrollTo(0,0);
+}
+</script>
+</body>
+</html>

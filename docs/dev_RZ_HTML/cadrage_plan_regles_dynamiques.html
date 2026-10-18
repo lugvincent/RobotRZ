@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Cadrage — Unification PLAN / Règles à conditions — RobotRZ</title>
+<style>
+:root{--bg:#0d1117;--bg2:#161b22;--bg3:#21262d;--text:#e6edf3;--text2:#8b949e;--text3:#484f58;--green:#3fb950;--orange:#d29922;--blue:#58a6ff;--purple:#bc8cff;--red:#f85149;--coral:#ff7b72;--border:rgba(240,246,252,0.1)}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;font-size:14px;line-height:1.7;padding:32px 16px 80px}
+.page{max-width:960px;margin:0 auto}
+h1{font-size:24px;font-weight:600;border-bottom:1px solid var(--border);padding-bottom:16px;margin-bottom:8px}
+h2{font-size:16px;font-weight:600;color:var(--blue);margin:28px 0 12px;display:flex;align-items:center;gap:8px}
+h2::before{content:'';display:inline-block;width:4px;height:16px;background:var(--blue);border-radius:2px}
+h3{font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.8px;color:var(--text2);margin:16px 0 8px;padding-bottom:6px;border-bottom:1px solid var(--border)}
+.sub{color:var(--text2);font-size:13px;margin-bottom:28px}
+.sec{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:20px 24px;margin-bottom:18px}
+code{font-family:'Courier New',monospace;font-size:12px;background:var(--bg3);color:var(--orange);padding:2px 6px;border-radius:4px}
+pre{font-family:'Courier New',monospace;font-size:12px;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:14px 16px;margin:10px 0;overflow-x:auto;line-height:1.6;color:#c9d1d9;white-space:pre-wrap}
+table{width:100%;border-collapse:collapse;font-size:12.5px;margin:10px 0}
+th{background:var(--bg3);color:var(--text2);font-weight:600;padding:8px 12px;text-align:left;border-bottom:1px solid var(--border)}
+td{padding:7px 12px;border-bottom:1px solid var(--border);color:var(--text2);vertical-align:top}
+tr:last-child td{border-bottom:none}
+.al{border-radius:8px;padding:10px 14px;font-size:13px;margin:10px 0;display:flex;gap:8px;align-items:flex-start}
+.al-warn{background:rgba(210,153,34,.08);border:1px solid rgba(210,153,34,.25);color:var(--orange)}
+.al-ok{background:rgba(63,185,80,.08);border:1px solid rgba(63,185,80,.25);color:var(--green)}
+.al-red{background:rgba(248,81,73,.08);border:1px solid rgba(248,81,73,.25);color:var(--red)}
+p{margin:6px 0;color:var(--text2);font-size:13px}
+ul,ol{padding-left:20px;margin:6px 0}
+ul li,ol li{font-size:13px;color:var(--text2);margin:5px 0}
+strong{color:var(--text)}
+hr{border:none;border-top:1px solid var(--border);margin:28px 0}
+.step{display:flex;gap:12px;margin:10px 0}
+.sn{width:26px;height:26px;background:#1f6feb;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;color:white;min-width:26px}
+.sc{flex:1;padding-top:3px;font-size:13px;color:var(--text2)}
+.sc strong{display:block;color:var(--text);margin-bottom:2px}
+.svgbox{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:16px;margin:12px 0}
+.diagbox{border:1px solid var(--border);border-radius:8px;padding:20px;background:#161b22}
+.node-box{border-radius:8px;padding:10px 14px;margin:6px 0;font-size:13px}
+.n-amber{background:rgba(210,153,34,.12);border:1px solid rgba(210,153,34,.35)}
+.n-purple{background:rgba(188,140,255,.12);border:1px solid rgba(188,140,255,.35)}
+.n-teal{background:rgba(63,185,80,.12);border:1px solid rgba(63,185,80,.35)}
+.n-blue{background:rgba(88,166,255,.12);border:1px solid rgba(88,166,255,.35)}
+.arrow{text-align:center;color:var(--text3);font-size:16px;margin:2px 0}
+</style>
+</head>
+<body>
+<div class="page">
+<h1>Cadrage — Unification PLAN / Règles à conditions</h1>
+<p class="sub">Document de cadrage pour une session dédiée — Node-RED SP, à la suite de la session du 05/07/2026</p>
+
+<h2>1. La problématique posée</h2>
+<div class="sec">
+<p>Deux besoins, identifiés séparément, partagent en réalité la même forme sous-jacente : <em>« quelque chose se produit → une fonction calcule → un ou plusieurs VPIV en sortent, validés comme n'importe quelle commande »</em>.</p>
+<ul>
+<li><strong>Commandes vocales de type PLAN</strong> (Table D) : une commande comme <code>MTR_TURN_ANGLE</code> ne peut pas être traduite directement en VPIV — sa valeur doit être calculée depuis la phrase captée. Un vrai trou a été trouvé côté SE : <code>process_plan()</code> est documenté (commentaires de <code>rz_build_system.py</code>) mais absent du code réel de <code>rz_stt_handler.sh</code> v2.6.</li>
+<li><strong>Réactions à conditions d'état</strong> (l'idée initiale de <code>B2_Variables_Complexes</code>, retrouvée sous une forme aboutie dans <code>ui_Rules</code> côté Xiaomi) : jusqu'à trois propriétés de variable(s) atteignant certaines valeurs déclenchent une fonction qui génère une ou plusieurs actions.</li>
+</ul>
+<p>Question posée en session : peut-on traiter ces deux besoins avec un seul mécanisme plutôt que deux, en s'appuyant sur <code>SF_ReglesDynamiques</code> (sous-flow déjà présent mais débranché dans <code>Gtion_EtatGlobal_V1</code>, dont le commentaire dit "règles issues de ui_Rules") ?</p>
+</div>
+
+<h2>2. Trois décisions actées en session</h2>
+<div class="sec">
+<table>
+<tr><th>#</th><th>Décision</th><th>Raisonnement retenu</th></tr>
+<tr><td>1</td><td>PLAN se résout <strong>côté SP</strong>, pas côté SE</td><td>Table D est statique (SE en reçoit une copie à l'initialisation, comme Table C) — pas de synchronisation dynamique nécessaire. Une commande PLAN peut toucher plusieurs sous-systèmes à la fois : c'est le rôle du pilote (SP), pas de l'isolation SE/Tasker que visait le principe d'origine.</td></tr>
+<tr><td>2</td><td>Mécanisme <strong>unifié</strong> pour PLAN et les réactions à conditions</td><td>Même forme (déclencheur → fonction → VPIV). Éviter un handler PLAN séparé qui dupliquerait la logique déjà prévue pour <code>SF_ReglesDynamiques</code>.</td></tr>
+<tr><td>3</td><td><strong>Pré-validation groupée</strong> ("tout ou rien") plutôt qu'un envoi séquentiel tracé</td><td>Node-RED exécute un message de bout en bout de façon synchrone — l'état lu reste stable entre le calcul et la vérification, donc le risque d'incohérence entre-temps est faible. Nécessite d'extraire les règles de <code>SF_ReglesMinimales_V1</code> en fonctions pures (vérifier sans modifier), réutilisables par le chemin normal ET par ce nouveau chemin groupé.</td></tr>
+</table>
+</div>
+
+<h2>3. Point de vigilance trouvé en creusant la proposition de branchement</h2>
+<div class="sec">
+<div class="al al-warn"><span>⚠️</span><span><strong>SF_ReglesDynamiques ne peut pas être le point d'entrée pour PLAN.</strong> Sa place documentée ("Checklist et à ne pas faire") est entre SF_ReglesMinimales_V1 et SF_Stabilisation_V1, avec l'interdiction explicite de le placer avant ReglesMinimales. Or une commande PLAN non résolue (ID + valeur brute) ne peut pas être validée par ReglesMinimales, qui a besoin de connaître le VAR final pour appliquer ses restrictions de mode.</span></div>
+<p><strong>Proposition de résolution</strong> : la résolution PLAN se fait <em>en amont</em> de Gtion_EtatGlobal_V1 — au niveau de <code>fn_stt_intent_router</code> ou juste après (tab RZ_GestionFlux_V3) — exactement le même principe que COMPLEXE, déjà entièrement résolu avant d'atteindre SP. Le résultat est un <code>msg.vpiv</code> normal, qui entre ensuite dans la chaîne habituelle sans traitement spécial.</p>
+<p><code>SF_ReglesDynamiques</code> garde sa place documentée, mais uniquement pour la <strong>seconde moitié</strong> du besoin : les réactions déclenchées par un état de variables, pas par l'arrivée d'un ID de commande.</p>
+<p>Les deux partageraient le même mécanisme sous-jacent (table événements/conditions → fonctions → VPIV), invoqué à deux endroits différents pour deux raisons différentes — pas la même exécution du même nœud.</p>
+</div>
+
+<h2>4. Schéma de principe</h2>
+<div class="sec">
+<div class="diagbox">
+<div class="node-box n-amber">STT.intent — traitement PLAN<br><span style="color:var(--text2);font-size:12px">ID Table D + valeur brute captée</span></div>
+<div class="arrow">↓</div>
+<div class="node-box n-teal">Résolution PLAN (nouveau — près de fn_stt_intent_router)<br><span style="color:var(--text2);font-size:12px">Table D copie SP + calcul → VPIV normal</span></div>
+<div class="arrow">↓ (msg.vpiv, transparent pour la suite)</div>
+<div class="node-box n-blue">Dispatcher → GestionUrgence → ReglesMinimales_V1<br><span style="color:var(--text2);font-size:12px">validation habituelle, VAR final connu</span></div>
+<div class="arrow">↓</div>
+<div class="node-box n-purple">SF_ReglesDynamiques (place documentée, inchangée)<br><span style="color:var(--text2);font-size:12px">déclenché ICI par : réactions à conditions d'état (ui_Rules)</span></div>
+<div class="arrow">↓</div>
+<div class="node-box n-blue">ValidationIntent → Stabilisation → ETAGLOBAL_OUT</div>
+</div>
+<p style="margin-top:10px">La <strong>même logique</strong> "table événements/conditions → fonctions → VPIV" alimente le bloc teal (PLAN, déclenché par un ID) et le bloc purple (conditions, déclenché par un état) — sans être le même nœud, ni la même position dans la chaîne.</p>
+</div>
+
+<h2>5. Questions encore ouvertes — à traiter en session dédiée</h2>
+<div class="sec">
+<ul>
+<li><strong>Rebouclage</strong> : si une réaction produite par <code>SF_ReglesDynamiques</code> touche un moteur (ou toute variable normalement filtrée par <code>SF_ReglesMinimales_V1</code>), doit-elle repasser par ce filtre avant de continuer, puisqu'elle sort <em>après</em> lui dans la chaîne actuelle ?</li>
+<li><strong>Extraction des règles pures</strong> : quelles règles de <code>SF_ReglesMinimales_V1</code> peuvent être vérifiées sans effet de bord (condition pure), et lesquelles modifient déjà l'état pendant la vérification (ex: <code>global.set('flag_moteur_dispo', ...)</code>) et devront être restructurées ?</li>
+<li><strong>Table D côté SP</strong> : sous quelle forme exacte SP reçoit-il sa copie des lignes PLAN de Table D — extraction dédiée, ou lecture du même <code>stt_catalog.json</code> que SE ?</li>
+<li><strong>ui_Rules — modèle de déclenchement</strong> : le moteur trouvé côté Xiaomi ne connaît que le déclenchement par condition d'état. Migration nécessaire pour accepter aussi le déclenchement par ID (PLAN) — probablement dans le module de résolution PLAN, pas dans <code>ui_Rules</code> lui-même vu la clarification ci-dessus.</li>
+</ul>
+</div>
+
+<h2>6. Étapes proposées, de l'état actuel vers l'objectif</h2>
+<div class="sec">
+<div class="step"><div class="sn">1</div><div class="sc"><strong>Vérifier l'état réel de process_plan()</strong>dans le fichier complet et à jour de rz_stt_handler.sh — confirmer si le trou constaté est réel ou un artefact de lecture partielle.</div></div>
+<div class="step"><div class="sn">2</div><div class="sc"><strong>Porter ui_Rules</strong> (Xiaomi → RPI) tel que déjà décidé, sans encore le connecter — vérifier son moteur d'exécution contre global.RZ_&lt;VAR&gt; (pas enrichedVars).</div></div>
+<div class="step"><div class="sn">3</div><div class="sc"><strong>Construire la résolution PLAN</strong> près de fn_stt_intent_router : lecture Table D (copie SP), calcul de la valeur, production d'un ou plusieurs msg.vpiv normaux.</div></div>
+<div class="step"><div class="sn">4</div><div class="sc"><strong>Extraire les règles pures</strong> de SF_ReglesMinimales_V1 (vérification sans effet de bord), réutilisables par le chemin normal et par la pré-validation groupée.</div></div>
+<div class="step"><div class="sn">5</div><div class="sc"><strong>Brancher SF_ReglesDynamiques</strong> à sa place documentée, avec le mécanisme ui_Rules porté à l'étape 2, en tranchant la question du rebouclage (point ouvert §5).</div></div>
+<div class="step"><div class="sn">6</div><div class="sc"><strong>Tester chaque étape isolément</strong> avant d'enchaîner, comme pour tous les fichiers de la session du 05/07 — un fichier à la fois, avec tests réels avant de continuer.</div></div>
+</div>
+
+<hr>
+<p style="text-align:center;color:var(--text3);font-size:12px;margin-top:24px">Projet RobotRZ — Cadrage PLAN / Règles dynamiques — 05 juillet 2026 — Vincent Philippe / Claude</p>
+</div>
+</body>
+</html>

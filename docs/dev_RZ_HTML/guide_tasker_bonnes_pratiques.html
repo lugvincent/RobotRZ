@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Guide Tasker — Règles & Bonnes Pratiques RobotRZ</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Exo+2:wght@300;400;600;800&display=swap');
+  :root {
+    --bg:#0d1117; --bg2:#161b22; --bg3:#1f2937; --border:#30363d;
+    --accent:#00e5ff; --accent2:#ff6b35; --accent3:#7cfc00;
+    --text:#e6edf3; --muted:#8b949e;
+    --ok:#3fb950; --warn:#f0883e; --err:#f85149; --new:#58a6ff;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Exo 2',sans-serif;background:var(--bg);color:var(--text);line-height:1.6;padding:2rem 1rem}
+  header{border-left:4px solid var(--warn);padding:1.5rem 2rem;margin-bottom:3rem;background:linear-gradient(135deg,var(--bg2) 0%,var(--bg) 100%)}
+  header .tag{font-family:'Share Tech Mono',monospace;font-size:.75rem;color:var(--warn);letter-spacing:.15em;text-transform:uppercase;margin-bottom:.5rem}
+  header h1{font-size:2rem;font-weight:800}
+  header .meta{margin-top:.75rem;font-size:.85rem;color:var(--muted);font-family:'Share Tech Mono',monospace}
+  section{margin-bottom:2.5rem}
+  .section-title{display:flex;align-items:center;gap:.75rem;margin-bottom:1.25rem;padding-bottom:.5rem;border-bottom:1px solid var(--border)}
+  .section-title .num{font-family:'Share Tech Mono',monospace;font-size:.7rem;color:var(--warn);background:rgba(240,136,62,.08);border:1px solid rgba(240,136,62,.3);padding:.15rem .5rem;border-radius:3px}
+  .section-title h2{font-size:1.1rem;font-weight:600}
+  .card{background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:1.25rem 1.5rem;margin-bottom:1rem}
+  .card.ok{border-left:3px solid var(--ok)}.card.warn{border-left:3px solid var(--warn)}.card.err{border-left:3px solid var(--err)}.card.new{border-left:3px solid var(--new)}.card.accent{border-left:3px solid var(--accent)}
+  .card h3{font-size:.95rem;font-weight:600;margin-bottom:.6rem;color:var(--warn)}
+  .card.ok h3{color:var(--ok)}.card.err h3{color:var(--err)}.card.new h3{color:var(--new)}.card.accent h3{color:var(--accent)}
+  .card p,.card li{font-size:.9rem;color:var(--muted);line-height:1.7}
+  .card ul{padding-left:1.2rem}.card li{margin-bottom:.3rem}.card li strong{color:var(--text)}
+  .rz-table{width:100%;border-collapse:collapse;font-size:.85rem;margin-bottom:1rem}
+  .rz-table th{background:var(--bg3);color:var(--warn);font-family:'Share Tech Mono',monospace;font-weight:400;font-size:.75rem;letter-spacing:.08em;text-align:left;padding:.6rem 1rem;border-bottom:1px solid var(--border)}
+  .rz-table td{padding:.55rem 1rem;border-bottom:1px solid rgba(48,54,61,.5);color:var(--muted);vertical-align:top}
+  .rz-table td:first-child{color:var(--text);font-weight:600}
+  .badge{display:inline-block;font-family:'Share Tech Mono',monospace;font-size:.7rem;padding:.1rem .5rem;border-radius:3px;margin-right:.3rem}
+  .badge.ok{background:rgba(63,185,80,.15);color:var(--ok);border:1px solid rgba(63,185,80,.3)}
+  .badge.warn{background:rgba(240,136,62,.15);color:var(--warn);border:1px solid rgba(240,136,62,.3)}
+  .badge.err{background:rgba(248,81,73,.15);color:var(--err);border:1px solid rgba(248,81,73,.3)}
+  pre{background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:1rem 1.25rem;overflow-x:auto;font-family:'Share Tech Mono',monospace;font-size:.8rem;line-height:1.8;margin-top:.75rem}
+  .ok-code{color:var(--ok)}
+  .err-code{color:var(--err)}
+  .comment{color:var(--muted)}
+  code{font-family:'Share Tech Mono',monospace;font-size:.82rem;background:var(--bg3);color:var(--accent2);padding:.1rem .4rem;border-radius:3px}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+  @media(max-width:640px){.grid2{grid-template-columns:1fr}}
+  .rule-box{border:2px solid var(--err);border-radius:8px;padding:1.25rem;margin-bottom:1rem;background:rgba(248,81,73,.04)}
+  .rule-box h3{color:var(--err);font-size:1rem;margin-bottom:.75rem}
+  footer{margin-top:3rem;padding-top:1.5rem;border-top:1px solid var(--border);font-family:'Share Tech Mono',monospace;font-size:.75rem;color:var(--muted);display:flex;justify-content:space-between;flex-wrap:wrap;gap:.5rem}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="tag">Guide Tasker — RobotRZ</div>
+  <h1>Règles & Bonnes Pratiques</h1>
+  <div class="meta">Date : 14/05/2026 &nbsp;|&nbsp; Sources : tasker.joaoapps.com · Taskomater/Tasker-XML-Info · Expérience terrain Doro</div>
+</header>
+
+<!-- ══ 1. DÉCOUVERTE CRITIQUE ══ -->
+<section>
+  <div class="section-title"><span class="num">!</span><h2>Découverte critique — Codes actions XML</h2></div>
+
+  <div class="rule-box">
+    <h3>🚨 Les codes actions XML dépendent de la VERSION de Tasker</h3>
+    <p style="color:var(--muted);font-size:.9rem;margin-bottom:.75rem">Un code identique peut désigner des actions différentes selon la version. La référence officielle (GitHub Taskomater) donne :</p>
+    <table class="rz-table">
+      <tr><th>Code</th><th>Action (référence officielle)</th><th>Sur votre Doro 6.6.20</th></tr>
+      <tr><td>112</td><td>Run SL4A Script</td><td><span class="badge warn">≠ Run Shell !</span> Exécute un fichier script</td></tr>
+      <tr><td>123</td><td>Run Shell</td><td>Code théorique — non testé sur ce Doro</td></tr>
+      <tr><td>664</td><td>Java Function (versions récentes)</td><td><span class="badge err">Java Function — pas Run Shell</span></td></tr>
+      <tr><td>410</td><td>Write File</td><td><span class="badge ok">✅ Validé par export Doro</span></td></tr>
+      <tr><td>547</td><td>Variable Set</td><td><span class="badge ok">✅ Validé</span></td></tr>
+    </table>
+    <p style="color:var(--err);font-size:.85rem;margin-top:.75rem">⚠️ <strong>Règle absolue :</strong> le seul code fiable est celui obtenu en exportant une action créée via l'UI Tasker sur CE device. Jamais se fier à une liste externe.</p>
+  </div>
+</section>
+
+<!-- ══ 2. XML VS UI ══ -->
+<section>
+  <div class="section-title"><span class="num">02</span><h2>XML importé vs création via interface graphique</h2></div>
+
+  <div class="card err">
+    <h3>Pourquoi le XML importé génère des bugs</h3>
+    <ul>
+      <li><strong>Codes actions variables :</strong> changent entre versions Tasker (voir section 1)</li>
+      <li><strong>Structure des arguments :</strong> format et nombre d'args différents selon version (Int vs Str, ve="3" vs ve="2"...)</li>
+      <li><strong>Attributs manquants :</strong> un arg manquant dans le XML = comportement imprévisible sans message d'erreur</li>
+      <li><strong>IDs conflictuels :</strong> si l'ID existe déjà → Tasker peut refuser ou créer un doublon</li>
+      <li><strong>Scènes avec embedded tasks :</strong> les tâches internes à une scène ont un format spécifique difficile à reproduire manuellement</li>
+      <li><strong>Encodage XML :</strong> <code>&amp;gt;</code>, <code>&amp;lt;</code>, <code>&amp;amp;</code> doivent être correctement échappés</li>
+    </ul>
+  </div>
+
+  <div class="grid2">
+    <div class="card ok">
+      <h3>✅ Quand utiliser le XML</h3>
+      <ul>
+        <li>Reproduire une tâche <strong>déjà exportée depuis CE Doro</strong></li>
+        <li>Tâches simples (≤3 actions) avec codes validés</li>
+        <li>Déploiement rapide de tâches identiques</li>
+        <li>Backup et restauration du projet</li>
+      </ul>
+    </div>
+    <div class="card warn">
+      <h3>⚠️ Préférer l'interface graphique pour</h3>
+      <ul>
+        <li>Toute tâche complexe (JavaScriplet, conditions)</li>
+        <li>Actions avec plugins (Termux:Tasker, IP Webcam...)</li>
+        <li>Scènes avec boutons et tâches internes</li>
+        <li>Première création d'une action inconnue</li>
+        <li>Tout ce qui n'a pas été testé sur CE device</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card accent">
+    <h3>💡 Workflow recommandé</h3>
+    <ul>
+      <li><strong>1.</strong> Créer via l'UI Tasker → tester → valider</li>
+      <li><strong>2.</strong> Exporter depuis Tasker (appui long → Exporter)</li>
+      <li><strong>3.</strong> Le fichier exporté = référence pour reproduire</li>
+      <li><strong>4.</strong> Pour du XML généré : toujours baser sur un export existant du même device comme template</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ══ 3. RÈGLES JAVASCRIPTLET ══ -->
+<section>
+  <div class="section-title"><span class="num">03</span><h2>JavaScriptlet — règles et limitations</h2></div>
+
+  <div class="rule-box">
+    <h3>🚫 Interdit dans un JavaScriptlet Tasker</h3>
+    <ul style="color:var(--muted)">
+      <li><strong style="color:var(--err)">return au niveau global</strong> — <code>return</code> n'est valide qu'À L'INTÉRIEUR d'une fonction. Hors fonction = crash "Illegal return statement"</li>
+      <li><strong style="color:var(--err)">Arrays globaux</strong> — <code>setGlobal('arr', [1,2,3])</code> ne fonctionne pas (limitation Android)</li>
+      <li><strong style="color:var(--err)">%variables directement</strong> — les variables globales Tasker (%MAJ) ne sont PAS accessibles directement, utiliser <code>global('NOM')</code></li>
+      <li><strong style="color:var(--err)">Exécution parallèle</strong> — un seul JavaScriptlet à la fois. Si un autre tourne, le second attend.</li>
+    </ul>
+  </div>
+
+  <div class="card ok">
+    <h3>✅ Règles correctes</h3>
+    <table class="rz-table">
+      <tr><th>Opération</th><th>Syntaxe correcte</th><th>Erreur courante</th></tr>
+      <tr><td>Lire variable globale</td><td><code>global('RZparam')</code></td><td><code>%RZparam</code> (ne marche pas)</td></tr>
+      <tr><td>Écrire variable globale</td><td><code>setGlobal('RZparam', 'On')</code></td><td><code>setGlobal('%RZparam', ...)</code></td></tr>
+      <tr><td>Lire variable locale</td><td><code>monvar</code> (sans %)</td><td><code>%monvar</code></td></tr>
+      <tr><td>Sortie anticipée</td><td>Utiliser <code>if/else</code></td><td><code>return;</code> (interdit)</td></tr>
+      <tr><td>Tableau local</td><td><code>var arr = [1,2,3];</code> → fonctionne</td><td>Tableau global → ne fonctionne pas</td></tr>
+    </table>
+  </div>
+
+  <div class="card accent">
+    <h3>Pattern correct — remplacer return par if/else</h3>
+    <pre><span class="comment">// ❌ FAUX — return hors fonction</span>
+<span class="err-code">var cmd = applis[btn];
+if (!cmd) { setGlobal('result', ''); return; }
+setGlobal('result', cmd.val);</span>
+
+<span class="comment">// ✅ CORRECT — if/else</span>
+<span class="ok-code">var cmd = applis[btn];
+if (cmd) {
+    setGlobal('result', cmd.val);
+} else {
+    setGlobal('result', '');
+}</span></pre>
+  </div>
+
+  <div class="card accent">
+    <h3>Pattern correct — return DANS une fonction (autorisé)</h3>
+    <pre><span class="ok-code">function getMode(btn) {
+    var modes = {veille:'1', fixe:'2', deplacement:'3', arret:'0'};
+    return modes[btn] || '1';  // ✅ return dans une fonction = OK
+}
+var val = getMode(global('RZmenuBtn'));
+setGlobal('RZmodeVal', val);</span></pre>
+  </div>
+
+  <div class="card accent">
+    <h3>Fonctions Tasker disponibles dans JavaScriptlet</h3>
+    <table class="rz-table">
+      <tr><th>Fonction</th><th>Rôle</th></tr>
+      <tr><td><code>global('NOM')</code></td><td>Lire variable globale Tasker (sans %)</td></tr>
+      <tr><td><code>setGlobal('NOM', valeur)</code></td><td>Écrire variable globale Tasker</td></tr>
+      <tr><td><code>flash('message')</code></td><td>Afficher un message flash (debug)</td></tr>
+      <tr><td><code>performTask('NomTache', priorite, par1, par2)</code></td><td>Appeler une tâche Tasker</td></tr>
+      <tr><td><code>readFile('chemin')</code></td><td>Lire un fichier texte</td></tr>
+      <tr><td><code>writeFile('chemin', 'texte', append)</code></td><td>Écrire dans un fichier (append=false → écrase)</td></tr>
+      <tr><td><code>JSON.parse()</code></td><td>Parser du JSON (natif)</td></tr>
+      <tr><td><code>XMLHTTPRequest</code></td><td>Requêtes HTTP (natif)</td></tr>
+    </table>
+    <p style="color:var(--warn);font-size:.85rem;margin-top:.75rem">⚠️ <code>readFile()</code> et <code>writeFile()</code> peuvent remplacer les actions code 417/410 directement depuis JavaScript.</p>
+  </div>
+</section>
+
+<!-- ══ 4. CODES VALIDÉS SUR CE DORO ══ -->
+<section>
+  <div class="section-title"><span class="num">04</span><h2>Codes actions — référence terrain Doro (Tasker 6.6.20)</h2></div>
+
+  <div class="card warn">
+    <h3>⚠️ Ces codes sont valides UNIQUEMENT sur ce Doro — peuvent différer ailleurs</h3>
+  </div>
+
+  <table class="rz-table">
+    <tr><th>Code</th><th>Action dans l'UI</th><th>Source validation</th><th>Utilisation RobotRZ</th></tr>
+    <tr><td>18</td><td>Tuer une appli</td><td>Référence + backup2</td><td>Fermer Baby/Zoom/GPS</td></tr>
+    <tr><td>20</td><td>Charger une appli</td><td>backup2 validé Doro ✅</td><td>Lancer Baby, Zoom, NavGPS, IPWebcam</td></tr>
+    <tr><td>30</td><td>Attendre</td><td>backup2</td><td>Pauses inter-actions</td></tr>
+    <tr><td>37</td><td>Si (If)</td><td>Référence</td><td>Conditions</td></tr>
+    <tr><td>38</td><td>Fin Si (End If)</td><td>Référence</td><td>Fin conditions</td></tr>
+    <tr><td>43</td><td>Sinon (Else)</td><td>Référence</td><td>Branche alternative</td></tr>
+    <tr><td>46</td><td>Créer scène</td><td>Référence</td><td>—</td></tr>
+    <tr><td>47</td><td>Afficher scène</td><td>backup2 ✅</td><td>Show RZ_Expression, RZ_Menu...</td></tr>
+    <tr><td>48</td><td>Masquer scène</td><td>Référence</td><td>Alternative à 49</td></tr>
+    <tr><td>49</td><td>Détruire scène</td><td>backup2 ✅</td><td>TOUJOURS avant code 47</td></tr>
+    <tr><td>51</td><td>Élément Texte</td><td>backup2 ✅</td><td>Modifier emoji_expression</td></tr>
+    <tr><td>65</td><td>Visibilité élément</td><td>Référence</td><td>Afficher/cacher boutons scène</td></tr>
+    <tr><td>112</td><td>Exécuter un shell (UI)</td><td>Export Doro — mais se comporte comme Run Script</td><td>Écriture fichier UNIQUEMENT si créé via UI</td></tr>
+    <tr><td>123</td><td>Run Shell (référence officielle)</td><td>Non testé sur ce Doro</td><td>À tester si 112 pose problème</td></tr>
+    <tr><td>129</td><td>JavaScriptlet</td><td>backup2 ✅</td><td>Logique métier JS</td></tr>
+    <tr><td>130</td><td>Exécuter une tâche</td><td>backup2 ✅</td><td>Appels inter-tâches</td></tr>
+    <tr><td>222</td><td>Fichier modifié (profil)</td><td>✅</td><td>Profils 117/131</td></tr>
+    <tr><td>410</td><td>Écrire dans un fichier</td><td>Export Newtest ✅</td><td>vpiv_out.txt, menu_cmd.json — chemin RELATIF depuis /storage/emulated/0/</td></tr>
+    <tr><td>417</td><td>Lire un fichier</td><td>backup2 ✅</td><td>trigger.txt, global.json</td></tr>
+    <tr><td>547</td><td>Régler une variable</td><td>backup2 ✅</td><td>arg5=3 (global), arg6=1 OBLIGATOIRES</td></tr>
+    <tr><td>1256900802</td><td>Termux:Tasker plugin</td><td>Export Doro ✅</td><td>rz_start.sh, termux-torch</td></tr>
+  </table>
+
+  <div class="card err">
+    <h3>Codes à ne jamais utiliser</h3>
+    <table class="rz-table">
+      <tr><th>Code</th><th>Problème</th></tr>
+      <tr><td>269</td><td>Ancienne Variable Set → "Erreur type 269" sur 6.6.20</td></tr>
+      <tr><td>498</td><td>N'existe pas sur cette version → "Missing action type 498"</td></tr>
+      <tr><td>664</td><td>Java Function (PAS Run Shell) → plantage</td></tr>
+      <tr><td>195</td><td>Non validé sur ce Doro — utiliser 51 à la place</td></tr>
+    </table>
+  </div>
+</section>
+
+<!-- ══ 5. RÈGLES SCÈNES ══ -->
+<section>
+  <div class="section-title"><span class="num">05</span><h2>Règles scènes — enchaînements obligatoires</h2></div>
+
+  <div class="grid2">
+    <div class="rule-box">
+      <h3>🚫 Erreur : scene already visible</h3>
+      <p style="color:var(--muted);font-size:.9rem">Afficher (code 47) une scène déjà visible → crash<br>
+      <strong style="color:var(--ok)">Fix :</strong> toujours code 49 (Destroy) avant code 47 (Show)</p>
+    </div>
+    <div class="rule-box">
+      <h3>🚫 Erreur : éléments non initialisés</h3>
+      <p style="color:var(--muted);font-size:.9rem">Modifier un élément scène immédiatement après Show → rien ne se passe<br>
+      <strong style="color:var(--ok)">Fix :</strong> attendre 500ms (code 30) après code 47</p>
+    </div>
+  </div>
+
+  <div class="card ok">
+    <h3>Séquence correcte — Show + écriture élément</h3>
+    <pre><span class="ok-code">code 49  → Destroy RZ_Expression   (silencieux si absente)
+code 47  → Show RZ_Expression
+code 30  → Wait 500ms
+code 51  → Set emoji_expression = 😐</span></pre>
+  </div>
+
+  <div class="card ok">
+    <h3>Boutons de scène — règle Destroy avant action</h3>
+    <pre><span class="ok-code">// Chaque bouton de RZ_Menu doit :
+code 547 → Set %RZparam = On     (si paramètre nécessaire)
+code 49  → Destroy RZ_Menu       (AVANT l'action métier)
+code 130 → Perform Task RZ_Baby  (action métier)</span></pre>
+  </div>
+</section>
+
+<!-- ══ 6. STRUCTURE XML FIABLE ══ -->
+<section>
+  <div class="section-title"><span class="num">06</span><h2>Génération XML fiable — règles de base</h2></div>
+
+  <div class="card accent">
+    <h3>Règles de génération XML validées</h3>
+    <ul>
+      <li><strong>Baser sur un export du Doro :</strong> le seul XML fiable est celui exporté par Tasker lui-même depuis ce device</li>
+      <li><strong>&amp;gt; obligatoire :</strong> le caractère <code>&gt;</code> dans les chaînes XML doit être <code>&amp;gt;</code></li>
+      <li><strong>&amp;lt; obligatoire :</strong> le caractère <code>&lt;</code> dans les chaînes XML doit être <code>&amp;lt;</code></li>
+      <li><strong>code 547 :</strong> toujours <code>arg5=3</code> (scope global) et <code>arg6=1</code> — sinon variable locale seulement</li>
+      <li><strong>Chaîne vide :</strong> utiliser <code>&lt;Str sr="argN" ve="3"/&gt;</code> (self-closing) et NON <code>&lt;Str ...&gt;&lt;/Str&gt;</code></li>
+      <li><strong>Chemin fichier code 410 :</strong> chemin RELATIF depuis <code>/storage/emulated/0/</code> — ex: <code>Tasker/RobotRZ/vpiv_out.txt</code></li>
+      <li><strong>Pas de commentaires XML :</strong> les <code>&lt;!-- ... --&gt;</code> dans les fichiers à importer peuvent poser problème</li>
+      <li><strong>Pas d'indentation :</strong> le XML importable doit être compact (une ligne ou sans indentation inutile)</li>
+      <li><strong>IDs :</strong> Tasker réassigne les IDs à l'import — ne pas se fier aux IDs pour les liens entre éléments, utiliser les noms (<code>&lt;nme&gt;</code>)</li>
+    </ul>
+  </div>
+
+  <div class="card warn">
+    <h3>Workflow recommandé pour générer du XML fiable</h3>
+    <ul>
+      <li><strong>1.</strong> Créer la tâche de référence via l'UI Tasker sur le Doro</li>
+      <li><strong>2.</strong> L'exporter (appui long → Exporter → Vers un fichier)</li>
+      <li><strong>3.</strong> Utiliser ce XML exporté comme template</li>
+      <li><strong>4.</strong> Modifier uniquement le contenu (labels, valeurs, noms de tâches)</li>
+      <li><strong>5.</strong> Ne jamais modifier les codes d'action sans avoir une référence exportée du Doro</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ══ 7. CHECKLIST AVANT IMPORT ══ -->
+<section>
+  <div class="section-title"><span class="num">07</span><h2>Checklist avant d'importer un XML</h2></div>
+  <div class="card accent">
+    <ul>
+      <li>☐ Tous les codes d'action sont-ils validés sur ce Doro ?</li>
+      <li>☐ Les chaînes avec <code>&gt;</code> ou <code>&lt;</code> sont-elles échappées en <code>&amp;gt;</code> / <code>&amp;lt;</code> ?</li>
+      <li>☐ Les JavaScriptlets ne contiennent-ils pas de <code>return</code> au niveau global ?</li>
+      <li>☐ Les variables globales sont-elles lues via <code>global()</code> et écrites via <code>setGlobal()</code> ?</li>
+      <li>☐ L'ancienne version de la tâche a-t-elle été supprimée dans Tasker avant import ?</li>
+      <li>☐ Pour les scènes : le code 49 (Destroy) précède-t-il chaque code 47 (Show) ?</li>
+      <li>☐ code 547 : arg5=3 et arg6=1 sont-ils présents pour les variables globales ?</li>
+      <li>☐ Les chemins de fichiers (code 410/417) sont-ils relatifs depuis /storage/emulated/0/ ?</li>
+    </ul>
+  </div>
+</section>
+
+<footer>
+  <span>RobotRZ — Guide Tasker Bonnes Pratiques — 14/05/2026</span>
+  <span>Sources : tasker.joaoapps.com · Taskomater/Tasker-XML-Info · terrain Doro</span>
+</footer>
+
+</body>
+</html>

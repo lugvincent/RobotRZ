@@ -14,7 +14,10 @@
 
 Export du SP de référence (Raspberry Pi 3, `192.168.1.40`). C'est l'état de production.
 
-- 311 nœuds · 7 onglets · 10 sous-flows
+- 298 nœuds · 7 onglets · 9 sous-flows
+- Canevas nettoyé le 18/10/2026 : 13 nœuds morts et le sous-flow vide
+  `OldSub-Arrets` supprimés, après vérification qu'aucun n'avait d'entrée
+  ni de sortie
 - Export de fin de journée (15h47). L'état du matin, avant les travaux du
   18/10, reste consultable au commit `1a46604`.
 - Onglets : `Gtion_Init`, `ui_Accueil_v4`, `Gtion_EtatGlobal_V2`, `RZ_GestionFlux_V3`, `ui_VarG`, `Diag_SE_Statut`, `B2_Variables_Complexes`

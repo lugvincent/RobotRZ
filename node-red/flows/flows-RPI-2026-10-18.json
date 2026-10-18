@@ -126,18 +126,6 @@
         "color": "#DDAA99"
     },
     {
-        "id": "22b7b38e1f2cc49b",
-        "type": "subflow",
-        "name": "OldSub-Arrets",
-        "info": "",
-        "category": "",
-        "in": [],
-        "out": [],
-        "env": [],
-        "meta": {},
-        "color": "#DDAA99"
-    },
-    {
         "id": "ca3b6e59e26ac5d7",
         "type": "subflow",
         "name": "SF_ReglesMinimales_V1",
@@ -1585,25 +1573,6 @@
         ]
     },
     {
-        "id": "7e05fa7ce7fbf200",
-        "type": "function",
-        "z": "sf_dispatcher_etatglobal_v1",
-        "d": true,
-        "name": "Old-Dispatcher RAW → Canonique V1",
-        "func": "// ==================================================\n// SF_Dispatcher_EtatGlobal – V1 CORRIGÉ\n// Rôle : garantir le format canonique RAW\n// AUCUNE interprétation\n// ==================================================\n\n// --- Source ---\nif (!msg.source) {\n    msg.source = \"UNKNOWN\";\n}\n\n// --- Event type ---\nmsg.eventType = \"RAW\";\n\n// --- Intent ---\nif (!msg.intent) {\n    msg.intent = \"UNKNOWN\";\n}\n\n// --- Payload ---\nif (!msg.payload) {\n    msg.payload = {};\n}\n\n// --- Meta ---\nmsg.meta = msg.meta || {};\nmsg.meta.topic = msg.meta.topic || msg.topic || null;\nmsg.meta.origin = msg.meta.origin || \"RZ_GestionFlux\";\n\n// --- Timestamp ---\nmsg.timestamp = msg.timestamp || Date.now();\n\n// Nettoyage minimal (on ne détruit rien d’utile)\ndelete msg.urgent;\ndelete msg.priority;\n\nreturn msg;",
-        "outputs": 1,
-        "timeout": "",
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 510,
-        "y": 280,
-        "wires": [
-            []
-        ]
-    },
-    {
         "id": "e7825684b0effdfb",
         "type": "debug",
         "z": "sf_dispatcher_etatglobal_v1",
@@ -1897,9 +1866,7 @@
         "y": 80,
         "wires": [
             [
-                "f_init_1_vars",
-                "a6956c530a6b9637",
-                "ecd15dbf0732f78f"
+                "f_init_1_vars"
             ]
         ]
     },
@@ -1919,86 +1886,6 @@
         "x": 790,
         "y": 100,
         "wires": []
-    },
-    {
-        "id": "4dd86f1a4754507c",
-        "type": "function",
-        "z": "tab_gtion_init",
-        "d": true,
-        "name": "Old SF_Init_1 — Chargement enrichedVars (STUB)",
-        "func": "/*****************************************************\n * * SF_Init_1 — Chargement enrichedVars (Version Intégrée)\n * * Rôle : \n * - Lecture physique du fichier globalSave.json via FS\n * - Typage strict des variables et gestion des instances\n * - Initialisation de la RAM volatile (default store)\n *****************************************************/\n \nconst storeDefault = \"default\";\nconst storeFile = \"file\";\n\n// 🔄 Valeur par défaut selon le type\nfunction defaultForType(type) {\n    switch (type) {\n        case \"boolean\": return false;\n        case \"int\": case \"number\": return 0;\n        case \"array\": return [];\n        case \"object\": return {};\n        case \"date\": return new Date().toISOString().slice(0, 10);\n        default: return \"\";\n    }\n}\n\n// 🔄 Conversion string → typé (avec gestion des valeurs par défaut)\nfunction convertFromString(value, type, defaultVal) {\n    if (value === null || value === undefined) {\n        return defaultVal !== undefined ? convertFromString(defaultVal, type) : defaultForType(type);\n    }\n    try {\n        switch (type) {\n            case \"int\": return parseInt(value, 10);\n            case \"number\": return parseFloat(value);\n            case \"boolean\": return (value === true || value === \"true\");\n            case \"string\": return String(value);\n            case \"array\": return Array.isArray(value) ? value : JSON.parse(value);\n            case \"object\": return typeof value === \"object\" ? value : JSON.parse(value);\n            case \"date\": return new Date(value);\n            default: return value;\n        }\n    } catch (err) {\n        node.error(`Erreur de conversion (${type}): ${err.message} (valeur: ${value})`);\n        return defaultForType(type);\n    }\n}\n\n// ---- 1. Charger enrichedVars depuis le fichier ----\nlet enrichedVars = global.get(\"enrichedVars\", storeFile) || {};\n\n// ✅ AJOUT : vérification que les données sont bien chargées\nif (Object.keys(enrichedVars).length === 0) {\n    node.warn(\"⚠️ SF_Init_1 : enrichedVars vide dans le fichier.\");\n    node.warn(\"   → Vérifier que le fichier context/global.json contient bien la clé 'enrichedVars'\");\n    node.warn(\"   → Chemin habituel : ~/.node-red/context/global.json\");\n    node.status({ fill: \"red\", shape: \"ring\", text: \"enrichedVars vide\" });\n    \n    // On sort proprement sans initialiser (ne pas écraser avec du vide)\n    msg.topic = \"INIT_VARS_EMPTY\";\n    msg.payload = {\n        varsLoaded: false,\n        varCount: 0,\n        instanceCount: 0,\n        source: \"file\",\n        erreur: \"enrichedVars absent ou vide dans le contexte fichier\"\n    };\n    return msg;\n}\n\nnode.status({ fill: \"green\", shape: \"dot\", text: `${Object.keys(enrichedVars).length} vars chargées` });\n\n// ---- 2. Supprimer l'ancienne variable enrichedVars du store par défaut ----\nglobal.set(\"enrichedVars\", undefined, storeDefault);\n\n// ---- 3. Parcourir chaque variable et créer les globales typées ----\nlet totalVars = 0;\nlet totalInstances = 0;\n\nObject.entries(enrichedVars).forEach(([key, e]) => {\n    const instances = e.instances || [\"*\"];\n    const props = e.proprietes || [];\n    let variable = {};\n\n    instances.forEach(instance => {\n        variable[instance] = {};\n        props.forEach(prop => {\n            const name = prop.nomP;\n            const type = prop.typeP;\n            const rawValue = prop.valeurs?.[instance];\n            const defaultVal = prop.valeurs?.[\"*\"];\n            variable[instance][name] = convertFromString(rawValue, type, defaultVal);\n        });\n    });\n\n    // Ajouter les métadonnées (abréviations, etc.)\n    if (e.abbrVarG) variable._abbrVarG = e.abbrVarG;\n    if (e.indexInstances) variable._indexInstances = e.indexInstances;\n\n    // Stocker dans les variables globales (store par défaut)\n    if (instances.length === 1 && instances[0] === \"*\") {\n        global.set(key, variable[\"*\"], storeDefault);\n    } else {\n        global.set(key, variable, storeDefault);\n    }\n    totalVars++;\n    totalInstances += instances.length;\n});\n\n// ---- 4. Traçabilité ----\nglobal.set(\"INIT_STATUS\", {\n    enrichedVarsLoaded: true,\n    timestamp: new Date().toISOString(),\n    varCount: totalVars,\n    instanceCount: totalInstances\n});\n\n// ---- 5. Sortie ----\nmsg.topic = \"INIT_VARS_OK\";\nmsg.payload = {\n    varsLoaded: true,\n    varCount: totalVars,\n    instanceCount: totalInstances,\n    source: \"file\"\n};\n\nreturn msg;",
-        "outputs": 1,
-        "timeout": "",
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 330,
-        "y": 480,
-        "wires": [
-            []
-        ]
-    },
-    {
-        "id": "0da543a32c7b479b",
-        "type": "function",
-        "z": "tab_gtion_init",
-        "d": true,
-        "name": "SF_Init_1 — Chargement enrichedVars",
-        "func": "/*****************************************************\n * SF_Init_1 — Chargement enrichedVars (VERSION FINALE - 23-03-26 - rev gemini)\n * Source : Lecture physique /data/data/com.termux/files/home/.node-red/globalSave.json\n *****************************************************/\n\n// On récupère nodeFs au lieu de fs (évite conflit avec force sensore)\nconst nodeFs = global.get('nodeFs'); \nconst filePath = '/data/data/com.termux/files/home/.node-red/globalSave.json';\n\n// --- Fonctions utilitaires de typage (votre logique métier) ---\nfunction defaultForType(type) {\n    switch (type) {\n        case \"boolean\": return false;\n        case \"int\": case \"number\": return 0;\n        case \"array\": return [];\n        case \"object\": return {};\n        case \"date\": return new Date().toISOString().slice(0, 10);\n        default: return \"\";\n    }\n}\n\nfunction convertFromString(value, type, defaultVal) {\n    if (value === null || value === undefined) {\n        return defaultVal !== undefined ? convertFromString(defaultVal, type) : defaultForType(type);\n    }\n    try {\n        switch (type) {\n            case \"int\": return parseInt(value, 10);\n            case \"number\": return parseFloat(value);\n            case \"boolean\": return (value === true || value === \"true\");\n            case \"string\": return String(value);\n            case \"array\": return Array.isArray(value) ? value : JSON.parse(value);\n            case \"object\": return typeof value === \"object\" ? value : JSON.parse(value);\n            case \"date\": return new Date(value);\n            default: return value;\n        }\n    } catch (err) {\n        node.error(`Erreur conversion (${type}): ${err.message}`);\n        return defaultForType(type);\n    }\n}\n\n// --- 1. Lecture physique du fichier de sauvegarde ---\nlet enrichedVars = {};\ntry {\n    if (nodeFs.existsSync(filePath)) { // Utilisation de nodeFs\n        const rawData = nodeFs.readFileSync(filePath, 'utf8');\n        enrichedVars = JSON.parse(rawData).enrichedVars || {};\n    } else {\n        node.error(\"Fichier globalSave.json introuvable !\");\n        node.status({ fill: \"red\", shape: \"ring\", text: \"Fichier absent\" });\n        return null;\n    }\n} catch (e) {\n    node.error(\"Erreur lecture fichier : \" + e.message);\n    return null;\n}\n\n// --- 2. Initialisation des variables globales (RAM) ---\nlet totalVars = 0;\nlet totalInstances = 0;\n\nObject.entries(enrichedVars).forEach(([key, e]) => {\n    const instances = e.instances || [\"*\"];\n    const props = e.proprietes || [];\n    let variable = {};\n\n    instances.forEach(instance => {\n        variable[instance] = {};\n        props.forEach(prop => {\n            const name = prop.nomP;\n            const type = prop.typeP;\n            const rawValue = prop.valeurs?.[instance];\n            const defaultVal = prop.valeurs?.[\"*\"];\n            variable[instance][name] = convertFromString(rawValue, type, defaultVal);\n        });\n    });\n\n    if (e.abbrVarG) variable._abbrVarG = e.abbrVarG;\n    if (e.indexInstances) variable._indexInstances = e.indexInstances;\n\n    // Stockage en mémoire vive (default store)\n    if (instances.length === 1 && instances[0] === \"*\") {\n        global.set(key, variable[\"*\"]);\n    } else {\n        global.set(key, variable);\n    }\n    totalVars++;\n    totalInstances += instances.length;\n});\n\n// Sauvegarde de l'objet maître en RAM pour les autres flows (ex: ui_VarG)\nglobal.set(\"enrichedVars\", enrichedVars);\n\n// --- 3. Sortie et Traçabilité ---\nnode.status({ fill: \"green\", shape: \"dot\", text: `${totalVars} vars chargées` });\n\nmsg.topic = \"INIT_VARS_OK\";\nmsg.payload = {\n    varsLoaded: true,\n    varCount: totalVars,\n    instanceCount: totalInstances,\n    source: \"globalSave.json\"\n};\n\nreturn msg;",
-        "outputs": 1,
-        "timeout": "",
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 300,
-        "y": 440,
-        "wires": [
-            []
-        ]
-    },
-    {
-        "id": "a6956c530a6b9637",
-        "type": "function",
-        "z": "tab_gtion_init",
-        "d": true,
-        "name": "function 1",
-        "func": "const fs = global.get(\"nodeFs\");\nconst filePath = global.get(\"rzPath\");\n\nnode.warn(\"Path: \" + filePath);\nnode.warn(\"Existe: \" + fs.existsSync(filePath));\n\nreturn msg;",
-        "outputs": 1,
-        "timeout": 0,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 580,
-        "y": 420,
-        "wires": [
-            [
-                "5e2ab5d530b26ab9"
-            ]
-        ]
-    },
-    {
-        "id": "ecd15dbf0732f78f",
-        "type": "function",
-        "z": "tab_gtion_init",
-        "d": true,
-        "name": "function 3",
-        "func": "\n// Test de présence des variables de functionGlobalContext\nmsg.payload = {\n    rzPath: global.get(\"rzPath\"),\n    nodeFs: typeof global.get(\"nodeFs\"),   // doit afficher \"object\"\n    os: typeof global.get(\"os\"),\n    path: typeof global.get(\"path\")\n};\nreturn msg;",
-        "outputs": 1,
-        "timeout": 0,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 600,
-        "y": 460,
-        "wires": [
-            [
-                "5e2ab5d530b26ab9"
-            ]
-        ]
     },
     {
         "id": "376319c51a2a5961",
@@ -2882,25 +2769,6 @@
         ]
     },
     {
-        "id": "a5f2e0e4b52f2e3d",
-        "type": "function",
-        "z": "228715cce848011f",
-        "d": true,
-        "name": "functionTestTemporaire",
-        "func": "msg.source = \"UI\"; msg.eventType = \"INTENT\";\nmsg.intent = { domain: \"CONFIG\", target: \"modeRZ\", action: \"SET\", value: 1 };\ndelete msg.vpiv;\nreturn msg;",
-        "outputs": 1,
-        "timeout": 0,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 410,
-        "y": 260,
-        "wires": [
-            []
-        ]
-    },
-    {
         "id": "902a267b9fd9017b",
         "type": "debug",
         "z": "228715cce848011f",
@@ -2916,85 +2784,6 @@
         "x": 850,
         "y": 80,
         "wires": []
-    },
-    {
-        "id": "9a0e261f80592310",
-        "type": "inject",
-        "z": "228715cce848011f",
-        "d": true,
-        "name": "",
-        "props": [
-            {
-                "p": "payload"
-            },
-            {
-                "p": "topic",
-                "vt": "str"
-            }
-        ],
-        "repeat": "",
-        "crontab": "",
-        "once": false,
-        "onceDelay": 0.1,
-        "topic": "",
-        "payload": "",
-        "payloadType": "date",
-        "x": 170,
-        "y": 280,
-        "wires": [
-            [
-                "a5f2e0e4b52f2e3d"
-            ]
-        ]
-    },
-    {
-        "id": "d65f3e4dc96cc977",
-        "type": "inject",
-        "z": "228715cce848011f",
-        "d": true,
-        "name": "TestGestionUrgence",
-        "props": [
-            {
-                "p": "payload"
-            },
-            {
-                "p": "topic",
-                "vt": "str"
-            }
-        ],
-        "repeat": "",
-        "crontab": "",
-        "once": false,
-        "onceDelay": 0.1,
-        "topic": "",
-        "payload": "",
-        "payloadType": "date",
-        "x": 1070,
-        "y": 40,
-        "wires": [
-            [
-                "e30f87bc142b441f"
-            ]
-        ]
-    },
-    {
-        "id": "e30f87bc142b441f",
-        "type": "function",
-        "z": "228715cce848011f",
-        "d": true,
-        "name": "temporaireUrg",
-        "func": "msg.vpiv = { cat: 'V', var: 'CfgS', prop: 'reset', inst: '*', val: 1 };\nreturn msg;",
-        "outputs": 1,
-        "timeout": 0,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 1080,
-        "y": 80,
-        "wires": [
-            []
-        ]
     },
     {
         "id": "751d623c686846c5",
@@ -3042,55 +2831,6 @@
         "x": 495,
         "y": 720,
         "wires": []
-    },
-    {
-        "id": "ad2d97083af483c1",
-        "type": "inject",
-        "z": "228715cce848011f",
-        "d": true,
-        "name": "Test Intent validation",
-        "props": [
-            {
-                "p": "payload"
-            },
-            {
-                "p": "topic",
-                "vt": "str"
-            }
-        ],
-        "repeat": "",
-        "crontab": "",
-        "once": false,
-        "onceDelay": 0.1,
-        "topic": "",
-        "payload": "",
-        "payloadType": "date",
-        "x": 310,
-        "y": 360,
-        "wires": [
-            [
-                "62f91d656e258f56"
-            ]
-        ]
-    },
-    {
-        "id": "62f91d656e258f56",
-        "type": "function",
-        "z": "228715cce848011f",
-        "d": true,
-        "name": "test validation-intent",
-        "func": "global.set('RZ_STT', { context: { '*': 'Inactif', _last: 'Inactif' } });\nmsg.vpiv = { cat: 'V', var: 'CfgS', prop: 'modeRZ', inst: '*', val: '2' };\nmsg.origine = 'STT';\nreturn msg;",
-        "outputs": 1,
-        "timeout": 0,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 320,
-        "y": 420,
-        "wires": [
-            []
-        ]
     },
     {
         "id": "cc529fee64b1f0e5",
@@ -3293,7 +3033,6 @@
         "y": 140,
         "wires": [
             [
-                "a5f2e0e4b52f2e3d",
                 "207b4b48aa011305"
             ]
         ]
@@ -3741,25 +3480,6 @@
         "wires": []
     },
     {
-        "id": "a87e96c26b09bc31",
-        "type": "function",
-        "z": "tab_gestion_flux_v3",
-        "d": true,
-        "name": "Old - Encodeur VPIV + routeur hardware",
-        "func": "/*\n * Encodeur VPIV + routeur hardware\n * ---------------------------------\n * Chemin     : RZ_GestionFlux_V3 - Node-RED SP\n * Objectif   : Construire la trame VPIV finale et choisir\n *              le topic MQTT de destination\n *\n * Entrée (msg.vpiv) :\n *   { cat, varG, prop, inst, val }\n *   Ou msg.payload = trame VPIV brute déjà construite\n *\n * Routage hardware (Table A / doc_A1) :\n *   Variables SE  → topic SE/commande\n *   Variables A   → topic SE/arduino  (via mqtt_bridge.py)\n *\n * Variables SE (Table A, DIRECTION contient SP→SE) :\n *   CfgS, Sys, Gyro, Mag, CamSE, TorchSE, MicroSE,\n *   STT, Voice, Appli, Urg\n *\n * Variables Arduino (Table A, DIRECTION contient SP→A) :\n *   Mtr, Odom, US, SecMvt, Lring, Lrub, Srv,\n *   IRmvt, FS, Ctrl_L, Mic\n *\n * Format trame produite : $CAT:VAR:PROP:INST:VAL#\n *\n * Version : 3.0 - 2026-04-27 - Vincent Philippe\n */\n\n// Variables destinées au SE (SP→SE dans Table A)\nconst VARS_SE = new Set([\n    'CfgS', 'Sys', 'Gyro', 'Mag', 'CamSE', 'TorchSE',\n    'MicroSE', 'STT', 'Voice', 'Appli', 'Urg', 'COM'\n]);\n\n// Variables destinées à l'Arduino via bridge SE (SP→A dans Table A)\nconst VARS_ARDUINO = new Set([\n    'Mtr', 'Odom', 'US', 'SecMvt', 'Lring', 'Lrub',\n    'Srv', 'IRmvt', 'FS', 'Ctrl_L', 'Mic'\n]);\n\n// Ne router que V et A vers le hardware\nif (!msg.vpiv || !['V', 'A'].includes(msg.vpiv.cat)) {\n    return null;\n}\n\nlet trame;\nconst v = msg.vpiv;\n\nif (v && v.varG && v.prop) {\n    // Construire la trame depuis msg.vpiv\n    let valStr;\n    if (Array.isArray(v.val)) {\n        // Tableau → JSON si mixte, CSV si tout numérique\n        const allNum = v.val.every(x => typeof x === 'number');\n        valStr = allNum ? v.val.join(',') : JSON.stringify(v.val);\n    } else if (typeof v.val === 'object' && v.val !== null) {\n        valStr = JSON.stringify(v.val);\n    } else if (typeof v.val === 'boolean') {\n        valStr = v.val ? '1' : '0';\n    } else {\n        valStr = String(v.val);\n    }\n    trame = `$${v.cat}:${v.varG}:${v.prop}:${v.inst || '*'}:${valStr}#`;\n\n} else if (typeof msg.payload === 'string' &&\n           msg.payload.startsWith('$') &&\n           msg.payload.endsWith('#')) {\n    // Trame déjà construite\n    trame = msg.payload;\n\n    // Extraire varG pour le routage\n    const parts = trame.slice(1,-1).split(':');\n    if (parts.length >= 2) {\n        if (!v) msg.vpiv = {};\n        msg.vpiv.varG = parts[1];\n    }\n} else {\n    node.warn('EncodeurRouter : entrée invalide — ni msg.vpiv ni trame brute');\n    return null;\n}\n\nmsg.payload = trame;\n\n// --- Routage topic MQTT ---\nconst varName = (msg.vpiv && msg.vpiv.varG) || '';\n\nif (VARS_SE.has(varName)) {\n    msg.topic = 'SE/commande';\n} else if (VARS_ARDUINO.has(varName)) {\n    msg.topic = 'SE/arduino';\n} else {\n    // VAR inconnue : avertissement + défaut SE/commande\n    node.warn('EncodeurRouter : VAR inconnue : ' + varName + ' → SE/commande par défaut');\n    msg.topic = 'SE/commande';\n}\n\nreturn msg;\n",
-        "outputs": 1,
-        "timeout": "",
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 720,
-        "y": 840,
-        "wires": [
-            []
-        ]
-    },
-    {
         "id": "0731f5f28bf8b474",
         "type": "debug",
         "z": "tab_gestion_flux_v3",
@@ -4028,7 +3748,7 @@
             },
             {
                 "p": "vpiv",
-                "v": "{\"cat\":\"A\",\"var\":\"STT\",\"prop\":\"intent\",\"inst\":\"TEST002\",\"val\":\"{CALC_MTR_VITESSE:V:Mtr:cmd:*:70}\"}",
+                "v": "{\"cat\":\"A\",\"var\":\"STT\",\"prop\":\"intent\",\"inst\":\"TEST004\",\"val\":\"{CALC_INCONNU:V:Mtr:cmd:*:50}\"}",
                 "vt": "json"
             }
         ],

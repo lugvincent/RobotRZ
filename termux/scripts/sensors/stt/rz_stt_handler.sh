@@ -42,9 +42,12 @@
 #     $I:STT:intent:<id_requete>:...# - les deux fichiers doivent etre
 #     deployes ensemble, jamais l'un sans l'autre.
 #
-# VERSION : 3.1 (wait_for_ack() implemente - fichier de correlation par
+# VERSION : 3.2 (ETAPE E-bis : signe de la rotation porte par SE, SP ne
+#           recevant pas CMD_ID et ne pouvant pas distinguer droite et
+#           gauche. Refus explicite si l'angle n'a pas ete capte.)
+#           3.1 (wait_for_ack() implemente - fichier de correlation par
 #           requete, polling 200ms - depend de rz_vpiv_parser.sh a jour)
-# DATE    : 07/07/2026
+# DATE    : 18/10/2026
 # AUTEUR  : Vincent Philippe / Claude
 # =============================================================================
 
@@ -268,6 +271,39 @@ if [[ "$TYPE_PTGE" == "4" && "$MOTEUR_ACTIF" == "1" ]]; then
         termux-tts-speak "Mouvement bloque par la laisse."
         exit 0
     fi
+fi
+
+# --- ETAPE E-bis : SIGNE DE LA ROTATION (v3.2 -- 18/10/2026) ---------------
+# SP ne recoit JAMAIS CMD_ID : la capsule ne transporte que id_traitement et
+# la valeur brute (voir en-tete, section PRECAUTIONS). Or les commandes de
+# rotation partagent toutes le traitement CALC_MTR_ANGLE. SP est donc
+# incapable de distinguer la droite de la gauche.
+#
+# Decision du 18/10/2026 : c'est SE qui porte le signe, puisque c'est le
+# seul endroit qui connait encore la commande reconnue.
+#   MTR_TURN_RIGHT -> angle positif (rien a faire)
+#   MTR_TURN_LEFT  -> angle negatif
+#   MTR_TURN_ANGLE -> reste positif : la reconnaissance se faisant par
+#                     correspondance exacte du synonyme, une phrase
+#                     contenant « gauche » tombe sur MTR_TURN_LEFT et
+#                     n'arrive jamais ici. Cette commande ne recoit donc
+#                     que « tourne de », sans direction.
+#
+# PRECAUTION : si aucun angle n'a ete capte, on REFUSE plutot que de laisser
+# SP appliquer sa valeur par defaut, qui est positive et ferait tourner le
+# robot du mauvais cote. Un refus est sans consequence ; un demi-tour dans
+# la mauvaise direction, non.
+if [[ "$CMD_ID" == "MTR_TURN_LEFT" ]]; then
+    if [[ -z "$VAL_NUMERIQUE" ]]; then
+        log_stt "REFUS: $CMD_ID sans angle capte -- le defaut de SP est"\
+                "positif, il ferait tourner a droite."
+        termux-tts-speak "De combien de degres ?"
+        exit 0
+    fi
+    # ${VAL#-} retire un eventuel signe deja present, pour ne pas produire
+    # un double signe si la valeur arrivait deja negative.
+    VAL_NUMERIQUE="-${VAL_NUMERIQUE#-}"
+    log_stt "ROTATION GAUCHE: angle signe -> $VAL_NUMERIQUE"
 fi
 
 # --- ETAPE F : EXECUTION (AIGUILLAGE) ---

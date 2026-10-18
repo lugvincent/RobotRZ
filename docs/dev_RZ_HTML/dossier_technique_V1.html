@@ -1,0 +1,1429 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dossier technique RobotRZ</title>
+<!--
+  ============================================================================
+  NOM        : dossier_technique_V1.html
+  CHEMIN     : docs/dev_RZ_HTML/dossier_technique_V1.html
+  OBJECTIF   : Dossier technique complet du projet RobotRZ. Document d'entree
+               unique, concu pour etre repris apres une interruption longue.
+  CONTENU    : 00 reprise apres pause - glossaire - 01 vue d'ensemble -
+               02 protocole VPIV - 03 SP Node-RED - 04 SE smartphone -
+               05 Arduino - 06 Tasker - 07 tables de donnees - 08 reseau -
+               09 securite - 10 reste a faire chiffre - 11 pieges connus
+  SCHEMAS    : 7 figures SVG inline (architecture, trame VPIV, topologie des
+               liens Node-RED, chaine decisionnelle, routage FIFO cote SE,
+               couches Arduino, circulation des tables, modes de connexion)
+  ARTICULATION : complete instructions_projet_RobotRZ.md (Project Knowledge)
+               et les pages thematiques de ce meme dossier. En cas de
+               divergence, ce document fait foi pour l'etat d'octobre 2026.
+  SOURCES    : flows.json RPI du 18/10/2026, depot lugvincent/RobotRZ,
+               TableA_updatedV3_corrige.csv, instructions_projet v1.3
+  PRECAUTION : document d'etat, pas de reference normative. Les references
+               normatives restent la Table A et la Table D.
+  VERSION    : 1.0 - 18/10/2026 - Vincent Philippe / Claude
+  ============================================================================
+-->
+<style>
+  :root { padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
+  html { color-scheme: light; }
+  body { margin: 0; font: 14px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+  img { max-width: 100%; }
+  [hidden] { display: none !important; }
+</style>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+/* Layout : colonne unique + rail de navigation collant sur grand écran ; l'état de chaque brique est encodé par une puce colorée, jamais par le seul texte. */
+:root{
+  --bg:#f6f8fa; --surface:#ffffff; --surface2:#eceff4; --surface3:#e2e7ee;
+  --border:#d3dae3; --border2:#bcc6d2;
+  --fg:#18202b; --fg-dim:#56626f; --fg-faint:#808b98;
+  --accent:#19648f; --accent-soft:#e3eef6;
+  --ok:#1f6f47; --ok-soft:#e0f0e7;
+  --warn:#8a5a0b; --warn-soft:#f8eeda;
+  --danger:#a52f2f; --danger-soft:#f9e5e5;
+  --purple:#5f4494; --purple-soft:#ece6f7;
+  --code-bg:#f0f3f7;
+  --sans:"IBM Plex Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,"SF Mono",Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#0f1419; --surface:#161d27; --surface2:#1c2530; --surface3:#232e3c;
+    --border:#2a3441; --border2:#3a4757;
+    --fg:#dce3ea; --fg-dim:#8e9aa8; --fg-faint:#64717f;
+    --accent:#54a6e0; --accent-soft:#16293a;
+    --ok:#5ec98f; --ok-soft:#142d20;
+    --warn:#e0a84f; --warn-soft:#2f2412;
+    --danger:#e36a6a; --danger-soft:#331818;
+    --purple:#b07be0; --purple-soft:#271b36;
+    --code-bg:#0b1016;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0f1419; --surface:#161d27; --surface2:#1c2530; --surface3:#232e3c;
+  --border:#2a3441; --border2:#3a4757;
+  --fg:#dce3ea; --fg-dim:#8e9aa8; --fg-faint:#64717f;
+  --accent:#54a6e0; --accent-soft:#16293a;
+  --ok:#5ec98f; --ok-soft:#142d20;
+  --warn:#e0a84f; --warn-soft:#2f2412;
+  --danger:#e36a6a; --danger-soft:#331818;
+  --purple:#b07be0; --purple-soft:#271b36;
+  --code-bg:#0b1016;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{
+  background:var(--bg); color:var(--fg);
+  font-family:var(--sans); font-size:15.5px; line-height:1.65; margin:0;
+  -webkit-font-smoothing:antialiased;
+}
+.shell{max-width:1180px;margin:0 auto;display:grid;grid-template-columns:230px minmax(0,1fr);gap:40px;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 90px}
+@media (max-width:900px){.shell{grid-template-columns:minmax(0,1fr);gap:0}}
+
+/* ---------- RAIL DE NAVIGATION ---------- */
+.rail{position:sticky;top:env(safe-area-inset-top,0px);align-self:start;max-height:100vh;overflow-y:auto;
+  padding-block:28px 24px;font-size:13.5px}
+@media (max-width:900px){.rail{position:static;max-height:none;border-bottom:1px solid var(--border);margin-bottom:8px}}
+.rail-title{font-size:11px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:var(--fg-faint);margin-bottom:12px}
+.rail a{display:block;color:var(--fg-dim);text-decoration:none;padding:4px 0 4px 11px;
+  border-left:2px solid var(--border);line-height:1.4}
+.rail a:hover{color:var(--accent);border-left-color:var(--accent)}
+.rail a .n{font-family:var(--mono);font-size:11.5px;color:var(--fg-faint);margin-right:7px}
+
+/* ---------- EN-TÊTE ---------- */
+.masthead{padding-block:36px 0}
+.masthead .kicker{font-family:var(--mono);font-size:12px;letter-spacing:.06em;color:var(--accent);
+  text-transform:uppercase;font-weight:500}
+.masthead h1{font-size:2.1em;font-weight:700;letter-spacing:-.02em;margin:6px 0 10px;line-height:1.15;text-wrap:balance}
+.masthead .standfirst{font-size:1.05em;color:var(--fg-dim);max-width:62ch;margin:0 0 18px}
+.stamp{display:flex;flex-wrap:wrap;gap:8px 18px;font-size:12.5px;color:var(--fg-faint);
+  font-family:var(--mono);padding-bottom:26px;border-bottom:2px solid var(--border)}
+
+/* ---------- SECTIONS ---------- */
+section{padding-block:40px 0;scroll-margin-top:20px}
+h2{font-size:1.45em;font-weight:700;letter-spacing:-.015em;margin:0 0 6px;line-height:1.2;text-wrap:balance;
+  display:flex;align-items:baseline;gap:12px}
+h2 .num{font-family:var(--mono);font-size:.6em;font-weight:500;color:var(--accent);letter-spacing:0}
+h3{font-size:1.07em;font-weight:600;margin:30px 0 8px;color:var(--fg);text-wrap:balance}
+h4{font-size:.95em;font-weight:600;margin:20px 0 6px;color:var(--fg-dim)}
+p{margin:0 0 14px;max-width:72ch}
+.lede{color:var(--fg-dim);max-width:70ch;margin-bottom:20px}
+ul,ol{margin:0 0 14px;padding-left:22px;max-width:72ch}
+li{margin-bottom:5px}
+a{color:var(--accent)}
+
+/* ---------- CODE ---------- */
+code{font-family:var(--mono);font-size:.875em;background:var(--code-bg);padding:1.5px 5px;
+  border-radius:3px;border:1px solid var(--border)}
+pre{background:var(--code-bg);border:1px solid var(--border);border-radius:7px;padding:14px 16px;
+  overflow-x:auto;font-size:13px;line-height:1.6;margin:0 0 16px}
+pre code{background:none;border:none;padding:0;font-size:inherit}
+
+/* ---------- TABLEAUX ---------- */
+.tw{overflow-x:auto;margin:0 0 18px;border:1px solid var(--border);border-radius:7px}
+table{width:100%;border-collapse:collapse;font-size:13.5px;min-width:480px}
+th,td{padding:8px 12px;text-align:left;vertical-align:top;border-bottom:1px solid var(--border)}
+th{background:var(--surface2);font-weight:600;font-size:11.5px;text-transform:uppercase;
+  letter-spacing:.05em;color:var(--fg-dim);white-space:nowrap}
+tr:last-child td{border-bottom:none}
+td code{font-size:.9em}
+.num-col{font-variant-numeric:tabular-nums}
+
+/* ---------- PUCES D'ÉTAT ---------- */
+.chip{display:inline-block;font-size:11px;font-weight:600;padding:1.5px 8px;border-radius:20px;
+  white-space:nowrap;letter-spacing:.01em;border:1px solid transparent}
+.chip.ok{background:var(--ok-soft);color:var(--ok);border-color:var(--ok)}
+.chip.warn{background:var(--warn-soft);color:var(--warn);border-color:var(--warn)}
+.chip.bad{background:var(--danger-soft);color:var(--danger);border-color:var(--danger)}
+.chip.stub{background:var(--purple-soft);color:var(--purple);border-color:var(--purple)}
+.chip.neutral{background:var(--surface2);color:var(--fg-dim);border-color:var(--border2)}
+
+/* ---------- ENCADRÉS ---------- */
+.note{border:1px solid var(--border);border-left-width:3px;border-radius:0 7px 7px 0;
+  padding:13px 16px;margin:0 0 18px;background:var(--surface);font-size:14px;max-width:74ch}
+.note p:last-child{margin-bottom:0}
+.note .lbl{display:block;font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;margin-bottom:5px}
+.note.rule{border-left-color:var(--danger);background:var(--danger-soft)}
+.note.rule .lbl{color:var(--danger)}
+.note.trap{border-left-color:var(--warn);background:var(--warn-soft)}
+.note.trap .lbl{color:var(--warn)}
+.note.good{border-left-color:var(--ok);background:var(--ok-soft)}
+.note.good .lbl{color:var(--ok)}
+.note.info{border-left-color:var(--accent);background:var(--accent-soft)}
+.note.info .lbl{color:var(--accent)}
+
+/* ---------- FIGURES ---------- */
+figure{margin:22px 0 24px;border:1px solid var(--border);border-radius:9px;background:var(--surface);overflow:hidden}
+.fig-body{padding:18px 16px 6px;overflow-x:auto}
+figure svg{display:block;max-width:100%;height:auto;margin:0 auto;color:var(--fg)}
+figcaption{font-size:12.5px;color:var(--fg-dim);padding:10px 16px 13px;border-top:1px solid var(--border);
+  background:var(--surface2)}
+
+/* ---------- GRILLE DE CARTES ---------- */
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:13px;margin:0 0 20px}
+.card{border:1px solid var(--border);border-radius:8px;padding:14px 15px;background:var(--surface);min-width:0}
+.card .ct{font-weight:600;font-size:14.5px;margin-bottom:2px;display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+.card .cs{font-size:12px;color:var(--fg-faint);font-family:var(--mono);margin-bottom:8px}
+.card .cb{font-size:13.5px;color:var(--fg-dim);line-height:1.55}
+
+/* ---------- LISTE DE TÂCHES ---------- */
+.lot{border:1px solid var(--border);border-radius:8px;margin:0 0 12px;background:var(--surface);overflow:hidden}
+.lot-head{display:flex;align-items:center;gap:11px;padding:11px 15px;background:var(--surface2);flex-wrap:wrap}
+.lot-head .lid{font-family:var(--mono);font-weight:600;font-size:12.5px;color:var(--accent)}
+.lot-head .lt{font-weight:600;font-size:14.5px;flex:1;min-width:0}
+.lot-body{padding:12px 15px;font-size:13.5px;color:var(--fg-dim)}
+.lot-body p{max-width:none;margin-bottom:9px}
+.lot-body p:last-child{margin-bottom:0}
+.lot-body strong{color:var(--fg)}
+
+/* ---------- SÉQUENCE DE REPRISE ---------- */
+ol.steps{list-style:none;padding:0;margin:0 0 18px;counter-reset:s}
+ol.steps li{counter-increment:s;position:relative;padding:0 0 14px 38px;max-width:72ch}
+ol.steps li::before{content:counter(s);position:absolute;left:0;top:0;width:25px;height:25px;
+  border-radius:50%;background:var(--accent);color:var(--surface);font-size:12.5px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;font-family:var(--mono)}
+ol.steps li strong{display:block;color:var(--fg);font-weight:600;margin-bottom:1px}
+
+/* ---------- GLOSSAIRE ---------- */
+.gloss{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:0 28px;margin:0 0 18px}
+.gterm{border-top:1px solid var(--border);padding:11px 0;min-width:0}
+.gterm dt{font-weight:600;font-size:14px;margin-bottom:3px;font-family:var(--mono)}
+.gterm dd{margin:0;font-size:13.5px;color:var(--fg-dim);line-height:1.55}
+.gterm dd code{font-size:.9em}
+
+hr.div{border:none;border-top:1px solid var(--border);margin:34px 0 0}
+footer{margin-top:46px;padding-top:18px;border-top:2px solid var(--border);font-size:12.5px;color:var(--fg-faint)}
+</style>
+
+</head>
+<body>
+
+<div class="shell">
+
+<nav class="rail">
+  <a href="index.html" style="display:block;padding:0 0 12px;border-left:none;font-weight:600;color:var(--accent)">&larr; Index de la documentation</a>
+  <div class="rail-title">Sommaire</div>
+  <a href="#reprise"><span class="n">0</span>Reprendre après une pause</a>
+  <a href="#glossaire"><span class="n">★</span>Glossaire</a>
+  <a href="#ensemble"><span class="n">1</span>Vue d'ensemble</a>
+  <a href="#vpiv"><span class="n">2</span>Le protocole VPIV</a>
+  <a href="#sp"><span class="n">3</span>SP — Node-RED</a>
+  <a href="#se"><span class="n">4</span>SE — Smartphone embarqué</a>
+  <a href="#arduino"><span class="n">5</span>Arduino</a>
+  <a href="#tasker"><span class="n">6</span>Tasker</a>
+  <a href="#tables"><span class="n">7</span>Les tables de données</a>
+  <a href="#reseau"><span class="n">8</span>Réseau et connectivité</a>
+  <a href="#securite"><span class="n">9</span>Sécurité</a>
+  <a href="#reste"><span class="n">10</span>Reste à faire, chiffré</a>
+  <a href="#pieges"><span class="n">11</span>Pièges qui coûtent cher</a>
+</nav>
+
+<main>
+
+<header class="masthead">
+  <div class="kicker">Dossier technique</div>
+  <h1>RobotRZ</h1>
+  <p class="standfirst">État complet du projet au 17 octobre 2026. Écrit pour être repris après une interruption longue : chaque brique indique ce qui marche, ce qui est un squelette, et ce qui est cassé.</p>
+  <div class="stamp">
+    <span>v1.0 — 17/10/2026</span>
+    <span>Vincent Philippe</span>
+    <span>Établi avec Claude</span>
+    <span>Sources : flows.json 17/10 · dépôt Git 06/08 · Table A 269 lignes</span>
+  </div>
+</header>
+
+<!-- ════════════ 0. REPRISE ════════════ -->
+<section id="reprise">
+<h2><span class="num">00</span>Reprendre après une pause</h2>
+<p class="lede">Cette section existe parce que le projet avance par à-coups séparés de plusieurs semaines. Elle doit suffire à redémarrer sans relire le reste.</p>
+
+<h3>Les cinq premières minutes</h3>
+<ol class="steps">
+  <li><strong>Vérifier que SP tourne.</strong> Ouvrir <code>https://robotz-vincent.duckdns.org/dashboard/P_Accueil</code>. Si la page répond, le RPi, nginx, Node-RED et le certificat sont tous bons d'un coup.</li>
+  <li><strong>Exporter le <code>flows.json</code> courant</strong> depuis l'éditeur Node-RED (menu → Export → All flows). C'est la seule source fiable de l'état SP : le dépôt Git ne contient que la version de mars 2026.</li>
+  <li><strong>Regarder la date du dernier push Git.</strong> Au 17/10/2026 elle était au 6 août. Tout ce qui a bougé depuis n'existe que sur les machines.</li>
+  <li><strong>Lire la section 10</strong> de ce document pour choisir un lot de travail qui tient dans le temps disponible.</li>
+  <li><strong>Ne pas faire confiance aux versions de scripts citées de mémoire.</strong> Les en-têtes de fichiers dans le dépôt font foi.</li>
+</ol>
+
+<h3>Où vit la vérité, et sa fraîcheur</h3>
+<div class="tw"><table>
+<tr><th>Source</th><th>Ce qu'elle fait autorité sur</th><th>Fraîcheur au 17/10/2026</th></tr>
+<tr><td><code>flows.json</code> exporté du RPi</td><td>Tout l'état Node-RED</td><td><span class="chip ok">à jour</span> jamais commité</td></tr>
+<tr><td>Dépôt <code>lugvincent/RobotRZ</code></td><td>Scripts SE, Arduino, Tasker, site HTML</td><td><span class="chip warn">6 août 2026</span></td></tr>
+<tr><td><code>node-red/flows/</code> dans le dépôt</td><td>rien — obsolète</td><td><span class="chip bad">mars 2026</span></td></tr>
+<tr><td><code>TableA_updatedV3_corrige.csv</code></td><td>Norme VPIV, toutes variables</td><td><span class="chip ok">normatif</span></td></tr>
+<tr><td><code>tableD_catalogueV2_corrige.csv</code></td><td>Catalogue des commandes vocales</td><td><span class="chip ok">normatif</span></td></tr>
+<tr><td><code>instructions_projet_RobotRZ.md</code></td><td>Contexte projet</td><td><span class="chip warn">juillet, erreurs connues</span></td></tr>
+<tr><td><code>docs/dev_RZ_HTML/</code> (16 pages)</td><td>Détail par thématique</td><td><span class="chip warn">variable, certaines de mars</span></td></tr>
+</table></div>
+
+<div class="note rule">
+  <span class="lbl">Sauvegarde manquante</span>
+  <p>Sept mois de travail Node-RED ne sont sauvegardés nulle part dans Git. Reconstruction de <code>ui_Accueil_v4</code>, <code>SF_ReglesDynamiques</code>, correction de <code>UI_Sync_Etat_Confirme</code>, correction du câblage d'urgence : tout cela n'existe que sur la carte SD du Raspberry Pi. Commiter le <code>flows.json</code> est la tâche la plus rentable du projet en ce moment.</p>
+</div>
+</section>
+
+<hr class="div">
+
+<!-- ════════════ GLOSSAIRE ════════════ -->
+<section id="glossaire">
+<h2><span class="num">★</span>Glossaire</h2>
+<p class="lede">Le vocabulaire du projet, celui qui s'oublie en premier. À relire avant le reste.</p>
+
+<h3>Les sous-systèmes</h3>
+<dl class="gloss">
+  <div class="gterm"><dt>SP</dt><dd>Système Pilote. Le cerveau, sous Node-RED. C'est une <em>fonction</em>, pas une machine : elle tourne soit sur le Raspberry Pi, soit sur le Xiaomi, jamais les deux à la fois.</dd></div>
+  <div class="gterm"><dt>SP RPI / SP Smart</dt><dd>Les deux machines qui peuvent héberger SP. Le Raspberry Pi 3 est la référence ; le Xiaomi prend le relais quand le robot sort de portée de tout Wi-Fi fixe.</dd></div>
+  <div class="gterm"><dt>SE</dt><dd>Smartphone Embarqué. Le téléphone Doro fixé sur le robot. Il porte des capteurs, fait le pont vers l'Arduino, et gère la voix.</dd></div>
+  <div class="gterm"><dt>Mega / UNO</dt><dd>Les deux cartes Arduino. Le Mega porte tous les capteurs et actionneurs ; le UNO ne fait que piloter les moteurs, sous les ordres du Mega.</dd></div>
+</dl>
+
+<h3>Le protocole</h3>
+<dl class="gloss">
+  <div class="gterm"><dt>VPIV</dt><dd>Le format de message maison, le seul autorisé entre sous-systèmes. Une chaîne de texte délimitée par <code>$</code> et <code>#</code>.</dd></div>
+  <div class="gterm"><dt>trame</dt><dd>Un message VPIV individuel. « Envoyer une trame » = publier un message sur MQTT.</dd></div>
+  <div class="gterm"><dt>CAT</dt><dd>Le premier champ : la nature du message. V = ordre, I = information ou accusé, E = urgence, F = flux de capteur, A = pilotage d'application Android.</dd></div>
+  <div class="gterm"><dt>VAR</dt><dd>Le deuxième champ : le module concerné (<code>CfgS</code>, <code>Mtr</code>, <code>Gyro</code>…). C'est lui qui décide où le message est routé.</dd></div>
+  <div class="gterm"><dt>PROP</dt><dd>Le troisième champ : quelle propriété du module. <code>modeRZ</code>, <code>state</code>, <code>vol</code>…</dd></div>
+  <div class="gterm"><dt>INST</dt><dd>Le quatrième champ : quelle instance, quand il y en a plusieurs (<code>front</code>, <code>rear</code>). <code>*</code> quand la propriété est unique.</dd></div>
+  <div class="gterm"><dt>VAL</dt><dd>Le cinquième champ : la valeur, toujours un entier. Les décimales sont multipliées par 10, 100 ou 1000 selon la propriété.</dd></div>
+  <div class="gterm"><dt>ACK</dt><dd>Accusé de réception (<em>acknowledgement</em>). La preuve qu'un ordre a été reçu et appliqué, renvoyée en <code>CAT=I</code>.</dd></div>
+  <div class="gterm"><dt>MQTT</dt><dd>Le système de messagerie qui transporte les trames. Un serveur central, Mosquitto, sur le Raspberry Pi.</dd></div>
+  <div class="gterm"><dt>topic</dt><dd>Un canal MQTT nommé. <code>SE/statut</code> pour ce qui monte vers SP, <code>SE/commande</code> pour ce qui descend.</dd></div>
+</dl>
+
+<h3>Node-RED</h3>
+<dl class="gloss">
+  <div class="gterm"><dt>onglet (tab)</dt><dd>Une page de l'éditeur Node-RED. Le projet en compte sept.</dd></div>
+  <div class="gterm"><dt>sous-flow (subflow)</dt><dd>Un groupe de nœuds empaqueté comme une boîte réutilisable, avec des entrées et des sorties numérotées. Les étages de la chaîne décisionnelle en sont.</dd></div>
+  <div class="gterm"><dt>link in / link out</dt><dd>Des nœuds qui relient deux onglets sans tirer de fil visible. Ils ne peuvent pas traverser la frontière d'un sous-flow.</dd></div>
+  <div class="gterm"><dt>msg.vpiv</dt><dd>La forme que prend une trame une fois entrée dans Node-RED : un objet <code>{cat, var, prop, inst, val}</code>. Tous les flows parlent ce format depuis juillet 2026.</dd></div>
+  <div class="gterm"><dt>msg.origine</dt><dd>Un marqueur qui dit d'où vient l'intention : <code>"UI"</code> si elle vient du dashboard, <code>"STT"</code> si elle vient de la voix, absent si c'est du trafic machine.</dd></div>
+  <div class="gterm"><dt>global.RZ_&lt;VAR&gt;</dt><dd>La mémoire vive de SP. Pour chaque module, l'état réel courant. C'est la seule source de vérité pendant que le robot tourne.</dd></div>
+  <div class="gterm"><dt>_last</dt><dd>Dans cette mémoire, la dernière valeur réellement reçue. À lire en priorité : la clé <code>'*'</code> reste figée sur la valeur de démarrage.</dd></div>
+  <div class="gterm"><dt>stub</dt><dd>Un squelette de code : la boîte existe, le contenu n'est pas écrit. Trois des quatre fonctions d'initialisation sont dans cet état.</dd></div>
+  <div class="gterm"><dt>stateLevel</dt><dd>Une valeur que le dernier étage de la chaîne est censé calculer. Sa définition n'a jamais été arrêtée, ce qui explique que l'étage ne fasse rien.</dd></div>
+  <div class="gterm"><dt>dashboard</dt><dd>L'interface web de Node-RED, organisée en pages et en groupes de widgets.</dd></div>
+</dl>
+
+<h3>Les données</h3>
+<dl class="gloss">
+  <div class="gterm"><dt>Table A</dt><dd>Le dictionnaire de référence : toutes les variables VPIV, leurs formats, leurs valeurs permises. Jamais chargée par le programme, elle sert à concevoir.</dd></div>
+  <div class="gterm"><dt>Table B / enrichedVars</dt><dd>Ce que Node-RED charge au démarrage pour amorcer le système. Volatile, et uniquement modifiable par la page <code>ui_VarG</code>.</dd></div>
+  <div class="gterm"><dt>Table C</dt><dd>Le fichier de configuration qui survit aux redémarrages, côté SE.</dd></div>
+  <div class="gterm"><dt>Table D</dt><dd>Le catalogue des commandes vocales : quelle phrase déclenche quelle trame.</dd></div>
+  <div class="gterm"><dt>CfgS</dt><dd>Le module de configuration système. Il porte <code>modeRZ</code>, <code>typePtge</code> et <code>typeReseau</code>.</dd></div>
+  <div class="gterm"><dt>modeRZ</dt><dd>Le mode du robot : 0 ARRET, 1 VEILLE, 2 FIXE, 3 DEPLACEMENT, 4 AUTONOME, 5 ERREUR.</dd></div>
+  <div class="gterm"><dt>typePtge</dt><dd>Le type de pilotage : 0 écran, 1 vocal, 2 manette, 3 laisse, 4 laisse + vocal.</dd></div>
+</dl>
+
+<h3>Côté smartphone</h3>
+<dl class="gloss">
+  <div class="gterm"><dt>Termux</dt><dd>L'application qui fournit un terminal Linux sur Android. C'est là que tournent tous les scripts du robot.</dd></div>
+  <div class="gterm"><dt>FIFO</dt><dd>Une file d'attente entre deux scripts : l'un écrit dedans, l'autre lit. Cinq FIFO distribuent les messages aux bons modules.</dd></div>
+  <div class="gterm"><dt>manager</dt><dd>Un script dédié à un capteur ou un actionneur. Un par organe, jamais deux.</dd></div>
+  <div class="gterm"><dt>LockSE</dt><dd>Le système de verrous sur la caméra et le micro, pour éviter que deux usages se les disputent. SE en est seul juge, parce que SP ne voit pas ce que l'utilisateur fait à la main sur le téléphone.</dd></div>
+  <div class="gterm"><dt>STT / TTS</dt><dd>Reconnaissance vocale (<em>speech to text</em>) et synthèse vocale (<em>text to speech</em>).</dd></div>
+  <div class="gterm"><dt>AutoVoice</dt><dd>Le module de reconnaissance vocale retenu, après l'abandon de PocketSphinx que l'Android du Doro ne supporte pas.</dd></div>
+  <div class="gterm"><dt>Option B</dt><dd>La décision d'architecture selon laquelle c'est SE, et non SP, qui tranche si une parole est une commande ou une conversation.</dd></div>
+  <div class="gterm"><dt>Tasker</dt><dd>L'application Android qui automatise le téléphone. Elle lance les autres applications et gère les scènes affichées à l'écran.</dd></div>
+</dl>
+
+<h3>Réseau</h3>
+<dl class="gloss">
+  <div class="gterm"><dt>DuckDNS</dt><dd>Le service qui donne une adresse Internet stable au Raspberry Pi malgré une IP qui change.</dd></div>
+  <div class="gterm"><dt>nginx</dt><dd>Le serveur qui reçoit les connexions sécurisées de l'extérieur et les passe à Node-RED.</dd></div>
+  <div class="gterm"><dt>NAT / PAT</dt><dd>La règle de la box qui dirige le trafic venu d'Internet vers la bonne machine du réseau local.</dd></div>
+  <div class="gterm"><dt>NAT hairpin</dt><dd>Le fait de joindre l'adresse publique de sa box depuis l'intérieur de son propre réseau. La Livebox ne sait pas le faire : un échec dans cette configuration ne prouve rien.</dd></div>
+</dl>
+</section>
+
+<hr class="div">
+
+<!-- ════════════ 1. VUE D'ENSEMBLE ════════════ -->
+<section id="ensemble">
+<h2><span class="num">01</span>Vue d'ensemble</h2>
+<p class="lede">RobotRZ est un robot compagnon mobile : une machine qui se déplace, perçoit son environnement, parle et écoute, et qu'on pilote à l'écran, à la voix, à la manette ou en laisse selon la situation.</p>
+
+<p>Il est fait de quatre morceaux, et cette division n'est pas arbitraire. Un <strong>Arduino</strong> tient le matériel, parce qu'un microcontrôleur réagit en quelques millisecondes là où un ordinateur généraliste est imprévisible. Un <strong>smartphone</strong> lui est attaché par un câble : il apporte gratuitement ce qui coûterait cher autrement — un micro, des haut-parleurs, une caméra, un gyroscope, une connexion réseau, une synthèse vocale. Un <strong>Raspberry Pi</strong> tient le raisonnement : il décide, il arbitre, il refuse les ordres incohérents. Et <strong>Tasker</strong>, sur le téléphone, fait ce que les scripts ne peuvent pas faire sous Android : lancer des applications et afficher des écrans.</p>
+
+<p>Ces quatre morceaux ne se parlent que d'une seule façon, par de courts messages texte appelés trames VPIV, acheminés par un système de messagerie. Il n'existe aucun autre canal, et c'est volontaire : avec un seul chemin, un problème se diagnostique à un seul endroit.</p>
+
+<p>Le cerveau s'appelle SP. C'est un rôle plutôt qu'une machine — il tourne normalement sur le Raspberry Pi, mais peut basculer sur un téléphone Xiaomi quand le robot s'éloigne de la maison. Un seul SP est actif à la fois, et il a toujours le dernier mot.</p>
+
+<figure>
+<div class="fig-body">
+<svg viewBox="0 0 760 390" role="img" aria-label="Les quatre sous-systèmes de RobotRZ reliés par le bus MQTT : SP pilote en Node-RED, SE smartphone embarqué, Tasker à l'intérieur de SE, et Arduino relié à SE par USB-C.">
+  <defs>
+    <marker id="ar" markerWidth="9" markerHeight="7" refX="8.5" refY="3.5" orient="auto">
+      <polygon points="0 0, 9 3.5, 0 7" fill="currentColor"/>
+    </marker>
+  </defs>
+
+  <!-- SP -->
+  <rect x="265" y="14" width="230" height="74" rx="7" fill="none" stroke="currentColor" stroke-width="2"/>
+  <text x="380" y="38" text-anchor="middle" font-size="14" font-weight="600" fill="currentColor">SP — Système Pilote</text>
+  <text x="380" y="56" text-anchor="middle" font-size="11.5" fill="currentColor" opacity=".72">Node-RED · maître absolu</text>
+  <text x="380" y="73" text-anchor="middle" font-size="11" fill="currentColor" opacity=".55">RPi 3 (référence) ou Xiaomi (secours)</text>
+
+  <!-- bus -->
+  <rect x="100" y="140" width="560" height="38" rx="5" fill="none" stroke="currentColor" stroke-width="2" stroke-dasharray="7 4"/>
+  <text x="380" y="164" text-anchor="middle" font-size="13" font-weight="600" fill="currentColor">bus MQTT — Mosquitto 192.168.1.40:1883</text>
+
+  <!-- SP <-> bus -->
+  <line x1="355" y1="88" x2="355" y2="138" stroke="currentColor" stroke-width="1.6" marker-end="url(#ar)"/>
+  <line x1="405" y1="138" x2="405" y2="90" stroke="currentColor" stroke-width="1.6" marker-end="url(#ar)"/>
+  <text x="246" y="108" font-size="10.5" font-family="monospace" fill="currentColor" opacity=".72">SE/commande ↓</text>
+  <text x="412" y="124" font-size="10.5" font-family="monospace" fill="currentColor" opacity=".72">↑ SE/statut</text>
+
+  <!-- SE -->
+  <rect x="100" y="230" width="300" height="140" rx="7" fill="none" stroke="currentColor" stroke-width="2"/>
+  <text x="250" y="254" text-anchor="middle" font-size="14" font-weight="600" fill="currentColor">SE — Smartphone Embarqué</text>
+  <text x="250" y="271" text-anchor="middle" font-size="11" fill="currentColor" opacity=".6">Doro sans SIM · Android 9 · Termux · 192.168.1.12</text>
+  <!-- Tasker dans SE -->
+  <rect x="122" y="288" width="120" height="62" rx="5" fill="none" stroke="currentColor" stroke-width="1.3" stroke-opacity=".6"/>
+  <text x="182" y="308" text-anchor="middle" font-size="11.5" font-weight="600" fill="currentColor">Tasker</text>
+  <text x="182" y="324" text-anchor="middle" font-size="10" fill="currentColor" opacity=".62">apps Android</text>
+  <text x="182" y="339" text-anchor="middle" font-size="10" font-family="monospace" fill="currentColor" opacity=".62">CAT=A</text>
+  <!-- scripts dans SE -->
+  <rect x="258" y="288" width="120" height="62" rx="5" fill="none" stroke="currentColor" stroke-width="1.3" stroke-opacity=".6"/>
+  <text x="318" y="308" text-anchor="middle" font-size="11.5" font-weight="600" fill="currentColor">scripts Bash</text>
+  <text x="318" y="324" text-anchor="middle" font-size="10" fill="currentColor" opacity=".62">capteurs · STT · locks</text>
+  <text x="318" y="339" text-anchor="middle" font-size="10" font-family="monospace" fill="currentColor" opacity=".62">5 FIFO</text>
+
+  <line x1="250" y1="178" x2="250" y2="228" stroke="currentColor" stroke-width="1.6" marker-end="url(#ar)"/>
+
+  <!-- Arduino -->
+  <rect x="470" y="230" width="190" height="90" rx="7" fill="none" stroke="currentColor" stroke-width="2"/>
+  <text x="565" y="254" text-anchor="middle" font-size="14" font-weight="600" fill="currentColor">Arduino</text>
+  <text x="565" y="272" text-anchor="middle" font-size="11" fill="currentColor" opacity=".65">Mega — capteurs/actionneurs</text>
+  <text x="565" y="288" text-anchor="middle" font-size="11" fill="currentColor" opacity=".65">UNO — esclave moteur</text>
+  <text x="565" y="307" text-anchor="middle" font-size="10.5" fill="currentColor" opacity=".5">boucle ≤ 80 ms</text>
+
+  <!-- SE <-> Arduino -->
+  <line x1="400" y1="282" x2="468" y2="282" stroke="currentColor" stroke-width="1.6" marker-end="url(#ar)"/>
+  <line x1="468" y1="300" x2="400" y2="300" stroke="currentColor" stroke-width="1.6" marker-end="url(#ar)"/>
+  <text x="434" y="275" text-anchor="middle" font-size="10" font-family="monospace" fill="currentColor" opacity=".72">USB-C</text>
+  <text x="434" y="320" text-anchor="middle" font-size="10" font-family="monospace" fill="currentColor" opacity=".72">mqtt_bridge.py</text>
+
+  <!-- Arduino <-> bus -->
+  <line x1="600" y1="228" x2="600" y2="180" stroke="currentColor" stroke-width="1.6" marker-end="url(#ar)"/>
+  <text x="610" y="208" font-size="10.5" font-family="monospace" fill="currentColor" opacity=".72">SE/arduino/data</text>
+</svg>
+</div>
+<figcaption>Un seul SP est actif à la fois. Arduino ne parle jamais directement au bus : tout passe par <code>mqtt_bridge.py</code> sur SE.</figcaption>
+</figure>
+
+<h3>Règles de conception qui n'ont jamais bougé</h3>
+<ul>
+  <li><strong>SP est maître absolu.</strong> C'est une fonction, pas un appareil. Deux instances existent (RPi 3 de référence, Xiaomi de secours), une seule active.</li>
+  <li><strong>Un seul protocole de transport : VPIV.</strong> Pas de canal parallèle, pas d'exception.</li>
+  <li><strong>Un module par capteur ou actionneur.</strong> Séparation stricte des responsabilités.</li>
+  <li><strong>SE fait autorité sur les ressources physiques partagées</strong> (caméra, micro). SP ne peut pas savoir qu'une application a été fermée à la main hors VPIV. C'est le motif <em>LockSE</em>.</li>
+  <li><strong>Économie de moyens.</strong> Le matériel est ancien ou limité : un Doro sous Android 9, un RPi 3. Les choix techniques en découlent, notamment l'abandon de PocketSphinx.</li>
+</ul>
+</section>
+
+<hr class="div">
+
+<!-- ════════════ 2. VPIV ════════════ -->
+<section id="vpiv">
+<h2><span class="num">02</span>Le protocole VPIV</h2>
+<p class="lede">VPIV est le langage commun du robot. Chaque message est une courte ligne de texte, et toute l'information qu'elle transporte tient dans cinq cases séparées par des deux-points.</p>
+
+<p>Pourquoi un format maison plutôt que du JSON ou un protocole existant ? Parce que l'Arduino a très peu de mémoire et qu'analyser du JSON y coûte cher, alors que découper une chaîne sur des deux-points est presque gratuit. Et parce qu'une trame reste lisible à l'œil dans un journal, ce qui change tout quand on débogue seul.</p>
+
+<p>L'idée des cinq cases est de répondre toujours aux mêmes questions dans le même ordre : de quel genre de message s'agit-il, quel organe est concerné, quelle propriété de cet organe, laquelle de ses instances s'il y en a plusieurs, et quelle valeur. Une fois cette grille en tête, n'importe quelle trame se lit sans documentation.</p>
+
+<p>Une mise en garde : l'ordre des champs a été source d'erreurs. La propriété vient avant l'instance. La légende de mars 2026 disait l'inverse et a induit plusieurs bugs — elle est corrigée depuis le 4 juillet 2026.</p>
+
+<figure>
+<div class="fig-body">
+<svg viewBox="0 0 700 200" role="img" aria-label="Anatomie d'une trame VPIV : dollar, catégorie, variable, propriété, instance, valeur, dièse. Exemple pour une consigne de mode VEILLE.">
+  <!-- trame -->
+  <g font-family="monospace" font-size="19" font-weight="600">
+    <text x="30" y="46" fill="currentColor" opacity=".45">$</text>
+    <text x="52" y="46" fill="currentColor">CAT</text>
+    <text x="104" y="46" fill="currentColor" opacity=".45">:</text>
+    <text x="122" y="46" fill="currentColor">VAR</text>
+    <text x="174" y="46" fill="currentColor" opacity=".45">:</text>
+    <text x="192" y="46" fill="currentColor">PROP</text>
+    <text x="258" y="46" fill="currentColor" opacity=".45">:</text>
+    <text x="276" y="46" fill="currentColor">INST</text>
+    <text x="340" y="46" fill="currentColor" opacity=".45">:</text>
+    <text x="358" y="46" fill="currentColor">VAL</text>
+    <text x="408" y="46" fill="currentColor" opacity=".45">#</text>
+  </g>
+
+  <!-- traits de rappel -->
+  <g stroke="currentColor" stroke-width="1" opacity=".4">
+    <line x1="70" y1="56" x2="70" y2="76"/><line x1="70" y1="76" x2="455" y2="76"/>
+    <line x1="140" y1="56" x2="140" y2="94"/><line x1="140" y1="94" x2="455" y2="94"/>
+    <line x1="215" y1="56" x2="215" y2="112"/><line x1="215" y1="112" x2="455" y2="112"/>
+    <line x1="298" y1="56" x2="298" y2="130"/><line x1="298" y1="130" x2="455" y2="130"/>
+    <line x1="375" y1="56" x2="375" y2="148"/><line x1="375" y1="148" x2="455" y2="148"/>
+  </g>
+
+  <g font-size="12" fill="currentColor">
+    <text x="462" y="80"><tspan font-weight="600">CAT</tspan> — catégorie : V I E F A</text>
+    <text x="462" y="98"><tspan font-weight="600">VAR</tspan> — module, clé de routage</text>
+    <text x="462" y="116"><tspan font-weight="600">PROP</tspan> — propriété du module</text>
+    <text x="462" y="134"><tspan font-weight="600">INST</tspan> — instance, ou <tspan font-family="monospace">*</tspan></text>
+    <text x="462" y="152"><tspan font-weight="600">VAL</tspan> — entier, jamais un flottant</text>
+  </g>
+
+  <!-- exemple -->
+  <line x1="30" y1="168" x2="670" y2="168" stroke="currentColor" stroke-width="1" opacity=".25"/>
+  <text x="30" y="190" font-size="12" fill="currentColor" opacity=".7">Exemple — passer le robot en VEILLE :</text>
+  <text x="250" y="190" font-family="monospace" font-size="13" font-weight="600" fill="currentColor">$V:CfgS:modeRZ:*:1#</text>
+</svg>
+</div>
+<figcaption><strong>PROP vient avant INST.</strong> La légende V1 de mars 2026 les donnait inversées ; l'erreur est corrigée depuis le 04/07/2026, confirmée contre <code>fn_parse_vpiv_v3</code> et les <code>dispatch_*.cpp</code>. Méfiance avec les numéros de position rencontrés dans la documentation : certaines pages comptent à partir de zéro (PROP = 2), d'autres à partir de un (PROP = 3). Se fier à l'ordre, pas au numéro.</figcaption>
+</figure>
+
+<h3>Les cinq catégories</h3>
+<div class="tw"><table>
+<tr><th>CAT</th><th>Nom</th><th>Sens</th><th>Usage</th></tr>
+<tr><td><code>V</code></td><td>Consigne</td><td>SP → SE / Arduino</td><td>Ordre de changement d'état</td></tr>
+<tr><td><code>I</code></td><td>Info / ACK</td><td>SE / Arduino → SP</td><td>Accusé de réception, remontée d'état</td></tr>
+<tr><td><code>E</code></td><td>Événement urgent</td><td>bidirectionnel</td><td>Court-circuite la chaîne de validation</td></tr>
+<tr><td><code>F</code></td><td>Flux continu</td><td>capteurs → SP</td><td>Données périodiques</td></tr>
+<tr><td><code>A</code></td><td>Application Android</td><td>SP → Tasker</td><td>Pilotage d'apps : Zoom, TTS, expressions</td></tr>
+</table></div>
+
+<div class="note trap">
+  <span class="lbl">CamSE n'est pas CAT=A</span>
+  <p>La caméra est pilotée en <code>CAT=V</code> ou <code>CAT=F</code>, jamais en <code>CAT=A</code>, bien que Tasker intervienne en interne pour lancer IP Webcam. Le routage VPIV ignore cette délégation. Vérifié dans le code de <code>rz_vpiv_parser.sh</code>.</p>
+</div>
+
+<h3>Conventions d'encodage</h3>
+<p>Aucun nombre à virgule ne circule sur le fil. Les valeurs décimales sont transmises en entiers multipliés par une puissance de dix, fixée par propriété dans la Table A.</p>
+<div class="tw"><table>
+<tr><th>Grandeur</th><th>Facteur</th><th>Note</th></tr>
+<tr><td><code>kturn</code></td><td>×1000</td><td>Harmonisé sur tout le pipeline le 29/06/2026</td></tr>
+<tr><td><code>ttsRate</code></td><td>×100</td><td>Entier 1, 2 ou 3 côté paramètre</td></tr>
+<tr><td>Positions et vitesses Odom</td><td>×1000</td><td>Vérifié dans <code>odom.cpp</code></td></tr>
+<tr><td>RMS et direction MicroSE</td><td>×10</td><td>Vérifié dans <code>rz_balayage_sonore.sh</code></td></tr>
+</table></div>
+
+<h3>Topics MQTT</h3>
+<div class="tw"><table>
+<tr><th>Topic</th><th>Sens</th><th>Contenu</th></tr>
+<tr><td><code>SE/statut</code></td><td>SE → SP</td><td>Capteurs (F), ACK (I), urgences (E)</td></tr>
+<tr><td><code>SE/commande</code></td><td>SP → SE</td><td>Consignes (V), config, CAT=A pour Tasker</td></tr>
+<tr><td><code>SE/arduino/data</code></td><td>Arduino → SP</td><td>Relayé par <code>mqtt_bridge.py</code></td></tr>
+<tr><td><code>SE/arduino</code></td><td>SP → Arduino</td><td>Via le même bridge</td></tr>
+</table></div>
+</section>
+
+<hr class="div">
+
+<!-- ════════════ 3. SP / NODE-RED ════════════ -->
+<section id="sp">
+<h2><span class="num">03</span>SP — Node-RED</h2>
+<p class="lede">SP est la partie qui décide. Tout le reste exécute ; lui seul arbitre. C'est aussi le chantier en cours, et le seul maillon en retard alors qu'il est le maître — l'Arduino, le smartphone et Tasker sont stabilisés depuis l'été.</p>
+
+<p>Le principe est qu'aucun ordre n'est appliqué sans avoir été examiné. Qu'une demande vienne du tableau de bord, de la voix ou d'un capteur, elle entre par la même porte et traverse une file de filtres. Le premier regarde si c'est une urgence, auquel cas il court-circuite tout le reste — en cas de danger, on ne discute pas. Le deuxième applique les règles de sécurité permanentes : on ne démarre pas les moteurs en mode ARRET, par exemple. Le troisième vérifie qu'une intention exprimée par un humain est cohérente. Le quatrième doit stabiliser le résultat. Ce qui sort de cette file part simultanément vers l'affichage et vers le robot.</p>
+
+<p>Cette file est construite en <em>sous-flows</em>, des boîtes réutilisables qu'on peut ouvrir, tester et remplacer indépendamment. L'intérêt est qu'on peut changer une règle sans toucher aux autres étages.</p>
+
+<p>Le second principe tient à la mémoire. Node-RED garde en permanence l'état réel de chaque organe dans <code>global.RZ_&lt;VAR&gt;</code>, alimenté par le vrai trafic qui remonte du robot. Un fichier de configuration sert à amorcer cette mémoire au démarrage, et uniquement à cela. Confondre les deux — lire la configuration de démarrage en croyant lire l'état courant — a produit plusieurs bugs difficiles.</p>
+
+<h3>Les sept onglets</h3>
+<div class="tw"><table>
+<tr><th>Onglet</th><th>Nœuds</th><th>Rôle</th><th>État</th></tr>
+<tr><td><code>Gtion_Init</code></td><td class="num-col">18</td><td>Chargement <code>enrichedVars</code>, initialisation</td><td><span class="chip warn">1 réel, 3 stubs</span></td></tr>
+<tr><td><code>ui_Accueil_v4</code></td><td class="num-col">25</td><td>Dashboard principal, saisie des intentions</td><td><span class="chip ok">reconstruit 06/08</span></td></tr>
+<tr><td><code>Gtion_EtatGlobal_V2</code></td><td class="num-col">31</td><td>Chaîne décisionnelle complète</td><td><span class="chip ok">corrigé 17/10</span></td></tr>
+<tr><td><code>RZ_GestionFlux_V3</code></td><td class="num-col">37</td><td>Bus MQTT, parsing et encodage VPIV</td><td><span class="chip ok">opérationnel</span></td></tr>
+<tr><td><code>ui_VarG</code></td><td class="num-col">50</td><td>Éditeur de <code>enrichedVars</code></td><td><span class="chip ok">fonctionnel</span></td></tr>
+<tr><td><code>Diag_SE_Statut</code></td><td class="num-col">42</td><td>Diagnostic Sys, Gyro, Mag</td><td><span class="chip ok">opérationnel</span></td></tr>
+<tr><td><code>B2_Variables_Complexes</code></td><td class="num-col">15</td><td>Bac à sable</td><td><span class="chip neutral">isolé volontairement</span></td></tr>
+</table></div>
+
+<h3>Comment les onglets se parlent</h3>
+<p>Node-RED relie les onglets par des nœuds <code>link</code>. La topologie forme une boucle simple : trois producteurs convergent vers la chaîne décisionnelle, qui ressort vers deux consommateurs.</p>
+
+<figure>
+<div class="fig-body">
+<svg viewBox="0 0 700 300" role="img" aria-label="Topologie des liens Node-RED : Gtion_Init, RZ_GestionFlux_V3 et ui_Accueil_v4 envoient tous vers Evnt_Raw_In de Gtion_EtatGlobal_V2, qui ressort par EtatGlobal_Out vers ui_Accueil_v4 et RZ_GestionFlux_V3, plus une sortie de reset vers Gtion_Init.">
+  <defs>
+    <marker id="ar2" markerWidth="9" markerHeight="7" refX="8.5" refY="3.5" orient="auto">
+      <polygon points="0 0, 9 3.5, 0 7" fill="currentColor"/>
+    </marker>
+  </defs>
+
+  <!-- producteurs -->
+  <g>
+    <rect x="20" y="24" width="160" height="40" rx="5" fill="none" stroke="currentColor" stroke-width="1.5"/>
+    <text x="100" y="49" text-anchor="middle" font-size="12" font-weight="600" fill="currentColor">Gtion_Init</text>
+
+    <rect x="20" y="104" width="160" height="40" rx="5" fill="none" stroke="currentColor" stroke-width="1.5"/>
+    <text x="100" y="129" text-anchor="middle" font-size="12" font-weight="600" fill="currentColor">RZ_GestionFlux_V3</text>
+
+    <rect x="20" y="184" width="160" height="40" rx="5" fill="none" stroke="currentColor" stroke-width="1.5"/>
+    <text x="100" y="209" text-anchor="middle" font-size="12" font-weight="600" fill="currentColor">ui_Accueil_v4</text>
+  </g>
+
+  <!-- point de convergence -->
+  <text x="258" y="118" text-anchor="middle" font-size="10.5" font-family="monospace" fill="currentColor" opacity=".72">Evnt_Raw_In</text>
+
+  <!-- fleches entrantes -->
+  <path d="M180 44 L230 44 L230 124" fill="none" stroke="currentColor" stroke-width="1.4"/>
+  <path d="M180 124 L230 124" fill="none" stroke="currentColor" stroke-width="1.4"/>
+  <path d="M180 204 L230 204 L230 124" fill="none" stroke="currentColor" stroke-width="1.4"/>
+  <line x1="230" y1="124" x2="316" y2="124" stroke="currentColor" stroke-width="1.8" marker-end="url(#ar2)"/>
+
+  <!-- chaine -->
+  <rect x="320" y="92" width="170" height="64" rx="6" fill="none" stroke="currentColor" stroke-width="2.2"/>
+  <text x="405" y="116" text-anchor="middle" font-size="12.5" font-weight="600" fill="currentColor">Gtion_EtatGlobal_V2</text>
+  <text x="405" y="134" text-anchor="middle" font-size="10.5" fill="currentColor" opacity=".65">chaîne décisionnelle</text>
+  <text x="405" y="149" text-anchor="middle" font-size="10" fill="currentColor" opacity=".5">7 sous-flows</text>
+
+  <!-- sortie -->
+  <text x="540" y="116" text-anchor="middle" font-size="10.5" font-family="monospace" fill="currentColor" opacity=".72">EtatGlobal_Out</text>
+  <line x1="490" y1="124" x2="568" y2="124" stroke="currentColor" stroke-width="1.8"/>
+  <path d="M568 124 L568 54 L620 54" fill="none" stroke="currentColor" stroke-width="1.4" marker-end="url(#ar2)"/>
+  <path d="M568 124 L568 194 L620 194" fill="none" stroke="currentColor" stroke-width="1.4" marker-end="url(#ar2)"/>
+
+  <rect x="622" y="34" width="62" height="40" rx="5" fill="none" stroke="currentColor" stroke-width="1.5"/>
+  <text x="653" y="51" text-anchor="middle" font-size="10" font-weight="600" fill="currentColor">ui_Accueil</text>
+  <text x="653" y="65" text-anchor="middle" font-size="10" font-weight="600" fill="currentColor">_v4</text>
+
+  <rect x="622" y="174" width="62" height="40" rx="5" fill="none" stroke="currentColor" stroke-width="1.5"/>
+  <text x="653" y="191" text-anchor="middle" font-size="10" font-weight="600" fill="currentColor">RZ_Gestion</text>
+  <text x="653" y="205" text-anchor="middle" font-size="10" font-weight="600" fill="currentColor">Flux_V3</text>
+
+  <!-- reset -->
+  <path d="M405 156 L405 262 L100 262 L100 66" fill="none" stroke="currentColor" stroke-width="1.3"
+        stroke-dasharray="5 4" marker-end="url(#ar2)"/>
+  <text x="256" y="277" text-anchor="middle" font-size="10.5" font-family="monospace" fill="currentColor" opacity=".72">reset → SF_Init_1</text>
+</svg>
+</div>
+<figcaption>Trois producteurs, une chaîne, deux consommateurs. Le trait pointillé est la voie de réinitialisation, empruntée par la sortie 1 de <code>SF_ReglesMinimales_V1</code>.</figcaption>
+</figure>
+
+<h3>La chaîne décisionnelle</h3>
+<p>C'est le cœur de SP et l'endroit où le travail se concentre. Un message brut entre, traverse quatre étages, et ressort vers l'interface et le bus.</p>
+
+<figure>
+<div class="fig-body">
+<svg viewBox="0 0 740 400" role="img" aria-label="Chaîne décisionnelle de Gtion_EtatGlobal_V2 : dispatcher, gestion d'urgence avec sortie directe, règles minimales à trois sorties, validation d'intention, stabilisation, puis sortie globale. SF_ReglesDynamiques est présent mais non câblé.">
+  <defs>
+    <marker id="ar3" markerWidth="9" markerHeight="7" refX="8.5" refY="3.5" orient="auto">
+      <polygon points="0 0, 9 3.5, 0 7" fill="currentColor"/>
+    </marker>
+  </defs>
+
+  <!-- entree -->
+  <text x="18" y="130" font-size="10.5" font-family="monospace" fill="currentColor" opacity=".72">Evnt_Raw_In</text>
+  <line x1="18" y1="140" x2="86" y2="140" stroke="currentColor" stroke-width="1.6" marker-end="url(#ar3)"/>
+
+  <!-- dispatcher -->
+  <rect x="90" y="118" width="104" height="44" rx="5" fill="none" stroke="currentColor" stroke-width="1.6"/>
+  <text x="142" y="137" text-anchor="middle" font-size="10.5" font-weight="600" fill="currentColor">SF_Dispatcher</text>
+  <text x="142" y="151" text-anchor="middle" font-size="9.5" fill="currentColor" opacity=".6">RAW → canonique</text>
+  <line x1="194" y1="140" x2="222" y2="140" stroke="currentColor" stroke-width="1.6" marker-end="url(#ar3)"/>
+
+  <!-- urgence -->
+  <rect x="226" y="110" width="104" height="60" rx="5" fill="none" stroke="currentColor" stroke-width="2.2"/>
+  <text x="278" y="131" text-anchor="middle" font-size="10.5" font-weight="600" fill="currentColor">SF_Gestion</text>
+  <text x="278" y="144" text-anchor="middle" font-size="10.5" font-weight="600" fill="currentColor">Urgence</text>
+  <text x="278" y="160" text-anchor="middle" font-size="9" fill="currentColor" opacity=".55">R0 · R1 · R2</text>
+
+  <!-- sortie urgence directe -->
+  <path d="M330 122 L380 122 L380 36 L636 36 L636 126" fill="none" stroke="currentColor" stroke-width="1.6"
+        marker-end="url(#ar3)"/>
+  <text x="470" y="29" text-anchor="middle" font-size="10" font-family="monospace" fill="currentColor" opacity=".8">sortie 0 — URGENCE, court-circuit assumé</text>
+
+  <!-- vers regles mini -->
+  <path d="M330 158 L356 158 L356 226 L384 226" fill="none" stroke="currentColor" stroke-width="1.6" marker-end="url(#ar3)"/>
+  <text x="340" y="196" font-size="9.5" font-family="monospace" fill="currentColor" opacity=".7">sortie 1</text>
+
+  <!-- regles minimales -->
+  <rect x="388" y="200" width="110" height="52" rx="5" fill="none" stroke="currentColor" stroke-width="1.6"/>
+  <text x="443" y="220" text-anchor="middle" font-size="10.5" font-weight="600" fill="currentColor">SF_Regles</text>
+  <text x="443" y="233" text-anchor="middle" font-size="10.5" font-weight="600" fill="currentColor">Minimales_V1</text>
+  <text x="443" y="246" text-anchor="middle" font-size="9" fill="currentColor" opacity=".55">3 sorties</text>
+
+  <!-- s0 vers validation -->
+  <path d="M498 212 L520 212 L520 150 L544 150" fill="none" stroke="currentColor" stroke-width="1.6" marker-end="url(#ar3)"/>
+  <text x="504" y="178" font-size="9.5" font-family="monospace" fill="currentColor" opacity=".7">s0</text>
+  <!-- s1 reset -->
+  <path d="M498 228 L560 228" fill="none" stroke="currentColor" stroke-width="1.2" stroke-dasharray="4 3" marker-end="url(#ar3)"/>
+  <text x="566" y="232" font-size="9" fill="currentColor" opacity=".6">reset Init</text>
+  <!-- s2 ack -->
+  <path d="M498 244 L560 244" fill="none" stroke="currentColor" stroke-width="1.2" stroke-dasharray="4 3" marker-end="url(#ar3)"/>
+  <text x="566" y="248" font-size="9" fill="currentColor" opacity=".6">ACK / FAIL</text>
+
+  <!-- validation -->
+  <rect x="548" y="124" width="100" height="48" rx="5" fill="none" stroke="currentColor" stroke-width="1.6"/>
+  <text x="598" y="143" text-anchor="middle" font-size="10.5" font-weight="600" fill="currentColor">SF_Validation</text>
+  <text x="598" y="156" text-anchor="middle" font-size="10.5" font-weight="600" fill="currentColor">Intent_V1</text>
+
+  <!-- stabilisation -->
+  <rect x="548" y="196" width="100" height="48" rx="5" fill="none" stroke="currentColor" stroke-width="1.6"
+        stroke-dasharray="6 3"/>
+  <text x="598" y="215" text-anchor="middle" font-size="10.5" font-weight="600" fill="currentColor">SF_Stabili-</text>
+  <text x="598" y="228" text-anchor="middle" font-size="10.5" font-weight="600" fill="currentColor">sation_V1</text>
+  <path d="M598 172 L598 194" fill="none" stroke="currentColor" stroke-width="1.6" marker-end="url(#ar3)"/>
+
+  <!-- vers sortie -->
+  <path d="M648 220 L676 220 L676 150" fill="none" stroke="currentColor" stroke-width="1.6" marker-end="url(#ar3)"/>
+
+  <!-- EtatGlobal_Out -->
+  <circle cx="636" cy="136" r="11" fill="none" stroke="currentColor" stroke-width="1.8"/>
+  <text x="636" y="140" text-anchor="middle" font-size="10" font-weight="700" fill="currentColor">↑</text>
+  <text x="690" y="118" text-anchor="middle" font-size="10" font-family="monospace" fill="currentColor" opacity=".8">EtatGlobal</text>
+  <text x="690" y="130" text-anchor="middle" font-size="10" font-family="monospace" fill="currentColor" opacity=".8">_Out</text>
+
+  <!-- ReglesDynamiques orphelin -->
+  <rect x="388" y="310" width="110" height="50" rx="5" fill="none" stroke="currentColor" stroke-width="1.4"
+        stroke-dasharray="4 4" opacity=".55"/>
+  <text x="443" y="330" text-anchor="middle" font-size="10.5" font-weight="600" fill="currentColor" opacity=".65">SF_Regles</text>
+  <text x="443" y="343" text-anchor="middle" font-size="10.5" font-weight="600" fill="currentColor" opacity=".65">Dynamiques</text>
+  <text x="443" y="355" text-anchor="middle" font-size="9" fill="currentColor" opacity=".5">R1 = STUB</text>
+  <text x="300" y="340" text-anchor="end" font-size="10" fill="currentColor" opacity=".6">posé sur le canevas,</text>
+  <text x="300" y="353" text-anchor="end" font-size="10" fill="currentColor" opacity=".6">relié à rien</text>
+  <line x1="306" y1="340" x2="384" y2="336" stroke="currentColor" stroke-width="1" stroke-dasharray="3 3" opacity=".45"/>
+
+  <!-- legende trait pointille -->
+  <text x="18" y="376" font-size="10" fill="currentColor" opacity=".6">Trait plein : câblé et actif.  Pointillé épais : câblé mais contenu erroné.  Pointillé fin : non câblé.</text>
+</svg>
+</div>
+<figcaption>État au 17/10/2026, après correction du câblage d'urgence. <code>SF_Stabilisation_V1</code> est câblé mais sa fonction contient le code de <code>SF_ValidationIntent_V1</code> ; <code>SF_ReglesDynamiques</code> existe mais n'est relié à rien.</figcaption>
+</figure>
+
+<h3>Inventaire des sous-flows</h3>
+<div class="tw"><table>
+<tr><th>Sous-flow</th><th>E/S</th><th>Contenu</th><th>État</th></tr>
+<tr><td><code>SF_Dispatcher_EtatGlobal</code></td><td>1 / 1</td><td>Dispatcher RAW → canonique</td><td><span class="chip ok">testé</span></td></tr>
+<tr><td><code>SF_GestionUrgence</code></td><td>1 / 2</td><td>R0_DetectUrgence, R1_ApplyUrgence, R2_ClearUrgence</td><td><span class="chip ok">câblage corrigé 17/10</span></td></tr>
+<tr><td><code>SF_ReglesMinimales_V1</code></td><td>1 / 3</td><td>Une fonction, règles R0 à R13</td><td><span class="chip ok">testé en réel</span></td></tr>
+<tr><td><code>SF_ValidationIntent_V1</code></td><td>1 / 2</td><td>Garde-fou défensif sur <code>msg.origine</code></td><td><span class="chip ok">testé</span></td></tr>
+<tr><td><code>SF_Stabilisation_V1</code></td><td>1 / 1</td><td>Devrait calculer <code>stateLevel</code></td><td><span class="chip bad">contient le mauvais code</span></td></tr>
+<tr><td><code>SF_ReglesDynamiques</code></td><td>1 / 2</td><td>R0_LoadRules réel, R1_ApplyRules_STUB</td><td><span class="chip stub">squelette, non câblé</span></td></tr>
+<tr><td><code>SF_EmissionACK</code></td><td>1 / 0</td><td>Construit et publie la trame ACK</td><td><span class="chip ok">opérationnel</span></td></tr>
+<tr><td><code>Sub-Connexion</code></td><td>1 / 1</td><td>22 nœuds, sélection d'IP</td><td><span class="chip warn">jamais audité</span></td></tr>
+<tr><td><code>GererTransitionFlowPage</code></td><td>1 / 2</td><td>Transitions page / sous-page</td><td><span class="chip neutral">non évalué</span></td></tr>
+<tr><td><code>OldSub-Arrets</code></td><td>0 / 0</td><td>vide</td><td><span class="chip neutral">à supprimer</span></td></tr>
+</table></div>
+
+<div class="note rule">
+  <span class="lbl">La règle qui gouverne toute la mémoire SP</span>
+  <p><code>global.RZ_&lt;VAR&gt;</code>, de forme <code>{prop: {inst: val, _last: val}}</code>, est l'<strong>unique</strong> source de vérité à l'exécution. Elle est alimentée en continu par <code>fn_parse_vpiv_v3</code> depuis le vrai trafic MQTT.</p>
+  <p><code>enrichedVars</code> ne sert qu'à l'amorçage au démarrage. Il n'est jamais lu ni écrit par une logique métier une fois le système lancé, et n'est modifiable que via <code>ui_VarG</code>.</p>
+</div>
+
+<div class="note trap">
+  <span class="lbl">Lire une propriété à instance générique</span>
+  <p>Pour une propriété dont l'instance est <code>*</code>, toujours lire <code>_last</code> en priorité, puis <code>'*'</code> en repli :</p>
+  <pre><code>const p = rzCfgS[prop];
+return p._last !== undefined ? p._last : p['*'];</code></pre>
+  <p>L'inverse ne marche pas : <code>'*'</code> n'est jamais mis à jour par le trafic réel et reste figé sur sa valeur d'amorçage. Ce piège a coûté trois séances de débogage — sur <code>CfgS.modeRZ</code> et <code>typePtge</code> le 13/07, puis sur <code>STT.context</code> le 06/08.</p>
+</div>
+
+<h3>Le format interne : msg.vpiv</h3>
+<p>Depuis la convergence du 5 juillet 2026, tous les flows et sous-flows échangent un objet unique :</p>
+<pre><code>msg.vpiv = { cat, var, prop, inst, val }</code></pre>
+<p>Un champ <code>msg.origine</code> vaut <code>"STT"</code>, <code>"UI"</code>, ou est absent pour le trafic matériel brut. Seul <code>SF_ValidationIntent_V1</code> s'y intéresse. L'ancien format théorique <code>source / eventType / intent / payload</code> est abandonné : il n'avait jamais été branché sur le vrai trafic.</p>
+
+<h3>Le dashboard</h3>
+<p>Quatre pages : <code>P_Accueil</code>, <code>P_admin-VarG</code>, <code>Diag-SE</code>, et <code>Test</code>. <code>ui_Accueil_v4</code> porte sept fonctions, dont les trois qui saisissent l'intention utilisateur (<code>INTENT_Stage_ModeRZ</code>, <code>INTENT_Stage_TypePtge</code>, <code>INTENT_Valider_Config</code>). Le bouton « Valider » existe pour éviter les envois intermédiaires incohérents : changer le mode puis le type de pilotage séparément pouvait produire une combinaison interdite transitoire.</p>
+</section>
+
+<hr class="div">
+
+<!-- ════════════ 4. SE ════════════ -->
+<section id="se">
+<h2><span class="num">04</span>SE — Smartphone Embarqué</h2>
+<p class="lede">Un téléphone Doro sans carte SIM, posé sur le robot. Il joue quatre rôles à la fois, et c'est ce qui rend le projet économiquement possible.</p>
+
+<p>Il est d'abord un <strong>sac de capteurs</strong> : gyroscope, magnétomètre, micros, caméra, mesure de la batterie et de la température. Acheter ces composants séparément coûterait plus cher qu'un téléphone d'occasion. Il est ensuite le <strong>pont vers l'Arduino</strong>, relié par un câble USB-C, et le seul chemin par lequel la carte atteint le réseau. Il est la <strong>bouche et l'oreille</strong> du robot, avec la reconnaissance et la synthèse vocales. Et il est un <strong>exécutant local</strong> : il applique les ordres venus de SP sans avoir à les discuter.</p>
+
+<p>Le cœur du dispositif est un script d'aiguillage. Il reçoit tout ce qui descend de SP et l'oriente vers le bon destinataire, en regardant à la fois le genre du message et l'organe visé. La plupart des destinataires reçoivent leur courrier par une file d'attente ; deux sont appelés directement, pour aller plus vite.</p>
+
+<p>Une règle gouverne tout le sous-système : aucun module ne publie jamais lui-même sur le réseau. Tout ce qui remonte vers SP passe par une file unique, que le script d'aiguillage lit en boucle et republie. Sans cette discipline, il deviendrait impossible de savoir qui a émis quoi.</p>
+
+<p>Un dernier point explique beaucoup de décisions : SE est le seul à savoir ce qui se passe réellement sur le téléphone. Si l'utilisateur ferme une application à la main, SP ne peut pas le deviner. C'est pourquoi tout ce qui touche à la caméra et au micro — ressources que plusieurs usages se disputent — est arbitré localement, par un système de verrous.</p>
+
+<h3>Le routage, cœur du sous-système</h3>
+<p><code>rz_vpiv_parser.sh</code> reçoit tout ce qui arrive de SP et le distribue. Le routage est plus fin qu'un simple aiguillage vers les managers : il dépend à la fois de la catégorie et du module.</p>
+
+<figure>
+<div class="fig-body">
+<svg viewBox="0 0 720 390" role="img" aria-label="Routage de rz_vpiv_parser.sh : selon la catégorie et le module, le message part vers l'une des cinq FIFO ou vers un appel direct de script.">
+  <defs>
+    <marker id="ar4" markerWidth="8" markerHeight="6.5" refX="7.5" refY="3.25" orient="auto">
+      <polygon points="0 0, 8 3.25, 0 6.5" fill="currentColor"/>
+    </marker>
+  </defs>
+
+  <!-- entree -->
+  <rect x="14" y="160" width="128" height="56" rx="6" fill="none" stroke="currentColor" stroke-width="2"/>
+  <text x="78" y="180" text-anchor="middle" font-size="11" font-weight="600" fill="currentColor">rz_vpiv_parser.sh</text>
+  <text x="78" y="194" text-anchor="middle" font-size="9.5" fill="currentColor" opacity=".6">depuis SE/commande</text>
+  <text x="78" y="208" text-anchor="middle" font-size="9.5" font-family="monospace" fill="currentColor" opacity=".6">v2.5</text>
+
+  <g font-size="10" font-family="monospace" fill="currentColor">
+    <!-- lignes de routage -->
+    <path d="M142 172 L196 172 L196 38 L250 38" fill="none" stroke="currentColor" stroke-width="1.3" marker-end="url(#ar4)"/>
+    <text x="199" y="33" opacity=".75">CAT=A · Appli</text>
+
+    <path d="M142 178 L188 178 L188 80 L250 80" fill="none" stroke="currentColor" stroke-width="1.3" marker-end="url(#ar4)"/>
+    <text x="191" y="75" opacity=".75">CAT=A · Voice  ·  CAT=V/F · Voice</text>
+
+    <path d="M142 184 L180 184 L180 122 L250 122" fill="none" stroke="currentColor" stroke-width="1.3" marker-end="url(#ar4)"/>
+    <text x="183" y="117" opacity=".75">CAT=A autre  ·  CAT=V/F · Zoom, TTS</text>
+
+    <path d="M142 196 L172 196 L172 164 L250 164" fill="none" stroke="currentColor" stroke-width="1.3" marker-end="url(#ar4)"/>
+    <text x="175" y="159" opacity=".75">CAT=V/F · CfgS, autre  ·  CAT=I/E</text>
+
+    <path d="M142 208 L180 208 L180 248 L250 248" fill="none" stroke="currentColor" stroke-width="1.3" marker-end="url(#ar4)"/>
+    <text x="183" y="243" opacity=".75">CAT=V/F · CamSE</text>
+
+    <path d="M142 214 L188 214 L188 290 L250 290" fill="none" stroke="currentColor" stroke-width="1.3" marker-end="url(#ar4)"/>
+    <text x="191" y="285" opacity=".75">CAT=V/F · TorchSE</text>
+  </g>
+
+  <!-- destinations FIFO -->
+  <g>
+    <rect x="252" y="22" width="130" height="32" rx="4" fill="none" stroke="currentColor" stroke-width="1.4"/>
+    <text x="317" y="42" text-anchor="middle" font-size="10.5" font-family="monospace" fill="currentColor">fifo_appli_in</text>
+    <rect x="252" y="64" width="130" height="32" rx="4" fill="none" stroke="currentColor" stroke-width="1.4"/>
+    <text x="317" y="84" text-anchor="middle" font-size="10.5" font-family="monospace" fill="currentColor">fifo_voice_in</text>
+    <rect x="252" y="106" width="130" height="32" rx="4" fill="none" stroke="currentColor" stroke-width="1.4"/>
+    <text x="317" y="126" text-anchor="middle" font-size="10.5" font-family="monospace" fill="currentColor">fifo_tasker_in</text>
+    <rect x="252" y="148" width="130" height="32" rx="4" fill="none" stroke="currentColor" stroke-width="1.4"/>
+    <text x="317" y="168" text-anchor="middle" font-size="10.5" font-family="monospace" fill="currentColor">fifo_termux_in</text>
+  </g>
+
+  <!-- appels directs -->
+  <g>
+    <rect x="252" y="232" width="152" height="32" rx="4" fill="none" stroke="currentColor" stroke-width="1.4" stroke-dasharray="5 3"/>
+    <text x="328" y="252" text-anchor="middle" font-size="10" font-family="monospace" fill="currentColor">rz_camera_manager.sh</text>
+    <rect x="252" y="274" width="152" height="32" rx="4" fill="none" stroke="currentColor" stroke-width="1.4" stroke-dasharray="5 3"/>
+    <text x="328" y="294" text-anchor="middle" font-size="10" font-family="monospace" fill="currentColor">rz_torch_manager.sh</text>
+    <text x="328" y="322" text-anchor="middle" font-size="9.5" fill="currentColor" opacity=".6">appel direct, sans FIFO</text>
+  </g>
+
+  <!-- consommateurs -->
+  <g font-size="10" fill="currentColor" opacity=".8">
+    <line x1="382" y1="38" x2="432" y2="38" stroke="currentColor" stroke-width="1.2" marker-end="url(#ar4)"/>
+    <text x="438" y="42">rz_appli_manager.sh</text>
+    <line x1="382" y1="80" x2="432" y2="80" stroke="currentColor" stroke-width="1.2" marker-end="url(#ar4)"/>
+    <text x="438" y="84">rz_voice_manager.sh</text>
+    <line x1="382" y1="122" x2="432" y2="122" stroke="currentColor" stroke-width="1.2" marker-end="url(#ar4)"/>
+    <text x="438" y="126">rz_tasker_bridge.sh → Tasker</text>
+    <line x1="382" y1="164" x2="432" y2="164" stroke="currentColor" stroke-width="1.2" marker-end="url(#ar4)"/>
+    <text x="438" y="168">managers divers</text>
+  </g>
+
+  <!-- retour -->
+  <rect x="432" y="196" width="262" height="58" rx="6" fill="none" stroke="currentColor" stroke-width="1.6"/>
+  <text x="563" y="216" text-anchor="middle" font-size="10.5" font-weight="600" fill="currentColor">Retour SE → SP</text>
+  <text x="563" y="231" text-anchor="middle" font-size="9.5" fill="currentColor" opacity=".7">rz_vpiv_parser lit fifo_termux_in en boucle</text>
+  <text x="563" y="245" text-anchor="middle" font-size="9.5" font-family="monospace" fill="currentColor" opacity=".7">et publie sur SE/statut</text>
+  <path d="M382 164 L410 164 L410 196" fill="none" stroke="currentColor" stroke-width="1.2" opacity=".5"/>
+
+  <text x="14" y="360" font-size="10" fill="currentColor" opacity=".65">Règle absolue : aucun manager n'appelle jamais mosquitto_pub directement — tout sort par fifo_termux_in.</text>
+</svg>
+</div>
+<figcaption>Cinq FIFO, deux appels directs. La cinquième, <code>fifo_return</code>, est créée mais son usage au-delà de l'init n'est pas confirmé.</figcaption>
+</figure>
+
+<h3>Scripts déployés — versions relevées dans le dépôt au 06/08/2026</h3>
+<div class="tw"><table>
+<tr><th>Script</th><th>Version</th><th>Rôle</th></tr>
+<tr><td><code>rz_start.sh</code></td><td>1.3</td><td>Démarrage unifié de tous les services SE</td></tr>
+<tr><td><code>rz_vpiv_parser.sh</code></td><td>2.5</td><td>Routage entrant + publication sortante</td></tr>
+<tr><td><code>rz_state-manager.sh</code></td><td>1.9</td><td>État SE, calcul du contexte STT</td></tr>
+<tr><td><code>rz_camera_manager.sh</code></td><td>3.1</td><td>Caméra IP Webcam, LockSE. One-shot, pas un démon</td></tr>
+<tr><td><code>rz_appli_manager.sh</code></td><td>1.3</td><td>Apps Android, LockSE caméra+micro pour Zoom</td></tr>
+<tr><td><code>rz_autovoice_bridge.sh</code></td><td>3.0</td><td>Arbitrage Cmde / Conv / Mixte — Option B</td></tr>
+<tr><td><code>rz_stt_handler.sh</code></td><td>3.1</td><td>Exécution des commandes vocales, <code>wait_for_ack()</code></td></tr>
+<tr><td><code>rz_tasker_bridge.sh</code></td><td>3.0</td><td>Écriture du trigger JSON pour Tasker, mode démon</td></tr>
+<tr><td><code>rz_voice_manager.sh</code></td><td>1.0</td><td>TTS et volume, module autonome</td></tr>
+<tr><td><code>rz_gyro_manager.sh</code></td><td>2.0</td><td>Gyroscope LSM6DS3C</td></tr>
+<tr><td><code>rz_microSe_manager.sh</code></td><td>2.1</td><td>Micro — pas encore câblé sur LockSE</td></tr>
+<tr><td><code>rz_torch_manager.sh</code></td><td>2.1</td><td>Torche</td></tr>
+<tr><td><code>rz_balayage_sonore.sh</code></td><td>2.0</td><td>Direction du son, VPIV <code>Srv:TGD</code></td></tr>
+<tr><td><code>rz_resource_lock.sh</code></td><td>1.0</td><td>Verrous sur ressources partagées</td></tr>
+<tr><td><code>rz_tasker_out.sh</code></td><td>1.0</td><td><code>inotifywait</code> sur <code>vpiv_out.txt</code></td></tr>
+</table></div>
+
+<div class="note trap">
+  <span class="lbl">Point à trancher</span>
+  <p><code>rz_tasker_out.sh</code> v1.0 et la fonction interne <code>watch_vpiv_out()</code> de <code>rz_vpiv_parser.sh</code> semblent faire exactement la même chose : surveiller <code>vpiv_out.txt</code> et republier. Soit l'un est une extraction postérieure de l'autre, soit il y a doublon. Non tranché à ce jour.</p>
+</div>
+
+<h3>Le motif LockSE</h3>
+<p>SE est la seule autorité sur l'état réel de la caméra et du microphone, parce que SP ne peut pas savoir qu'une application a été fermée à la main. Le verrouillage est bidirectionnel et fonctionne en tout-ou-rien : Zoom prend caméra et micro ensemble, ou rien.</p>
+<p>Limite connue et acceptée en V1 : fermer une application à la main, hors VPIV, ne libère pas le verrou. Il n'y a pas de détection de l'état réel du processus.</p>
+
+<h3>La chaîne vocale — Option B</h3>
+<p>PocketSphinx est définitivement abandonné : sous Android 9, l'accès à OpenSL ES est verrouillé sur ce Doro. <code>modeSTT</code> reste figé à <code>OFF</code>, et <code>paraSTT</code> est conservé en réserve pour un éventuel portage sur RPi 4.</p>
+<p>La reconnaissance passe donc par AutoVoice, et la conversation libre par Gemini <code>gemini-2.5-flash</code>. L'arbitrage entre commande et conversation est décidé <strong>entièrement côté SE</strong>, dans <code>rz_autovoice_bridge.sh</code>. C'est le point important : si SP reçoit une capsule <code>STT.intent</code>, c'est la preuve que SE a déjà tranché qu'il s'agissait d'une commande. Il ne faut jamais réintroduire une logique Cmde/Conv/Mixte côté Node-RED.</p>
+
+<h4>Table modeRZ → STT.context</h4>
+<div class="tw"><table>
+<tr><th>modeRZ</th><th>Nom</th><th>STT.context</th></tr>
+<tr><td class="num-col">0</td><td>ARRET</td><td>Inactif</td></tr>
+<tr><td class="num-col">1</td><td>VEILLE</td><td>Mixte — forcé à Cmde si <code>Mtr.state.L≠0</code> ou <code>R≠0</code></td></tr>
+<tr><td class="num-col">2</td><td>FIXE</td><td>Mixte</td></tr>
+<tr><td class="num-col">3</td><td>DEPLACEMENT</td><td>Cmde</td></tr>
+<tr><td class="num-col">4</td><td>AUTONOME</td><td>Mixte</td></tr>
+<tr><td class="num-col">5</td><td>ERREUR</td><td>Inactif</td></tr>
+</table></div>
+<p>Le contexte <code>Conv</code> n'apparaît jamais dans cette table : il est réservé au déclenchement explicite de <code>IA_Conv</code>.</p>
+</section>
+
+<hr class="div">
+
+<!-- ════════════ 5. ARDUINO ════════════ -->
+<section id="arduino">
+<h2><span class="num">05</span>Arduino</h2>
+<p class="lede">C'est la partie qui touche le monde physique : neuf capteurs à ultrasons, trois micros, un gyroscope, des LED, des servomoteurs, les roues. Elle est stabilisée et n'a pas bougé depuis l'été.</p>
+
+<p>Deux cartes plutôt qu'une, parce que les moteurs demandent un rythme régulier que des mesures de capteurs viendraient perturber. Le Mega s'occupe de tout sauf des moteurs, et donne ses ordres au UNO par une liaison série. Le UNO ne fait que cela, sans jamais être interrompu.</p>
+
+<p>Le code du Mega est organisé en trois couches qu'on ne mélange jamais. La première reçoit la trame et la découpe. La deuxième contient la logique propre à chaque organe, avec un fichier par organe. La troisième parle aux broches électroniques. L'intérêt est concret : changer un capteur à ultrasons pour un autre modèle ne touche que la troisième couche, et rien d'autre ne bouge.</p>
+
+<p>La boucle principale est plafonnée à 80 millisecondes. Au-delà, le robot réagirait trop tard à un obstacle.</p>
+
+<figure>
+<div class="fig-body">
+<svg viewBox="0 0 640 260" role="img" aria-label="Architecture Arduino en trois couches : dispatch VPIV, couche métier par module, couche matérielle. Le UNO est piloté par le Mega en UART.">
+  <defs>
+    <marker id="ar5" markerWidth="8" markerHeight="6.5" refX="7.5" refY="3.25" orient="auto">
+      <polygon points="0 0, 8 3.25, 0 6.5" fill="currentColor"/>
+    </marker>
+  </defs>
+
+  <text x="20" y="20" font-size="11" font-weight="600" fill="currentColor" opacity=".7">MEGA</text>
+
+  <!-- couche 1 -->
+  <rect x="20" y="30" width="420" height="46" rx="5" fill="none" stroke="currentColor" stroke-width="1.8"/>
+  <text x="34" y="50" font-size="11.5" font-weight="600" fill="currentColor">1 — Dispatch VPIV</text>
+  <text x="34" y="66" font-size="10" font-family="monospace" fill="currentColor" opacity=".65">vpiv_dispatch.cpp · vpiv_utils.cpp · communication.cpp</text>
+
+  <line x1="230" y1="76" x2="230" y2="96" stroke="currentColor" stroke-width="1.4" marker-end="url(#ar5)"/>
+
+  <!-- couche 2 -->
+  <rect x="20" y="98" width="420" height="58" rx="5" fill="none" stroke="currentColor" stroke-width="1.8"/>
+  <text x="34" y="118" font-size="11.5" font-weight="600" fill="currentColor">2 — Métier, un dispatch par module</text>
+  <text x="34" y="134" font-size="9.5" font-family="monospace" fill="currentColor" opacity=".65">dispatch_CfgS · Ctrl_L · FS · IRmvt · Lring · Lrub · Mic</text>
+  <text x="34" y="148" font-size="9.5" font-family="monospace" fill="currentColor" opacity=".65">Mtr · Odom · SecMvt · Srv · Urg · Us · com</text>
+
+  <line x1="230" y1="156" x2="230" y2="176" stroke="currentColor" stroke-width="1.4" marker-end="url(#ar5)"/>
+
+  <!-- couche 3 -->
+  <rect x="20" y="178" width="420" height="52" rx="5" fill="none" stroke="currentColor" stroke-width="1.8"/>
+  <text x="34" y="198" font-size="11.5" font-weight="600" fill="currentColor">3 — Matériel</text>
+  <text x="34" y="214" font-size="9.5" font-family="monospace" fill="currentColor" opacity=".65">us_hardware · mic_hardware · mtr_hardware · srv_hardware · lring · lrub · odom · fs · mvt_ir</text>
+
+  <!-- UNO -->
+  <rect x="478" y="98" width="142" height="58" rx="5" fill="none" stroke="currentColor" stroke-width="1.8"/>
+  <text x="549" y="120" text-anchor="middle" font-size="11.5" font-weight="600" fill="currentColor">UNO</text>
+  <text x="549" y="136" text-anchor="middle" font-size="10" fill="currentColor" opacity=".65">esclave moteur</text>
+  <text x="549" y="149" text-anchor="middle" font-size="10" fill="currentColor" opacity=".55">uniquement</text>
+  <line x1="440" y1="127" x2="476" y2="127" stroke="currentColor" stroke-width="1.5" marker-end="url(#ar5)"/>
+  <text x="458" y="120" text-anchor="middle" font-size="9.5" font-family="monospace" fill="currentColor" opacity=".7">UART</text>
+
+  <text x="478" y="200" font-size="10" fill="currentColor" opacity=".6">Boucle principale</text>
+  <text x="478" y="214" font-size="10" fill="currentColor" opacity=".6">plafonnée à 80 ms</text>
+</svg>
+</div>
+<figcaption>Quinze modules métier, chacun avec son fichier <code>dispatch_*.cpp</code>. La bibliothèque personnelle <code>RZlibrairiesPersoNew</code> regroupe les trois couches.</figcaption>
+</figure>
+
+<h3>Décisions closes sur les moteurs</h3>
+<p><code>kturn</code> est harmonisé ×1000 sur tout le pipeline. <code>inputScale</code> et <code>outputScale</code> ont été <strong>retirés du JSON SP→SE</strong> : ce sont des constantes internes Arduino, déclarées dans <code>config.cpp</code>, absentes de la Table A, sans formule de dérivation depuis <code>kturn</code>. Côté SE elles sont codées en dur : <code>MTR_INPUT_SCALE=100</code>, <code>MTR_OUTPUT_SCALE=400</code>. La branche PLAN de <code>rz_stt_handler.sh</code> qui doit les utiliser n'est pas écrite.</p>
+
+<p><code>Robot.speed</code> n'existe pas en Table A. Utiliser <code>Mtr.state</code>, au format <code>L,R,A</code>, en <code>CAT=I</code>.</p>
+
+<h3>Horizon</h3>
+<p>L'odométrie est embryonnaire (<code>odom.cpp</code> / <code>odom.h</code> existent). Un lidar est prévu, avec ROS 2 sur un RPi 4 déjà disponible mais réservé, pour SLAM et Nav2. L'interface se ferait par un pont MQTT↔ROS côté SP, sans toucher au reste du système.</p>
+</section>
+
+<hr class="div">
+
+<!-- ════════════ 6. TASKER ════════════ -->
+<section id="tasker">
+<h2><span class="num">06</span>Tasker</h2>
+<p class="lede">Tasker existe pour une raison précise : Android interdit à un script de lancer une application à la place de l'utilisateur. Sans lui, le robot ne pourrait ni ouvrir la caméra, ni démarrer Zoom, ni afficher un visage à l'écran.</p>
+
+<p>Il vit à l'intérieur du smartphone mais se développe séparément, avec ses propres outils et ses propres règles. Il ne reçoit qu'une seule catégorie de trames, celles qui concernent les applications Android, et son travail s'arrête là : il ne prend aucune décision.</p>
+
+<p>La communication avec le reste du système passe par des fichiers, faute de mieux. Pour lui parler, un script écrit un petit fichier que Tasker surveille ; pour l'écouter, un autre script surveille un fichier que Tasker écrit. C'est rustique, mais c'est le seul mécanisme fiable entre ces deux mondes.</p>
+
+<p>Les règles qui suivent ont toutes été apprises en perdant du temps. Elles valent d'être relues avant toute intervention sur cette partie, parce que chaque piège s'y présente sans message d'erreur explicite.</p>
+
+<h3>Les deux pipelines</h3>
+<pre><code>Entrant   fifo_tasker_in → rz_tasker_bridge.sh → trigger JSON
+                         → profil RZ_Dispatch → tâche nommée
+
+Sortant   scène ou bouton Tasker → vpiv_out.txt
+                         → inotifywait → mosquitto_pub</code></pre>
+
+<h3>Profils et tâches en place</h3>
+<div class="tw"><table>
+<tr><th>Type</th><th>Identifiant</th><th>Nom</th></tr>
+<tr><td>Profil</td><td class="num-col">16</td><td>Fichier_ModifieParSE</td></tr>
+<tr><td>Profil</td><td class="num-col">17</td><td>Menu_Commande</td></tr>
+<tr><td>Profil</td><td class="num-col">36</td><td>RZ_RecFailed</td></tr>
+<tr><td>Profil</td><td class="num-col">100</td><td>RZ_EcouteVoix — profil AutoVoice unique</td></tr>
+<tr><td>Tâche</td><td class="num-col">18</td><td>RZ_Init_Tasker</td></tr>
+<tr><td>Tâche</td><td class="num-col">26</td><td>RZ_IA_Conv</td></tr>
+<tr><td>Tâche</td><td class="num-col">62</td><td>Rz_Traite_Ecoute</td></tr>
+<tr><td>Tâche</td><td class="num-col">63 / 64</td><td>RZ_AVStart / RZ_AVStop</td></tr>
+<tr><td>Tâche</td><td class="num-col">202 / 203</td><td>RZ_GeminiStart / RZ_GeminiStop</td></tr>
+<tr><td>Tâche</td><td class="num-col">204</td><td>RZ_STT_Context</td></tr>
+<tr><td>Tâche</td><td class="num-col">205</td><td>Rz_Traite_Ecoute v2</td></tr>
+</table></div>
+
+<h3>Règles Tasker — toutes apprises à la dure</h3>
+<ul>
+  <li><strong>Pas de lien symbolique dans <code>tasker/</code>.</strong> Termux:Tasker les rejette après un redémarrage d'Android avec « Non-regular file found ». Toujours une copie réelle, suivie de <code>chmod +x</code>.</li>
+  <li><strong>Nommage des variables :</strong> locales en <code>%minuscules</code>, globales avec au moins une majuscule. Tasker l'exige.</li>
+  <li><strong>Dans un JavaScriplet :</strong> <code>global('NomSansPourcent')</code>. Jamais de <code>%</code> dans <code>global()</code>.</li>
+  <li><strong>Écrire le trigger avec <code>printf</code>, pas <code>echo</code></strong> — le retour à la ligne final de <code>echo</code> casse <code>JSON.parse()</code>.</li>
+  <li><strong>Chemins toujours absolus :</strong> <code>/storage/emulated/0/Tasker/RobotRZ/...</code></li>
+  <li><strong>Import pièce par pièce.</strong> L'import de projet complet a échoué ; il faut passer par un appui long dans chaque onglet Tasks, Scenes, Profiles.</li>
+  <li><strong><code>VARIABLE_REPLACE_KEYS</code> n'est pas préservé</strong> par l'import XML. À ressaisir à la main.</li>
+  <li><strong>Premier réflexe diagnostic :</strong> <code>/sdcard/Tasker/log/runlog.txt</code></li>
+</ul>
+
+<h4>AutoVoice</h4>
+<p>Un profil unique, <code>RZ_EcouteVoix</code>, avec routage par l'expression régulière <code>(?i)^rz\b</code>. Utiliser <code>%avcommnofilter</code> et non <code>%avcomm</code> pour obtenir la commande sans le mot déclencheur.</p>
+<p><code>%avcomm</code> n'est disponible que dans une tâche directement associée à un profil : il ne traverse pas un appel « Perform Task », et Termux:Tasker ne le résout pas via une tâche intermédiaire. C'est ce qui a bloqué le pipeline pendant une session entière.</p>
+<p>Le bip d'AutoVoice en mode continu est atténué, pas résolu, par « Stream to Mute » 50 s et un délai de reconnaissance de 5 s.</p>
+</section>
+
+<hr class="div">
+
+<!-- ════════════ 7. TABLES ════════════ -->
+<section id="tables">
+<h2><span class="num">07</span>Les tables de données</h2>
+<p class="lede">Quatre tables, quatre rôles distincts. Les confondre est la source d'erreurs la plus coûteuse du projet, et la question « laquelle fait autorité ici ? » mérite d'être posée à chaque fois.</p>
+
+<p>Pourquoi quatre et pas une ? Parce qu'elles ne répondent pas à la même question et ne vivent pas au même rythme.</p>
+
+<p>La <strong>Table A</strong> est le dictionnaire. Elle dit ce qui existe et sous quelle forme : quelles variables, quelles propriétés, quelles valeurs permises, quel encodage. Elle ne tourne jamais — aucun programme ne la lit. Elle sert à vous, quand vous écrivez du code, et c'est elle qu'on consulte pour trancher un désaccord.</p>
+
+<p>La <strong>Table C</strong> est la configuration qui survit. Elle vit sur le téléphone et garde les réglages d'une session à l'autre.</p>
+
+<p>La <strong>Table B</strong> est ce que Node-RED charge en mémoire au démarrage pour amorcer le système. Elle est volatile : elle disparaît si Node-RED redémarre. Elle ne sert qu'à l'allumage, et une fois le robot en marche, c'est l'état réel remonté par les capteurs qui fait foi, pas elle.</p>
+
+<p>La <strong>Table D</strong> est le carnet de commandes vocales : quelle phrase prononcée déclenche quelle trame.</p>
+
+<p>Le sens de circulation est le suivant : la configuration persistante amorce la mémoire de Node-RED, qui à son tour initialise le robot en lui envoyant des trames dès qu'il signale être prêt. C'est toujours SP qui initialise, jamais l'inverse — ainsi le robot démarre dans le même état quelle que soit la machine qui le pilote.</p>
+
+<figure>
+<div class="fig-body">
+<svg viewBox="0 0 700 290" role="img" aria-label="Circulation entre les quatre tables : la Table A est normative et hors exécution, la Table C persiste sur SE, la Table B est le runtime Node-RED amorcé depuis C et éditable par ui_VarG, la Table D est le catalogue des commandes vocales.">
+  <defs>
+    <marker id="ar6" markerWidth="8" markerHeight="6.5" refX="7.5" refY="3.25" orient="auto">
+      <polygon points="0 0, 8 3.25, 0 6.5" fill="currentColor"/>
+    </marker>
+  </defs>
+
+  <!-- Table A, hors ligne -->
+  <rect x="20" y="22" width="190" height="66" rx="6" fill="none" stroke="currentColor" stroke-width="2" stroke-dasharray="7 4"/>
+  <text x="115" y="44" text-anchor="middle" font-size="12.5" font-weight="700" fill="currentColor">Table A — la norme</text>
+  <text x="115" y="60" text-anchor="middle" font-size="10" font-family="monospace" fill="currentColor" opacity=".7">TableA_updatedV3_corrige.csv</text>
+  <text x="115" y="76" text-anchor="middle" font-size="10" fill="currentColor" opacity=".6">269 lignes · 25 variables</text>
+  <text x="115" y="104" text-anchor="middle" font-size="10.5" fill="currentColor" opacity=".75">jamais chargée à l'exécution</text>
+  <text x="115" y="118" text-anchor="middle" font-size="10.5" fill="currentColor" opacity=".75">sert à concevoir, pas à tourner</text>
+
+  <!-- ligne de separation -->
+  <line x1="20" y1="140" x2="680" y2="140" stroke="currentColor" stroke-width="1" opacity=".3" stroke-dasharray="3 4"/>
+  <text x="24" y="155" font-size="9.5" fill="currentColor" opacity=".55">— à l'exécution —</text>
+
+  <!-- Table C -->
+  <rect x="20" y="172" width="180" height="76" rx="6" fill="none" stroke="currentColor" stroke-width="1.8"/>
+  <text x="110" y="194" text-anchor="middle" font-size="12" font-weight="700" fill="currentColor">Table C</text>
+  <text x="110" y="210" text-anchor="middle" font-size="9.5" font-family="monospace" fill="currentColor" opacity=".7">courant_init.json</text>
+  <text x="110" y="226" text-anchor="middle" font-size="10" fill="currentColor" opacity=".65">sur SE · persistante</text>
+  <text x="110" y="240" text-anchor="middle" font-size="10" fill="currentColor" opacity=".65">source unique de config</text>
+
+  <!-- Table B -->
+  <rect x="262" y="172" width="180" height="76" rx="6" fill="none" stroke="currentColor" stroke-width="1.8"/>
+  <text x="352" y="194" text-anchor="middle" font-size="12" font-weight="700" fill="currentColor">Table B</text>
+  <text x="352" y="210" text-anchor="middle" font-size="9.5" font-family="monospace" fill="currentColor" opacity=".7">globalSave.json · enrichedVars</text>
+  <text x="352" y="226" text-anchor="middle" font-size="10" fill="currentColor" opacity=".65">runtime Node-RED</text>
+  <text x="352" y="240" text-anchor="middle" font-size="10" fill="currentColor" opacity=".65">volatile · amorçage seul</text>
+
+  <line x1="200" y1="200" x2="260" y2="200" stroke="currentColor" stroke-width="1.5" marker-end="url(#ar6)"/>
+  <text x="230" y="194" text-anchor="middle" font-size="9" fill="currentColor" opacity=".7">amorce</text>
+
+  <!-- ui_VarG -->
+  <rect x="262" y="96" width="180" height="34" rx="5" fill="none" stroke="currentColor" stroke-width="1.4"/>
+  <text x="352" y="118" text-anchor="middle" font-size="11" font-family="monospace" fill="currentColor">ui_VarG — seul éditeur</text>
+  <line x1="352" y1="130" x2="352" y2="170" stroke="currentColor" stroke-width="1.5" marker-end="url(#ar6)"/>
+
+  <!-- vers SE -->
+  <path d="M442 210 L502 210" fill="none" stroke="currentColor" stroke-width="1.5" marker-end="url(#ar6)"/>
+  <rect x="504" y="172" width="176" height="76" rx="6" fill="none" stroke="currentColor" stroke-width="1.8"/>
+  <text x="592" y="194" text-anchor="middle" font-size="11.5" font-weight="600" fill="currentColor">SP initialise SE</text>
+  <text x="592" y="210" text-anchor="middle" font-size="9.5" fill="currentColor" opacity=".7">après SE_READY,</text>
+  <text x="592" y="224" text-anchor="middle" font-size="9.5" fill="currentColor" opacity=".7">SP émet les trames VPIV</text>
+  <text x="592" y="238" text-anchor="middle" font-size="9.5" fill="currentColor" opacity=".7">depuis enrichedVars</text>
+
+  <!-- Table D -->
+  <rect x="480" y="22" width="200" height="66" rx="6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-dasharray="7 4"/>
+  <text x="580" y="44" text-anchor="middle" font-size="12.5" font-weight="700" fill="currentColor">Table D — commandes STT</text>
+  <text x="580" y="60" text-anchor="middle" font-size="9.5" font-family="monospace" fill="currentColor" opacity=".7">tableD_catalogueV2_corrige.csv</text>
+  <text x="580" y="76" text-anchor="middle" font-size="10" fill="currentColor" opacity=".6">71 commandes</text>
+</svg>
+</div>
+<figcaption>La Table A ne tourne jamais. La Table C persiste, la Table B est volatile et amorcée depuis C. <code>ui_VarG</code> est le seul chemin légitime pour modifier <code>enrichedVars</code>.</figcaption>
+</figure>
+
+<h3>Table A — la référence normative</h3>
+<p>269 lignes, 25 variables distinctes, 15 colonnes : <code>SOURCE</code>, <code>VAR</code>, <code>PROP</code>, <code>CAT</code>, <code>TYPE</code>, <code>FORMAT_VALUE</code>, <code>CODAGE</code>, <code>DIRECTION</code>, <code>INSTANCE</code>, <code>COMPLEXE</code>, <code>CYCLE</code>, <code>NATURE</code>, <code>INTERFACE</code>, <code>VPIV_EX</code>, <code>NOTES</code>.</p>
+
+<div class="tw"><table>
+<tr><th>Variable</th><th>Prop.</th><th>Source</th><th>Variable</th><th>Prop.</th><th>Source</th></tr>
+<tr><td><code>Odom</code></td><td class="num-col">22</td><td>A, P, S</td><td><code>IRmvt</code></td><td class="num-col">12</td><td>A, P</td></tr>
+<tr><td><code>US</code></td><td class="num-col">18</td><td>A, P</td><td><code>Lrub</code></td><td class="num-col">12</td><td>A, P</td></tr>
+<tr><td><code>CfgS</code></td><td class="num-col">16</td><td>A, P, S</td><td><code>SecMvt</code></td><td class="num-col">11</td><td>A, P</td></tr>
+<tr><td><code>FS</code></td><td class="num-col">15</td><td>A, P</td><td><code>Ctrl_L</code></td><td class="num-col">10</td><td>A, P</td></tr>
+<tr><td><code>Lring</code></td><td class="num-col">15</td><td>A, P</td><td><code>Gyro</code></td><td class="num-col">9</td><td>P, S</td></tr>
+<tr><td><code>Sys</code></td><td class="num-col">15</td><td>P, S</td><td><code>Mag</code></td><td class="num-col">9</td><td>P, S</td></tr>
+<tr><td><code>Appli</code></td><td class="num-col">14</td><td>P, S</td><td><code>Urg</code></td><td class="num-col">8</td><td>A, E, P, S</td></tr>
+<tr><td><code>Mic</code></td><td class="num-col">14</td><td>A, P</td><td><code>CamSE</code></td><td class="num-col">7</td><td>P, S</td></tr>
+<tr><td><code>Mtr</code></td><td class="num-col">14</td><td>A, P</td><td><code>MicroSE</code></td><td class="num-col">7</td><td>P, S</td></tr>
+<tr><td><code>Srv</code></td><td class="num-col">7</td><td>A, P</td><td><code>STT</code></td><td class="num-col">6</td><td>P, S</td></tr>
+<tr><td><code>COM</code></td><td class="num-col">4</td><td>E</td><td><code>Voice</code></td><td class="num-col">4</td><td>P</td></tr>
+<tr><td><code>LockSE</code></td><td class="num-col">2</td><td>S</td><td><code>TorchSE</code></td><td class="num-col">2</td><td>P, S</td></tr>
+</table></div>
+<p><code>SOURCE = E</code> signifie que SE ou Arduino peut émettre selon le contexte, jamais les deux à la fois. C'est une ambiguïté légitime, documentée comme telle.</p>
+
+<div class="note trap">
+  <span class="lbl">Croiser FORMAT_VALUE et COMPLEXE</span>
+  <p>Ne jamais conclure qu'une propriété est absente de la Table A sur la seule lecture de <code>FORMAT_VALUE</code>. Le champ <code>COMPLEXE</code> peut être un simple drapeau O/N, ou contenir la structure détaillée d'un objet JSON imbriqué. Une vérification basée sur <code>FORMAT_VALUE</code> seul a fait croire à tort que <code>paraCam</code> n'existait pas, le 29 juin 2026.</p>
+</div>
+
+<h3>Les trois autres</h3>
+<div class="tw"><table>
+<tr><th>Table</th><th>Fichier</th><th>Rôle</th></tr>
+<tr><td><strong>B</strong></td><td>PC : <code>node-red/config/globalSave.json</code><br>RPi : <code>/home/rzServeur/robotRZ/data/globalSave.json</code></td><td><code>enrichedVars</code>, runtime Node-RED, volatile, amorçage uniquement</td></tr>
+<tr><td><strong>C</strong></td><td><code>termux/config/courant_init.json</code></td><td>Config SE et Arduino, source persistante unique</td></tr>
+<tr><td><strong>D</strong></td><td><code>tableD_catalogueV2_corrige.csv</code></td><td>71 commandes vocales. Statuts : OK, Pro, ⛔</td></tr>
+</table></div>
+
+<div class="note trap">
+  <span class="lbl">Deux fichiers, pas un</span>
+  <p>Les deux chemins de <code>globalSave.json</code> désignent <strong>deux fichiers distincts</strong>, pas le même vu sous deux angles. Le chemin PC reflète l'arborescence du dépôt. Le chemin RPi, déclaré dans <code>settings.js</code> via la variable <code>rzPath</code>, est celui réellement lu et écrit à l'exécution.</p>
+</div>
+</section>
+
+<hr class="div">
+
+<!-- ════════════ 8. RÉSEAU ════════════ -->
+<section id="reseau">
+<h2><span class="num">08</span>Réseau et connectivité</h2>
+<p class="lede">Le robot doit joindre son cerveau partout, et le cerveau n'est pas toujours au même endroit. Quatre situations ont été prévues, de la plus simple à la plus contrainte.</p>
+
+<p>À la maison, tout est simple : le téléphone et le Raspberry Pi sont sur le même réseau, ils se parlent directement. Chez quelqu'un d'autre, le téléphone est sur un réseau étranger mais a Internet, donc il rejoint le Raspberry Pi resté à la maison en passant par son adresse publique. En promenade avec le Xiaomi qui partage sa connexion mobile, c'est le même principe, le trajet passe simplement par la 4G. Et quand il n'y a plus de réseau mobile du tout, le Xiaomi cesse d'être un simple relais : il devient lui-même le cerveau, et forme avec le téléphone du robot un petit réseau local autonome.</p>
+
+<p>Le robot sait dans quelle situation il se trouve, et le note dans une variable de configuration. Les deux encadrés qui suivent la configuration méritent attention : ils décrivent deux pièges réseau qui ont chacun coûté une séance entière, parce qu'ils font croire à une panne là où il n'y en a pas.</p>
+
+<figure>
+<div class="fig-body">
+<svg viewBox="0 0 700 300" role="img" aria-label="Les quatre modes de connexion entre SE et SP : WiFi maison vers le RPi en local, WiFi externe vers le RPi par DuckDNS, partage de connexion Xiaomi avec 4G vers le RPi par DuckDNS, et partage Xiaomi sans 4G vers le SP Smart en local.">
+  <defs>
+    <marker id="ar7" markerWidth="8" markerHeight="6.5" refX="7.5" refY="3.25" orient="auto">
+      <polygon points="0 0, 8 3.25, 0 6.5" fill="currentColor"/>
+    </marker>
+  </defs>
+
+  <g font-size="10.5" fill="currentColor">
+    <!-- mode 1 -->
+    <rect x="14" y="16" width="96" height="40" rx="5" fill="none" stroke="currentColor" stroke-width="1.5"/>
+    <text x="62" y="34" text-anchor="middle" font-weight="600">SE</text>
+    <text x="62" y="48" text-anchor="middle" font-size="9" opacity=".65">Wi-Fi maison</text>
+    <line x1="110" y1="36" x2="238" y2="36" stroke="currentColor" stroke-width="1.5" marker-end="url(#ar7)"/>
+    <text x="174" y="30" text-anchor="middle" font-size="9.5" font-family="monospace" opacity=".75">192.168.1.40 direct</text>
+    <rect x="240" y="16" width="130" height="40" rx="5" fill="none" stroke="currentColor" stroke-width="1.5"/>
+    <text x="305" y="34" text-anchor="middle" font-weight="600">SP RPI</text>
+    <text x="305" y="48" text-anchor="middle" font-size="9" opacity=".65">local</text>
+    <text x="386" y="40" font-size="9.5" font-family="monospace" opacity=".7">WifiInternetBox</text>
+
+    <!-- mode 2 -->
+    <rect x="14" y="86" width="96" height="40" rx="5" fill="none" stroke="currentColor" stroke-width="1.5"/>
+    <text x="62" y="104" text-anchor="middle" font-weight="600">SE</text>
+    <text x="62" y="118" text-anchor="middle" font-size="9" opacity=".65">Wi-Fi d'un tiers</text>
+    <line x1="110" y1="106" x2="238" y2="106" stroke="currentColor" stroke-width="1.5" marker-end="url(#ar7)"/>
+    <text x="174" y="100" text-anchor="middle" font-size="9.5" font-family="monospace" opacity=".75">DuckDNS · 443</text>
+    <rect x="240" y="86" width="130" height="40" rx="5" fill="none" stroke="currentColor" stroke-width="1.5"/>
+    <text x="305" y="104" text-anchor="middle" font-weight="600">SP RPI</text>
+    <text x="305" y="118" text-anchor="middle" font-size="9" opacity=".65">via nginx</text>
+    <text x="386" y="110" font-size="9.5" font-family="monospace" opacity=".7">WifiInternetBox</text>
+
+    <!-- mode 3 -->
+    <rect x="14" y="156" width="96" height="40" rx="5" fill="none" stroke="currentColor" stroke-width="1.5"/>
+    <text x="62" y="174" text-anchor="middle" font-weight="600">SE</text>
+    <text x="62" y="188" text-anchor="middle" font-size="9" opacity=".65">hotspot Xiaomi</text>
+    <line x1="110" y1="176" x2="238" y2="176" stroke="currentColor" stroke-width="1.5" marker-end="url(#ar7)"/>
+    <text x="174" y="170" text-anchor="middle" font-size="9.5" font-family="monospace" opacity=".75">4G → DuckDNS</text>
+    <rect x="240" y="156" width="130" height="40" rx="5" fill="none" stroke="currentColor" stroke-width="1.5"/>
+    <text x="305" y="174" text-anchor="middle" font-weight="600">SP RPI</text>
+    <text x="305" y="188" text-anchor="middle" font-size="9" opacity=".65">à distance</text>
+    <text x="386" y="180" font-size="9.5" font-family="monospace" opacity=".7">Wifi4KSP</text>
+
+    <!-- mode 4 -->
+    <rect x="14" y="226" width="96" height="40" rx="5" fill="none" stroke="currentColor" stroke-width="1.5"/>
+    <text x="62" y="244" text-anchor="middle" font-weight="600">SE</text>
+    <text x="62" y="258" text-anchor="middle" font-size="9" opacity=".65">hotspot, sans 4G</text>
+    <line x1="110" y1="246" x2="238" y2="246" stroke="currentColor" stroke-width="1.5" marker-end="url(#ar7)"/>
+    <text x="174" y="240" text-anchor="middle" font-size="9.5" font-family="monospace" opacity=".75">Wi-Fi local seul</text>
+    <rect x="240" y="226" width="130" height="40" rx="5" fill="none" stroke="currentColor" stroke-width="2.2"/>
+    <text x="305" y="244" text-anchor="middle" font-weight="600">SP Smart</text>
+    <text x="305" y="258" text-anchor="middle" font-size="9" opacity=".65">clone sur Xiaomi</text>
+    <text x="386" y="250" font-size="9.5" font-family="monospace" opacity=".7">WifiSPSsI</text>
+  </g>
+
+  <text x="500" y="20" font-size="10" font-weight="600" fill="currentColor" opacity=".7">CfgS.typeReseau</text>
+</svg>
+</div>
+<figcaption>Le mode 4 est le seul où SP RPI n'est pas le maître. SP Smart prend le relais sans consommer de données mobiles.</figcaption>
+</figure>
+
+<h3>Accès distant — configuration validée</h3>
+<div class="tw"><table>
+<tr><th>Élément</th><th>Valeur</th></tr>
+<tr><td>URL dashboard</td><td><code>https://robotz-vincent.duckdns.org/dashboard/P_Accueil</code></td></tr>
+<tr><td>Règle NAT/PAT Livebox</td><td><code>httpsRPI3</code> — 443→443 TCP → <code>192.168.1.40</code> en IP directe</td></tr>
+<tr><td>Bail DHCP RPi</td><td>MAC <code>B8:27:EB:72:DD:54</code> → <code>192.168.1.40</code></td></tr>
+<tr><td>nginx</td><td>Reverse proxy vers <code>127.0.0.1:1880</code>, écoute <code>0.0.0.0:443</code> et <code>[::]:443</code></td></tr>
+<tr><td>Certificat</td><td>Let's Encrypt — renouvellement automatique à surveiller</td></tr>
+<tr><td>Pare-feu local RPi</td><td>Absent — <code>iptables</code> et <code>ufw</code> non installés</td></tr>
+</table></div>
+
+<div class="note trap">
+  <span class="lbl">Deux pièges réseau qui ont coûté une session entière</span>
+  <p><strong>IPv6 masque les pannes IPv4.</strong> DuckDNS résout l'IPv6 du RPi en priorité, et le Wi-Fi domicile a de l'IPv6 natif. Un test réussi depuis la maison ne valide donc jamais le chemin IPv4. Il faut tester en 4G, Wi-Fi coupé.</p>
+  <p><strong>Le NAT hairpin n'est pas supporté par la Livebox.</strong> Interroger l'IP publique de la box depuis un appareil de cette même box échoue toujours, même quand tout fonctionne vu de l'extérieur. Ce n'est pas un symptôme de panne.</p>
+  <p>Si l'IPv4 tombe silencieusement : supprimer et recréer la règle NAT. C'est un bug de désynchronisation interne documenté sur ces box.</p>
+</div>
+
+<div class="note info">
+  <span class="lbl">Le nom de domaine</span>
+  <p>C'est <code>robotz-vincent.duckdns.org</code>, avec le Z après « robot », et non « robotrz-vincent ». Conservé volontairement pour ne pas refaire certificat, règles et scripts. Ne pas « corriger ».</p>
+</div>
+</section>
+
+<hr class="div">
+
+<!-- ════════════ 9. SÉCURITÉ ════════════ -->
+<section id="securite">
+<h2><span class="num">09</span>Sécurité</h2>
+
+<div class="note rule">
+  <span class="lbl">Les trois règles absolues</span>
+  <p><strong>Ne jamais coller le résultat de <code>git remote -v</code> dans une conversation.</strong> Sur Termux, l'URL du remote contient le token GitHub en clair. Toujours passer par <code>set_git_remote.sh</code>.</p>
+  <p><strong>Jamais de clé API en clair</strong> dans une conversation ou un log partagé.</p>
+  <p><strong>Vérifier un credential par sa longueur</strong> — <code>${#TOKEN}</code> — jamais par sa valeur affichée.</p>
+</div>
+
+<h3>État des credentials</h3>
+<p>Tous régénérés le 1<sup>er</sup> juillet 2026 : <code>GITHUB_TOKEN</code>, <code>GEMINI_API_KEY</code>, <code>MQTT_PASS</code>, <code>DUCKDNS_TOKEN</code>. Ils vivent dans <code>termux/config/keys.json</code>, jamais versionné, à recréer à la main après chaque clonage.</p>
+
+<div class="note trap">
+  <span class="lbl">Token GitHub expiré</span>
+  <p>Le <code>GITHUB_TOKEN</code> a été émis en fine-grained pour environ 90 jours à partir du 01/07/2026 : il est donc expiré depuis la fin septembre. Il n'est nécessaire que pour pousser depuis le Doro. À renouveler via <code>termux/config/config_Et_actualisation_code/set_git_remote.sh</code>.</p>
+  <p>Piège connu lors de la création : l'option « Public repositories » ne donne qu'un accès en lecture. Il faut choisir « Only select repositories » → <code>RobotRZ</code> → Contents → Read and write.</p>
+</div>
+
+<h3>Divers</h3>
+<ul>
+  <li><code>adminAuth</code> est activé dans <code>settings.js</code> de Node-RED depuis le 28/04/2026.</li>
+  <li>Éviter les caractères <code>! @ $ # %</code> dans les mots de passe transitant par des variables shell.</li>
+  <li>Le fichier <code>.env</code> est suivi dans le dépôt public. Il ne contient que trois chemins, aucun identifiant, mais mériterait d'en sortir par principe.</li>
+  <li>Quatre incidents de sécurité ont été documentés et résolus, dont l'injection d'un utilisateur système par un flow Node-RED malveillant en avril 2026. Détail dans <code>securite_V1.html</code>.</li>
+</ul>
+</section>
+
+<hr class="div">
+
+<!-- ════════════ 10. RESTE À FAIRE ════════════ -->
+<section id="reste">
+<h2><span class="num">10</span>Reste à faire, chiffré</h2>
+
+<div class="note info">
+  <span class="lbl">La question préalable</span>
+  <p>« Combien de temps pour finir Node-RED » n'a pas de réponse tant que « fini » n'est pas défini. Deux définitions plausibles donnent des ordres de grandeur très différents :</p>
+  <p><strong>Fini = la chaîne décisionnelle pilote correctement le mode et le type de pilotage, de bout en bout, depuis le dashboard.</strong> Vous en êtes proche. Lots A, B et E ci-dessous.</p>
+  <p><strong>Fini = chaque capteur et chaque actionneur a son module dédié et sa page de dashboard.</strong> C'est un autre ordre de grandeur, dominé par le lot G à lui seul.</p>
+  <p>Avec quelques jours devant vous, viser la première définition est réaliste. La seconde ne l'est pas.</p>
+</div>
+
+<h3>Les lots</h3>
+
+<div class="lot">
+  <div class="lot-head"><span class="lid">A</span><span class="lt">Nettoyage et clôture</span><span class="chip ok">court</span></div>
+  <div class="lot-body">
+    <p>Supprimer le sous-flow vide <code>OldSub-Arrets</code>, les fonctions <code>Old-*</code> (dispatcher, encodeur, SF_Init_1), les nœuds de test <code>TesUrg</code> et les injects de test de <code>Gtion_EtatGlobal_V2</code>. Renommer les clés globales de <code>B2_Variables_Complexes</code> qui polluent <code>global.modeRZ</code> et <code>global.emergency</code>.</p>
+    <p><strong>Déjà clos :</strong> le câblage de <code>SF_GestionUrgence</code> (17/10) et le Bug 2 sur <code>UI_Sync_Etat_Confirme</code>, résolu par la réécriture du 06/08 qui lit <code>global.RZ_CfgS</code> au lieu de déduire la confirmation de l'arrivée d'un message.</p>
+    <p><strong>Une séance courte.</strong> Sans risque, et ça rend le canevas lisible pour la suite.</p>
+  </div>
+</div>
+
+<div class="lot">
+  <div class="lot-head"><span class="lid">B</span><span class="lt">fn_calc_statelevel — décider ce qu'est stateLevel</span><span class="chip warn">moyen, bloqué par une décision</span></div>
+  <div class="lot-body">
+    <p>La fonction « Calcul stateLevel » de <code>SF_Stabilisation_V1</code> contient aujourd'hui, en-tête compris, le code de <code>fn_validate_intent</code>. Ce n'est pas un bug d'inattention qui traîne : c'est que la question « que doit valoir <code>stateLevel</code>, et qui le consomme » n'a jamais été tranchée.</p>
+    <p><strong>Une séance de conception, puis une d'implémentation.</strong> La conception est la vraie difficulté. Tant qu'elle n'est pas faite, le dernier étage de la chaîne ne fait rien d'utile.</p>
+  </div>
+</div>
+
+<div class="lot">
+  <div class="lot-head"><span class="lid">C</span><span class="lt">SF_ReglesDynamiques — écrire R1 et câbler</span><span class="chip warn">moyen à long</span></div>
+  <div class="lot-body">
+    <p>Le squelette existe : <code>R0_LoadRules</code> est écrit, <code>R1_ApplyRules_STUB</code> ne l'est pas, et le sous-flow est posé sur le canevas sans aucun fil. Il faut définir quelles règles configurables on veut, écrire R1, puis insérer le sous-flow entre <code>SF_ReglesMinimales_V1</code> et <code>SF_Stabilisation_V1</code>.</p>
+    <p>Contraintes actées : jamais avant les règles minimales, jamais d'accès direct à l'urgence, jamais connecté directement à l'UI, et jamais la possibilité de bloquer le retour en VEILLE.</p>
+    <p><strong>Deux séances</strong>, dont une largement consacrée à définir les règles.</p>
+  </div>
+</div>
+
+<div class="lot">
+  <div class="lot-head"><span class="lid">D</span><span class="lt">Gtion_Init — les trois stubs</span><span class="chip bad">long</span></div>
+  <div class="lot-body">
+    <p><code>SF_Init_1</code> fonctionne. <code>SF_Init_2</code> (détection des IP SP / SE / Arduino), <code>SF_Init_3</code> (contexte INIT de l'accueil) et <code>SF_Init_4</code> (initialisation VPIV de l'Arduino) sont des squelettes depuis l'origine.</p>
+    <p><code>SF_Init_2</code> recoupe largement le lot E. <code>SF_Init_4</code> doit implémenter la séquence d'initialisation en neuf étapes déjà documentée.</p>
+    <p><strong>Trois séances au moins.</strong> À ne pas entamer sur quelques jours.</p>
+  </div>
+</div>
+
+<div class="lot">
+  <div class="lot-head"><span class="lid">E</span><span class="lt">Sub-Connexion — audit</span><span class="chip warn">court à moyen, inconnu</span></div>
+  <div class="lot-body">
+    <p>22 nœuds, dont des nœuds <code>ip</code> et <code>NetworkIntf</code>, quatre fonctions et deux boutons. Jamais examiné, et porteur d'un avertissement de déploiement jamais résolu.</p>
+    <p><strong>Une séance pour l'auditer</strong>, puis une durée inconnue pour corriger ce qu'on y trouvera. C'est le lot le plus incertain, et c'est une raison de le faire tôt : il conditionne le lot D.</p>
+  </div>
+</div>
+
+<div class="lot">
+  <div class="lot-head"><span class="lid">F</span><span class="lt">Report des Tables B et C via ui_VarG</span><span class="chip neutral">moyen, répétitif</span></div>
+  <div class="lot-body">
+    <p>Six modules à reporter : Gyro, Mag, MicroSE, Voice, LockSE et la réserve STT. Travail répétitif mais sans difficulté conceptuelle, et interruptible à tout moment — ce qui en fait un bon lot pour une session courte ou fatiguée.</p>
+    <p>À corriger au passage : <code>enrichedVars.Lrub</code> utilise encore <code>rgb</code> au lieu de <code>col</code>. Uniquement via <code>ui_VarG</code>, jamais en éditant le fichier.</p>
+    <p><strong>Une à deux séances.</strong></p>
+  </div>
+</div>
+
+<div class="lot">
+  <div class="lot-head"><span class="lid">G</span><span class="lt">Modules M_Capt_ et M_Act_</span><span class="chip bad">très long</span></div>
+  <div class="lot-body">
+    <p>Treize modules Arduino et quatre modules SE, aucun n'existe. C'est le plus gros poste du projet, et il domine à lui seul toute estimation de « fin de Node-RED » prise au sens large.</p>
+    <p><strong>Plusieurs mois au rythme actuel.</strong> À traiter module par module, pas comme un chantier unique.</p>
+  </div>
+</div>
+
+<div class="lot">
+  <div class="lot-head"><span class="lid">H</span><span class="lt">Table D — les huit lignes ⛔</span><span class="chip neutral">court, fractionnable</span></div>
+  <div class="lot-body">
+    <p><code>SYS_SET_PILOT</code>, <code>SYS_GET_TEMP</code>, <code>NAV_GET_HEADING</code>, <code>GYRO_GET_PITCH</code>, <code>COM_GET_STATE</code>, <code>AI_START_CONV</code>, <code>VOICE_VOL_SET</code>, <code>VOICE_SAY_ID</code>. Elles sont marquées ⛔ pour empêcher un déploiement prématuré par <code>rz_build_system.py</code>.</p>
+    <p>À finaliser une par une. <strong>Chacune tient dans une demi-heure</strong>, ce qui en fait le lot le plus facile à glisser dans un créneau court.</p>
+  </div>
+</div>
+
+<h3>Si vous n'avez que quelques jours</h3>
+<p>L'ordre qui donne le plus de résultat par heure passée : <strong>A</strong> d'abord, parce qu'un canevas propre accélère tout le reste. Puis <strong>E</strong>, parce que c'est le seul inconnu et qu'il vaut mieux le découvrir tôt. Puis <strong>B</strong>, qui ferme la chaîne décisionnelle. <strong>H</strong> sert de bouche-trou pour les créneaux courts.</p>
+<p>Et avant tout cela, commiter le <code>flows.json</code>. C'est dix minutes, et cela protège sept mois de travail.</p>
+</section>
+
+<hr class="div">
+
+<!-- ════════════ 11. PIÈGES ════════════ -->
+<section id="pieges">
+<h2><span class="num">11</span>Pièges qui coûtent cher</h2>
+<p class="lede">Chacun de ces points a déjà fait perdre au moins une séance. Ils sont rassemblés ici pour être relus avant de replonger.</p>
+
+<div class="cards">
+  <div class="card">
+    <div class="ct">Lire <code>_last</code>, pas <code>*</code></div>
+    <div class="cs">Node-RED</div>
+    <div class="cb">Pour une propriété à instance générique, <code>'*'</code> reste figé sur la valeur d'amorçage. Trois séances perdues sur ce motif.</div>
+  </div>
+  <div class="card">
+    <div class="ct">Les <code>link</code> ne traversent pas un sous-flow</div>
+    <div class="cs">Node-RED</div>
+    <div class="cb">Impossible de poser un <code>link in</code>/<code>link out</code> à l'intérieur d'un sous-flow pour joindre l'extérieur. Il faut exposer un port sur le contour.</div>
+  </div>
+  <div class="card">
+    <div class="ct">CamSE est en CAT=V/F</div>
+    <div class="cs">VPIV</div>
+    <div class="cb">Pas CAT=A, malgré la délégation interne à Tasker pour lancer IP Webcam.</div>
+  </div>
+  <div class="card">
+    <div class="ct">FORMAT_VALUE seul ne suffit pas</div>
+    <div class="cs">Table A</div>
+    <div class="cb">Toujours croiser avec COMPLEXE, qui peut porter la structure d'un objet imbriqué.</div>
+  </div>
+  <div class="card">
+    <div class="ct">Deux <code>globalSave.json</code></div>
+    <div class="cs">Tables</div>
+    <div class="cb">Le chemin PC et le chemin RPi désignent deux fichiers différents, pas le même.</div>
+  </div>
+  <div class="card">
+    <div class="ct">IPv6 masque les pannes IPv4</div>
+    <div class="cs">Réseau</div>
+    <div class="cb">Tester depuis la maison ne valide jamais l'IPv4. Tester en 4G, Wi-Fi coupé.</div>
+  </div>
+  <div class="card">
+    <div class="ct">Pas de NAT hairpin sur Livebox</div>
+    <div class="cs">Réseau</div>
+    <div class="cb">Interroger l'IP publique depuis le LAN échoue toujours. Ce n'est pas un symptôme.</div>
+  </div>
+  <div class="card">
+    <div class="ct">Pas de symlink dans <code>tasker/</code></div>
+    <div class="cs">Tasker</div>
+    <div class="cb">Rejeté après un reboot Android. Copie réelle plus <code>chmod +x</code>.</div>
+  </div>
+  <div class="card">
+    <div class="ct"><code>%avcomm</code> ne traverse pas</div>
+    <div class="cs">Tasker</div>
+    <div class="cb">Disponible seulement dans une tâche liée au profil. Utiliser <code>%avcommnofilter</code>.</div>
+  </div>
+  <div class="card">
+    <div class="ct"><code>printf</code>, jamais <code>echo</code></div>
+    <div class="cs">Tasker</div>
+    <div class="cb">Le retour à la ligne d'<code>echo</code> casse <code>JSON.parse()</code> sur le fichier trigger.</div>
+  </div>
+  <div class="card">
+    <div class="ct">Jamais <code>mosquitto_pub</code> direct</div>
+    <div class="cs">SE</div>
+    <div class="cb">Les managers publient toujours via <code>fifo_termux_in</code>, sans exception.</div>
+  </div>
+  <div class="card">
+    <div class="ct">Jamais de flottant sur le fil</div>
+    <div class="cs">VPIV</div>
+    <div class="cb">Entiers ×10, ×100 ou ×1000 selon la propriété, fixé par la Table A.</div>
+  </div>
+</div>
+
+<div class="note info">
+  <span class="lbl">Convention de marquage</span>
+  <p>Dans toute la documentation du projet, ✅ marque une information confirmée par une synthèse de session, et 🔬 une déduction non vérifiée. Ce document ne contient que du confirmé : chaque affirmation est tirée du <code>flows.json</code> du 17/10, du dépôt Git, ou des tables normatives.</p>
+</div>
+</section>
+
+<footer>
+  Dossier technique RobotRZ — v1.0, 17 octobre 2026. Établi à partir du <code>flows.json</code> exporté le 17/10/2026, du dépôt <code>lugvincent/RobotRZ</code> au commit <code>d66e2f9</code> du 06/08/2026, de <code>TableA_updatedV3_corrige.csv</code> et de <code>instructions_projet_RobotRZ.md</code> v1.3.
+</footer>
+
+</main>
+</div>
+
+</body>
+</html>

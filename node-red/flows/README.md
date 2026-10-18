@@ -14,10 +14,15 @@
 
 Export du SP de référence (Raspberry Pi 3, `192.168.1.40`). C'est l'état de production.
 
-- 306 nœuds · 7 onglets · 10 sous-flows
+- 311 nœuds · 7 onglets · 10 sous-flows
+- Export de fin de journée (15h47). L'état du matin, avant les travaux du
+  18/10, reste consultable au commit `1a46604`.
 - Onglets : `Gtion_Init`, `ui_Accueil_v4`, `Gtion_EtatGlobal_V2`, `RZ_GestionFlux_V3`, `ui_VarG`, `Diag_SE_Statut`, `B2_Variables_Complexes`
 - Dashboard 2 (FlowFuse) — types de nœuds en `ui-xxx` avec tiret
 - Contient la correction du câblage de `SF_GestionUrgence` déployée le 17/10/2026 : sortie urgence vers `EtatGlobal_Out`, sortie normale vers `SF_ReglesMinimales_V1` seule
+- Contient aussi les travaux du 18/10/2026 : `fn_init_traitements`
+  (registre des recettes de résolution vocale, onglet Gtion_Init) et
+  `fn_stt_intent_router` v1.4, plus le banc d'essai à injects
 
 ### `flows-XIAOMI-2026-10-18.json` — **archive à ne pas supprimer**
 

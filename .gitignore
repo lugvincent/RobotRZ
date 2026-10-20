@@ -37,7 +37,21 @@ termux/liste_git_avant.txt
 
 # --- Identifiants : jamais versionnes ----------------------------------------
 termux/config/keys.json
-.env
+#
+# ⚠ .env N'EST PLUS exclu ici, et c'est delibere.
+#   Ce fichier etait liste comme exclu alors qu'il est SUIVI par Git depuis
+#   fevrier 2026 (commit 7e4ba5c). Un .gitignore ne s'applique qu'aux fichiers
+#   que Git ne suit pas encore : la ligne n'avait donc aucun effet, et donnait
+#   une fausse assurance. Le jour ou une cle y aurait ete ajoutee, elle serait
+#   partie en ligne sans aucun avertissement.
+#   Verifie le 20/10/2026 : il ne contient que trois chemins -- TERMUX_PATH,
+#   SCRIPTS_PATH, CONFIG_PATH -- aucun secret, et les scripts en ont besoin
+#   apres un clone. Il reste donc suivi, et la ligne trompeuse est retiree.
+#   Si un fichier d'environnement doit un jour porter un secret, le nommer
+#   selon l'un de ces motifs, qui eux sont reellement exclus :
+.env.local
+.env.secret
+*.env.secret
 
 # --- PocketSphinx : abandonne, modeles volumineux ----------------------------
 termux/scripts/sensors/stt/lib_pocketsphinx/

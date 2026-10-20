@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RobotRZ — Vade-mecum de la documentation</title>
+<style>
+:root{
+  --bg:#0f1117;--bg2:#171b26;--bg3:#1e2333;--bg4:#252a3a;
+  --text:#e8eaf0;--text2:#8b93a8;--text3:#555e78;
+  --blue:#4d9ef7;--purple:#9b7cf4;--amber:#f0a836;
+  --teal:#2ec4a0;--coral:#f06a50;--green:#5dbd6a;--red:#e85555;
+  --border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.13);
+  --radius:10px;--radius-lg:14px
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;font-size:14px;line-height:1.6;min-height:100vh}
+
+.nav{background:var(--bg2);border-bottom:1px solid var(--border);padding:14px 28px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.nav-logo{font-size:18px;font-weight:800;color:var(--blue);letter-spacing:1.5px;text-decoration:none}
+.nav-sub{font-size:12px;color:var(--text3);background:var(--bg3);padding:2px 10px;border-radius:20px;border:1px solid var(--border)}
+.nav-date{font-size:11px;color:var(--text3);margin-left:auto}
+
+.header{padding:40px 28px 28px;max-width:960px;margin:0 auto}
+.header h1{font-size:28px;font-weight:700;margin-bottom:8px}
+.header p{color:var(--text2);max-width:660px;line-height:1.7}
+
+.main{max-width:960px;margin:0 auto;padding:0 28px 72px}
+.cat{margin-bottom:38px}
+.cat-title{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:var(--text3);margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid var(--border)}
+.intro{color:var(--text2);margin-bottom:16px;line-height:1.75;max-width:720px}
+
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:18px 20px;margin-bottom:10px}
+.card-title{font-size:15px;font-weight:600;margin-bottom:4px}
+.card-path{font-family:monospace;font-size:11px;color:var(--text3);margin-bottom:8px}
+.card-body{font-size:13px;color:var(--text2);line-height:1.7}
+
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media(max-width:760px){.grid2{grid-template-columns:1fr}}
+
+table{width:100%;border-collapse:collapse;font-size:13px;margin:4px 0 8px}
+th{text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--text3);font-weight:700;padding:8px 10px;border-bottom:1px solid var(--border2)}
+td{padding:9px 10px;border-bottom:1px solid var(--border);color:var(--text2);vertical-align:top}
+td:first-child{color:var(--text);font-weight:500;white-space:nowrap}
+tr:last-child td{border-bottom:none}
+code{font-family:monospace;font-size:12px;color:var(--teal);background:var(--bg3);padding:1px 5px;border-radius:4px}
+
+.rule{border-left:3px solid var(--blue);background:rgba(77,158,247,.06);padding:12px 16px;border-radius:0 8px 8px 0;margin:12px 0;color:var(--text2);font-size:13px;line-height:1.7}
+.rule strong{color:var(--text)}
+.warn{border-left:3px solid var(--red);background:rgba(232,85,85,.06);padding:12px 16px;border-radius:0 8px 8px 0;margin:12px 0;color:var(--text2);font-size:13px;line-height:1.7}
+.warn strong{color:var(--red)}
+.ok{border-left:3px solid var(--green);background:rgba(93,189,106,.06);padding:12px 16px;border-radius:0 8px 8px 0;margin:12px 0;color:var(--text2);font-size:13px;line-height:1.7}
+
+.letters{display:grid;grid-template-columns:auto 1fr;gap:0 16px;font-size:13px}
+.letters dt{font-family:monospace;font-weight:700;color:var(--blue);padding:7px 0;border-bottom:1px solid var(--border);white-space:nowrap}
+.letters dd{color:var(--text2);padding:7px 0;border-bottom:1px solid var(--border);line-height:1.6}
+.letters dt.exc{color:var(--amber)}
+.letters dt.sec{color:var(--red)}
+
+.footer{border-top:1px solid var(--border);padding:22px 28px;text-align:center;color:var(--text3);font-size:12px;max-width:960px;margin:0 auto}
+.footer a{color:var(--blue);text-decoration:none}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a href="index.html" class="nav-logo">RobotRZ</a>
+  <span class="nav-sub">Vade-mecum de la documentation</span>
+  <span class="nav-date">V1 — 20 octobre 2026</span>
+</nav>
+
+<div class="header">
+  <h1>Où est quoi, et qu'est-ce qui fait foi</h1>
+  <p>Cette page répond à la seule question qui compte quand on revient au projet après une pause :
+  dans quel des quatre emplacements chercher un document, lequel fait autorité en cas d'écart,
+  et où ranger ce qu'on produit aujourd'hui.</p>
+</div>
+
+<div class="main">
+
+<!-- ═══════════════ 1. LES QUATRE EMPLACEMENTS ═══════════════ -->
+<div class="cat">
+  <div class="cat-title">1 — Les quatre emplacements</div>
+  <p class="intro">La documentation du projet vit à quatre endroits, et ce n'est pas un défaut :
+  chacun a une raison d'être distincte. Les confondre est en revanche la source d'erreur la plus courante.</p>
+
+  <div class="card">
+    <div class="card-title" style="color:var(--amber)">① Le dossier documentaire local</div>
+    <div class="card-path">Documents\ProjetRZ\AA-Doc-horsGit\ — hors dépôt Git, volontairement</div>
+    <div class="card-body">
+      Votre atelier. Notes de travail, documents bureautiques, tableurs, bilans de séance, schémas sources.
+      Classé par lettres, voir la section 3.<br><br>
+      <strong style="color:var(--text)">Pourquoi hors dépôt :</strong> ce sont des documents de travail,
+      souvent volumineux, qui n'ont pas leur place dans un dépôt de code — et surtout, ce dossier contient
+      vos identifiants. Le dépôt est <strong style="color:var(--red)">public</strong>.
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title" style="color:var(--blue)">② Le site de documentation</div>
+    <div class="card-path">docs/dev_RZ_HTML/ dans le dépôt — ouvrir index.html dans un navigateur</div>
+    <div class="card-body">
+      La documentation de référence, celle qu'on consulte pour comprendre comment le robot fonctionne :
+      protocole VPIV, tables, modules, réseau, sécurité, et le dossier technique d'ensemble.
+      Elle est versionnée, donc son histoire est consultable.<br><br>
+      <strong style="color:var(--text)">Ce qui n'y entre pas :</strong> les bilans de séance, qui restent
+      délibérément locaux dans <code>M - Bilans de seance</code>.
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title" style="color:var(--teal)">③ La synthèse d'état</div>
+    <div class="card-path">Project Knowledge : claude/synthese_etat_oct2026.md — archive : docs/synthese_etat.md</div>
+    <div class="card-body">
+      L'état réel du projet à un instant donné : ce qui marche, ce qui est cassé, ce qui reste à faire
+      en lots dimensionnés, les invariants à ne jamais enfreindre. C'est le document à lire en premier
+      quand on reprend après une pause, et celui que lisent les conversations du projet.<br><br>
+      Il existe en deux copies dont les rôles diffèrent — voir la section 2.
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title" style="color:var(--purple)">④ Le dépôt Git</div>
+    <div class="card-path">github.com/lugvincent/RobotRZ — public</div>
+    <div class="card-body">
+      Le code : scripts SE, firmware Arduino, tâches Tasker, exports des flux Node-RED, et le site
+      de documentation lui-même. Tout ce qui s'exécute ou se déploie.
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ 2. QUI FAIT FOI ═══════════════ -->
+<div class="cat">
+  <div class="cat-title">2 — Qui fait foi en cas d'écart</div>
+  <p class="intro">Quand deux copies divergent, une seule a raison. Ce tableau évite d'avoir à le deviner.</p>
+
+  <table>
+    <thead><tr><th>Sujet</th><th>Fait foi</th><th>Pourquoi</th></tr></thead>
+    <tbody>
+      <tr>
+        <td>Flux Node-RED</td>
+        <td><code>flows.json</code> dans l'éditeur</td>
+        <td>Le robot tourne avec ce qui est dans l'éditeur, pas avec le fichier du dépôt. On modifie,
+        on déploie, on teste, <em>puis</em> on exporte. Jamais l'inverse.</td>
+      </tr>
+      <tr>
+        <td>Code des nœuds function</td>
+        <td><code>flows.json</code></td>
+        <td><code>node-red/functions/</code> n'est qu'une copie lisible, pour que Git montre des
+        différences compréhensibles. Node-RED ne lit jamais ce dossier.</td>
+      </tr>
+      <tr>
+        <td>État du projet</td>
+        <td>La copie du Project Knowledge</td>
+        <td>C'est la seule que les conversations mettent à jour. Celle du dépôt est une archive datée,
+        qui peut avoir une version de retard — le numéro en tête permet de le vérifier.</td>
+      </tr>
+      <tr>
+        <td>Variables VPIV</td>
+        <td>Table A</td>
+        <td>Référence normative du développement. Jamais chargée à l'exécution : elle sert à concevoir.</td>
+      </tr>
+      <tr>
+        <td>Valeurs à l'exécution</td>
+        <td><code>global.RZ_&lt;VAR&gt;</code></td>
+        <td><code>enrichedVars</code> ne sert qu'à l'amorçage, et ne se modifie que par
+        <code>ui_VarG</code>.</td>
+      </tr>
+      <tr>
+        <td>Tables B, C, D</td>
+        <td>Le Raspberry Pi</td>
+        <td>Le PC est l'atelier de conception, le RPi porte l'autorité d'exécution. Chaque sous-système
+        garde une copie locale pour démarrer seul ; SP l'écrase après <code>SE_READY</code>.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ═══════════════ 3. LE CLASSEMENT PAR LETTRES ═══════════════ -->
+<div class="cat">
+  <div class="cat-title">3 — Le classement du dossier local</div>
+
+  <div class="rule">
+    <strong>La règle tient en une phrase :</strong> le <strong>thème</strong> décide du dossier,
+    l'<strong>âge</strong> décide de la place à l'intérieur de ce dossier. Une seule question à se poser,
+    une seule réponse possible.
+  </div>
+
+  <p class="intro">Les versions dépassées ne partent pas dans un dossier séparé : elles descendent dans
+  le sous-dossier <code>old\</code> de leur propre lettre, au plus près de ce qu'elles complètent.
+  C'est ce qui a remplacé l'ancien <code>G - Old</code>.</p>
+
+  <dl class="letters">
+    <dt>A</dt><dd>Architecture, règles, tables — la conception d'ensemble et les tables de référence</dd>
+    <dt>B</dt><dd>SP — Node-RED : le superviseur, ses flux, ses interfaces</dd>
+    <dt>C</dt><dd>SE — Termux et Tasker : le smartphone embarqué</dd>
+    <dt>D</dt><dd>Arduino — Mega et UNO, firmware et bibliothèques</dd>
+    <dt class="exc">E</dt><dd><strong style="color:var(--amber)">Exception assumée.</strong> Sas d'échange ponctuel, fait pour être vidé. Ce qui y séjourne n'est rangé nulle part — c'est le signal qu'il faut s'en occuper.</dd>
+    <dt class="exc">F</dt><dd><strong style="color:var(--amber)">Exception assumée.</strong> Le travail du moment, rassemblé en un endroit pour le retrouver sans parcourir les autres lettres. Se vide quand le chantier se termine.</dd>
+    <dt>H</dt><dd>Outils — installation, scripts d'aide, utilitaires</dd>
+    <dt>I</dt><dd>Archive — sujets clos, conservés pour mémoire, plus aucun usage courant</dd>
+    <dt>J</dt><dd>Électronique et câblage — schémas, brochages, circuits. Traversent les générations du robot, d'où leur lettre propre.</dd>
+    <dt>K</dt><dd>Documents utilisateurs — notices, guides, présentations destinées à d'autres qu'au développeur</dd>
+    <dt>L</dt><dd>RZ-v1 sur RPi4 — la génération antérieure du robot, <strong style="color:var(--text)">encore en service</strong>. Ce n'est ni du vieux ni de l'archive : tant qu'une machine tourne, sa documentation est opérationnelle.</dd>
+    <dt>M</dt><dd>Bilans de séance — le journal de travail, par date. Restent locaux, n'entrent pas dans le site.</dd>
+    <dt class="sec">Z</dt><dd><strong style="color:var(--red)">Secret.</strong> Clés, identifiants, codes. Voir la section 5.</dd>
+  </dl>
+
+  <p class="intro" style="margin-top:14px"><code>CODE\</code> reste à part, à la racine : ce sont des copies
+  de travail de code, pas de la documentation.</p>
+
+  <div class="ok">
+    <strong style="color:var(--green)">Pourquoi cette structure.</strong> Jusqu'au 20 octobre 2026, deux axes
+    de classement coexistaient — un thématique et un temporel — et le second dupliquait le premier dans ses
+    sous-dossiers. Chaque document avait donc deux emplacements également légitimes, et face à deux réponses
+    valables on ne tranche pas : d'où les fichiers posés à la racine et le dossier « non classé ».
+    Le désordre n'était pas de la négligence, c'était la conséquence mécanique d'une structure ambiguë.
+  </div>
+</div>
+
+<!-- ═══════════════ 4. OÙ RANGER UN NOUVEAU DOCUMENT ═══════════════ -->
+<div class="cat">
+  <div class="cat-title">4 — Où va ce que je viens de produire</div>
+
+  <table>
+    <thead><tr><th>Ce que c'est</th><th>Où ça va</th></tr></thead>
+    <tbody>
+      <tr><td>Une note de travail sur un sujet</td><td>La lettre du sujet, à sa racine</td></tr>
+      <tr><td>La version précédente de cette note</td><td>Le <code>old\</code> de la même lettre</td></tr>
+      <tr><td>Un bilan de fin de séance</td><td><code>M - Bilans de seance</code>, nommé avec sa date</td></tr>
+      <tr><td>Une page de documentation de référence</td><td><code>docs/dev_RZ_HTML/</code> dans le dépôt, avec un lien depuis <code>index.html</code></td></tr>
+      <tr><td>Un export de flux Node-RED</td><td><code>node-red/flows/</code> dans le dépôt, en fin de chaque séance</td></tr>
+      <tr><td>Un schéma électrique</td><td><code>J - Electronique et cablage</code></td></tr>
+      <tr><td>Un fichier reçu dont on ne sait rien</td><td><code>E</code>, le temps de l'examiner</td></tr>
+      <tr><td>Un identifiant, une clé, un code</td><td><code>Z - Secret</code> — et rien d'autre n'y va</td></tr>
+    </tbody>
+  </table>
+
+  <div class="rule">
+    <strong>Le geste de fin de séance Node-RED.</strong> Node-RED ne versionne rien tout seul :
+    un export manuel est la seule sauvegarde qui existe. Entre mars et octobre 2026, sept mois de travail
+    n'étaient sauvegardés nulle part. Menu ☰ → Export → All flows → Download, renommer
+    <code>flows-&lt;MACHINE&gt;-&lt;AAAA-MM-JJ&gt;.json</code>, déposer dans <code>node-red/flows/</code>,
+    puis commiter.
+  </div>
+</div>
+
+<!-- ═══════════════ 5. SÉCURITÉ ═══════════════ -->
+<div class="cat">
+  <div class="cat-title">5 — La règle de sécurité</div>
+
+  <div class="warn">
+    <strong>Le dépôt est public.</strong> Tout fichier non exclu par le <code>.gitignore</code> part en ligne
+    au premier <code>git add .</code>. Le dossier <code>AA-Doc-horsGit\</code> est exclu dans son intégralité,
+    et doit le rester.
+  </div>
+
+  <div class="warn">
+    <strong>Si vous renommez ce dossier, ajoutez le nouveau nom au <code>.gitignore</code> dans le même geste.</strong>
+    L'exclusion porte sur le nom. Un renommage la rend caduque, et le dossier — clés comprises — redevient
+    publiable sans que rien ne vous avertisse. Le piège a été rencontré le 20 octobre 2026 ; les deux noms,
+    l'ancien et le nouveau, figurent désormais dans le fichier.
+  </div>
+
+  <p class="intro">Trois règles de conduite, sans exception :</p>
+  <table>
+    <tbody>
+      <tr><td>Jamais <code>git remote -v</code></td><td>dans une conversation ou un log partagé — le jeton du Doro y apparaît en clair dans l'URL. Passer par <code>set_git_remote.sh</code>.</td></tr>
+      <tr><td>Jamais une clé en clair</td><td>dans un message, un ticket, une capture d'écran.</td></tr>
+      <tr><td>Vérifier par la longueur</td><td>charger un identifiant dans une variable shell et contrôler <code>${#TOKEN}</code>, jamais en affichant sa valeur.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="rule">
+    <strong>Une amélioration qui reste à faire.</strong> Les identifiants sont aujourd'hui dans un fichier
+    texte en clair. L'exclusion Git les protège d'une publication accidentelle, et de rien d'autre : toute
+    personne ou tout programme ayant accès à la session Windows les lit. Un gestionnaire de mots de passe
+    local et chiffré — KeePassXC, gratuit, un seul fichier — offrirait une vraie protection pour le même
+    confort d'usage.
+  </div>
+</div>
+
+<!-- ═══════════════ 6. SI JE NE TROUVE PAS ═══════════════ -->
+<div class="cat">
+  <div class="cat-title">6 — Je ne trouve pas un document</div>
+  <p class="intro">Dans l'ordre, et ça couvre à peu près tout :</p>
+
+  <div class="grid2">
+    <div class="card">
+      <div class="card-title" style="font-size:14px">Chercher par le thème</div>
+      <div class="card-body">La lettre du sujet, puis son <code>old\</code>. C'est la règle : le thème décide
+      du dossier.</div>
+    </div>
+    <div class="card">
+      <div class="card-title" style="font-size:14px">Chercher par la date</div>
+      <div class="card-body">Si c'était un travail de séance, <code>M - Bilans de seance</code> est classé
+      chronologiquement.</div>
+    </div>
+    <div class="card">
+      <div class="card-title" style="font-size:14px">Chercher dans le dépôt</div>
+      <div class="card-body">Si c'est de la référence ou du code : le site HTML, ou l'historique Git avec
+      <code>git log --all -- "*motcle*"</code>.</div>
+    </div>
+    <div class="card">
+      <div class="card-title" style="font-size:14px">Chercher dans le sas</div>
+      <div class="card-body"><code>E</code> contient ce qui n'a pas encore été rangé. S'il grossit, c'est
+      le signal qu'il faut y passer une demi-heure.</div>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<div class="footer">
+  RobotRZ — Vade-mecum de la documentation — V1, 20 octobre 2026 — Vincent Philippe &nbsp;·&nbsp;
+  <a href="index.html">← Vue d'ensemble</a> &nbsp;·&nbsp;
+  <a href="dossier_technique_V1.html">Dossier technique</a>
+</div>
+
+</body>
+</html>

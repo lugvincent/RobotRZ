@@ -51,6 +51,24 @@ Contenu unique, par ordre de valeur :
 
 Export de mars 2026. Conservé comme point de repère. Ne reflète plus rien de l'état courant.
 
+### La chronologie intermédiaire — avril à août 2026
+
+Cinq exports retrouvés le 20/10/2026 dans le sas d'échange du dossier documentaire local, et versés ici pour combler le trou entre mars et octobre.
+
+| Fichier | Nœuds | Onglets | Nom d'origine |
+|---|---|---|---|
+| `flows-RPI-2026-04-27.json` | 231 | 8 | `flows-Vserveur.json` |
+| `flows-RPI-2026-05-20.json` | 261 | 9 | `flowsSP-total.json` |
+| `flows-RPI-2026-06-21.json` | 270 | 9 | `flowsSP-total_21juin.json` |
+| `flows-RPI-2026-07-05.json` | 294 | 9 | `flows_complet_5 juillet.json` |
+| `flows-RPI-2026-08-08.json` | 306 | 7 | `flows_complet_8 aout.json` |
+
+⚠️ **Pour les exports d'avril à juillet, la machine est déduite de la structure des onglets, pas certifiée.** Ils appartiennent clairement à la lignée du SP principal — 8 ou 9 onglets, là où le Xiaomi en compte 16 — mais la répartition RPI / Xiaomi n'était pas encore tranchée à cette période. Celui d'août correspond exactement aux 7 onglets du RPI actuel, sans ambiguïté.
+
+**Ce que cette chronologie contient d'unique.** Une comparaison des onglets et sous-flows contre les deux références d'octobre n'a révélé qu'un seul élément introuvable ailleurs : l'onglet **`Test-MQTT`**, présent d'avril à juillet et disparu en août. Six nœuds — deux injects, un champ de saisie « TestMQTT local », un debug, une entrée MQTT sur `SE/statut`, une sortie sur `test`. Un banc d'essai de connexion, reconstructible en deux minutes, conservé ici par ces exports.
+
+Les écarts de nombre de nœuds entre l'export d'août et le RPI d'octobre s'expliquent par le nettoyage du 18/10 : les six nœuds « manquants » de `Gtion_EtatGlobal_V2` sont précisément les nœuds morts supprimés ce jour-là.
+
 ---
 
 ## Procédure de sauvegarde

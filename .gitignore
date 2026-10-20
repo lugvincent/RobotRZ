@@ -6,7 +6,9 @@
 #              locaux du PC qui cohabitent avec le depot sans en faire partie.
 # PRECAUTION : ce depot est PUBLIC. Tout fichier non exclu ici part en ligne
 #              au premier `git add .`. Verifier avant d'elargir une exclusion.
-# VERSION    : 2.0 - 18/10/2026 - doublons supprimes, exclusion de
+# VERSION    : 2.1 - 20/10/2026 - RobotRZ-horsIO renomme AA-Doc-horsGit ;
+#              les deux noms restent exclus, et le dossier Z - Secret est
+#              ajoute. 2.0 - 18/10/2026 - doublons supprimes, exclusion de
 #              RobotRZ-horsIO ajoutee (contenait Id-code-clef.txt expose)
 # =============================================================================
 
@@ -54,16 +56,34 @@ tasker/profiles/old*.prf.xml
 
 # --- Dossiers locaux du PC, voisins du depot mais hors depot -----------------
 #
-# RobotRZ-horsIO : systeme documentaire personnel de Vincent, range sous
-#   FUTUR-DOC de A a I, avec AA-RZ-Vactuel-Doc pour le courant et CODE pour
-#   les copies de travail. 928 fichiers, 131 Mo, surtout des documents
-#   bureautiques et des PDF : cela n'a pas sa place dans un depot de code.
+# AA-Doc-horsGit : systeme documentaire personnel de Vincent, hors depot et
+#   volontairement. Range par lettres a la racine du dossier : A Architecture
+#   Regles Tables, B SP Node-RED, C SE Termux Tasker, D Arduino, E sas
+#   d'echange, F dev en cours, H outils, I archive, J electronique et
+#   cablage, K documents utilisateurs, L RZ-v1 sur RPi4, M bilans de seance,
+#   Z secret. CODE a part, pour les copies de travail.
 #   Surtout, il contient Id-code-clef.txt. Le depot etant public, un
-#   `git add .` lance depuis Documents\ProjetRZ aurait publie ce fichier.
+#   `git add .` lance depuis Documents\ProjetRZ publierait ce fichier.
 #   Verifie le 18/10/2026 : jamais commite a ce jour, le risque etait devant.
 #   Pour versionner un document de ce dossier, le COPIER deliberement dans
 #   docs/dev_RZ_HTML/ — ne jamais lever cette exclusion.
+#
+#   ⚠ Ce dossier s'appelait RobotRZ-horsIO jusqu'au 20/10/2026. Les DEUX noms
+#   restent exclus : l'ancien parce qu'une sauvegarde ou une machine non
+#   encore mise a jour peut le porter encore. Si vous renommez a nouveau ce
+#   dossier, AJOUTEZ le nouveau nom ICI DANS LE MEME GESTE — sans quoi
+#   l'exclusion ne s'applique plus et les cles deviennent publiables.
+AA-Doc-horsGit/
 RobotRZ-horsIO/
+#
+# Z - Secret : le sous-dossier des identifiants. Deja couvert par la ligne
+#   ci-dessus, mais repete sans chemin pour qu'il reste exclu meme s'il etait
+#   un jour deplace ailleurs dans l'arborescence.
+Z - Secret/
+#
+# Sauvegardes et quarantaines creees pendant le rangement du 20/10/2026
+SAUVEGARDE-horsIO*/
+_A_SUPPRIMER_apres_verif/
 #
 # InstallationServeur : notes d'installation locales (2 fichiers, juin 2025)
 InstallationServeur/

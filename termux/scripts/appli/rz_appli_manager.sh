@@ -114,6 +114,7 @@ log() {
 # Chemin relatif shellcheck : scripts/appli/ -> scripts/utils/ = ../utils/
 if [ -f "$RESOURCE_LOCK_SCRIPT" ]; then
     # shellcheck source=../utils/rz_resource_lock.sh
+    # shellcheck disable=SC1091
     source "$RESOURCE_LOCK_SCRIPT"
 else
     log "WARN : rz_resource_lock.sh introuvable ($RESOURCE_LOCK_SCRIPT) — verrouillage désactivé"

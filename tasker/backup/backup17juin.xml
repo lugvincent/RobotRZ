@@ -1,0 +1,4748 @@
+<TaskerData sr="" dvi="1" tv="6.6.20">
+	<dmetric>720.0,1338.0</dmetric>
+	<Setting sr="prefs0">
+		<n>leEnle</n>
+		<t>b</t>
+		<v>false</v>
+	</Setting>
+	<Setting sr="prefs1">
+		<n>PREF_USE_2024_TASKER</n>
+		<t>b</t>
+		<v>false</v>
+	</Setting>
+	<Setting sr="prefs10">
+		<n>pen</n>
+		<t>b</t>
+		<v>true</v>
+	</Setting>
+	<Setting sr="prefs100">
+		<n>qst2</n>
+		<t>s</t>
+		<v></v>
+	</Setting>
+	<Setting sr="prefs101">
+		<n>fExtCache</n>
+		<t>b</t>
+		<v>false</v>
+	</Setting>
+	<Setting sr="prefs102">
+		<n>kit</n>
+		<t>i</t>
+		<v>1001</v>
+	</Setting>
+	<Setting sr="prefs103">
+		<n>taskEditActionLabels</n>
+		<t>b</t>
+		<v>true</v>
+	</Setting>
+	<Setting sr="prefs104">
+		<n>searchFilterText</n>
+		<t>s</t>
+		<v></v>
+	</Setting>
+	<Setting sr="prefs105">
+		<n>avo</n>
+		<t>b</t>
+		<v>true</v>
+	</Setting>
+	<Setting sr="prefs106">
+		<n>tempWhenOff</n>
+		<t>i</t>
+		<v>2</v>
+	</Setting>
+	<Setting sr="prefs107">
+		<n>lang</n>
+		<t>s</t>
+		<v>fr</v>
+	</Setting>
+	<Setting sr="prefs108">
+		<n>ast3</n>
+		<t>s</t>
+		<v></v>
+	</Setting>
+	<Setting sr="prefs109">
+		<n>ast2</n>
+		<t>s</t>
+		<v></v>
+	</Setting>
+	<Setting sr="prefs11">
+		<n>gcsa</n>
+		<t>s</t>
+		<v></v>
+	</Setting>
+	<Setting sr="prefs110">
+		<n>snopin</n>
+		<t>b</t>
+		<v>true</v>
+	</Setting>
+	<Setting sr="prefs111">
+		<n>wip</n>
+		<t>l</t>
+		<v>10</v>
+	</Setting>
+	<Setting sr="prefs112">
+		<n>anm</n>
+		<t>b</t>
+		<v>false</v>
+	</Setting>
+	<Setting sr="prefs113">
+		<n>runlogProfs</n>
+		<t>b</t>
+		<v>false</v>
+	</Setting>
+	<Setting sr="prefs114">
+		<n>qst1</n>
+		<t>s</t>
+		<v></v>
+	</Setting>
+	<Setting sr="prefs115">
+		<n>stroutdf</n>
+		<t>b</t>
+		<v>true</v>
+	</Setting>
+	<Setting sr="prefs116">
+		<n>qst0</n>
+		<t>s</t>
+		<v></v>
+	</Setting>
+	<Setting sr="prefs117">
+		<n>hideStatusBar</n>
+		<t>i</t>
+		<v>0</v>
+	</Setting>
+	<Setting sr="prefs118">
+		<n>runlogActions</n>
+		<t>b</t>
+		<v>false</v>
+	</Setting>
+	<Setting sr="prefs119">
+		<n>clock_alarm</n>
+		<t>i</t>
+		<v>2</v>
+	</Setting>
+	<Setting sr="prefs12">
+		<n>apl</n>
+		<t>i</t>
+		<v>4</v>
+	</Setting>
+	<Setting sr="prefs120">
+		<n>searchMatchType</n>
+		<t>i</t>
+		<v>0</v>
+	</Setting>
+	<Setting sr="prefs121">
+		<n>lPdta</n>
+		<t>b</t>
+		<v>true</v>
+	</Setting>
+	<Setting sr="prefs122">
+		<n>sbl</n>
+		<t>i</t>
+		<v>0</v>
+	</Setting>
+	<Setting sr="prefs123">
+		<n>cape</n>
+		<t>b</t>
+		<v>false</v>
+	</Setting>
+	<Setting sr="prefs124">
+		<n>cmdTs</n>
+		<t>i</t>
+		<v>17</v>
+	</Setting>
+	<Setting sr="prefs13">
+		<n>apn</n>
+		<t>b</t>
+		<v>true</v>
+	</Setting>
+	<Setting sr="prefs14">
+		<n>PREF_IS_USING_TEST_SERVER</n>
+		<t>b</t>
+		<v>false</v>
+	</Setting>
+	<Setting sr="prefs15">
+		<n>magnetWhenOff</n>
+		<t>i</t>
+		<v>2</v>
+	</Setting>
+	<Setting sr="prefs16">
+		<n>humidityWhenOff</n>
+		<t>i</t>
+		<v>0</v>
+	</Setting>
+	<Setting sr="prefs17">
+		<n>usirsbdf</n>
+		<t>b</t>
+		<v>false</v>
+	</Setting>
+	<Setting sr="prefs18">
+		<n>lperiod</n>
+		<t>l</t>
+		<v>1500</v>
+	</Setting>
+	<Setting sr="prefs19">
+		<n>bkcuva</n>
+		<t>b</t>
+		<v>true</v>
+	</Setting>
+	<Setting sr="prefs2">
+		<n>runlogTasks</n>
+		<t>b</t>
+		<v>true</v>
+	</Setting>
+	<Setting sr="prefs20">
+		<n>aExt</n>
+		<t>b</t>
+		<v>true</v>
+	</Setting>
+	<Setting sr="prefs21">
+		<n>searchFeatures</n>
+		<t>b</t>
+		<v>false</v>
+	</Setting>
+	<Setting sr="prefs22">
+		<n>btpiod</n>
+		<t>l</t>
+		<v>120</v>
+	</Setting>
+	<Setting sr="prefs23">
+		<n>hardwareAccel</n>
+		<t>b</t>
+		<v>true</v>
+	</Setting>
+	<Setting sr="prefs24">
+		<n>workForLoc</n>
+		<t>b</t>
+		<v>false</v>
+	</Setting>
+	<Setting sr="prefs25">
+		<n>adbwp</n>
+		<t>s</t>
+		<v>5555</v>
+	</Setting>
+	<Setting sr="prefs26">
+		<n>wfpiod</n>
+		<t>l</t>
+		<v>120</v>
+	</Setting>
+	<Setting sr="prefs27">
+		<n>gupt</n>
+		<t>l</t>
+		<v>90</v>
+	</Setting>
+	<Setting sr="prefs28">
+		<n>listMarginWidthPercent</n>
+		<t>i</t>
+		<v>20</v>
+	</Setting>
+	<Setting sr="prefs29">
+		<n>aigene</n>
+		<t>b</t>
+		<v>true</v>
+	</Setting>
+	<Setting sr="prefs3">
+		<n>tsRef</n>
+		<t>b</t>
+		<v>true</v>
+	</Setting>
+	<Setting sr="prefs30">
+		<n>tsIndexed</n>
+		<t>b</t>
+		<v>true</v>
+	</Setting>
+	<Setting sr="prefs31">
+		<n>uathusap</n>
+		<t>b</t>
+		<v>true</v>
+	</Setting>
+	<Setting sr="prefs32">
+		<n>lightWhenOff</n>
+		<t>i</t>
+		<v>2</v>
+	</Setting>
+	<Setting sr="prefs33">
+		<n>lfdd</n>
+		<t>l</t>
+		<v>600</v>
+	</Setting>
+	<Setting sr="prefs34">
+		<n>csnipD</n>
+		<t>i</t>
+		<v>2</v>
+	</Setting>
+	<Setting sr="prefs35">
+		<n>saena</n>
+		<t>b</t>
+		<v>false</v>
+	</Setting>
+	<Setting sr="prefs36">
+		<n>taskEditArgLabels</n>
+		<t>b</t>
+		<v>false</v>
+	</Setting>
+	<Setting sr="prefs37">
+		<n>mqt</n>
+		<t>i</t>
+		<v>10</v>
+	</Setting>
+	<Setting sr="prefs38">
+		<n>shTDnoAPr</n>
+		<t>b</t>
+		<v>false</v>
+	</Setting>
+	<Setting sr="prefs39">
+		<n>accelWhenOff</n>
+		<t>i</t>
+		<v>1</v>
+	</Setting>
+	<Setting sr="prefs4">
+		<n>sows</n>
+		<t>l</t>
+		<v>60</v>
+	</Setting>
+	<Setting sr="prefs40">
+		<n>PREF_TIMES_USED_CLONE</n>
+		<t>i</t>
+		<v>11</v>
+	</Setting>
+	<Setting sr="prefs41">
+		<n>nfcda</n>
+		<t>b</t>
+		<v>true</v>
+	</Setting>
+	<Setting sr="prefs42">
+		<n>stepsWhenOff</n>
+		<t>i</t>
+		<v>2</v>
+	</Setting>
+	<Setting sr="prefs43">
+		<n>tEnable</n>
+		<t>b</t>
+		<v>true</v>
+	</Setting>
+	<Setting sr="prefs44">
+		<n>accentIndex</n>
+		<t>i</t>
+		<v>-1</v>
+	</Setting>
+	<Setting sr="prefs45">
+		<n>lpa</n>
+		<t>b</t>
+		<v>true</v>
+	</Setting>
+	<Setting sr="prefs46">
+		<n>taskEditTypeIcon</n>
+		<t>b</t>
+		<v>false</v>
+	</Setting>
+	<Setting sr="prefs47">
+		<n>asactions</n>
+		<t>b</t>
+		<v>true</v>
+	</Setting>
+	<Setting sr="prefs48">
+		<n>bttp</n>
+		<t>l</t>
+		<v>15</v>
+	</Setting>
+	<Setting sr="prefs49">
+		<n>newCellApi</n>
+		<t>b</t>
+		<v>false</v>
+	</Setting>
+	<Setting sr="prefs5">
+		<n>oss</n>
+		<t>i</t>
+		<v>1</v>
+	</Setting>
+	<Setting sr="prefs50">
+		<n>kcph</n>
+		<t>s</t>
+		<v>PBEWithMD5And128BitAES-CBC-OpenSSL</v>
+	</Setting>
+	<Setting sr="prefs51">
+		<n>accMR</n>
+		<t>f</t>
+		<v>3.5</v>
+	</Setting>
+	<Setting sr="prefs52">
+		<n>lph</n>
+		<t>i</t>
+		<v>2</v>
+	</Setting>
+	<Setting sr="prefs53">
+		<n>PREF_ADVANCED_EXPORT_DESCRIPTION</n>
+		<t>b</t>
+		<v>false</v>
+	</Setting>
+	<Setting sr="prefs54">
+		<n>dvcownen</n>
+		<t>b</t>
+		<v>false</v>
+	</Setting>
+	<Setting sr="prefs55">
+		<n>taskEditMargins</n>
+		<t>b</t>
+		<v>false</v>
+	</Setting>
+	<Setting sr="prefs56">
+		<n>saveMemory</n>
+		<t>b</t>
+		<v>false</v>
+	</Setting>
+	<Setting sr="prefs57">
+		<n>uiori</n>
+		<t>i</t>
+		<v>0</v>
+	</Setting>
+	<Setting sr="prefs58">
+		<n>searchUserguide</n>
+		<t>b</t>
+		<v>false</v>
+	</Setting>
+	<Setting sr="prefs59">
+		<n>tpEn</n>
+		<t>b</t>
+		<v>true</v>
+	</Setting>
+	<Setting sr="prefs6">
+		<n>pTs</n>
+		<t>i</t>
+		<v>29</v>
+	</Setting>
+	<Setting sr="prefs60">
+		<n>lockIconColour</n>
+		<t>b</t>
+		<v>true</v>
+	</Setting>
+	<Setting sr="prefs61">
+		<n>sExps</n>
+		<t>b</t>
+		<v>true</v>
+	</Setting>
+	<Setting sr="prefs62">
+		<n>IS_USING_TASKY</n>
+		<t>b</t>
+		<v>false</v>
+	</Setting>
+	<Setting sr="prefs63">
+		<n>tsEmpty</n>
+		<t>b</t>
+		<v>true</v>
+	</Setting>
+	<Setting sr="prefs64">
+		<n>guped</n>
+		<t>l</t>
+		<v>120</v>
+	</Setting>
+	<Setting sr="prefs65">
+		<n>pressureWhenOff</n>
+		<t>i</t>
+		<v>1</v>
+	</Setting>
+	<Setting sr="prefs66">
+		<n>custntaskthree</n>
+		<t>s</t>
+		<v></v>
+	</Setting>
+	<Setting sr="prefs67">
+		<n>lae</n>
+		<t>b</t>
+		<v>false</v>
+	</Setting>
+	<Setting sr="prefs68">
+		<n>adbLogcat</n>
+		<t>b</t>
+		<v>false</v>
+	</Setting>
+	<Setting sr="prefs69">
+		<n>custntasktwo</n>
+		<t>s</t>
+		<v></v>
+	</Setting>
+	<Setting sr="prefs7">
+		<n>searchUserdata</n>
+		<t>b</t>
+		<v>false</v>
+	</Setting>
+	<Setting sr="prefs70">
+		<n>shInAPr</n>
+		<t>b</t>
+		<v>true</v>
+	</Setting>
+	<Setting sr="prefs71">
+		<n>dsten</n>
+		<t>b</t>
+		<v>true</v>
+	</Setting>
+	<Setting sr="prefs72">
+		<n>appcheckMethod</n>
+		<t>i</t>
+		<v>1</v>
+	</Setting>
+	<Setting sr="prefs73">
+		<n>proxWhenOff</n>
+		<t>i</t>
+		<v>1</v>
+	</Setting>
+	<Setting sr="prefs74">
+		<n>acrmd</n>
+		<t>l</t>
+		<v>1200</v>
+	</Setting>
+	<Setting sr="prefs75">
+		<n>mSi</n>
+		<t>b</t>
+		<v>true</v>
+	</Setting>
+	<Setting sr="prefs76">
+		<n>sHapt</n>
+		<t>b</t>
+		<v>true</v>
+	</Setting>
+	<Setting sr="prefs77">
+		<n>PREF_EXPORT_LIGHT</n>
+		<t>b</t>
+		<v>false</v>
+	</Setting>
+	<Setting sr="prefs78">
+		<n>themeMaterial</n>
+		<t>i</t>
+		<v>3</v>
+	</Setting>
+	<Setting sr="prefs79">
+		<n>gcfb</n>
+		<t>s</t>
+		<v></v>
+	</Setting>
+	<Setting sr="prefs8">
+		<n>lEnable</n>
+		<t>b</t>
+		<v>true</v>
+	</Setting>
+	<Setting sr="prefs80">
+		<n>lcD</n>
+		<t>s</t>
+		<v></v>
+	</Setting>
+	<Setting sr="prefs81">
+		<n>acMSr</n>
+		<t>l</t>
+		<v>300</v>
+	</Setting>
+	<Setting sr="prefs82">
+		<n>wakeForLoc</n>
+		<t>b</t>
+		<v>false</v>
+	</Setting>
+	<Setting sr="prefs83">
+		<n>dsd</n>
+		<t>b</t>
+		<v>true</v>
+	</Setting>
+	<Setting sr="prefs84">
+		<n>PREF_ALLOW_INSECURE_TASK_RUN_REQUESTS</n>
+		<t>b</t>
+		<v>false</v>
+	</Setting>
+	<Setting sr="prefs85">
+		<n>custntaskone</n>
+		<t>s</t>
+		<v></v>
+	</Setting>
+	<Setting sr="prefs86">
+		<n>PREF_ASK_FOR_PERMISSIONS_ON_APP_EXIT</n>
+		<t>b</t>
+		<v>false</v>
+	</Setting>
+	<Setting sr="prefs87">
+		<n>ast1</n>
+		<t>s</t>
+		<v></v>
+	</Setting>
+	<Setting sr="prefs88">
+		<n>dragModeNew</n>
+		<t>i</t>
+		<v>4</v>
+	</Setting>
+	<Setting sr="prefs89">
+		<n>ast0</n>
+		<t>s</t>
+		<v></v>
+	</Setting>
+	<Setting sr="prefs9">
+		<n>mFn</n>
+		<t>b</t>
+		<v>true</v>
+	</Setting>
+	<Setting sr="prefs90">
+		<n>lPEna</n>
+		<t>b</t>
+		<v>true</v>
+	</Setting>
+	<Setting sr="prefs91">
+		<n>taskEditActionNumbers</n>
+		<t>b</t>
+		<v>true</v>
+	</Setting>
+	<Setting sr="prefs92">
+		<n>notactions</n>
+		<t>b</t>
+		<v>true</v>
+	</Setting>
+	<Setting sr="prefs93">
+		<n>sigmotion</n>
+		<t>b</t>
+		<v>false</v>
+	</Setting>
+	<Setting sr="prefs94">
+		<n>luped</n>
+		<t>l</t>
+		<v>30</v>
+	</Setting>
+	<Setting sr="prefs95">
+		<n>cmdTmnuw</n>
+		<t>b</t>
+		<v>false</v>
+	</Setting>
+	<Setting sr="prefs96">
+		<n>PREF_START_MONITOR_ON_APP_OPEN</n>
+		<t>b</t>
+		<v>false</v>
+	</Setting>
+	<Setting sr="prefs97">
+		<n>gak</n>
+		<t>s</t>
+		<v></v>
+	</Setting>
+	<Setting sr="prefs98">
+		<n>googleDriveBackups</n>
+		<t>b</t>
+		<v>true</v>
+	</Setting>
+	<Setting sr="prefs99">
+		<n>cust_notification</n>
+		<t>s</t>
+		<v>cust_notification</v>
+	</Setting>
+	<Profile sr="prof16" ve="2">
+		<cdate>1778659977155</cdate>
+		<edate>1781457040498</edate>
+		<flags>10</flags>
+		<id>16</id>
+		<mid0>114</mid0>
+		<nme>Fichier_ModifieParSE</nme>
+		<Event sr="con0" ve="2">
+			<code>222</code>
+			<pri>0</pri>
+			<Str sr="arg0" ve="3">Tasker/RobotRZ/trigger.txt</Str>
+			<Str sr="arg1" ve="3">Modify</Str>
+		</Event>
+	</Profile>
+	<Profile sr="prof17" ve="2">
+		<cdate>1778660463479</cdate>
+		<edate>1781015620509</edate>
+		<flags>10</flags>
+		<id>17</id>
+		<mid0>2</mid0>
+		<nme>Menu_Commande</nme>
+		<Event sr="con0" ve="2">
+			<code>222</code>
+			<pri>0</pri>
+			<Str sr="arg0" ve="3">Tasker/RobotRZ/menu_cmd.json</Str>
+			<Str sr="arg1" ve="3">Modify</Str>
+		</Event>
+	</Profile>
+	<Profile sr="prof36" ve="2">
+		<cdate>1780522861896</cdate>
+		<edate>1781594793012</edate>
+		<flags>10</flags>
+		<id>36</id>
+		<mid0>29</mid0>
+		<nme>RZ_RecFailed</nme>
+		<Event sr="con0" ve="2">
+			<code>1671257335</code>
+			<pri>0</pri>
+			<Bundle sr="arg0">
+				<Vals sr="val">
+					<com.twofortyfouram.locale.intent.extra.BLURB></com.twofortyfouram.locale.intent.extra.BLURB>
+					<com.twofortyfouram.locale.intent.extra.BLURB-type>java.lang.String</com.twofortyfouram.locale.intent.extra.BLURB-type>
+					<configcommandid>&lt;null&gt;</configcommandid>
+					<configcommandid-type>java.lang.String</configcommandid-type>
+					<configlastcommand>&lt;null&gt;</configlastcommand>
+					<configlastcommand-type>java.lang.String</configlastcommand-type>
+					<net.dinglisch.android.tasker.EXTRA_NSR_DEPRECATED>true</net.dinglisch.android.tasker.EXTRA_NSR_DEPRECATED>
+					<net.dinglisch.android.tasker.EXTRA_NSR_DEPRECATED-type>java.lang.Boolean</net.dinglisch.android.tasker.EXTRA_NSR_DEPRECATED-type>
+					<net.dinglisch.android.tasker.extras.REQUESTED_TIMEOUT>10000</net.dinglisch.android.tasker.extras.REQUESTED_TIMEOUT>
+					<net.dinglisch.android.tasker.extras.REQUESTED_TIMEOUT-type>java.lang.Integer</net.dinglisch.android.tasker.extras.REQUESTED_TIMEOUT-type>
+					<net.dinglisch.android.tasker.extras.VARIABLE_REPLACE_KEYS>plugininstanceid plugintypeid </net.dinglisch.android.tasker.extras.VARIABLE_REPLACE_KEYS>
+					<net.dinglisch.android.tasker.extras.VARIABLE_REPLACE_KEYS-type>java.lang.String</net.dinglisch.android.tasker.extras.VARIABLE_REPLACE_KEYS-type>
+					<net.dinglisch.android.tasker.subbundled>true</net.dinglisch.android.tasker.subbundled>
+					<net.dinglisch.android.tasker.subbundled-type>java.lang.Boolean</net.dinglisch.android.tasker.subbundled-type>
+					<plugininstanceid>3e757cfc-401a-4a89-8159-9174caa9141d</plugininstanceid>
+					<plugininstanceid-type>java.lang.String</plugininstanceid-type>
+					<plugintypeid>com.joaomgcd.autovoice.intent.IntentReceiveVoiceFailedEvent</plugintypeid>
+					<plugintypeid-type>java.lang.String</plugintypeid-type>
+				</Vals>
+			</Bundle>
+			<Str sr="arg1" ve="3">com.joaomgcd.autovoice</Str>
+			<Str sr="arg2" ve="3">com.joaomgcd.autovoice.activity.ActivityConfigReceiveVoiceFailedEvent</Str>
+			<Int sr="arg3" val="1"/>
+		</Event>
+	</Profile>
+	<Profile sr="prof65" ve="2">
+		<cdate>1781172237108</cdate>
+		<edate>1781594905892</edate>
+		<flags>10</flags>
+		<id>65</id>
+		<mid0>62</mid0>
+		<nme>RZ_EcouteVoix</nme>
+		<Event sr="con0" ve="2">
+			<code>41628340</code>
+			<pri>0</pri>
+			<Bundle sr="arg0">
+				<Vals sr="val">
+					<Contains>false</Contains>
+					<Contains-type>java.lang.Boolean</Contains-type>
+					<LastCommandIdInvert>false</LastCommandIdInvert>
+					<LastCommandIdInvert-type>java.lang.Boolean</LastCommandIdInvert-type>
+					<LastCommandIdRegex>false</LastCommandIdRegex>
+					<LastCommandIdRegex-type>java.lang.Boolean</LastCommandIdRegex-type>
+					<NotCancelSearchGoogleNow>false</NotCancelSearchGoogleNow>
+					<NotCancelSearchGoogleNow-type>java.lang.Boolean</NotCancelSearchGoogleNow-type>
+					<NotOnContinuous>false</NotOnContinuous>
+					<NotOnContinuous-type>java.lang.Boolean</NotOnContinuous-type>
+					<NotOnNormal>false</NotOnNormal>
+					<NotOnNormal-type>java.lang.Boolean</NotOnNormal-type>
+					<Precision>&lt;null&gt;</Precision>
+					<Precision-type>java.lang.String</Precision-type>
+					<ProfileName>&lt;null&gt;</ProfileName>
+					<ProfileName-type>java.lang.String</ProfileName-type>
+					<Responses>&lt;null&gt;</Responses>
+					<Responses-type>java.lang.String</Responses-type>
+					<Source>continuous</Source>
+					<Source-type>java.lang.String</Source-type>
+					<Substitutions>&lt;null&gt;</Substitutions>
+					<Substitutions-type>java.lang.String</Substitutions-type>
+					<TriggerWord>&lt;null&gt;</TriggerWord>
+					<TriggerWord-type>java.lang.String</TriggerWord-type>
+					<TriggerWordExact>false</TriggerWordExact>
+					<TriggerWordExact-type>java.lang.Boolean</TriggerWordExact-type>
+					<TriggerWordRegex>false</TriggerWordRegex>
+					<TriggerWordRegex-type>java.lang.Boolean</TriggerWordRegex-type>
+					<VariableNames>&lt;null&gt;</VariableNames>
+					<VariableNames-type>java.lang.String</VariableNames-type>
+					<VariableValues>&lt;null&gt;</VariableValues>
+					<VariableValues-type>java.lang.String</VariableValues-type>
+					<com.twofortyfouram.locale.intent.extra.BLURB></com.twofortyfouram.locale.intent.extra.BLURB>
+					<com.twofortyfouram.locale.intent.extra.BLURB-type>java.lang.String</com.twofortyfouram.locale.intent.extra.BLURB-type>
+					<config_easy_commands>&lt;null&gt;</config_easy_commands>
+					<config_easy_commands-type>java.lang.String</config_easy_commands-type>
+					<configcommand>&lt;null&gt;</configcommand>
+					<configcommand-type>java.lang.String</configcommand-type>
+					<configcommandid>&lt;null&gt;</configcommandid>
+					<configcommandid-type>java.lang.String</configcommandid-type>
+					<configcommandinvert>false</configcommandinvert>
+					<configcommandinvert-type>java.lang.Boolean</configcommandinvert-type>
+					<configexactsub>false</configexactsub>
+					<configexactsub-type>java.lang.Boolean</configexactsub-type>
+					<configlastcommand>&lt;null&gt;</configlastcommand>
+					<configlastcommand-type>java.lang.String</configlastcommand-type>
+					<configregexsub>false</configregexsub>
+					<configregexsub-type>java.lang.Boolean</configregexsub-type>
+					<net.dinglisch.android.tasker.EXTRA_NSR_DEPRECATED>true</net.dinglisch.android.tasker.EXTRA_NSR_DEPRECATED>
+					<net.dinglisch.android.tasker.EXTRA_NSR_DEPRECATED-type>java.lang.Boolean</net.dinglisch.android.tasker.EXTRA_NSR_DEPRECATED-type>
+					<net.dinglisch.android.tasker.RELEVANT_VARIABLES>&lt;StringArray sr=""&gt;&lt;_array_net.dinglisch.android.tasker.RELEVANT_VARIABLES0&gt;%avcomm
+First recognized Command
+&lt;/_array_net.dinglisch.android.tasker.RELEVANT_VARIABLES0&gt;&lt;_array_net.dinglisch.android.tasker.RELEVANT_VARIABLES1&gt;%avcomms()
+All recognized commands
+&lt;/_array_net.dinglisch.android.tasker.RELEVANT_VARIABLES1&gt;&lt;_array_net.dinglisch.android.tasker.RELEVANT_VARIABLES2&gt;%avsource
+Source of the Voice Command
+Can be normal, continuous, test or googlenow&lt;/_array_net.dinglisch.android.tasker.RELEVANT_VARIABLES2&gt;&lt;_array_net.dinglisch.android.tasker.RELEVANT_VARIABLES3&gt;%avword()
+Word Array
+&lt;/_array_net.dinglisch.android.tasker.RELEVANT_VARIABLES3&gt;&lt;/StringArray&gt;</net.dinglisch.android.tasker.RELEVANT_VARIABLES>
+					<net.dinglisch.android.tasker.RELEVANT_VARIABLES-type>[Ljava.lang.String;</net.dinglisch.android.tasker.RELEVANT_VARIABLES-type>
+					<net.dinglisch.android.tasker.extras.REQUESTED_TIMEOUT>10000</net.dinglisch.android.tasker.extras.REQUESTED_TIMEOUT>
+					<net.dinglisch.android.tasker.extras.REQUESTED_TIMEOUT-type>java.lang.Integer</net.dinglisch.android.tasker.extras.REQUESTED_TIMEOUT-type>
+					<net.dinglisch.android.tasker.extras.VARIABLE_REPLACE_KEYS>Source plugininstanceid plugintypeid </net.dinglisch.android.tasker.extras.VARIABLE_REPLACE_KEYS>
+					<net.dinglisch.android.tasker.extras.VARIABLE_REPLACE_KEYS-type>java.lang.String</net.dinglisch.android.tasker.extras.VARIABLE_REPLACE_KEYS-type>
+					<net.dinglisch.android.tasker.subbundled>true</net.dinglisch.android.tasker.subbundled>
+					<net.dinglisch.android.tasker.subbundled-type>java.lang.Boolean</net.dinglisch.android.tasker.subbundled-type>
+					<plugininstanceid>5ca50cc4-a1dd-4d76-a400-c0b026da75a5</plugininstanceid>
+					<plugininstanceid-type>java.lang.String</plugininstanceid-type>
+					<plugintypeid>com.joaomgcd.autovoice.intent.IntentReceiveVoiceEvent</plugintypeid>
+					<plugintypeid-type>java.lang.String</plugintypeid-type>
+				</Vals>
+			</Bundle>
+			<Str sr="arg1" ve="3">com.joaomgcd.autovoice</Str>
+			<Str sr="arg2" ve="3">com.joaomgcd.autovoice.activity.ActivityConfigReceiveVoiceEvent</Str>
+			<Int sr="arg3" val="1"/>
+		</Event>
+	</Profile>
+	<Project sr="proj0" ve="2">
+		<cdate>1777552833137</cdate>
+		<mdate>1781688965033</mdate>
+		<name>RobotRZ</name>
+		<pids>16,17,36,65</pids>
+		<scenes>RZ_Expression,RZ_Etat,RZ_VoiceDetail,RZ_VoiceHelp,RZ_Menu,RZ_FermeOverlay</scenes>
+		<tids>19,18,113,114,115,5,3,32,33,2,4,6,7,24,21,11,9,10,12,58,13,14,23,15,57,59,41,8,29,43,60,61,62,63,64,26,27</tids>
+	</Project>
+	<Scene sr="sceneRZ_Etat">
+		<cdate>1778300000004</cdate>
+		<edate>1781081166419</edate>
+		<heightLand>-1</heightLand>
+		<heightPort>759</heightPort>
+		<nme>RZ_Etat</nme>
+		<widthLand>-1</widthLand>
+		<widthPort>467</widthPort>
+		<TextElement sr="elements0" ve="3">
+			<flags>4</flags>
+			<geom>11,0,444,58,-1,-1,-1,-1</geom>
+			<Str sr="arg0" ve="3">txt_titre</Str>
+			<Str sr="arg1" ve="3">Etat RZ</Str>
+			<Int sr="arg2" val="15"/>
+			<Int sr="arg3" val="100"/>
+			<Str sr="arg4" ve="3">#FF1A1A2E</Str>
+			<Str sr="arg5" ve="3"/>
+			<Int sr="arg6" val="1"/>
+			<Int sr="arg7" val="0"/>
+			<Int sr="arg8" val="0"/>
+		</TextElement>
+		<TextElement sr="elements1" ve="3">
+			<flags>4</flags>
+			<geom>11,58,200,74,-1,-1,-1,-1</geom>
+			<Str sr="arg0" ve="3">lbl_mode</Str>
+			<Str sr="arg1" ve="3">Mode robot :</Str>
+			<Int sr="arg2" val="13"/>
+			<Int sr="arg3" val="100"/>
+			<Str sr="arg4" ve="3">#FFFFFFFF</Str>
+			<Str sr="arg5" ve="3"/>
+			<Int sr="arg6" val="0"/>
+			<Int sr="arg7" val="0"/>
+			<Int sr="arg8" val="0"/>
+		</TextElement>
+		<TextElement sr="elements10" ve="3">
+			<flags>4</flags>
+			<geom>208,354,246,74,-1,-1,-1,-1</geom>
+			<Str sr="arg0" ve="3">val_ip_sp</Str>
+			<Str sr="arg1" ve="3">-</Str>
+			<Int sr="arg2" val="14"/>
+			<Int sr="arg3" val="100"/>
+			<Str sr="arg4" ve="3">#FF1A6B9A</Str>
+			<Str sr="arg5" ve="3"/>
+			<Int sr="arg6" val="1"/>
+			<Int sr="arg7" val="0"/>
+			<Int sr="arg8" val="0"/>
+		</TextElement>
+		<TextElement sr="elements11" ve="3">
+			<flags>4</flags>
+			<geom>11,453,444,74,-1,-1,-1,-1</geom>
+			<Str sr="arg0" ve="3">val_ctx_reseau</Str>
+			<Str sr="arg1" ve="3">-</Str>
+			<Int sr="arg2" val="13"/>
+			<Int sr="arg3" val="100"/>
+			<Str sr="arg4" ve="3">#FF555555</Str>
+			<Str sr="arg5" ve="3"/>
+			<Int sr="arg6" val="1"/>
+			<Int sr="arg7" val="0"/>
+			<Int sr="arg8" val="0"/>
+		</TextElement>
+		<ButtonElement sr="elements12" ve="3">
+			<clickTask>25</clickTask>
+			<flags>4</flags>
+			<geom>150,640,167,50,-1,-1,-1,-1</geom>
+			<Str sr="arg0" ve="3">btn_fermer</Str>
+			<Str sr="arg1" ve="3">X Fermer</Str>
+			<Int sr="arg2" val="16"/>
+			<Int sr="arg3" val="100"/>
+			<Str sr="arg4" ve="3">#FF8B0000</Str>
+			<Str sr="arg5" ve="3">RZ_FermeEtat</Str>
+			<Int sr="arg6" val="8"/>
+			<Img sr="arg7" ve="2"/>
+		</ButtonElement>
+		<TextElement sr="elements13" ve="3">
+			<flags>4</flags>
+			<geom>11,552,444,74,-1,-1,-1,-1</geom>
+			<Str sr="arg0" ve="3">Val_ts</Str>
+			<Str sr="arg1" ve="3">--:--:--</Str>
+			<Int sr="arg2" val="14"/>
+			<Int sr="arg3" val="100"/>
+			<Str sr="arg4" ve="3">#FFB3B2BA</Str>
+			<Str sr="arg5" ve="3"/>
+			<Int sr="arg6" val="0"/>
+			<Int sr="arg7" val="0"/>
+			<Int sr="arg8" val="0"/>
+		</TextElement>
+		<TextElement sr="elements2" ve="3">
+			<flags>4</flags>
+			<geom>208,58,246,75,-1,-1,-1,-1</geom>
+			<Str sr="arg0" ve="3">val_mode</Str>
+			<Str sr="arg1" ve="3">-</Str>
+			<Int sr="arg2" val="14"/>
+			<Int sr="arg3" val="100"/>
+			<Str sr="arg4" ve="3">#FF1A6B9A</Str>
+			<Str sr="arg5" ve="3"/>
+			<Int sr="arg6" val="1"/>
+			<Int sr="arg7" val="0"/>
+			<Int sr="arg8" val="0"/>
+		</TextElement>
+		<TextElement sr="elements3" ve="3">
+			<flags>4</flags>
+			<geom>11,132,200,74,-1,-1,-1,-1</geom>
+			<Str sr="arg0" ve="3">lbl_ptge</Str>
+			<Str sr="arg1" ve="3">Pilotage :</Str>
+			<Int sr="arg2" val="14"/>
+			<Int sr="arg3" val="100"/>
+			<Str sr="arg4" ve="3">#FFFFFFFF</Str>
+			<Str sr="arg5" ve="3"/>
+			<Int sr="arg6" val="0"/>
+			<Int sr="arg7" val="0"/>
+			<Int sr="arg8" val="0"/>
+		</TextElement>
+		<TextElement sr="elements4" ve="3">
+			<flags>4</flags>
+			<geom>208,132,246,75,-1,-1,-1,-1</geom>
+			<Str sr="arg0" ve="3">val_ptge</Str>
+			<Str sr="arg1" ve="3">-</Str>
+			<Int sr="arg2" val="14"/>
+			<Int sr="arg3" val="100"/>
+			<Str sr="arg4" ve="3">#FF1A6B9A</Str>
+			<Str sr="arg5" ve="3"/>
+			<Int sr="arg6" val="1"/>
+			<Int sr="arg7" val="0"/>
+			<Int sr="arg8" val="0"/>
+		</TextElement>
+		<TextElement sr="elements5" ve="3">
+			<flags>4</flags>
+			<geom>11,206,197,74,-1,-1,-1,-1</geom>
+			<Str sr="arg0" ve="3">lbl_reseau</Str>
+			<Str sr="arg1" ve="3">Reseau :</Str>
+			<Int sr="arg2" val="14"/>
+			<Int sr="arg3" val="100"/>
+			<Str sr="arg4" ve="3">#FFFFFFFF</Str>
+			<Str sr="arg5" ve="3"/>
+			<Int sr="arg6" val="0"/>
+			<Int sr="arg7" val="0"/>
+			<Int sr="arg8" val="0"/>
+		</TextElement>
+		<TextElement sr="elements6" ve="3">
+			<flags>4</flags>
+			<geom>208,206,246,75,-1,-1,-1,-1</geom>
+			<Str sr="arg0" ve="3">val_reseau</Str>
+			<Str sr="arg1" ve="3">-</Str>
+			<Int sr="arg2" val="14"/>
+			<Int sr="arg3" val="100"/>
+			<Str sr="arg4" ve="3">#FF1A6B9A</Str>
+			<Str sr="arg5" ve="3"/>
+			<Int sr="arg6" val="1"/>
+			<Int sr="arg7" val="0"/>
+			<Int sr="arg8" val="0"/>
+		</TextElement>
+		<TextElement sr="elements7" ve="3">
+			<flags>4</flags>
+			<geom>11,280,200,75,-1,-1,-1,-1</geom>
+			<Str sr="arg0" ve="3">lbl_ip_se</Str>
+			<Str sr="arg1" ve="3">IP SE :</Str>
+			<Int sr="arg2" val="14"/>
+			<Int sr="arg3" val="100"/>
+			<Str sr="arg4" ve="3">#FFFFFFFF</Str>
+			<Str sr="arg5" ve="3"/>
+			<Int sr="arg6" val="0"/>
+			<Int sr="arg7" val="0"/>
+			<Int sr="arg8" val="0"/>
+		</TextElement>
+		<TextElement sr="elements8" ve="3">
+			<flags>4</flags>
+			<geom>208,280,246,74,-1,-1,-1,-1</geom>
+			<Str sr="arg0" ve="3">val_ip_se</Str>
+			<Str sr="arg1" ve="3">-</Str>
+			<Int sr="arg2" val="14"/>
+			<Int sr="arg3" val="100"/>
+			<Str sr="arg4" ve="3">#FF1A6B9A</Str>
+			<Str sr="arg5" ve="3"/>
+			<Int sr="arg6" val="1"/>
+			<Int sr="arg7" val="0"/>
+			<Int sr="arg8" val="0"/>
+		</TextElement>
+		<TextElement sr="elements9" ve="3">
+			<flags>4</flags>
+			<geom>11,354,200,75,-1,-1,-1,-1</geom>
+			<Str sr="arg0" ve="3">lbl_ip_sp</Str>
+			<Str sr="arg1" ve="3">IP SP :</Str>
+			<Int sr="arg2" val="14"/>
+			<Int sr="arg3" val="100"/>
+			<Str sr="arg4" ve="3">#FFFFFFFF</Str>
+			<Str sr="arg5" ve="3"/>
+			<Int sr="arg6" val="0"/>
+			<Int sr="arg7" val="0"/>
+			<Int sr="arg8" val="0"/>
+		</TextElement>
+		<PropertiesElement sr="props">
+			<Int sr="arg0" val="2"/>
+			<Int sr="arg1" val="2"/>
+			<Str sr="arg2" ve="3">#FF000000</Str>
+			<Int sr="arg3" val="0"/>
+			<Str sr="arg4" ve="3">RZ_Etat</Str>
+			<Str sr="arg5" ve="3"/>
+			<Img sr="arg6" ve="2"/>
+			<Str sr="arg7" ve="3"/>
+		</PropertiesElement>
+	</Scene>
+	<Scene sr="sceneRZ_Expression">
+		<cdate>1777842601993</cdate>
+		<edate>1779146704475</edate>
+		<heightLand>-1</heightLand>
+		<heightPort>759</heightPort>
+		<nme>RZ_Expression</nme>
+		<widthLand>-1</widthLand>
+		<widthPort>467</widthPort>
+		<TextElement sr="elements0" ve="3">
+			<flags>4</flags>
+			<geom>0,0,465,601,-1,-1,-1,-1</geom>
+			<Str sr="arg0" ve="3">emoji_expression</Str>
+			<Str sr="arg1" ve="3">😐</Str>
+			<Int sr="arg2" val="160"/>
+			<Int sr="arg3" val="100"/>
+			<Str sr="arg4" ve="3">#FFFAF2F2</Str>
+			<Str sr="arg5" ve="3"/>
+			<Int sr="arg6" val="0"/>
+			<Int sr="arg7" val="0"/>
+			<Int sr="arg8" val="0"/>
+		</TextElement>
+		<ButtonElement sr="elements1" ve="3">
+			<clickTask>20</clickTask>
+			<flags>4</flags>
+			<geom>381,626,50,50,-1,-1,-1,-1</geom>
+			<Str sr="arg0" ve="3">btn_menu</Str>
+			<Str sr="arg1" ve="3">📃</Str>
+			<Int sr="arg2" val="16"/>
+			<Int sr="arg3" val="100"/>
+			<Str sr="arg4" ve="3">#FF000000</Str>
+			<Str sr="arg5" ve="3"/>
+			<Int sr="arg6" val="0"/>
+			<Img sr="arg7" ve="2"/>
+		</ButtonElement>
+		<PropertiesElement sr="props">
+			<Int sr="arg0" val="2"/>
+			<Int sr="arg1" val="2"/>
+			<Str sr="arg2" ve="3">#000000</Str>
+			<Int sr="arg3" val="0"/>
+			<Str sr="arg4" ve="3">RZ_Expression</Str>
+			<Str sr="arg5" ve="3"/>
+			<Img sr="arg6" ve="2"/>
+			<Str sr="arg7" ve="3"/>
+		</PropertiesElement>
+	</Scene>
+	<Scene sr="sceneRZ_FermeOverlay">
+		<cdate>1778900000020</cdate>
+		<edate>1780676028412</edate>
+		<heightLand>-1</heightLand>
+		<heightPort>50</heightPort>
+		<nme>RZ_FermeOverlay</nme>
+		<widthLand>-1</widthLand>
+		<widthPort>200</widthPort>
+		<TextElement sr="elements0" ve="3">
+			<clickTask>22</clickTask>
+			<flags>4</flags>
+			<geom>0,0,200,50,-1,-1,-1,-1</geom>
+			<Str sr="arg0" ve="3">btn_fermer_appli</Str>
+			<Str sr="arg1" ve="3">🛑 Fermer %RZappliActive</Str>
+			<Int sr="arg2" val="12"/>
+			<Int sr="arg3" val="100"/>
+			<Str sr="arg4" ve="3">#FFFFFFFF</Str>
+			<Str sr="arg5" ve="3"/>
+			<Int sr="arg6" val="3"/>
+			<Int sr="arg7" val="0"/>
+			<Int sr="arg8" val="0"/>
+			<RectElement sr="background">
+				<flags>4</flags>
+				<geom>-1,-1,-1,-1,-1,-1,-1,-1</geom>
+				<Str sr="arg0" ve="3"/>
+				<Int sr="arg1" val="0"/>
+				<Str sr="arg2" ve="3">#CC881A1A</Str>
+				<Str sr="arg3" ve="3"/>
+				<Int sr="arg4" val="0"/>
+				<Str sr="arg5" ve="3"/>
+				<Int sr="arg6" val="0"/>
+				<Int sr="arg7" val="0"/>
+			</RectElement>
+		</TextElement>
+		<PropertiesElement sr="props">
+			<Int sr="arg0" val="1"/>
+			<Int sr="arg1" val="0"/>
+			<Str sr="arg2" ve="3">#00000000</Str>
+			<Int sr="arg3" val="0"/>
+			<Str sr="arg4" ve="3">RZ_FermeOverlay</Str>
+			<Str sr="arg5" ve="3"/>
+			<Img sr="arg6" ve="2"/>
+			<Str sr="arg7" ve="3"/>
+		</PropertiesElement>
+	</Scene>
+	<Scene sr="sceneRZ_Menu">
+		<cdate>1778675933602</cdate>
+		<edate>1781265902957</edate>
+		<heightLand>-1</heightLand>
+		<heightPort>609</heightPort>
+		<nme>RZ_Menu</nme>
+		<widthLand>-1</widthLand>
+		<widthPort>342</widthPort>
+		<TextElement sr="elements0" ve="3">
+			<flags>4</flags>
+			<geom>0,10,342,74,-1,-1,-1,-1</geom>
+			<Str sr="arg0" ve="3">titre_menu</Str>
+			<Str sr="arg1" ve="3">MENU RZ</Str>
+			<Int sr="arg2" val="22"/>
+			<Int sr="arg3" val="100"/>
+			<Str sr="arg4" ve="3">#FFFFFFFF</Str>
+			<Str sr="arg5" ve="3"/>
+			<Int sr="arg6" val="0"/>
+			<Int sr="arg7" val="0"/>
+			<Int sr="arg8" val="0"/>
+		</TextElement>
+		<RectElement sr="elements1">
+			<flags>4</flags>
+			<geom>0,108,342,172,0,70,-1,-1</geom>
+			<Str sr="arg0" ve="3">pave_Mode</Str>
+			<Int sr="arg1" val="0"/>
+			<Str sr="arg2" ve="3">#FF2A2A2A</Str>
+			<Str sr="arg3" ve="3"/>
+			<Int sr="arg4" val="2"/>
+			<Str sr="arg5" ve="3">#FFCBE91D</Str>
+			<Int sr="arg6" val="16"/>
+			<Int sr="arg7" val="0"/>
+		</RectElement>
+		<TextElement sr="elements10" ve="3">
+			<clickTask>55</clickTask>
+			<flags>4</flags>
+			<geom>134,304,206,49,-1,-1,-1,-1</geom>
+			<Str sr="arg0" ve="3">Appli_Zoom</Str>
+			<Str sr="arg1" ve="3">👥  Zoom-Visio</Str>
+			<Int sr="arg2" val="10"/>
+			<Int sr="arg3" val="100"/>
+			<Str sr="arg4" ve="3">#FFEEF8EE</Str>
+			<Str sr="arg5" ve="3"/>
+			<Int sr="arg6" val="3"/>
+			<Int sr="arg7" val="0"/>
+			<Int sr="arg8" val="0"/>
+		</TextElement>
+		<TextElement sr="elements11" ve="3">
+			<clickTask>56</clickTask>
+			<flags>4</flags>
+			<geom>0,402,157,50,-1,-1,-1,-1</geom>
+			<Str sr="arg0" ve="3">Appli_Camera</Str>
+			<Str sr="arg1" ve="3">📹 Camera</Str>
+			<Int sr="arg2" val="10"/>
+			<Int sr="arg3" val="100"/>
+			<Str sr="arg4" ve="3">#FFEEF8EE</Str>
+			<Str sr="arg5" ve="3"/>
+			<Int sr="arg6" val="3"/>
+			<Int sr="arg7" val="0"/>
+			<Int sr="arg8" val="2"/>
+		</TextElement>
+		<TextElement sr="elements12" ve="3">
+			<clickTask>44</clickTask>
+			<flags>4</flags>
+			<geom>0,353,206,49,-1,-1,-1,-1</geom>
+			<Str sr="arg0" ve="3">Appli_Torche</Str>
+			<Str sr="arg1" ve="3">🔦 Torche (api)</Str>
+			<Int sr="arg2" val="10"/>
+			<Int sr="arg3" val="100"/>
+			<Str sr="arg4" ve="3">#FFEEF8EE</Str>
+			<Str sr="arg5" ve="3"/>
+			<Int sr="arg6" val="3"/>
+			<Int sr="arg7" val="0"/>
+			<Int sr="arg8" val="2"/>
+		</TextElement>
+		<RectElement sr="elements13">
+			<flags>4</flags>
+			<geom>0,485,342,124,0,70,-1,-1</geom>
+			<Str sr="arg0" ve="3">pave_divers</Str>
+			<Int sr="arg1" val="0"/>
+			<Str sr="arg2" ve="3">#FF2A2C23</Str>
+			<Str sr="arg3" ve="3"/>
+			<Int sr="arg4" val="2"/>
+			<Str sr="arg5" ve="3">#FF000000</Str>
+			<Int sr="arg6" val="16"/>
+			<Int sr="arg7" val="0"/>
+		</RectElement>
+		<TextElement sr="elements14" ve="3">
+			<clickTask>45</clickTask>
+			<flags>4</flags>
+			<geom>11,549,158,60,-1,-1,-1,-1</geom>
+			<Str sr="arg0" ve="3">Fction_EtatRZ</Str>
+			<Str sr="arg1" ve="3">📋 État RZ</Str>
+			<Int sr="arg2" val="10"/>
+			<Int sr="arg3" val="100"/>
+			<Str sr="arg4" ve="3">#FFCBE91D</Str>
+			<Str sr="arg5" ve="3"/>
+			<Int sr="arg6" val="3"/>
+			<Int sr="arg7" val="0"/>
+			<Int sr="arg8" val="2"/>
+		</TextElement>
+		<TextElement sr="elements15" ve="3">
+			<clickTask>46</clickTask>
+			<flags>4</flags>
+			<geom>119,500,222,50,-1,-1,-1,-1</geom>
+			<Str sr="arg0" ve="3">Fction_CommandesVocales</Str>
+			<Str sr="arg1" ve="3">🎙️ Cmde Vocales</Str>
+			<Int sr="arg2" val="10"/>
+			<Int sr="arg3" val="100"/>
+			<Str sr="arg4" ve="3">#FFCBE91D</Str>
+			<Str sr="arg5" ve="3"/>
+			<Int sr="arg6" val="3"/>
+			<Int sr="arg7" val="0"/>
+			<Int sr="arg8" val="2"/>
+		</TextElement>
+		<TextElement sr="elements16" ve="3">
+			<clickTask>47</clickTask>
+			<flags>4</flags>
+			<geom>0,500,108,50,-1,-1,-1,-1</geom>
+			<Str sr="arg0" ve="3">Doc-Aide</Str>
+			<Str sr="arg1" ve="3">📄  Aide</Str>
+			<Int sr="arg2" val="10"/>
+			<Int sr="arg3" val="100"/>
+			<Str sr="arg4" ve="3">#FFCBE91D</Str>
+			<Str sr="arg5" ve="3"/>
+			<Int sr="arg6" val="3"/>
+			<Int sr="arg7" val="0"/>
+			<Int sr="arg8" val="2"/>
+		</TextElement>
+		<TextElement sr="elements17" ve="3">
+			<clickTask>48</clickTask>
+			<flags>4</flags>
+			<geom>183,549,158,50,-1,-1,-1,-1</geom>
+			<Str sr="arg0" ve="3">FermerX</Str>
+			<Str sr="arg1" ve="3">🛑 FERMER</Str>
+			<Int sr="arg2" val="10"/>
+			<Int sr="arg3" val="100"/>
+			<Str sr="arg4" ve="3">#FFE91D1D</Str>
+			<Str sr="arg5" ve="3"/>
+			<Int sr="arg6" val="3"/>
+			<Int sr="arg7" val="0"/>
+			<Int sr="arg8" val="2"/>
+		</TextElement>
+		<TextElement sr="elements2" ve="3">
+			<clickTask>50</clickTask>
+			<flags>4</flags>
+			<geom>35,157,148,49,-1,-1,-1,-1</geom>
+			<Str sr="arg0" ve="3">ModeRZ_Veille</Str>
+			<Str sr="arg1" ve="3">&lt;font color="green"&gt;●&lt;/font&gt; &lt;font color="White "&gt;VEILLE&lt;/font&gt;</Str>
+			<Int sr="arg2" val="10"/>
+			<Int sr="arg3" val="100"/>
+			<Str sr="arg4" ve="3">#FFEEF8EE</Str>
+			<Str sr="arg5" ve="3">Tasker/fonts/Font Awesome 6 Free-Solid-900.otf</Str>
+			<Int sr="arg6" val="3"/>
+			<Int sr="arg7" val="0"/>
+			<Int sr="arg8" val="2"/>
+		</TextElement>
+		<TextElement sr="elements3" ve="3">
+			<flags>4</flags>
+			<geom>0,108,148,49,-1,-1,-1,-1</geom>
+			<Str sr="arg0" ve="3">TitreBloc</Str>
+			<Str sr="arg1" ve="3">ModeRZ</Str>
+			<Int sr="arg2" val="13"/>
+			<Int sr="arg3" val="100"/>
+			<Str sr="arg4" ve="3">#FFCBE91D</Str>
+			<Str sr="arg5" ve="3"/>
+			<Int sr="arg6" val="0"/>
+			<Int sr="arg7" val="0"/>
+			<Int sr="arg8" val="0"/>
+		</TextElement>
+		<TextElement sr="elements4" ve="3">
+			<clickTask>49</clickTask>
+			<flags>4</flags>
+			<geom>183,157,148,50,-1,-1,-1,-1</geom>
+			<Str sr="arg0" ve="3">ModeRZ_Arret</Str>
+			<Str sr="arg1" ve="3">&lt;font color="red"&gt;●&lt;/font&gt; &lt;font color="White "&gt;ARRET&lt;/font&gt;</Str>
+			<Int sr="arg2" val="10"/>
+			<Int sr="arg3" val="100"/>
+			<Str sr="arg4" ve="3">#FFEEF8EE</Str>
+			<Str sr="arg5" ve="3">Tasker/fonts/Font Awesome 6 Free-Solid-900.otf</Str>
+			<Int sr="arg6" val="3"/>
+			<Int sr="arg7" val="0"/>
+			<Int sr="arg8" val="2"/>
+		</TextElement>
+		<TextElement sr="elements5" ve="3">
+			<clickTask>51</clickTask>
+			<flags>4</flags>
+			<geom>183,206,148,49,-1,-1,-1,-1</geom>
+			<Str sr="arg0" ve="3">ModeRZ_Mvt</Str>
+			<Str sr="arg1" ve="3">&lt;font color="yellow"&gt;●&lt;/font&gt; &lt;font color="White "&gt;MOUVE&lt;/font&gt;</Str>
+			<Int sr="arg2" val="10"/>
+			<Int sr="arg3" val="100"/>
+			<Str sr="arg4" ve="3">#FFEEF8EE</Str>
+			<Str sr="arg5" ve="3">Tasker/fonts/Font Awesome 6 Free-Solid-900.otf</Str>
+			<Int sr="arg6" val="3"/>
+			<Int sr="arg7" val="0"/>
+			<Int sr="arg8" val="2"/>
+		</TextElement>
+		<TextElement sr="elements6" ve="3">
+			<clickTask>52</clickTask>
+			<flags>4</flags>
+			<geom>35,206,148,50,-1,-1,-1,-1</geom>
+			<Str sr="arg0" ve="3">ModeRZ_Fixe</Str>
+			<Str sr="arg1" ve="3">&lt;font color="blue"&gt;●&lt;/font&gt; &lt;font color="White "&gt;FIXE&lt;/font&gt;</Str>
+			<Int sr="arg2" val="10"/>
+			<Int sr="arg3" val="100"/>
+			<Str sr="arg4" ve="3">#FFEEF8EE</Str>
+			<Str sr="arg5" ve="3">Tasker/fonts/Font Awesome 6 Free-Solid-900.otf</Str>
+			<Int sr="arg6" val="3"/>
+			<Int sr="arg7" val="0"/>
+			<Int sr="arg8" val="2"/>
+		</TextElement>
+		<RectElement sr="elements7">
+			<flags>4</flags>
+			<geom>0,304,342,270,0,70,-1,-1</geom>
+			<Str sr="arg0" ve="3">pave_Appli</Str>
+			<Int sr="arg1" val="0"/>
+			<Str sr="arg2" ve="3">#FF2A2C23</Str>
+			<Str sr="arg3" ve="3"/>
+			<Int sr="arg4" val="2"/>
+			<Str sr="arg5" ve="3">#FF000000</Str>
+			<Int sr="arg6" val="16"/>
+			<Int sr="arg7" val="0"/>
+		</RectElement>
+		<TextElement sr="elements8" ve="3">
+			<flags>4</flags>
+			<geom>0,304,133,49,-1,-1,-1,-1</geom>
+			<Str sr="arg0" ve="3">TitreBlocAppli</Str>
+			<Str sr="arg1" ve="3">Appli</Str>
+			<Int sr="arg2" val="13"/>
+			<Int sr="arg3" val="100"/>
+			<Str sr="arg4" ve="3">#FFCBE91D</Str>
+			<Str sr="arg5" ve="3"/>
+			<Int sr="arg6" val="5"/>
+			<Int sr="arg7" val="0"/>
+			<Int sr="arg8" val="0"/>
+		</TextElement>
+		<TextElement sr="elements9" ve="3">
+			<clickTask>54</clickTask>
+			<flags>4</flags>
+			<geom>207,353,134,49,-1,-1,-1,-1</geom>
+			<Str sr="arg0" ve="3">Appli_Maps</Str>
+			<Str sr="arg1" ve="3">🚘 Maps</Str>
+			<Int sr="arg2" val="10"/>
+			<Int sr="arg3" val="100"/>
+			<Str sr="arg4" ve="3">#FFEEF8EE</Str>
+			<Str sr="arg5" ve="3"/>
+			<Int sr="arg6" val="3"/>
+			<Int sr="arg7" val="0"/>
+			<Int sr="arg8" val="2"/>
+		</TextElement>
+		<PropertiesElement sr="props">
+			<Int sr="arg0" val="1"/>
+			<Int sr="arg1" val="4"/>
+			<Str sr="arg2" ve="3">#FF000000</Str>
+			<Int sr="arg3" val="0"/>
+			<Str sr="arg4" ve="3">RZ_Menu</Str>
+			<Str sr="arg5" ve="3"/>
+			<Img sr="arg6" ve="2"/>
+			<Str sr="arg7" ve="3"/>
+		</PropertiesElement>
+	</Scene>
+	<Scene sr="sceneRZ_VoiceDetail">
+		<cdate>1778300000006</cdate>
+		<edate>1780922234488</edate>
+		<heightLand>-1</heightLand>
+		<heightPort>1400</heightPort>
+		<nme>RZ_VoiceDetail</nme>
+		<widthLand>-1</widthLand>
+		<widthPort>467</widthPort>
+		<TextElement sr="elements0" ve="3">
+			<flags>4</flags>
+			<geom>0,0,467,50,-1,-1,-1,-1</geom>
+			<Str sr="arg0" ve="3">txt_titre</Str>
+			<Str sr="arg1" ve="3">Toutes les commandes</Str>
+			<Int sr="arg2" val="18"/>
+			<Int sr="arg3" val="100"/>
+			<Str sr="arg4" ve="3">#FF1A1A2E</Str>
+			<Str sr="arg5" ve="3"/>
+			<Int sr="arg6" val="1"/>
+			<Int sr="arg7" val="0"/>
+			<Int sr="arg8" val="0"/>
+		</TextElement>
+		<TextElement sr="elements1" ve="3">
+			<flags>4</flags>
+			<geom>10,58,447,22,-1,-1,-1,-1</geom>
+			<Str sr="arg0" ve="3">cat1</Str>
+			<Str sr="arg1" ve="3">URGENCE (toujours actif)</Str>
+			<Int sr="arg2" val="13"/>
+			<Int sr="arg3" val="100"/>
+			<Str sr="arg4" ve="3">#FFC0392B</Str>
+			<Str sr="arg5" ve="3"/>
+			<Int sr="arg6" val="0"/>
+			<Int sr="arg7" val="0"/>
+			<Int sr="arg8" val="0"/>
+		</TextElement>
+		<TextElement sr="elements10" ve="3">
+			<flags>4</flags>
+			<geom>10,490,447,70,-1,-1,-1,-1</geom>
+			<Str sr="arg0" ve="3">txt5</Str>
+			<Str sr="arg1" ve="3">demarre la camera | eteins la camera
+camera avant | camera arriere
+prends une photo | snapshot
+allume la lumiere | torche | eteins la lumiere</Str>
+			<Int sr="arg2" val="12"/>
+			<Int sr="arg3" val="100"/>
+			<Str sr="arg4" ve="3">#FF333333</Str>
+			<Str sr="arg5" ve="3"/>
+			<Int sr="arg6" val="0"/>
+			<Int sr="arg7" val="0"/>
+			<Int sr="arg8" val="0"/>
+		</TextElement>
+		<TextElement sr="elements11" ve="3">
+			<flags>4</flags>
+			<geom>10,568,447,22,-1,-1,-1,-1</geom>
+			<Str sr="arg0" ve="3">cat6</Str>
+			<Str sr="arg1" ve="3">MACROS</Str>
+			<Int sr="arg2" val="13"/>
+			<Int sr="arg3" val="100"/>
+			<Str sr="arg4" ve="3">#FF7B3F00</Str>
+			<Str sr="arg5" ve="3"/>
+			<Int sr="arg6" val="0"/>
+			<Int sr="arg7" val="0"/>
+			<Int sr="arg8" val="0"/>
+		</TextElement>
+		<TextElement sr="elements12" ve="3">
+			<flags>4</flags>
+			<geom>10,592,447,54,-1,-1,-1,-1</geom>
+			<Str sr="arg0" ve="3">txt6</Str>
+			<Str sr="arg1" ve="3">bonjour | salut | coucou
+dors | va dormir | mode nuit
+reveille-toi | debout | active-toi</Str>
+			<Int sr="arg2" val="12"/>
+			<Int sr="arg3" val="100"/>
+			<Str sr="arg4" ve="3">#FF333333</Str>
+			<Str sr="arg5" ve="3"/>
+			<Int sr="arg6" val="0"/>
+			<Int sr="arg7" val="0"/>
+			<Int sr="arg8" val="0"/>
+		</TextElement>
+		<TextElement sr="elements13" ve="3">
+			<flags>4</flags>
+			<geom>10,654,447,22,-1,-1,-1,-1</geom>
+			<Str sr="arg0" ve="3">cat7</Str>
+			<Str sr="arg1" ve="3">CONVERSATION IA (mode veille)</Str>
+			<Int sr="arg2" val="13"/>
+			<Int sr="arg3" val="100"/>
+			<Str sr="arg4" ve="3">#FF8B4513</Str>
+			<Str sr="arg5" ve="3"/>
+			<Int sr="arg6" val="0"/>
+			<Int sr="arg7" val="0"/>
+			<Int sr="arg8" val="0"/>
+		</TextElement>
+		<TextElement sr="elements14" ve="3">
+			<flags>4</flags>
+			<geom>10,678,447,36,-1,-1,-1,-1</geom>
+			<Str sr="arg0" ve="3">txt7</Str>
+			<Str sr="arg1" ve="3">discute avec moi | on parle | mode discussion</Str>
+			<Int sr="arg2" val="12"/>
+			<Int sr="arg3" val="100"/>
+			<Str sr="arg4" ve="3">#FF333333</Str>
+			<Str sr="arg5" ve="3"/>
+			<Int sr="arg6" val="0"/>
+			<Int sr="arg7" val="0"/>
+			<Int sr="arg8" val="0"/>
+		</TextElement>
+		<ButtonElement sr="elements15" ve="3">
+			<flags>4</flags>
+			<geom>150,730,167,50,-1,-1,-1,-1</geom>
+			<Str sr="arg0" ve="3">btn_fermer</Str>
+			<Str sr="arg1" ve="3">X Fermer</Str>
+			<Int sr="arg2" val="16"/>
+			<Int sr="arg3" val="100"/>
+			<Str sr="arg4" ve="3">#FF8B0000</Str>
+			<Str sr="arg5" ve="3">RZ_FermeVoiceDetail</Str>
+			<Int sr="arg6" val="8"/>
+			<Img sr="arg7" ve="2"/>
+		</ButtonElement>
+		<TextElement sr="elements2" ve="3">
+			<flags>4</flags>
+			<geom>10,82,447,20,-1,-1,-1,-1</geom>
+			<Str sr="arg0" ve="3">txt1</Str>
+			<Str sr="arg1" ve="3">stop | arrete tout | urgence | freine</Str>
+			<Int sr="arg2" val="12"/>
+			<Int sr="arg3" val="100"/>
+			<Str sr="arg4" ve="3">#FF333333</Str>
+			<Str sr="arg5" ve="3"/>
+			<Int sr="arg6" val="0"/>
+			<Int sr="arg7" val="0"/>
+			<Int sr="arg8" val="0"/>
+		</TextElement>
+		<TextElement sr="elements3" ve="3">
+			<flags>4</flags>
+			<geom>10,110,447,22,-1,-1,-1,-1</geom>
+			<Str sr="arg0" ve="3">cat2</Str>
+			<Str sr="arg1" ve="3">DEPLACEMENT</Str>
+			<Int sr="arg2" val="13"/>
+			<Int sr="arg3" val="100"/>
+			<Str sr="arg4" ve="3">#FF7B5EA7</Str>
+			<Str sr="arg5" ve="3"/>
+			<Int sr="arg6" val="0"/>
+			<Int sr="arg7" val="0"/>
+			<Int sr="arg8" val="0"/>
+		</TextElement>
+		<TextElement sr="elements4" ve="3">
+			<flags>4</flags>
+			<geom>10,134,447,100,-1,-1,-1,-1</geom>
+			<Str sr="arg0" ve="3">txt2</Str>
+			<Str sr="arg1" ve="3">avance | tout droit | vas-y | en avant
+recule | en arriere | marche arriere
+stop | arrete | freine | immobile
+lentement | doucement | ralentis
+vite | accelere | plus vite | rapide
+tourne a droite | tourne a gauche
+vitesse (+ valeur) | avance de (+ distance)</Str>
+			<Int sr="arg2" val="12"/>
+			<Int sr="arg3" val="100"/>
+			<Str sr="arg4" ve="3">#FF333333</Str>
+			<Str sr="arg5" ve="3"/>
+			<Int sr="arg6" val="0"/>
+			<Int sr="arg7" val="0"/>
+			<Int sr="arg8" val="0"/>
+		</TextElement>
+		<TextElement sr="elements5" ve="3">
+			<flags>4</flags>
+			<geom>10,242,447,22,-1,-1,-1,-1</geom>
+			<Str sr="arg0" ve="3">cat3</Str>
+			<Str sr="arg1" ve="3">CONFIGURATION</Str>
+			<Int sr="arg2" val="13"/>
+			<Int sr="arg3" val="100"/>
+			<Str sr="arg4" ve="3">#FF2D6A4F</Str>
+			<Str sr="arg5" ve="3"/>
+			<Int sr="arg6" val="0"/>
+			<Int sr="arg7" val="0"/>
+			<Int sr="arg8" val="0"/>
+		</TextElement>
+		<TextElement sr="elements6" ve="3">
+			<flags>4</flags>
+			<geom>10,266,447,90,-1,-1,-1,-1</geom>
+			<Str sr="arg0" ve="3">txt3</Str>
+			<Str sr="arg1" ve="3">mode veille | mode fixe | mode deplacement | mode autonome
+pilotage vocal | pilotage ecran | mode laisse
+efface urgence | annule alerte
+reinitialise | reset</Str>
+			<Int sr="arg2" val="12"/>
+			<Int sr="arg3" val="100"/>
+			<Str sr="arg4" ve="3">#FF333333</Str>
+			<Str sr="arg5" ve="3"/>
+			<Int sr="arg6" val="0"/>
+			<Int sr="arg7" val="0"/>
+			<Int sr="arg8" val="0"/>
+		</TextElement>
+		<TextElement sr="elements7" ve="3">
+			<flags>4</flags>
+			<geom>10,364,447,22,-1,-1,-1,-1</geom>
+			<Str sr="arg0" ve="3">cat4</Str>
+			<Str sr="arg1" ve="3">EXPRESSIONS VISAGE</Str>
+			<Int sr="arg2" val="13"/>
+			<Int sr="arg3" val="100"/>
+			<Str sr="arg4" ve="3">#FF1D6A8A</Str>
+			<Str sr="arg5" ve="3"/>
+			<Int sr="arg6" val="0"/>
+			<Int sr="arg7" val="0"/>
+			<Int sr="arg8" val="0"/>
+		</TextElement>
+		<TextElement sr="elements8" ve="3">
+			<flags>4</flags>
+			<geom>10,388,447,70,-1,-1,-1,-1</geom>
+			<Str sr="arg0" ve="3">txt4</Str>
+			<Str sr="arg1" ve="3">souris | fais un sourire
+triste | sois triste
+etonne | surpris
+en colere | fache
+neutre | visage neutre</Str>
+			<Int sr="arg2" val="12"/>
+			<Int sr="arg3" val="100"/>
+			<Str sr="arg4" ve="3">#FF333333</Str>
+			<Str sr="arg5" ve="3"/>
+			<Int sr="arg6" val="0"/>
+			<Int sr="arg7" val="0"/>
+			<Int sr="arg8" val="0"/>
+		</TextElement>
+		<TextElement sr="elements9" ve="3">
+			<flags>4</flags>
+			<geom>10,466,447,22,-1,-1,-1,-1</geom>
+			<Str sr="arg0" ve="3">cat5</Str>
+			<Str sr="arg1" ve="3">CAMERA / TORCHE</Str>
+			<Int sr="arg2" val="13"/>
+			<Int sr="arg3" val="100"/>
+			<Str sr="arg4" ve="3">#FF5A3E7A</Str>
+			<Str sr="arg5" ve="3"/>
+			<Int sr="arg6" val="0"/>
+			<Int sr="arg7" val="0"/>
+			<Int sr="arg8" val="0"/>
+		</TextElement>
+		<PropertiesElement sr="props">
+			<Int sr="arg0" val="2"/>
+			<Int sr="arg1" val="2"/>
+			<Str sr="arg2" ve="3">#EEF0F5FF</Str>
+			<Int sr="arg3" val="0"/>
+			<Str sr="arg4" ve="3">RZ_VoiceDetail</Str>
+			<Str sr="arg5" ve="3"/>
+			<Img sr="arg6" ve="2"/>
+			<Str sr="arg7" ve="3"/>
+		</PropertiesElement>
+	</Scene>
+	<Scene sr="sceneRZ_VoiceHelp">
+		<cdate>1778300000005</cdate>
+		<edate>1780922238373</edate>
+		<heightLand>-1</heightLand>
+		<heightPort>759</heightPort>
+		<nme>RZ_VoiceHelp</nme>
+		<widthLand>-1</widthLand>
+		<widthPort>467</widthPort>
+		<TextElement sr="elements0" ve="3">
+			<flags>4</flags>
+			<geom>0,0,467,50,-1,-1,-1,-1</geom>
+			<Str sr="arg0" ve="3">txt_titre</Str>
+			<Str sr="arg1" ve="3">Commandes vocales</Str>
+			<Int sr="arg2" val="18"/>
+			<Int sr="arg3" val="100"/>
+			<Str sr="arg4" ve="3">#FF1A1A2E</Str>
+			<Str sr="arg5" ve="3"/>
+			<Int sr="arg6" val="1"/>
+			<Int sr="arg7" val="0"/>
+			<Int sr="arg8" val="0"/>
+		</TextElement>
+		<TextElement sr="elements1" ve="3">
+			<flags>4</flags>
+			<geom>10,56,447,26,-1,-1,-1,-1</geom>
+			<Str sr="arg0" ve="3">lbl_reveil</Str>
+			<Str sr="arg1" ve="3">Mot de réveil : "rz" puis votre commande</Str>
+			<Int sr="arg2" val="13"/>
+			<Int sr="arg3" val="100"/>
+			<Str sr="arg4" ve="3">#FF7B3F00</Str>
+			<Str sr="arg5" ve="3"/>
+			<Int sr="arg6" val="1"/>
+			<Int sr="arg7" val="0"/>
+			<Int sr="arg8" val="0"/>
+		</TextElement>
+		<ButtonElement sr="elements10" ve="3">
+			<flags>4</flags>
+			<geom>10,420,220,46,-1,-1,-1,-1</geom>
+			<Str sr="arg0" ve="3">btn_detail</Str>
+			<Str sr="arg1" ve="3">Liste complete</Str>
+			<Int sr="arg2" val="14"/>
+			<Int sr="arg3" val="100"/>
+			<Str sr="arg4" ve="3">#FF1A3A5C</Str>
+			<Str sr="arg5" ve="3">RZ_OuvreVoiceDetail</Str>
+			<Int sr="arg6" val="8"/>
+			<Img sr="arg7" ve="2"/>
+		</ButtonElement>
+		<ButtonElement sr="elements11" ve="3">
+			<flags>4</flags>
+			<geom>237,420,220,46,-1,-1,-1,-1</geom>
+			<Str sr="arg0" ve="3">btn_fermer</Str>
+			<Str sr="arg1" ve="3">X Fermer</Str>
+			<Int sr="arg2" val="16"/>
+			<Int sr="arg3" val="100"/>
+			<Str sr="arg4" ve="3">#FF8B0000</Str>
+			<Str sr="arg5" ve="3">RZ_FermeVoice</Str>
+			<Int sr="arg6" val="8"/>
+			<Img sr="arg7" ve="2"/>
+		</ButtonElement>
+		<TextElement sr="elements2" ve="3">
+			<flags>4</flags>
+			<geom>10,90,447,22,-1,-1,-1,-1</geom>
+			<Str sr="arg0" ve="3">lbl_cat1</Str>
+			<Str sr="arg1" ve="3">MODES ROBOT</Str>
+			<Int sr="arg2" val="13"/>
+			<Int sr="arg3" val="100"/>
+			<Str sr="arg4" ve="3">#FF2D6A4F</Str>
+			<Str sr="arg5" ve="3"/>
+			<Int sr="arg6" val="0"/>
+			<Int sr="arg7" val="0"/>
+			<Int sr="arg8" val="0"/>
+		</TextElement>
+		<TextElement sr="elements3" ve="3">
+			<flags>4</flags>
+			<geom>10,114,447,54,-1,-1,-1,-1</geom>
+			<Str sr="arg0" ve="3">txt_cat1</Str>
+			<Str sr="arg1" ve="3">mode veille | mode fixe | mode deplacement | mode autonome
+pilotage vocal | pilotage ecran | mode laisse</Str>
+			<Int sr="arg2" val="12"/>
+			<Int sr="arg3" val="100"/>
+			<Str sr="arg4" ve="3">#FF333333</Str>
+			<Str sr="arg5" ve="3"/>
+			<Int sr="arg6" val="0"/>
+			<Int sr="arg7" val="0"/>
+			<Int sr="arg8" val="0"/>
+		</TextElement>
+		<TextElement sr="elements4" ve="3">
+			<flags>4</flags>
+			<geom>10,176,447,22,-1,-1,-1,-1</geom>
+			<Str sr="arg0" ve="3">lbl_cat2</Str>
+			<Str sr="arg1" ve="3">DEPLACEMENT</Str>
+			<Int sr="arg2" val="13"/>
+			<Int sr="arg3" val="100"/>
+			<Str sr="arg4" ve="3">#FF7B5EA7</Str>
+			<Str sr="arg5" ve="3"/>
+			<Int sr="arg6" val="0"/>
+			<Int sr="arg7" val="0"/>
+			<Int sr="arg8" val="0"/>
+		</TextElement>
+		<TextElement sr="elements5" ve="3">
+			<flags>4</flags>
+			<geom>10,200,447,54,-1,-1,-1,-1</geom>
+			<Str sr="arg0" ve="3">txt_cat2</Str>
+			<Str sr="arg1" ve="3">avance | recule | stop | lentement | vite
+tourne a droite | tourne a gauche | arrête tout</Str>
+			<Int sr="arg2" val="12"/>
+			<Int sr="arg3" val="100"/>
+			<Str sr="arg4" ve="3">#FF333333</Str>
+			<Str sr="arg5" ve="3"/>
+			<Int sr="arg6" val="0"/>
+			<Int sr="arg7" val="0"/>
+			<Int sr="arg8" val="0"/>
+		</TextElement>
+		<TextElement sr="elements6" ve="3">
+			<flags>4</flags>
+			<geom>10,262,447,22,-1,-1,-1,-1</geom>
+			<Str sr="arg0" ve="3">lbl_cat3</Str>
+			<Str sr="arg1" ve="3">EXPRESSIONS</Str>
+			<Int sr="arg2" val="13"/>
+			<Int sr="arg3" val="100"/>
+			<Str sr="arg4" ve="3">#FF1D6A8A</Str>
+			<Str sr="arg5" ve="3"/>
+			<Int sr="arg6" val="0"/>
+			<Int sr="arg7" val="0"/>
+			<Int sr="arg8" val="0"/>
+		</TextElement>
+		<TextElement sr="elements7" ve="3">
+			<flags>4</flags>
+			<geom>10,286,447,36,-1,-1,-1,-1</geom>
+			<Str sr="arg0" ve="3">txt_cat3</Str>
+			<Str sr="arg1" ve="3">souris | triste | etonne | en colere | neutre | bonjour</Str>
+			<Int sr="arg2" val="12"/>
+			<Int sr="arg3" val="100"/>
+			<Str sr="arg4" ve="3">#FF333333</Str>
+			<Str sr="arg5" ve="3"/>
+			<Int sr="arg6" val="0"/>
+			<Int sr="arg7" val="0"/>
+			<Int sr="arg8" val="0"/>
+		</TextElement>
+		<TextElement sr="elements8" ve="3">
+			<flags>4</flags>
+			<geom>10,330,447,22,-1,-1,-1,-1</geom>
+			<Str sr="arg0" ve="3">lbl_cat4</Str>
+			<Str sr="arg1" ve="3">CONVERSATION IA</Str>
+			<Int sr="arg2" val="13"/>
+			<Int sr="arg3" val="100"/>
+			<Str sr="arg4" ve="3">#FF8B4513</Str>
+			<Str sr="arg5" ve="3"/>
+			<Int sr="arg6" val="0"/>
+			<Int sr="arg7" val="0"/>
+			<Int sr="arg8" val="0"/>
+		</TextElement>
+		<TextElement sr="elements9" ve="3">
+			<flags>4</flags>
+			<geom>10,354,447,36,-1,-1,-1,-1</geom>
+			<Str sr="arg0" ve="3">txt_cat4</Str>
+			<Str sr="arg1" ve="3">discute avec moi (mode veille requis)</Str>
+			<Int sr="arg2" val="12"/>
+			<Int sr="arg3" val="100"/>
+			<Str sr="arg4" ve="3">#FF333333</Str>
+			<Str sr="arg5" ve="3"/>
+			<Int sr="arg6" val="0"/>
+			<Int sr="arg7" val="0"/>
+			<Int sr="arg8" val="0"/>
+		</TextElement>
+		<PropertiesElement sr="props">
+			<Int sr="arg0" val="2"/>
+			<Int sr="arg1" val="2"/>
+			<Str sr="arg2" ve="3">#EEF0F5FF</Str>
+			<Int sr="arg3" val="0"/>
+			<Str sr="arg4" ve="3">RZ_VoiceHelp</Str>
+			<Str sr="arg5" ve="3"/>
+			<Img sr="arg6" ve="2"/>
+			<Str sr="arg7" ve="3"/>
+		</PropertiesElement>
+	</Scene>
+	<Task sr="task10">
+		<cdate>1778300000023</cdate>
+		<edate>1778300000023</edate>
+		<id>10</id>
+		<nme>RZ_FermeMenu</nme>
+		<Action sr="act0" ve="7">
+			<code>49</code>
+			<Str sr="arg0" ve="3">RZ_Menu</Str>
+		</Action>
+	</Task>
+	<Task sr="task11">
+		<cdate>1778300000024</cdate>
+		<edate>1781595763242</edate>
+		<id>11</id>
+		<nme>RZ_FermeEtat</nme>
+		<Action sr="act0" ve="7">
+			<code>137</code>
+			<label>Éviter que boucle continue</label>
+			<Int sr="arg0" val="0"/>
+			<Str sr="arg1" ve="3">RZ_EtatRefresh</Str>
+		</Action>
+		<Action sr="act1" ve="7">
+			<code>49</code>
+			<Str sr="arg0" ve="3">RZ_Etat</Str>
+		</Action>
+	</Task>
+	<Task sr="task113">
+		<cdate>1777666684222</cdate>
+		<edate>1778745885171</edate>
+		<id>113</id>
+		<nme>RZ_CamStart</nme>
+		<pri>100</pri>
+		<Action sr="act0" ve="7">
+			<code>20</code>
+			<label>Lancer IP Webcam Pro</label>
+			<App sr="arg0">
+				<appClass>com.pas.webcam.Configuration</appClass>
+				<appPkg>com.pas.webcam.pro</appPkg>
+				<label>IP Webcam Pro</label>
+			</App>
+			<Str sr="arg1" ve="3"/>
+			<Int sr="arg2" val="0"/>
+			<Int sr="arg3" val="0"/>
+		</Action>
+		<Action sr="act1" ve="7">
+			<code>1026948950</code>
+			<label>Démarrer serveur IP Webcam</label>
+			<Bundle sr="arg0">
+				<Vals sr="val">
+					<com.twofortyfouram.locale.intent.extra.BLURB>Démarrer le serveur</com.twofortyfouram.locale.intent.extra.BLURB>
+					<com.twofortyfouram.locale.intent.extra.BLURB-type>java.lang.String</com.twofortyfouram.locale.intent.extra.BLURB-type>
+					<net.dinglisch.android.tasker.subbundled>true</net.dinglisch.android.tasker.subbundled>
+					<net.dinglisch.android.tasker.subbundled-type>java.lang.Boolean</net.dinglisch.android.tasker.subbundled-type>
+					<tasker_event_mode>start_server</tasker_event_mode>
+					<tasker_event_mode-type>java.lang.String</tasker_event_mode-type>
+					<tasker_event_mode_sig>7YA+l9Y481IDuK4chvwP+g==</tasker_event_mode_sig>
+					<tasker_event_mode_sig-type>java.lang.String</tasker_event_mode_sig-type>
+				</Vals>
+			</Bundle>
+			<Str sr="arg1" ve="3">com.pas.webcam.pro</Str>
+			<Str sr="arg2" ve="3">com.pas.webcam.configpages.TaskerServiceControl</Str>
+			<Int sr="arg3" val="0"/>
+			<Int sr="arg4" val="1"/>
+		</Action>
+	</Task>
+	<Task sr="task114">
+		<cdate>1777553490788</cdate>
+		<edate>1781457040498</edate>
+		<id>114</id>
+		<nme>RZ_Dispatch</nme>
+		<pri>6</pri>
+		<Action sr="act0" ve="7">
+			<code>417</code>
+			<label>Lire trigger.txt → %RZ_JSON</label>
+			<Str sr="arg0" ve="3">Tasker/RobotRZ/trigger.txt</Str>
+			<Str sr="arg1" ve="3">%RZ_JSON</Str>
+			<Int sr="arg2" val="1"/>
+		</Action>
+		<Action sr="act1" ve="7">
+			<code>129</code>
+			<label>Parse JSON → RZtask + RZparam</label>
+			<se>false</se>
+			<Str sr="arg0" ve="3">var contenu = global('RZ_JSON').trim();
+var j = JSON.parse(contenu);
+setGlobal('RZtask', j.task.trim());
+setGlobal('RZparam', j.param.trim());</Str>
+			<Str sr="arg1" ve="3"/>
+			<Int sr="arg2" val="1"/>
+			<Int sr="arg3" val="5"/>
+		</Action>
+		<Action sr="act2" ve="7">
+			<code>130</code>
+			<label>Appel tâche nommée</label>
+			<Str sr="arg0" ve="3">%RZtask</Str>
+			<Int sr="arg1" val="0"/>
+			<Int sr="arg10" val="1"/>
+			<Str sr="arg2" ve="3">%RZparam</Str>
+			<Str sr="arg3" ve="3"/>
+			<Str sr="arg4" ve="3"/>
+			<Int sr="arg5" val="0"/>
+			<Int sr="arg6" val="0"/>
+			<Str sr="arg7" ve="3"/>
+			<Int sr="arg8" val="0"/>
+			<Int sr="arg9" val="0"/>
+		</Action>
+	</Task>
+	<Task sr="task115">
+		<cdate>1777824438758</cdate>
+		<edate>1781595605946</edate>
+		<id>115</id>
+		<nme>RZ_CamStop</nme>
+		<Action sr="act0" ve="7">
+			<code>1026948950</code>
+			<label>Arrêter serveur IP Webcam</label>
+			<Bundle sr="arg0">
+				<Vals sr="val">
+					<com.twofortyfouram.locale.intent.extra.BLURB>Arrêter la caméra</com.twofortyfouram.locale.intent.extra.BLURB>
+					<com.twofortyfouram.locale.intent.extra.BLURB-type>java.lang.String</com.twofortyfouram.locale.intent.extra.BLURB-type>
+					<net.dinglisch.android.tasker.subbundled>true</net.dinglisch.android.tasker.subbundled>
+					<net.dinglisch.android.tasker.subbundled-type>java.lang.Boolean</net.dinglisch.android.tasker.subbundled-type>
+					<tasker_event_mode>stop_server</tasker_event_mode>
+					<tasker_event_mode-type>java.lang.String</tasker_event_mode-type>
+					<tasker_event_mode_sig>dwZVOJmmXbkY7xu9FMwBtQ==</tasker_event_mode_sig>
+					<tasker_event_mode_sig-type>java.lang.String</tasker_event_mode_sig-type>
+				</Vals>
+			</Bundle>
+			<Str sr="arg1" ve="3">com.pas.webcam.pro</Str>
+			<Str sr="arg2" ve="3">com.pas.webcam.configpages.TaskerServiceControl</Str>
+			<Int sr="arg3" val="0"/>
+			<Int sr="arg4" val="1"/>
+		</Action>
+		<Action sr="act1" ve="7">
+			<code>18</code>
+			<label>Fermer IP Webcam Pro</label>
+			<App sr="arg0">
+				<appClass>com.pas.webcam.Configuration</appClass>
+				<appPkg>com.pas.webcam.pro</appPkg>
+				<label>IP Webcam Pro</label>
+			</App>
+			<Int sr="arg1" val="0"/>
+		</Action>
+		<Action sr="act2" ve="7">
+			<code>548</code>
+			<label>Notifier arrêt caméra</label>
+			<Str sr="arg0" ve="3">Cam SE arrêtée</Str>
+			<Int sr="arg1" val="1"/>
+			<Str sr="arg10" ve="3"/>
+			<Int sr="arg11" val="1"/>
+			<Int sr="arg12" val="0"/>
+			<Str sr="arg13" ve="3"/>
+			<Int sr="arg14" val="0"/>
+			<Str sr="arg15" ve="3"/>
+			<Int sr="arg2" val="0"/>
+			<Str sr="arg3" ve="3"/>
+			<Str sr="arg4" ve="3"/>
+			<Str sr="arg5" ve="3"/>
+			<Str sr="arg6" ve="3"/>
+			<Str sr="arg7" ve="3"/>
+			<Str sr="arg8" ve="3"/>
+			<Int sr="arg9" val="1"/>
+		</Action>
+	</Task>
+	<Task sr="task12">
+		<cdate>1778300000025</cdate>
+		<edate>1778300000025</edate>
+		<id>12</id>
+		<nme>RZ_FermeVoice</nme>
+		<Action sr="act0" ve="7">
+			<code>49</code>
+			<Str sr="arg0" ve="3">RZ_VoiceHelp</Str>
+		</Action>
+	</Task>
+	<Task sr="task13">
+		<cdate>1778300000026</cdate>
+		<edate>1778300000026</edate>
+		<id>13</id>
+		<nme>RZ_FermeVoiceDetail</nme>
+		<Action sr="act0" ve="7">
+			<code>49</code>
+			<Str sr="arg0" ve="3">RZ_VoiceDetail</Str>
+		</Action>
+	</Task>
+	<Task sr="task14">
+		<cdate>1778300000030</cdate>
+		<edate>1779195161648</edate>
+		<id>14</id>
+		<nme>RZ_OuvreMenu</nme>
+		<Action sr="act0" ve="7">
+			<code>49</code>
+			<Str sr="arg0" ve="3">RZ_Menu</Str>
+		</Action>
+		<Action sr="act1" ve="7">
+			<code>47</code>
+			<label>Afficher scène RZ_Menu en overlay</label>
+			<Str sr="arg0" ve="3">RZ_Menu</Str>
+			<Int sr="arg1" val="6"/>
+			<Int sr="arg10" val="1"/>
+			<Int sr="arg2" val="100"/>
+			<Int sr="arg3" val="100"/>
+			<Int sr="arg4" val="0"/>
+			<Int sr="arg5" val="1"/>
+			<Int sr="arg6" val="1"/>
+			<Int sr="arg7" val="1"/>
+			<Int sr="arg8" val="1"/>
+			<Int sr="arg9" val="1"/>
+		</Action>
+	</Task>
+	<Task sr="task15">
+		<cdate>1778944564508</cdate>
+		<edate>1778945201744</edate>
+		<id>15</id>
+		<nme>RZ_Maps</nme>
+		<Action sr="act0" ve="7">
+			<code>20</code>
+			<App sr="arg0">
+				<appClass>com.google.android.maps.MapsActivity</appClass>
+				<appPkg>com.google.android.apps.maps</appPkg>
+				<label>Maps</label>
+			</App>
+			<Str sr="arg1" ve="3"/>
+			<Int sr="arg2" val="0"/>
+			<Int sr="arg3" val="0"/>
+			<ConditionList sr="if">
+				<Condition sr="c0" ve="3">
+					<lhs>%RZparam</lhs>
+					<op>2</op>
+					<rhs>On</rhs>
+				</Condition>
+			</ConditionList>
+		</Action>
+		<Action sr="act1" ve="7">
+			<code>18</code>
+			<App sr="arg0">
+				<appClass>com.google.android.maps.MapsActivity</appClass>
+				<appPkg>com.google.android.apps.maps</appPkg>
+				<label>Maps</label>
+			</App>
+			<Int sr="arg1" val="0"/>
+			<ConditionList sr="if">
+				<Condition sr="c0" ve="3">
+					<lhs>%RZparam</lhs>
+					<op>2</op>
+					<rhs>Off</rhs>
+				</Condition>
+			</ConditionList>
+		</Action>
+	</Task>
+	<Task sr="task18">
+		<cdate>1778300000020</cdate>
+		<edate>1781697201214</edate>
+		<id>18</id>
+		<nme>RZ_Init_Tasker</nme>
+		<pri>100</pri>
+		<Action sr="act0" ve="7">
+			<code>20</code>
+			<label>Active outils</label>
+			<App sr="arg0">
+				<appClass>com.termux.api.activities.TermuxAPILauncherActivity</appClass>
+				<appPkg>com.termux.api</appPkg>
+				<label>Termux:API</label>
+			</App>
+			<Str sr="arg1" ve="3"/>
+			<Int sr="arg2" val="0"/>
+			<Int sr="arg3" val="0"/>
+		</Action>
+		<Action sr="act1" ve="7">
+			<code>30</code>
+			<Int sr="arg0" val="0"/>
+			<Int sr="arg1" val="1"/>
+			<Int sr="arg2" val="0"/>
+			<Int sr="arg3" val="0"/>
+			<Int sr="arg4" val="0"/>
+		</Action>
+		<Action sr="act10" ve="7">
+			<code>20</code>
+			<label>② Lancer IP Webcam Pro en veille</label>
+			<App sr="arg0">
+				<appClass>com.pas.webcam.Configuration</appClass>
+				<appPkg>com.pas.webcam.pro</appPkg>
+				<label>IP Webcam Pro</label>
+			</App>
+			<Str sr="arg1" ve="3"/>
+			<Int sr="arg2" val="0"/>
+			<Int sr="arg3" val="0"/>
+		</Action>
+		<Action sr="act11" ve="7">
+			<code>30</code>
+			<label>Attente IP Webcam 2s</label>
+			<Int sr="arg0" val="2000"/>
+			<Int sr="arg1" val="0"/>
+			<Int sr="arg2" val="0"/>
+			<Int sr="arg3" val="0"/>
+			<Int sr="arg4" val="0"/>
+		</Action>
+		<Action sr="act12" ve="7">
+			<code>49</code>
+			<Str sr="arg0" ve="3">RZ_Expression</Str>
+		</Action>
+		<Action sr="act13" ve="7">
+			<code>47</code>
+			<label>③ Afficher scène RZ_Expression</label>
+			<Str sr="arg0" ve="3">RZ_Expression</Str>
+			<Int sr="arg1" val="6"/>
+			<Int sr="arg10" val="1"/>
+			<Int sr="arg2" val="100"/>
+			<Int sr="arg3" val="100"/>
+			<Int sr="arg4" val="0"/>
+			<Int sr="arg5" val="1"/>
+			<Int sr="arg6" val="1"/>
+			<Int sr="arg7" val="1"/>
+			<Int sr="arg8" val="1"/>
+			<Int sr="arg9" val="1"/>
+		</Action>
+		<Action sr="act14" ve="7">
+			<code>30</code>
+			<label>Attendre init scène 500ms</label>
+			<Int sr="arg0" val="500"/>
+			<Int sr="arg1" val="0"/>
+			<Int sr="arg2" val="0"/>
+			<Int sr="arg3" val="0"/>
+			<Int sr="arg4" val="0"/>
+		</Action>
+		<Action sr="act15" ve="7">
+			<code>51</code>
+			<label>Emoji neutre initial 😐</label>
+			<Str sr="arg0" ve="3">RZ_Expression</Str>
+			<Str sr="arg1" ve="3">emoji_expression</Str>
+			<Int sr="arg2" val="0"/>
+			<Str sr="arg3" ve="3">😐</Str>
+			<Str sr="arg4" ve="3"/>
+		</Action>
+		<Action sr="act16" ve="7">
+			<code>547</code>
+			<label>initié intente IA Gemini</label>
+			<Str sr="arg0" ve="3">%RZiAConvOnOff</Str>
+			<Str sr="arg1" ve="3">Off</Str>
+			<Int sr="arg2" val="0"/>
+			<Int sr="arg3" val="0"/>
+			<Int sr="arg4" val="0"/>
+			<Int sr="arg5" val="3"/>
+			<Int sr="arg6" val="1"/>
+		</Action>
+		<Action sr="act17" ve="7">
+			<code>547</code>
+			<Str sr="arg0" ve="3">%RZautoVoice</Str>
+			<Str sr="arg1" ve="3">inactif</Str>
+			<Int sr="arg2" val="0"/>
+			<Int sr="arg3" val="0"/>
+			<Int sr="arg4" val="0"/>
+			<Int sr="arg5" val="3"/>
+			<Int sr="arg6" val="1"/>
+		</Action>
+		<Action sr="act18" ve="7">
+			<code>130</code>
+			<Str sr="arg0" ve="3">RZ_AVStart</Str>
+			<Int sr="arg1">
+				<var>%priority</var>
+			</Int>
+			<Int sr="arg10" val="1"/>
+			<Str sr="arg2" ve="3"/>
+			<Str sr="arg3" ve="3"/>
+			<Str sr="arg4" ve="3"/>
+			<Int sr="arg5" val="0"/>
+			<Int sr="arg6" val="0"/>
+			<Str sr="arg7" ve="3"/>
+			<Int sr="arg8" val="0"/>
+			<Int sr="arg9" val="0"/>
+		</Action>
+		<Action sr="act2" ve="7">
+			<code>547</code>
+			<Str sr="arg0" ve="3">%RZsttContext</Str>
+			<Str sr="arg1" ve="3">Mixte</Str>
+			<Int sr="arg2" val="0"/>
+			<Int sr="arg3" val="0"/>
+			<Int sr="arg4" val="0"/>
+			<Int sr="arg5" val="3"/>
+			<Int sr="arg6" val="1"/>
+		</Action>
+		<Action sr="act3" ve="7">
+			<code>1256900802</code>
+			<label>① Lancer rz_start.sh via Termux:Tasker</label>
+			<Bundle sr="arg0">
+				<Vals sr="val">
+					<com.termux.execute.arguments>&lt;null&gt;</com.termux.execute.arguments>
+					<com.termux.execute.arguments-type>java.lang.String</com.termux.execute.arguments-type>
+					<com.termux.tasker.extra.BACKGROUND_CUSTOM_LOG_LEVEL>&lt;null&gt;</com.termux.tasker.extra.BACKGROUND_CUSTOM_LOG_LEVEL>
+					<com.termux.tasker.extra.BACKGROUND_CUSTOM_LOG_LEVEL-type>java.lang.String</com.termux.tasker.extra.BACKGROUND_CUSTOM_LOG_LEVEL-type>
+					<com.termux.tasker.extra.EXECUTABLE>rz_start.sh</com.termux.tasker.extra.EXECUTABLE>
+					<com.termux.tasker.extra.EXECUTABLE-type>java.lang.String</com.termux.tasker.extra.EXECUTABLE-type>
+					<com.termux.tasker.extra.SESSION_ACTION>&lt;null&gt;</com.termux.tasker.extra.SESSION_ACTION>
+					<com.termux.tasker.extra.SESSION_ACTION-type>java.lang.String</com.termux.tasker.extra.SESSION_ACTION-type>
+					<com.termux.tasker.extra.STDIN>&lt;null&gt;</com.termux.tasker.extra.STDIN>
+					<com.termux.tasker.extra.STDIN-type>java.lang.String</com.termux.tasker.extra.STDIN-type>
+					<com.termux.tasker.extra.TERMINAL>false</com.termux.tasker.extra.TERMINAL>
+					<com.termux.tasker.extra.TERMINAL-type>java.lang.Boolean</com.termux.tasker.extra.TERMINAL-type>
+					<com.termux.tasker.extra.VERSION_CODE>1002</com.termux.tasker.extra.VERSION_CODE>
+					<com.termux.tasker.extra.VERSION_CODE-type>java.lang.Integer</com.termux.tasker.extra.VERSION_CODE-type>
+					<com.termux.tasker.extra.WAIT_FOR_RESULT>false</com.termux.tasker.extra.WAIT_FOR_RESULT>
+					<com.termux.tasker.extra.WAIT_FOR_RESULT-type>java.lang.Boolean</com.termux.tasker.extra.WAIT_FOR_RESULT-type>
+					<com.termux.tasker.extra.WORKDIR>/data/data/com.termux/files/home/robotRZ-smartSE/termux</com.termux.tasker.extra.WORKDIR>
+					<com.termux.tasker.extra.WORKDIR-type>java.lang.String</com.termux.tasker.extra.WORKDIR-type>
+					<com.twofortyfouram.locale.intent.extra.BLURB>rz_start.sh
+
+Working Directory ✓
+Stdin ✕
+Custom Log Level null
+Terminal Session ✕
+Wait For Result ✕</com.twofortyfouram.locale.intent.extra.BLURB>
+					<com.twofortyfouram.locale.intent.extra.BLURB-type>java.lang.String</com.twofortyfouram.locale.intent.extra.BLURB-type>
+					<net.dinglisch.android.tasker.extras.VARIABLE_REPLACE_KEYS>com.termux.tasker.extra.EXECUTABLE com.termux.execute.arguments com.termux.tasker.extra.WORKDIR com.termux.tasker.extra.STDIN com.termux.tasker.extra.SESSION_ACTION com.termux.tasker.extra.BACKGROUND_CUSTOM_LOG_LEVEL</net.dinglisch.android.tasker.extras.VARIABLE_REPLACE_KEYS>
+					<net.dinglisch.android.tasker.extras.VARIABLE_REPLACE_KEYS-type>java.lang.String</net.dinglisch.android.tasker.extras.VARIABLE_REPLACE_KEYS-type>
+					<net.dinglisch.android.tasker.subbundled>true</net.dinglisch.android.tasker.subbundled>
+					<net.dinglisch.android.tasker.subbundled-type>java.lang.Boolean</net.dinglisch.android.tasker.subbundled-type>
+				</Vals>
+			</Bundle>
+			<Str sr="arg1" ve="3">com.termux.tasker</Str>
+			<Str sr="arg2" ve="3">com.termux.tasker.EditConfigurationActivity</Str>
+			<Int sr="arg3" val="10"/>
+			<Int sr="arg4" val="1"/>
+		</Action>
+		<Action sr="act4" ve="7">
+			<code>30</code>
+			<label>Attente daemons SE 4s</label>
+			<Int sr="arg0" val="999"/>
+			<Int sr="arg1" val="0"/>
+			<Int sr="arg2" val="0"/>
+			<Int sr="arg3" val="0"/>
+			<Int sr="arg4" val="0"/>
+		</Action>
+		<Action sr="act5" ve="7">
+			<code>547</code>
+			<label>Init %RZecranEtat = A</label>
+			<Str sr="arg0" ve="3">%RZecranEtat</Str>
+			<Str sr="arg1" ve="3">A</Str>
+			<Int sr="arg2" val="0"/>
+			<Int sr="arg3" val="0"/>
+			<Int sr="arg4" val="0"/>
+			<Int sr="arg5" val="3"/>
+			<Int sr="arg6" val="1"/>
+		</Action>
+		<Action sr="act6" ve="7">
+			<code>547</code>
+			<label>Init %RZecranPrev = A</label>
+			<Str sr="arg0" ve="3">%RZecranPrev</Str>
+			<Str sr="arg1" ve="3">A</Str>
+			<Int sr="arg2" val="0"/>
+			<Int sr="arg3" val="0"/>
+			<Int sr="arg4" val="0"/>
+			<Int sr="arg5" val="3"/>
+			<Int sr="arg6" val="1"/>
+		</Action>
+		<Action sr="act7" ve="7">
+			<code>547</code>
+			<label>Unit RZtorchEtat/Valeur off</label>
+			<Str sr="arg0" ve="3">%RZtorchEtat</Str>
+			<Str sr="arg1" ve="3">Off</Str>
+			<Int sr="arg2" val="0"/>
+			<Int sr="arg3" val="0"/>
+			<Int sr="arg4" val="0"/>
+			<Int sr="arg5" val="3"/>
+			<Int sr="arg6" val="1"/>
+		</Action>
+		<Action sr="act8" ve="7">
+			<code>549</code>
+			<Str sr="arg0" ve="3">%RZappliActive</Str>
+			<Int sr="arg1" val="0"/>
+			<Int sr="arg2" val="0"/>
+			<Int sr="arg3" val="0"/>
+		</Action>
+		<Action sr="act9" ve="7">
+			<code>549</code>
+			<Str sr="arg0" ve="3">%RZappliTask</Str>
+			<Int sr="arg1" val="0"/>
+			<Int sr="arg2" val="0"/>
+			<Int sr="arg3" val="0"/>
+		</Action>
+	</Task>
+	<Task sr="task19">
+		<cdate>1778900000001</cdate>
+		<edate>1781589967292</edate>
+		<id>19</id>
+		<nme>RZ_AppStart</nme>
+		<pri>100</pri>
+		<Action sr="act0" ve="7">
+			<code>547</code>
+			<label>Mémoriser état écran précédent</label>
+			<Str sr="arg0" ve="3">%RZecranPrev</Str>
+			<Str sr="arg1" ve="3">%RZecranEtat</Str>
+			<Int sr="arg2" val="0"/>
+			<Int sr="arg3" val="0"/>
+			<Int sr="arg4" val="0"/>
+			<Int sr="arg5" val="3"/>
+			<Int sr="arg6" val="1"/>
+		</Action>
+		<Action sr="act1" ve="7">
+			<code>547</code>
+			<label>État écran → C (appli active)</label>
+			<Str sr="arg0" ve="3">%RZecranEtat</Str>
+			<Str sr="arg1" ve="3">C</Str>
+			<Int sr="arg2" val="0"/>
+			<Int sr="arg3" val="0"/>
+			<Int sr="arg4" val="0"/>
+			<Int sr="arg5" val="3"/>
+			<Int sr="arg6" val="1"/>
+		</Action>
+		<Action sr="act2" ve="7">
+			<code>547</code>
+			<label>Appli active = %RZappliNom</label>
+			<Str sr="arg0" ve="3">%RZappliActive</Str>
+			<Str sr="arg1" ve="3">%RZappliNom</Str>
+			<Int sr="arg2" val="0"/>
+			<Int sr="arg3" val="0"/>
+			<Int sr="arg4" val="0"/>
+			<Int sr="arg5" val="3"/>
+			<Int sr="arg6" val="1"/>
+		</Action>
+		<Action sr="act3" ve="7">
+			<code>130</code>
+			<label>Lancer appli via %RZappliTask</label>
+			<Str sr="arg0" ve="3">%RZappliTask</Str>
+			<Int sr="arg1" val="0"/>
+			<Int sr="arg10" val="0"/>
+			<Str sr="arg2" ve="3"/>
+			<Str sr="arg3" ve="3"/>
+			<Str sr="arg4" ve="3"/>
+			<Int sr="arg5" val="0"/>
+			<Int sr="arg6" val="0"/>
+			<Str sr="arg7" ve="3"/>
+			<Int sr="arg8" val="0"/>
+			<Int sr="arg9" val="0"/>
+			<ConditionList sr="if">
+				<Condition sr="c0" ve="3">
+					<lhs>%RZappliTask</lhs>
+					<op>12</op>
+					<rhs></rhs>
+				</Condition>
+			</ConditionList>
+		</Action>
+		<Action sr="act4" ve="7">
+			<code>49</code>
+			<label>Détruire overlay si déjà visible</label>
+			<Str sr="arg0" ve="3">RZ_FermeOverlay</Str>
+		</Action>
+		<Action sr="act5" ve="7">
+			<code>47</code>
+			<label>Afficher overlay fermeture</label>
+			<Str sr="arg0" ve="3">RZ_FermeOverlay</Str>
+			<Int sr="arg1" val="1"/>
+			<Int sr="arg10" val="1"/>
+			<Int sr="arg2" val="165"/>
+			<Int sr="arg3" val="170"/>
+			<Int sr="arg4" val="0"/>
+			<Int sr="arg5" val="1"/>
+			<Int sr="arg6" val="1"/>
+			<Int sr="arg7" val="1"/>
+			<Int sr="arg8" val="1"/>
+			<Int sr="arg9" val="1"/>
+		</Action>
+		<Action sr="act6" ve="7">
+			<code>123</code>
+			<Str sr="arg0" ve="3">printf '%s' '$I:Appli:%RZappliNom:*:On#' &gt; /sdcard/Tasker/RobotRZ/vpiv_out.txt</Str>
+			<Int sr="arg1" val="0"/>
+			<Int sr="arg2" val="0"/>
+			<Str sr="arg3" ve="3"/>
+			<Str sr="arg4" ve="3"/>
+			<Str sr="arg5" ve="3"/>
+			<Int sr="arg6" val="1"/>
+			<Int sr="arg7" val="0"/>
+			<Int sr="arg8" val="0"/>
+		</Action>
+	</Task>
+	<Task sr="task2">
+		<cdate>1778300000011</cdate>
+		<edate>1781595597754</edate>
+		<id>2</id>
+		<nme>RZ_MenuCmd</nme>
+		<pri>6</pri>
+		<Action sr="act0" ve="7">
+			<code>417</code>
+			<label>Lire menu_cmd.json</label>
+			<Str sr="arg0" ve="3">Tasker/RobotRZ/menu_cmd.json</Str>
+			<Str sr="arg1" ve="3">%RZ_MENU_JSON</Str>
+			<Int sr="arg2" val="1"/>
+		</Action>
+		<Action sr="act1" ve="7">
+			<code>129</code>
+			<label>Construire trame VPIV depuis json</label>
+			<Str sr="arg0" ve="3">var raw = global('RZ_MENU_JSON') || '';
+if (!raw.trim()) {
+    flash('RZ_MENU_JSON vide');
+} else {
+    var j = JSON.parse(raw.trim());
+    var trame = '$' + j.cat + ':' + j['var'] + ':' + j.prop + ':' + j.inst + ':' + j.val + '#';
+    setGlobal('RZvpivOut', trame);
+    writeFile('/sdcard/Tasker/RobotRZ/vpiv_out.txt', trame, false);
+}</Str>
+			<Str sr="arg1" ve="3"/>
+			<Int sr="arg2" val="0"/>
+			<Int sr="arg3">
+				<var>3</var>
+			</Int>
+		</Action>
+	</Task>
+	<Task sr="task20">
+		<cdate>1778667588311</cdate>
+		<edate>1778667588311</edate>
+		<id>20</id>
+		<pri>102</pri>
+		<Action sr="act0" ve="7">
+			<code>130</code>
+			<Str sr="arg0" ve="3">RZ_OuvreMenu</Str>
+			<Int sr="arg1">
+				<var>%priority</var>
+			</Int>
+			<Int sr="arg10" val="1"/>
+			<Str sr="arg2" ve="3"/>
+			<Str sr="arg3" ve="3"/>
+			<Str sr="arg4" ve="3"/>
+			<Int sr="arg5" val="0"/>
+			<Int sr="arg6" val="0"/>
+			<Str sr="arg7" ve="3"/>
+			<Int sr="arg8" val="0"/>
+			<Int sr="arg9" val="0"/>
+		</Action>
+	</Task>
+	<Task sr="task21">
+		<cdate>1779141231209</cdate>
+		<edate>1779177789412</edate>
+		<id>21</id>
+		<nme>RZ_EtatRefresh</nme>
+		<rty>1</rty>
+		<Action sr="act0" ve="7">
+			<code>30</code>
+			<Int sr="arg0" val="500"/>
+			<Int sr="arg1" val="0"/>
+			<Int sr="arg2" val="0"/>
+			<Int sr="arg3" val="0"/>
+			<Int sr="arg4" val="0"/>
+		</Action>
+		<Action sr="act1" ve="7">
+			<code>1256900802</code>
+			<label>Copie global.json de SE</label>
+			<Bundle sr="arg0">
+				<Vals sr="val">
+					<com.termux.execute.arguments>&lt;null&gt;</com.termux.execute.arguments>
+					<com.termux.execute.arguments-type>java.lang.String</com.termux.execute.arguments-type>
+					<com.termux.tasker.extra.BACKGROUND_CUSTOM_LOG_LEVEL>&lt;null&gt;</com.termux.tasker.extra.BACKGROUND_CUSTOM_LOG_LEVEL>
+					<com.termux.tasker.extra.BACKGROUND_CUSTOM_LOG_LEVEL-type>java.lang.String</com.termux.tasker.extra.BACKGROUND_CUSTOM_LOG_LEVEL-type>
+					<com.termux.tasker.extra.EXECUTABLE>rz_copy_global.sh</com.termux.tasker.extra.EXECUTABLE>
+					<com.termux.tasker.extra.EXECUTABLE-type>java.lang.String</com.termux.tasker.extra.EXECUTABLE-type>
+					<com.termux.tasker.extra.SESSION_ACTION>&lt;null&gt;</com.termux.tasker.extra.SESSION_ACTION>
+					<com.termux.tasker.extra.SESSION_ACTION-type>java.lang.String</com.termux.tasker.extra.SESSION_ACTION-type>
+					<com.termux.tasker.extra.STDIN>&lt;null&gt;</com.termux.tasker.extra.STDIN>
+					<com.termux.tasker.extra.STDIN-type>java.lang.String</com.termux.tasker.extra.STDIN-type>
+					<com.termux.tasker.extra.TERMINAL>false</com.termux.tasker.extra.TERMINAL>
+					<com.termux.tasker.extra.TERMINAL-type>java.lang.Boolean</com.termux.tasker.extra.TERMINAL-type>
+					<com.termux.tasker.extra.VERSION_CODE>1002</com.termux.tasker.extra.VERSION_CODE>
+					<com.termux.tasker.extra.VERSION_CODE-type>java.lang.Integer</com.termux.tasker.extra.VERSION_CODE-type>
+					<com.termux.tasker.extra.WAIT_FOR_RESULT>false</com.termux.tasker.extra.WAIT_FOR_RESULT>
+					<com.termux.tasker.extra.WAIT_FOR_RESULT-type>java.lang.Boolean</com.termux.tasker.extra.WAIT_FOR_RESULT-type>
+					<com.termux.tasker.extra.WORKDIR>&lt;null&gt;</com.termux.tasker.extra.WORKDIR>
+					<com.termux.tasker.extra.WORKDIR-type>java.lang.String</com.termux.tasker.extra.WORKDIR-type>
+					<com.twofortyfouram.locale.intent.extra.BLURB>rz_copy_global.sh
+
+Working Directory ✕
+Stdin ✕
+Custom Log Level null
+Terminal Session ✕
+Wait For Result ✕</com.twofortyfouram.locale.intent.extra.BLURB>
+					<com.twofortyfouram.locale.intent.extra.BLURB-type>java.lang.String</com.twofortyfouram.locale.intent.extra.BLURB-type>
+					<net.dinglisch.android.tasker.extras.VARIABLE_REPLACE_KEYS>com.termux.tasker.extra.EXECUTABLE com.termux.execute.arguments com.termux.tasker.extra.WORKDIR com.termux.tasker.extra.STDIN com.termux.tasker.extra.SESSION_ACTION com.termux.tasker.extra.BACKGROUND_CUSTOM_LOG_LEVEL</net.dinglisch.android.tasker.extras.VARIABLE_REPLACE_KEYS>
+					<net.dinglisch.android.tasker.extras.VARIABLE_REPLACE_KEYS-type>java.lang.String</net.dinglisch.android.tasker.extras.VARIABLE_REPLACE_KEYS-type>
+					<net.dinglisch.android.tasker.subbundled>true</net.dinglisch.android.tasker.subbundled>
+					<net.dinglisch.android.tasker.subbundled-type>java.lang.Boolean</net.dinglisch.android.tasker.subbundled-type>
+				</Vals>
+			</Bundle>
+			<Str sr="arg1" ve="3">com.termux.tasker</Str>
+			<Str sr="arg2" ve="3">com.termux.tasker.EditConfigurationActivity</Str>
+			<Int sr="arg3" val="10"/>
+			<Int sr="arg4" val="1"/>
+		</Action>
+		<Action sr="act2" ve="7">
+			<code>417</code>
+			<Str sr="arg0" ve="3">Tasker/RobotRZ/global.json</Str>
+			<Str sr="arg1" ve="3">%RZ_GLOBAL</Str>
+			<Int sr="arg2" val="1"/>
+		</Action>
+		<Action sr="act3" ve="7">
+			<code>129</code>
+			<Str sr="arg0" ve="3">var raw = global('RZ_GLOBAL') || '{}';
+var g = {};
+try { g = JSON.parse(raw); } catch(e) { g = {}; }
+var MODES  = {0:'ARRET',1:'VEILLE',2:'FIXE',3:'DEPLACEMENT',4:'AUTONOME',5:'ERREUR'};
+var PTGE   = {0:'Ecran',1:'Vocal',2:'Manette',3:'Laisse',4:'Laisse+Vocal'};
+var modeVal = g.CfgS ? (g.CfgS.modeRZ  !== undefined ? g.CfgS.modeRZ  : '?') : '?';
+var ptgeVal = g.CfgS ? (g.CfgS.typePtge !== undefined ? g.CfgS.typePtge : '?') : '?';
+var reseau  = g.CfgS ? (g.CfgS.typeReseau || '?') : '?';
+setGlobal('RZetatMode',     MODES[modeVal] || ('Mode '+modeVal));
+setGlobal('RZetatPtge',     PTGE[ptgeVal]  || ('Ptge '+ptgeVal));
+setGlobal('RZetatReseau',   reseau);
+setGlobal('RZetatIpSE',     (g.Sys &amp;&amp; g.Sys.ipSE) ? g.Sys.ipSE : '192.168.1.12');
+var ipSP = '?';
+if      (reseau==='WifiInternetBox') ipSP='192.168.1.40 (local)';
+else if (reseau==='Wifi4KSP')        ipSP='DuckDNS (4G SP)';
+else if (reseau==='WifiSPSsI')       ipSP='SP Smart local';
+else if (reseau==='4K')              ipSP='DuckDNS (SIM SE)';
+setGlobal('RZetatIpSP', ipSP);
+var CTX = {
+    'WifiInternetBox':'Wi-Fi box maison - SP RPI local',
+    'Wifi4KSP':       'Wi-Fi partage SP - SP RPI DuckDNS',
+    'WifiSPSsI':      'Wi-Fi SP sans internet - SP Smart local',
+    '4K':             'SIM SE - SP RPI via DuckDNS'
+};
+setGlobal('RZetatCtxReseau', CTX[reseau] || reseau);
+var d = new Date();
+setGlobal('RZetatTs', d.getHours()+':'+('0'+d.getMinutes()).slice(-2)+':'+('0'+d.getSeconds()).slice(-2));
+performTask('RZ_EtatMajScene', 5);
+performTask('RZ_EtatRefresh', 5);</Str>
+			<Str sr="arg1" ve="3"/>
+			<Int sr="arg2" val="1"/>
+			<Int sr="arg3" val="45"/>
+		</Action>
+	</Task>
+	<Task sr="task22">
+		<cdate>1778900000020</cdate>
+		<edate>1778900000020</edate>
+		<id>22</id>
+		<pri>102</pri>
+		<Action sr="act0" ve="7">
+			<code>130</code>
+			<Str sr="arg0" ve="3">RZ_AppStop</Str>
+			<Int sr="arg1" val="0"/>
+			<Int sr="arg10" val="1"/>
+			<Str sr="arg2" ve="3"/>
+			<Str sr="arg3" ve="3"/>
+			<Str sr="arg4" ve="3"/>
+			<Int sr="arg5" val="0"/>
+			<Int sr="arg6" val="0"/>
+			<Str sr="arg7" ve="3"/>
+			<Int sr="arg8" val="0"/>
+			<Int sr="arg9" val="0"/>
+		</Action>
+	</Task>
+	<Task sr="task23">
+		<cdate>1778900000002</cdate>
+		<edate>1779140368521</edate>
+		<id>23</id>
+		<nme>RZ_AppStop</nme>
+		<Action sr="act0" ve="7">
+			<code>49</code>
+			<label>Détruire overlay</label>
+			<Str sr="arg0" ve="3">RZ_FermeOverlay</Str>
+		</Action>
+		<Action sr="act1" ve="7">
+			<code>47</code>
+			<label>RZ_Expression au premier plan</label>
+			<Str sr="arg0" ve="3">RZ_Expression</Str>
+			<Int sr="arg1" val="6"/>
+			<Int sr="arg10" val="1"/>
+			<Int sr="arg2" val="100"/>
+			<Int sr="arg3" val="100"/>
+			<Int sr="arg4" val="0"/>
+			<Int sr="arg5" val="1"/>
+			<Int sr="arg6" val="1"/>
+			<Int sr="arg7" val="1"/>
+			<Int sr="arg8" val="1"/>
+			<Int sr="arg9" val="1"/>
+		</Action>
+		<Action sr="act10" ve="7">
+			<code>130</code>
+			<label>Retour expression si état B</label>
+			<Str sr="arg0" ve="3">RZ_ExprNeutre</Str>
+			<Int sr="arg1" val="0"/>
+			<Int sr="arg10" val="0"/>
+			<Str sr="arg2" ve="3"/>
+			<Str sr="arg3" ve="3"/>
+			<Str sr="arg4" ve="3"/>
+			<Int sr="arg5" val="0"/>
+			<Int sr="arg6" val="0"/>
+			<Str sr="arg7" ve="3"/>
+			<Int sr="arg8" val="0"/>
+			<Int sr="arg9" val="0"/>
+			<ConditionList sr="if">
+				<Condition sr="c0" ve="3">
+					<lhs>%RZecranPrev</lhs>
+					<op>2</op>
+					<rhs>B</rhs>
+				</Condition>
+			</ConditionList>
+		</Action>
+		<Action sr="act2" ve="7">
+			<code>30</code>
+			<Int sr="arg0" val="500"/>
+			<Int sr="arg1" val="0"/>
+			<Int sr="arg2" val="0"/>
+			<Int sr="arg3" val="0"/>
+			<Int sr="arg4" val="0"/>
+		</Action>
+		<Action sr="act3" ve="7">
+			<code>129</code>
+			<label>Fallback %RZappliTask si vide</label>
+			<se>false</se>
+			<Str sr="arg0" ve="3">var task = global('RZappliTask');
+var nom = global('RZappliActive');
+if (!task || task === '') {
+    var map = {'Zoom':'RZ_Zoom','Maps':'RZ_Maps'};
+    task = map[nom] || '';
+    if (task) { setGlobal('RZappliTask', task); }
+}
+flash('AppStop: task=' + task + ' nom=' + nom);</Str>
+			<Str sr="arg1" ve="3"/>
+			<Int sr="arg2" val="1"/>
+			<Int sr="arg3" val="5"/>
+		</Action>
+		<Action sr="act4" ve="7">
+			<code>547</code>
+			<label>%RZparam = Off</label>
+			<Str sr="arg0" ve="3">%RZparam</Str>
+			<Str sr="arg1" ve="3">Off</Str>
+			<Int sr="arg2" val="0"/>
+			<Int sr="arg3" val="0"/>
+			<Int sr="arg4" val="0"/>
+			<Int sr="arg5" val="3"/>
+			<Int sr="arg6" val="1"/>
+		</Action>
+		<Action sr="act5" ve="7">
+			<code>130</code>
+			<label>Fermer appli via %RZappliTask</label>
+			<Str sr="arg0" ve="3">%RZappliTask</Str>
+			<Int sr="arg1" val="0"/>
+			<Int sr="arg10" val="0"/>
+			<Str sr="arg2" ve="3"/>
+			<Str sr="arg3" ve="3"/>
+			<Str sr="arg4" ve="3"/>
+			<Int sr="arg5" val="0"/>
+			<Int sr="arg6" val="0"/>
+			<Str sr="arg7" ve="3"/>
+			<Int sr="arg8" val="0"/>
+			<Int sr="arg9" val="0"/>
+			<ConditionList sr="if">
+				<Condition sr="c0" ve="3">
+					<lhs>%RZappliTask</lhs>
+					<op>3</op>
+					<rhs></rhs>
+				</Condition>
+			</ConditionList>
+		</Action>
+		<Action sr="act6" ve="7">
+			<code>410</code>
+			<label>ACK fermeture vers SP</label>
+			<Str sr="arg0" ve="3">Tasker/RobotRZ/vpiv_out.txt</Str>
+			<Str sr="arg1" ve="3">$I:Appli:%RZappliActive:*:Off#</Str>
+			<Int sr="arg2" val="0"/>
+			<Int sr="arg3" val="1"/>
+		</Action>
+		<Action sr="act7" ve="7">
+			<code>547</code>
+			<label>Restaurer état écran</label>
+			<Str sr="arg0" ve="3">%RZecranEtat</Str>
+			<Str sr="arg1" ve="3">%RZecranPrev</Str>
+			<Int sr="arg2" val="0"/>
+			<Int sr="arg3" val="0"/>
+			<Int sr="arg4" val="0"/>
+			<Int sr="arg5" val="3"/>
+			<Int sr="arg6" val="1"/>
+		</Action>
+		<Action sr="act8" ve="7">
+			<code>549</code>
+			<Str sr="arg0" ve="3">%RZappliActive</Str>
+			<Int sr="arg1" val="0"/>
+			<Int sr="arg2" val="0"/>
+			<Int sr="arg3" val="0"/>
+		</Action>
+		<Action sr="act9" ve="7">
+			<code>549</code>
+			<Str sr="arg0" ve="3">%RZappliTask</Str>
+			<Int sr="arg1" val="0"/>
+			<Int sr="arg2" val="0"/>
+			<Int sr="arg3" val="0"/>
+		</Action>
+	</Task>
+	<Task sr="task24">
+		<cdate>1779171155064</cdate>
+		<edate>1779176271435</edate>
+		<id>24</id>
+		<nme>RZ_EtatMajScene</nme>
+		<Action sr="act0" ve="7">
+			<code>51</code>
+			<Str sr="arg0" ve="3">RZ_Etat</Str>
+			<Str sr="arg1" ve="3">val_mode</Str>
+			<Int sr="arg2" val="0"/>
+			<Str sr="arg3" ve="3">%RZetatMode</Str>
+			<Str sr="arg4" ve="3"/>
+		</Action>
+		<Action sr="act1" ve="7">
+			<code>51</code>
+			<Str sr="arg0" ve="3">RZ_Etat</Str>
+			<Str sr="arg1" ve="3">val_ptge</Str>
+			<Int sr="arg2" val="0"/>
+			<Str sr="arg3" ve="3">%RZetatPtge</Str>
+			<Str sr="arg4" ve="3"/>
+		</Action>
+		<Action sr="act2" ve="7">
+			<code>51</code>
+			<Str sr="arg0" ve="3">RZ_Etat</Str>
+			<Str sr="arg1" ve="3">val_reseau</Str>
+			<Int sr="arg2" val="0"/>
+			<Str sr="arg3" ve="3">%RZetatReseau</Str>
+			<Str sr="arg4" ve="3"/>
+		</Action>
+		<Action sr="act3" ve="7">
+			<code>51</code>
+			<Str sr="arg0" ve="3">RZ_Etat</Str>
+			<Str sr="arg1" ve="3">val_ip_se</Str>
+			<Int sr="arg2" val="0"/>
+			<Str sr="arg3" ve="3">%RZetatIpSE</Str>
+			<Str sr="arg4" ve="3"/>
+		</Action>
+		<Action sr="act4" ve="7">
+			<code>51</code>
+			<Str sr="arg0" ve="3">RZ_Etat</Str>
+			<Str sr="arg1" ve="3">val_ip_sp</Str>
+			<Int sr="arg2" val="0"/>
+			<Str sr="arg3" ve="3">%RZetatIpSP</Str>
+			<Str sr="arg4" ve="3"/>
+		</Action>
+		<Action sr="act5" ve="7">
+			<code>51</code>
+			<Str sr="arg0" ve="3">RZ_Etat</Str>
+			<Str sr="arg1" ve="3">val_ctx_reseau</Str>
+			<Int sr="arg2" val="0"/>
+			<Str sr="arg3" ve="3">%RZetatCtxReseau</Str>
+			<Str sr="arg4" ve="3"/>
+		</Action>
+		<Action sr="act6" ve="7">
+			<code>51</code>
+			<Str sr="arg0" ve="3">RZ_Etat</Str>
+			<Str sr="arg1" ve="3">Val_ts</Str>
+			<Int sr="arg2" val="0"/>
+			<Str sr="arg3" ve="3">%RZetatTs</Str>
+			<Str sr="arg4" ve="3"/>
+		</Action>
+	</Task>
+	<Task sr="task25">
+		<cdate>1779176973712</cdate>
+		<edate>1779176973712</edate>
+		<id>25</id>
+		<pri>2</pri>
+		<Action sr="act0" ve="7">
+			<code>130</code>
+			<Str sr="arg0" ve="3">RZ_FermeEtat</Str>
+			<Int sr="arg1">
+				<var>%priority</var>
+			</Int>
+			<Int sr="arg10" val="1"/>
+			<Str sr="arg2" ve="3"/>
+			<Str sr="arg3" ve="3"/>
+			<Str sr="arg4" ve="3"/>
+			<Int sr="arg5" val="0"/>
+			<Int sr="arg6" val="0"/>
+			<Str sr="arg7" ve="3"/>
+			<Int sr="arg8" val="0"/>
+			<Int sr="arg9" val="0"/>
+		</Action>
+	</Task>
+	<Task sr="task26">
+		<cdate>1781687926840</cdate>
+		<edate>1781688886642</edate>
+		<id>26</id>
+		<nme>RZ_IA_Conv</nme>
+		<pri>100</pri>
+		<Action sr="act0" ve="7">
+			<code>37</code>
+			<ConditionList sr="if">
+				<Condition sr="c0" ve="3">
+					<lhs>%par1</lhs>
+					<op>2</op>
+					<rhs>On</rhs>
+				</Condition>
+			</ConditionList>
+		</Action>
+		<Action sr="act1" ve="7">
+			<code>130</code>
+			<Str sr="arg0" ve="3">RZ_GeminiStart</Str>
+			<Int sr="arg1">
+				<var>%priority</var>
+			</Int>
+			<Int sr="arg10" val="1"/>
+			<Str sr="arg2" ve="3"/>
+			<Str sr="arg3" ve="3"/>
+			<Str sr="arg4" ve="3"/>
+			<Int sr="arg5" val="0"/>
+			<Int sr="arg6" val="0"/>
+			<Str sr="arg7" ve="3"/>
+			<Int sr="arg8" val="0"/>
+			<Int sr="arg9" val="0"/>
+		</Action>
+		<Action sr="act2" ve="7">
+			<code>38</code>
+		</Action>
+		<Action sr="act3" ve="7">
+			<code>37</code>
+			<ConditionList sr="if">
+				<Condition sr="c0" ve="3">
+					<lhs>%par1</lhs>
+					<op>2</op>
+					<rhs>Off</rhs>
+				</Condition>
+			</ConditionList>
+		</Action>
+		<Action sr="act4" ve="7">
+			<code>130</code>
+			<Str sr="arg0" ve="3">RZ_GeminiStop</Str>
+			<Int sr="arg1">
+				<var>%priority</var>
+			</Int>
+			<Int sr="arg10" val="1"/>
+			<Str sr="arg2" ve="3"/>
+			<Str sr="arg3" ve="3"/>
+			<Str sr="arg4" ve="3"/>
+			<Int sr="arg5" val="0"/>
+			<Int sr="arg6" val="0"/>
+			<Str sr="arg7" ve="3"/>
+			<Int sr="arg8" val="0"/>
+			<Int sr="arg9" val="0"/>
+		</Action>
+		<Action sr="act5" ve="7">
+			<code>38</code>
+		</Action>
+	</Task>
+	<Task sr="task27">
+		<cdate>1781688905277</cdate>
+		<edate>1781688965033</edate>
+		<id>27</id>
+		<nme>TestIAConv</nme>
+		<Action sr="act0" ve="7">
+			<code>130</code>
+			<Str sr="arg0" ve="3">RZ_IA_Conv</Str>
+			<Int sr="arg1">
+				<var>%priority</var>
+			</Int>
+			<Int sr="arg10" val="1"/>
+			<Str sr="arg2" ve="3">On</Str>
+			<Str sr="arg3" ve="3"/>
+			<Str sr="arg4" ve="3"/>
+			<Int sr="arg5" val="0"/>
+			<Int sr="arg6" val="0"/>
+			<Str sr="arg7" ve="3"/>
+			<Int sr="arg8" val="0"/>
+			<Int sr="arg9" val="0"/>
+		</Action>
+	</Task>
+	<Task sr="task29">
+		<cdate>1780517086310</cdate>
+		<edate>1781008763998</edate>
+		<id>29</id>
+		<nme>RZ_VoiceError</nme>
+		<Action sr="act0" ve="7">
+			<code>1256900802</code>
+			<se>false</se>
+			<Bundle sr="arg0">
+				<Vals sr="val">
+					<com.termux.execute.arguments>ERROR:recognition_failed</com.termux.execute.arguments>
+					<com.termux.execute.arguments-type>java.lang.String</com.termux.execute.arguments-type>
+					<com.termux.tasker.extra.BACKGROUND_CUSTOM_LOG_LEVEL>&lt;null&gt;</com.termux.tasker.extra.BACKGROUND_CUSTOM_LOG_LEVEL>
+					<com.termux.tasker.extra.BACKGROUND_CUSTOM_LOG_LEVEL-type>java.lang.String</com.termux.tasker.extra.BACKGROUND_CUSTOM_LOG_LEVEL-type>
+					<com.termux.tasker.extra.EXECUTABLE>rz_autovoice_bridge.sh</com.termux.tasker.extra.EXECUTABLE>
+					<com.termux.tasker.extra.EXECUTABLE-type>java.lang.String</com.termux.tasker.extra.EXECUTABLE-type>
+					<com.termux.tasker.extra.SESSION_ACTION>&lt;null&gt;</com.termux.tasker.extra.SESSION_ACTION>
+					<com.termux.tasker.extra.SESSION_ACTION-type>java.lang.String</com.termux.tasker.extra.SESSION_ACTION-type>
+					<com.termux.tasker.extra.STDIN>&lt;null&gt;</com.termux.tasker.extra.STDIN>
+					<com.termux.tasker.extra.STDIN-type>java.lang.String</com.termux.tasker.extra.STDIN-type>
+					<com.termux.tasker.extra.TERMINAL>false</com.termux.tasker.extra.TERMINAL>
+					<com.termux.tasker.extra.TERMINAL-type>java.lang.Boolean</com.termux.tasker.extra.TERMINAL-type>
+					<com.termux.tasker.extra.VERSION_CODE>1002</com.termux.tasker.extra.VERSION_CODE>
+					<com.termux.tasker.extra.VERSION_CODE-type>java.lang.Integer</com.termux.tasker.extra.VERSION_CODE-type>
+					<com.termux.tasker.extra.WAIT_FOR_RESULT>false</com.termux.tasker.extra.WAIT_FOR_RESULT>
+					<com.termux.tasker.extra.WAIT_FOR_RESULT-type>java.lang.Boolean</com.termux.tasker.extra.WAIT_FOR_RESULT-type>
+					<com.termux.tasker.extra.WORKDIR>&lt;null&gt;</com.termux.tasker.extra.WORKDIR>
+					<com.termux.tasker.extra.WORKDIR-type>java.lang.String</com.termux.tasker.extra.WORKDIR-type>
+					<com.twofortyfouram.locale.intent.extra.BLURB>rz_autovoice_bridge.sh ERROR:recognition_fa
+
+Working Directory ✕
+Stdin ✕
+Custom Log Level null
+Terminal Session ✕
+Wait F</com.twofortyfouram.locale.intent.extra.BLURB>
+					<com.twofortyfouram.locale.intent.extra.BLURB-type>java.lang.String</com.twofortyfouram.locale.intent.extra.BLURB-type>
+					<net.dinglisch.android.tasker.extras.VARIABLE_REPLACE_KEYS>com.termux.tasker.extra.EXECUTABLE com.termux.execute.arguments com.termux.tasker.extra.WORKDIR com.termux.tasker.extra.STDIN com.termux.tasker.extra.SESSION_ACTION com.termux.tasker.extra.BACKGROUND_CUSTOM_LOG_LEVEL</net.dinglisch.android.tasker.extras.VARIABLE_REPLACE_KEYS>
+					<net.dinglisch.android.tasker.extras.VARIABLE_REPLACE_KEYS-type>java.lang.String</net.dinglisch.android.tasker.extras.VARIABLE_REPLACE_KEYS-type>
+					<net.dinglisch.android.tasker.subbundled>true</net.dinglisch.android.tasker.subbundled>
+					<net.dinglisch.android.tasker.subbundled-type>java.lang.Boolean</net.dinglisch.android.tasker.subbundled-type>
+				</Vals>
+			</Bundle>
+			<Str sr="arg1" ve="3">com.termux.tasker</Str>
+			<Str sr="arg2" ve="3">com.termux.tasker.EditConfigurationActivity</Str>
+			<Int sr="arg3" val="5"/>
+			<Int sr="arg4" val="0"/>
+		</Action>
+	</Task>
+	<Task sr="task3">
+		<cdate>1778163378243</cdate>
+		<edate>1778948298942</edate>
+		<id>3</id>
+		<nme>RZ_ExprNeutre</nme>
+		<pri>100</pri>
+		<Action sr="act0" ve="7">
+			<code>547</code>
+			<Str sr="arg0" ve="3">%RZemoji_defaut</Str>
+			<Str sr="arg1" ve="3">😐</Str>
+			<Int sr="arg2" val="0"/>
+			<Int sr="arg3" val="0"/>
+			<Int sr="arg4" val="0"/>
+			<Int sr="arg5" val="3"/>
+			<Int sr="arg6" val="1"/>
+		</Action>
+		<Action sr="act1" ve="7">
+			<code>547</code>
+			<Str sr="arg0" ve="3">%RZparam</Str>
+			<Str sr="arg1" ve="3">neutre</Str>
+			<Int sr="arg2" val="0"/>
+			<Int sr="arg3" val="0"/>
+			<Int sr="arg4" val="0"/>
+			<Int sr="arg5" val="3"/>
+			<Int sr="arg6" val="1"/>
+		</Action>
+		<Action sr="act2" ve="7">
+			<code>547</code>
+			<Str sr="arg0" ve="3">%RZretourNeutre</Str>
+			<Str sr="arg1" ve="3">0</Str>
+			<Int sr="arg2" val="0"/>
+			<Int sr="arg3" val="0"/>
+			<Int sr="arg4" val="0"/>
+			<Int sr="arg5" val="3"/>
+			<Int sr="arg6" val="1"/>
+		</Action>
+		<Action sr="act3" ve="7">
+			<code>47</code>
+			<label>afficher expression</label>
+			<Str sr="arg0" ve="3">RZ_Expression</Str>
+			<Int sr="arg1" val="3"/>
+			<Int sr="arg10" val="1"/>
+			<Int sr="arg2" val="100"/>
+			<Int sr="arg3" val="100"/>
+			<Int sr="arg4" val="0"/>
+			<Int sr="arg5" val="1"/>
+			<Int sr="arg6" val="1"/>
+			<Int sr="arg7" val="1"/>
+			<Int sr="arg8" val="1"/>
+			<Int sr="arg9" val="1"/>
+		</Action>
+		<Action sr="act4" ve="7">
+			<code>30</code>
+			<Int sr="arg0" val="500"/>
+			<Int sr="arg1" val="0"/>
+			<Int sr="arg2" val="0"/>
+			<Int sr="arg3" val="0"/>
+			<Int sr="arg4" val="0"/>
+		</Action>
+		<Action sr="act5" ve="7">
+			<code>51</code>
+			<Str sr="arg0" ve="3">RZ_Expression</Str>
+			<Str sr="arg1" ve="3">emoji_expression</Str>
+			<Int sr="arg2" val="0"/>
+			<Str sr="arg3" ve="3">%RZemoji_defaut</Str>
+			<Str sr="arg4" ve="3"/>
+		</Action>
+	</Task>
+	<Task sr="task32">
+		<cdate>1778200000000</cdate>
+		<edate>1779194461475</edate>
+		<id>32</id>
+		<nme>RZ_TorchOn</nme>
+		<pri>100</pri>
+		<Action sr="act0" ve="7">
+			<code>1256900802</code>
+			<Bundle sr="arg0">
+				<Vals sr="val">
+					<com.termux.execute.arguments>On</com.termux.execute.arguments>
+					<com.termux.execute.arguments-type>java.lang.String</com.termux.execute.arguments-type>
+					<com.termux.tasker.extra.BACKGROUND_CUSTOM_LOG_LEVEL>&lt;null&gt;</com.termux.tasker.extra.BACKGROUND_CUSTOM_LOG_LEVEL>
+					<com.termux.tasker.extra.BACKGROUND_CUSTOM_LOG_LEVEL-type>java.lang.String</com.termux.tasker.extra.BACKGROUND_CUSTOM_LOG_LEVEL-type>
+					<com.termux.tasker.extra.EXECUTABLE>rz_torch.sh</com.termux.tasker.extra.EXECUTABLE>
+					<com.termux.tasker.extra.EXECUTABLE-type>java.lang.String</com.termux.tasker.extra.EXECUTABLE-type>
+					<com.termux.tasker.extra.SESSION_ACTION>&lt;null&gt;</com.termux.tasker.extra.SESSION_ACTION>
+					<com.termux.tasker.extra.SESSION_ACTION-type>java.lang.String</com.termux.tasker.extra.SESSION_ACTION-type>
+					<com.termux.tasker.extra.STDIN>&lt;null&gt;</com.termux.tasker.extra.STDIN>
+					<com.termux.tasker.extra.STDIN-type>java.lang.String</com.termux.tasker.extra.STDIN-type>
+					<com.termux.tasker.extra.TERMINAL>false</com.termux.tasker.extra.TERMINAL>
+					<com.termux.tasker.extra.TERMINAL-type>java.lang.Boolean</com.termux.tasker.extra.TERMINAL-type>
+					<com.termux.tasker.extra.VERSION_CODE>1002</com.termux.tasker.extra.VERSION_CODE>
+					<com.termux.tasker.extra.VERSION_CODE-type>java.lang.Integer</com.termux.tasker.extra.VERSION_CODE-type>
+					<com.termux.tasker.extra.WAIT_FOR_RESULT>true</com.termux.tasker.extra.WAIT_FOR_RESULT>
+					<com.termux.tasker.extra.WAIT_FOR_RESULT-type>java.lang.Boolean</com.termux.tasker.extra.WAIT_FOR_RESULT-type>
+					<com.termux.tasker.extra.WORKDIR>&lt;null&gt;</com.termux.tasker.extra.WORKDIR>
+					<com.termux.tasker.extra.WORKDIR-type>java.lang.String</com.termux.tasker.extra.WORKDIR-type>
+					<com.twofortyfouram.locale.intent.extra.BLURB>rz_torch.sh On
+
+Working Directory ✕
+Stdin ✕
+Custom Log Level null
+Terminal Session ✕
+Wait For Result ✓</com.twofortyfouram.locale.intent.extra.BLURB>
+					<com.twofortyfouram.locale.intent.extra.BLURB-type>java.lang.String</com.twofortyfouram.locale.intent.extra.BLURB-type>
+					<net.dinglisch.android.tasker.RELEVANT_VARIABLES>&lt;StringArray sr=""&gt;&lt;_array_net.dinglisch.android.tasker.RELEVANT_VARIABLES0&gt;%stdout
+Standard Output
+The &amp;lt;B&amp;gt;stdout&amp;lt;/B&amp;gt; of the command.&lt;/_array_net.dinglisch.android.tasker.RELEVANT_VARIABLES0&gt;&lt;_array_net.dinglisch.android.tasker.RELEVANT_VARIABLES1&gt;%stdout_original_length
+Standard Output Original Length
+The original length of &amp;lt;B&amp;gt;stdout&amp;lt;/B&amp;gt;.&lt;/_array_net.dinglisch.android.tasker.RELEVANT_VARIABLES1&gt;&lt;_array_net.dinglisch.android.tasker.RELEVANT_VARIABLES2&gt;%stderr
+Standard Error
+The &amp;lt;B&amp;gt;stderr&amp;lt;/B&amp;gt; of the command.&lt;/_array_net.dinglisch.android.tasker.RELEVANT_VARIABLES2&gt;&lt;_array_net.dinglisch.android.tasker.RELEVANT_VARIABLES3&gt;%stderr_original_length
+Standard Error Original Length
+The original length of &amp;lt;B&amp;gt;stderr&amp;lt;/B&amp;gt;.&lt;/_array_net.dinglisch.android.tasker.RELEVANT_VARIABLES3&gt;&lt;_array_net.dinglisch.android.tasker.RELEVANT_VARIABLES4&gt;%result
+Exit Code
+The &amp;lt;B&amp;gt;exit code&amp;lt;/B&amp;gt; of the command.0 often means success and anything else is usually a failure of some sort.&lt;/_array_net.dinglisch.android.tasker.RELEVANT_VARIABLES4&gt;&lt;/StringArray&gt;</net.dinglisch.android.tasker.RELEVANT_VARIABLES>
+					<net.dinglisch.android.tasker.RELEVANT_VARIABLES-type>[Ljava.lang.String;</net.dinglisch.android.tasker.RELEVANT_VARIABLES-type>
+					<net.dinglisch.android.tasker.extras.VARIABLE_REPLACE_KEYS>com.termux.tasker.extra.EXECUTABLE com.termux.execute.arguments com.termux.tasker.extra.WORKDIR com.termux.tasker.extra.STDIN com.termux.tasker.extra.SESSION_ACTION com.termux.tasker.extra.BACKGROUND_CUSTOM_LOG_LEVEL</net.dinglisch.android.tasker.extras.VARIABLE_REPLACE_KEYS>
+					<net.dinglisch.android.tasker.extras.VARIABLE_REPLACE_KEYS-type>java.lang.String</net.dinglisch.android.tasker.extras.VARIABLE_REPLACE_KEYS-type>
+					<net.dinglisch.android.tasker.subbundled>true</net.dinglisch.android.tasker.subbundled>
+					<net.dinglisch.android.tasker.subbundled-type>java.lang.Boolean</net.dinglisch.android.tasker.subbundled-type>
+				</Vals>
+			</Bundle>
+			<Str sr="arg1" ve="3">com.termux.tasker</Str>
+			<Str sr="arg2" ve="3">com.termux.tasker.EditConfigurationActivity</Str>
+			<Int sr="arg3" val="10"/>
+			<Int sr="arg4" val="1"/>
+		</Action>
+		<Action sr="act1" ve="7">
+			<code>547</code>
+			<label>Mettre à jour état torche</label>
+			<Str sr="arg0" ve="3">%RZtorchEtat</Str>
+			<Str sr="arg1" ve="3">On</Str>
+			<Int sr="arg2" val="0"/>
+			<Int sr="arg3" val="0"/>
+			<Int sr="arg4" val="0"/>
+			<Int sr="arg5" val="3"/>
+			<Int sr="arg6" val="1"/>
+		</Action>
+	</Task>
+	<Task sr="task33">
+		<cdate>1778200000001</cdate>
+		<edate>1779194430336</edate>
+		<id>33</id>
+		<nme>RZ_TorchOff</nme>
+		<pri>100</pri>
+		<Action sr="act0" ve="7">
+			<code>1256900802</code>
+			<Bundle sr="arg0">
+				<Vals sr="val">
+					<com.termux.execute.arguments>Off</com.termux.execute.arguments>
+					<com.termux.execute.arguments-type>java.lang.String</com.termux.execute.arguments-type>
+					<com.termux.tasker.extra.BACKGROUND_CUSTOM_LOG_LEVEL>&lt;null&gt;</com.termux.tasker.extra.BACKGROUND_CUSTOM_LOG_LEVEL>
+					<com.termux.tasker.extra.BACKGROUND_CUSTOM_LOG_LEVEL-type>java.lang.String</com.termux.tasker.extra.BACKGROUND_CUSTOM_LOG_LEVEL-type>
+					<com.termux.tasker.extra.EXECUTABLE>rz_torch.sh</com.termux.tasker.extra.EXECUTABLE>
+					<com.termux.tasker.extra.EXECUTABLE-type>java.lang.String</com.termux.tasker.extra.EXECUTABLE-type>
+					<com.termux.tasker.extra.SESSION_ACTION>&lt;null&gt;</com.termux.tasker.extra.SESSION_ACTION>
+					<com.termux.tasker.extra.SESSION_ACTION-type>java.lang.String</com.termux.tasker.extra.SESSION_ACTION-type>
+					<com.termux.tasker.extra.STDIN>&lt;null&gt;</com.termux.tasker.extra.STDIN>
+					<com.termux.tasker.extra.STDIN-type>java.lang.String</com.termux.tasker.extra.STDIN-type>
+					<com.termux.tasker.extra.TERMINAL>false</com.termux.tasker.extra.TERMINAL>
+					<com.termux.tasker.extra.TERMINAL-type>java.lang.Boolean</com.termux.tasker.extra.TERMINAL-type>
+					<com.termux.tasker.extra.VERSION_CODE>1002</com.termux.tasker.extra.VERSION_CODE>
+					<com.termux.tasker.extra.VERSION_CODE-type>java.lang.Integer</com.termux.tasker.extra.VERSION_CODE-type>
+					<com.termux.tasker.extra.WAIT_FOR_RESULT>true</com.termux.tasker.extra.WAIT_FOR_RESULT>
+					<com.termux.tasker.extra.WAIT_FOR_RESULT-type>java.lang.Boolean</com.termux.tasker.extra.WAIT_FOR_RESULT-type>
+					<com.termux.tasker.extra.WORKDIR>&lt;null&gt;</com.termux.tasker.extra.WORKDIR>
+					<com.termux.tasker.extra.WORKDIR-type>java.lang.String</com.termux.tasker.extra.WORKDIR-type>
+					<com.twofortyfouram.locale.intent.extra.BLURB>rz_torch.sh Off
+
+Working Directory ✕
+Stdin ✕
+Custom Log Level null
+Terminal Session ✕
+Wait For Result ✓</com.twofortyfouram.locale.intent.extra.BLURB>
+					<com.twofortyfouram.locale.intent.extra.BLURB-type>java.lang.String</com.twofortyfouram.locale.intent.extra.BLURB-type>
+					<net.dinglisch.android.tasker.RELEVANT_VARIABLES>&lt;StringArray sr=""&gt;&lt;_array_net.dinglisch.android.tasker.RELEVANT_VARIABLES0&gt;%stdout
+Standard Output
+The &amp;lt;B&amp;gt;stdout&amp;lt;/B&amp;gt; of the command.&lt;/_array_net.dinglisch.android.tasker.RELEVANT_VARIABLES0&gt;&lt;_array_net.dinglisch.android.tasker.RELEVANT_VARIABLES1&gt;%stdout_original_length
+Standard Output Original Length
+The original length of &amp;lt;B&amp;gt;stdout&amp;lt;/B&amp;gt;.&lt;/_array_net.dinglisch.android.tasker.RELEVANT_VARIABLES1&gt;&lt;_array_net.dinglisch.android.tasker.RELEVANT_VARIABLES2&gt;%stderr
+Standard Error
+The &amp;lt;B&amp;gt;stderr&amp;lt;/B&amp;gt; of the command.&lt;/_array_net.dinglisch.android.tasker.RELEVANT_VARIABLES2&gt;&lt;_array_net.dinglisch.android.tasker.RELEVANT_VARIABLES3&gt;%stderr_original_length
+Standard Error Original Length
+The original length of &amp;lt;B&amp;gt;stderr&amp;lt;/B&amp;gt;.&lt;/_array_net.dinglisch.android.tasker.RELEVANT_VARIABLES3&gt;&lt;_array_net.dinglisch.android.tasker.RELEVANT_VARIABLES4&gt;%result
+Exit Code
+The &amp;lt;B&amp;gt;exit code&amp;lt;/B&amp;gt; of the command.0 often means success and anything else is usually a failure of some sort.&lt;/_array_net.dinglisch.android.tasker.RELEVANT_VARIABLES4&gt;&lt;/StringArray&gt;</net.dinglisch.android.tasker.RELEVANT_VARIABLES>
+					<net.dinglisch.android.tasker.RELEVANT_VARIABLES-type>[Ljava.lang.String;</net.dinglisch.android.tasker.RELEVANT_VARIABLES-type>
+					<net.dinglisch.android.tasker.extras.VARIABLE_REPLACE_KEYS>com.termux.tasker.extra.EXECUTABLE com.termux.execute.arguments com.termux.tasker.extra.WORKDIR com.termux.tasker.extra.STDIN com.termux.tasker.extra.SESSION_ACTION com.termux.tasker.extra.BACKGROUND_CUSTOM_LOG_LEVEL</net.dinglisch.android.tasker.extras.VARIABLE_REPLACE_KEYS>
+					<net.dinglisch.android.tasker.extras.VARIABLE_REPLACE_KEYS-type>java.lang.String</net.dinglisch.android.tasker.extras.VARIABLE_REPLACE_KEYS-type>
+					<net.dinglisch.android.tasker.subbundled>true</net.dinglisch.android.tasker.subbundled>
+					<net.dinglisch.android.tasker.subbundled-type>java.lang.Boolean</net.dinglisch.android.tasker.subbundled-type>
+				</Vals>
+			</Bundle>
+			<Str sr="arg1" ve="3">com.termux.tasker</Str>
+			<Str sr="arg2" ve="3">com.termux.tasker.EditConfigurationActivity</Str>
+			<Int sr="arg3" val="10"/>
+			<Int sr="arg4" val="1"/>
+		</Action>
+		<Action sr="act1" ve="7">
+			<code>547</code>
+			<label>Mettre à jour état torche</label>
+			<Str sr="arg0" ve="3">%RZtorchEtat</Str>
+			<Str sr="arg1" ve="3">Off</Str>
+			<Int sr="arg2" val="0"/>
+			<Int sr="arg3" val="0"/>
+			<Int sr="arg4" val="0"/>
+			<Int sr="arg5" val="3"/>
+			<Int sr="arg6" val="1"/>
+		</Action>
+	</Task>
+	<Task sr="task4">
+		<cdate>1778300000012</cdate>
+		<edate>1781595595333</edate>
+		<id>4</id>
+		<nme>RZ_MenuSendMode</nme>
+		<Action sr="act0" ve="7">
+			<code>129</code>
+			<label>Mapper bouton → valeur modeRZ et écrire menu_cmd.json</label>
+			<se>false</se>
+			<Str sr="arg0" ve="3">var btn = global('RZmenuBtn') || '';
+var modes = {
+    'btn_veille':      '1',
+    'btn_fixe':        '2',
+    'btn_deplacement': '3',
+    'btn_arret':       '0'
+};var val = modes[btn] || '1';var json ='{"cat":"V","var":"CfgS","prop":"modeRZ","inst":"*","val":"' + val + '"}';setGlobal('RZmenuCmdJson', json);</Str>
+			<Str sr="arg1" ve="3"/>
+			<Int sr="arg2" val="1"/>
+			<Int sr="arg3" val="5"/>
+		</Action>
+		<Action sr="act1" ve="7">
+			<code>410</code>
+			<label>Écrire menu_cmd.json → déclenche profil 131 → RZ_MenuCmd</label>
+			<Str sr="arg0" ve="3">/sdcard/Tasker/RobotRZ/menu_cmd.json</Str>
+			<Str sr="arg1" ve="3">%RZmenuCmdJson</Str>
+			<Int sr="arg2" val="0"/>
+			<Int sr="arg3" val="0"/>
+		</Action>
+	</Task>
+	<Task sr="task41">
+		<cdate>1778704376263</cdate>
+		<edate>1778704479702</edate>
+		<id>41</id>
+		<nme>RZ_Aide</nme>
+		<Action sr="act0" ve="7">
+			<code>548</code>
+			<Str sr="arg0" ve="3">Bientôt l'aide,... patience ! </Str>
+			<Int sr="arg1" val="1"/>
+			<Str sr="arg10" ve="3"/>
+			<Int sr="arg11" val="1"/>
+			<Int sr="arg12" val="0"/>
+			<Str sr="arg13" ve="3"/>
+			<Int sr="arg14" val="0"/>
+			<Str sr="arg15" ve="3"/>
+			<Int sr="arg2" val="0"/>
+			<Str sr="arg3" ve="3"/>
+			<Str sr="arg4" ve="3"/>
+			<Str sr="arg5" ve="3"/>
+			<Str sr="arg6" ve="3"/>
+			<Str sr="arg7" ve="3"/>
+			<Str sr="arg8" ve="3"/>
+			<Int sr="arg9" val="1"/>
+		</Action>
+	</Task>
+	<Task sr="task43">
+		<cdate>1749600000000</cdate>
+		<edate>1781163272756</edate>
+		<id>43</id>
+		<nme>RZ_GeminiStop</nme>
+		<pri>100</pri>
+		<Action sr="act0" ve="7">
+			<code>547</code>
+			<label>Ferme conversation Gemini</label>
+			<Str sr="arg0" ve="3">%RZappliConv</Str>
+			<Str sr="arg1" ve="3">ferme</Str>
+			<Int sr="arg2" val="0"/>
+			<Int sr="arg3" val="0"/>
+			<Int sr="arg4" val="0"/>
+			<Int sr="arg5" val="3"/>
+			<Int sr="arg6" val="1"/>
+		</Action>
+	</Task>
+	<Task sr="task44">
+		<cdate>1778677179992</cdate>
+		<edate>1778900000001</edate>
+		<id>44</id>
+		<pri>104</pri>
+		<Action sr="act0" ve="7">
+			<code>49</code>
+			<Str sr="arg0" ve="3">RZ_Menu</Str>
+		</Action>
+		<Action sr="act1" ve="7">
+			<code>130</code>
+			<label>Torche ON</label>
+			<Str sr="arg0" ve="3">RZ_TorchOn</Str>
+			<Int sr="arg1" val="0"/>
+			<Int sr="arg10" val="1"/>
+			<Str sr="arg2" ve="3"/>
+			<Str sr="arg3" ve="3"/>
+			<Str sr="arg4" ve="3"/>
+			<Int sr="arg5" val="0"/>
+			<Int sr="arg6" val="0"/>
+			<Str sr="arg7" ve="3"/>
+			<Int sr="arg8" val="0"/>
+			<Int sr="arg9" val="0"/>
+			<ConditionList sr="if">
+				<Condition sr="c0" ve="3">
+					<lhs>%RZtorchEtat</lhs>
+					<op>3</op>
+					<rhs>On</rhs>
+				</Condition>
+			</ConditionList>
+		</Action>
+		<Action sr="act2" ve="7">
+			<code>130</code>
+			<label>Torche OFF</label>
+			<Str sr="arg0" ve="3">RZ_TorchOff</Str>
+			<Int sr="arg1" val="0"/>
+			<Int sr="arg10" val="1"/>
+			<Str sr="arg2" ve="3"/>
+			<Str sr="arg3" ve="3"/>
+			<Str sr="arg4" ve="3"/>
+			<Int sr="arg5" val="0"/>
+			<Int sr="arg6" val="0"/>
+			<Str sr="arg7" ve="3"/>
+			<Int sr="arg8" val="0"/>
+			<Int sr="arg9" val="0"/>
+			<ConditionList sr="if">
+				<Condition sr="c0" ve="3">
+					<lhs>%RZtorchEtat</lhs>
+					<op>2</op>
+					<rhs>On</rhs>
+				</Condition>
+			</ConditionList>
+		</Action>
+	</Task>
+	<Task sr="task45">
+		<cdate>1778677179992</cdate>
+		<edate>1778900000001</edate>
+		<id>45</id>
+		<pri>104</pri>
+		<Action sr="act0" ve="7">
+			<code>49</code>
+			<Str sr="arg0" ve="3">RZ_Menu</Str>
+		</Action>
+		<Action sr="act1" ve="7">
+			<code>130</code>
+			<Str sr="arg0" ve="3">RZ_OuvreEtat</Str>
+			<Int sr="arg1" val="0"/>
+			<Int sr="arg10" val="1"/>
+			<Str sr="arg2" ve="3"/>
+			<Str sr="arg3" ve="3"/>
+			<Str sr="arg4" ve="3"/>
+			<Int sr="arg5" val="0"/>
+			<Int sr="arg6" val="0"/>
+			<Str sr="arg7" ve="3"/>
+			<Int sr="arg8" val="0"/>
+			<Int sr="arg9" val="0"/>
+		</Action>
+	</Task>
+	<Task sr="task46">
+		<cdate>1778677179992</cdate>
+		<edate>1778900000001</edate>
+		<id>46</id>
+		<pri>104</pri>
+		<Action sr="act0" ve="7">
+			<code>49</code>
+			<Str sr="arg0" ve="3">RZ_Menu</Str>
+		</Action>
+		<Action sr="act1" ve="7">
+			<code>130</code>
+			<Str sr="arg0" ve="3">RZ_OuvreVoice</Str>
+			<Int sr="arg1" val="0"/>
+			<Int sr="arg10" val="1"/>
+			<Str sr="arg2" ve="3"/>
+			<Str sr="arg3" ve="3"/>
+			<Str sr="arg4" ve="3"/>
+			<Int sr="arg5" val="0"/>
+			<Int sr="arg6" val="0"/>
+			<Str sr="arg7" ve="3"/>
+			<Int sr="arg8" val="0"/>
+			<Int sr="arg9" val="0"/>
+		</Action>
+	</Task>
+	<Task sr="task47">
+		<cdate>1778677179992</cdate>
+		<edate>1778900000001</edate>
+		<id>47</id>
+		<pri>104</pri>
+		<Action sr="act0" ve="7">
+			<code>49</code>
+			<Str sr="arg0" ve="3">RZ_Menu</Str>
+		</Action>
+		<Action sr="act1" ve="7">
+			<code>130</code>
+			<Str sr="arg0" ve="3">RZ_OuvreVoiceDetail</Str>
+			<Int sr="arg1" val="0"/>
+			<Int sr="arg10" val="1"/>
+			<Str sr="arg2" ve="3"/>
+			<Str sr="arg3" ve="3"/>
+			<Str sr="arg4" ve="3"/>
+			<Int sr="arg5" val="0"/>
+			<Int sr="arg6" val="0"/>
+			<Str sr="arg7" ve="3"/>
+			<Int sr="arg8" val="0"/>
+			<Int sr="arg9" val="0"/>
+		</Action>
+	</Task>
+	<Task sr="task48">
+		<cdate>1778677179992</cdate>
+		<edate>1778900000001</edate>
+		<id>48</id>
+		<pri>104</pri>
+		<Action sr="act0" ve="7">
+			<code>130</code>
+			<label>Fermer appli si active</label>
+			<Str sr="arg0" ve="3">RZ_AppStop</Str>
+			<Int sr="arg1" val="0"/>
+			<Int sr="arg10" val="1"/>
+			<Str sr="arg2" ve="3"/>
+			<Str sr="arg3" ve="3"/>
+			<Str sr="arg4" ve="3"/>
+			<Int sr="arg5" val="0"/>
+			<Int sr="arg6" val="0"/>
+			<Str sr="arg7" ve="3"/>
+			<Int sr="arg8" val="0"/>
+			<Int sr="arg9" val="0"/>
+			<ConditionList sr="if">
+				<Condition sr="c0" ve="3">
+					<lhs>%RZappliActive</lhs>
+					<op>3</op>
+					<rhs></rhs>
+				</Condition>
+			</ConditionList>
+		</Action>
+		<Action sr="act1" ve="7">
+			<code>49</code>
+			<Str sr="arg0" ve="3">RZ_Menu</Str>
+		</Action>
+	</Task>
+	<Task sr="task49">
+		<cdate>1778677179992</cdate>
+		<edate>1778900000001</edate>
+		<id>49</id>
+		<pri>104</pri>
+		<Action sr="act0" ve="7">
+			<code>547</code>
+			<Str sr="arg0" ve="3">%RZmenuBtn</Str>
+			<Str sr="arg1" ve="3">btn_arret</Str>
+			<Int sr="arg2" val="0"/>
+			<Int sr="arg3" val="0"/>
+			<Int sr="arg4" val="0"/>
+			<Int sr="arg5" val="3"/>
+			<Int sr="arg6" val="1"/>
+		</Action>
+		<Action sr="act1" ve="7">
+			<code>49</code>
+			<Str sr="arg0" ve="3">RZ_Menu</Str>
+		</Action>
+		<Action sr="act2" ve="7">
+			<code>130</code>
+			<Str sr="arg0" ve="3">RZ_MenuSendMode</Str>
+			<Int sr="arg1" val="0"/>
+			<Int sr="arg10" val="1"/>
+			<Str sr="arg2" ve="3"/>
+			<Str sr="arg3" ve="3"/>
+			<Str sr="arg4" ve="3"/>
+			<Int sr="arg5" val="0"/>
+			<Int sr="arg6" val="0"/>
+			<Str sr="arg7" ve="3"/>
+			<Int sr="arg8" val="0"/>
+			<Int sr="arg9" val="0"/>
+		</Action>
+	</Task>
+	<Task sr="task5">
+		<cdate>1778164908177</cdate>
+		<edate>1778602184032</edate>
+		<id>5</id>
+		<nme>RZ_Expression</nme>
+		<pri>100</pri>
+		<Action sr="act0" ve="7">
+			<code>129</code>
+			<Str sr="arg0" ve="3">// Table emoji
+var expressions = {
+    'sourire':   '😊',
+    'neutre':    '😐',
+    'colere':    '😠',
+    'triste':    '😢',
+    'surprise':  '😮',
+    'peur':      '😨',
+    'clin_oeil': '😉',
+    'endormi':   '😴',
+    'reflechi':  '🤔',
+    'content':   '😄',
+    'fatigue':   '😓',
+    'curieux':   '🧐'
+};
+var EMOJI_DEFAUT = '😐';
+var param = global('RZparam').trim().toLowerCase();
+var emoji = expressions[param] || EMOJI_DEFAUT;
+setGlobal('RZemoji', emoji);
+setGlobal('RZemoji_defaut', EMOJI_DEFAUT);
+var retour = (emoji !== EMOJI_DEFAUT) ? '1' : '0';
+setGlobal('RZretourNeutre', retour);</Str>
+			<Str sr="arg1" ve="3"/>
+			<Int sr="arg2" val="1"/>
+			<Int sr="arg3" val="45"/>
+		</Action>
+		<Action sr="act1" ve="7">
+			<code>47</code>
+			<Str sr="arg0" ve="3">RZ_Expression</Str>
+			<Int sr="arg1" val="6"/>
+			<Int sr="arg10" val="1"/>
+			<Int sr="arg2" val="100"/>
+			<Int sr="arg3" val="100"/>
+			<Int sr="arg4" val="0"/>
+			<Int sr="arg5" val="1"/>
+			<Int sr="arg6" val="1"/>
+			<Int sr="arg7" val="1"/>
+			<Int sr="arg8" val="1"/>
+			<Int sr="arg9" val="1"/>
+		</Action>
+		<Action sr="act2" ve="7">
+			<code>30</code>
+			<Int sr="arg0" val="500"/>
+			<Int sr="arg1" val="0"/>
+			<Int sr="arg2" val="0"/>
+			<Int sr="arg3" val="0"/>
+			<Int sr="arg4" val="0"/>
+		</Action>
+		<Action sr="act3" ve="7">
+			<code>195</code>
+			<Str sr="arg0" ve="3">RZ_Expression</Str>
+			<Str sr="arg1" ve="3">emoji_expression</Str>
+			<Int sr="arg2" val="0"/>
+			<Str sr="arg3" ve="3">%RZemoji</Str>
+		</Action>
+		<Action sr="act4" ve="7">
+			<code>30</code>
+			<Int sr="arg0" val="0"/>
+			<Int sr="arg1" val="3"/>
+			<Int sr="arg2" val="0"/>
+			<Int sr="arg3" val="0"/>
+			<Int sr="arg4" val="0"/>
+			<ConditionList sr="if">
+				<Condition sr="c0" ve="3">
+					<lhs>%RZretourNeutre</lhs>
+					<op>2</op>
+					<rhs>1</rhs>
+				</Condition>
+			</ConditionList>
+		</Action>
+		<Action sr="act5" ve="7">
+			<code>130</code>
+			<Str sr="arg0" ve="3">RZ_ExprNeutre</Str>
+			<Int sr="arg1" val="0"/>
+			<Int sr="arg10" val="0"/>
+			<Str sr="arg2" ve="3"/>
+			<Str sr="arg3" ve="3"/>
+			<Str sr="arg4" ve="3"/>
+			<Int sr="arg5" val="0"/>
+			<Int sr="arg6" val="0"/>
+			<Str sr="arg7" ve="3"/>
+			<Int sr="arg8" val="0"/>
+			<Int sr="arg9" val="0"/>
+			<ConditionList sr="if">
+				<Condition sr="c0" ve="3">
+					<lhs>%RZretourNeutre</lhs>
+					<op>2</op>
+					<rhs>1</rhs>
+				</Condition>
+			</ConditionList>
+		</Action>
+	</Task>
+	<Task sr="task50">
+		<cdate>1778677179992</cdate>
+		<edate>1778900000001</edate>
+		<id>50</id>
+		<pri>104</pri>
+		<Action sr="act0" ve="7">
+			<code>547</code>
+			<Str sr="arg0" ve="3">%RZmenuBtn</Str>
+			<Str sr="arg1" ve="3">btn_veille</Str>
+			<Int sr="arg2" val="0"/>
+			<Int sr="arg3" val="0"/>
+			<Int sr="arg4" val="0"/>
+			<Int sr="arg5" val="3"/>
+			<Int sr="arg6" val="1"/>
+		</Action>
+		<Action sr="act1" ve="7">
+			<code>49</code>
+			<Str sr="arg0" ve="3">RZ_Menu</Str>
+		</Action>
+		<Action sr="act2" ve="7">
+			<code>130</code>
+			<Str sr="arg0" ve="3">RZ_MenuSendMode</Str>
+			<Int sr="arg1" val="0"/>
+			<Int sr="arg10" val="0"/>
+			<Str sr="arg2" ve="3"/>
+			<Str sr="arg3" ve="3"/>
+			<Str sr="arg4" ve="3"/>
+			<Int sr="arg5" val="0"/>
+			<Int sr="arg6" val="0"/>
+			<Str sr="arg7" ve="3"/>
+			<Int sr="arg8" val="0"/>
+			<Int sr="arg9" val="0"/>
+		</Action>
+	</Task>
+	<Task sr="task51">
+		<cdate>1778677179992</cdate>
+		<edate>1778900000001</edate>
+		<id>51</id>
+		<pri>104</pri>
+		<Action sr="act0" ve="7">
+			<code>547</code>
+			<Str sr="arg0" ve="3">%RZmenuBtn</Str>
+			<Str sr="arg1" ve="3">btn_deplacement</Str>
+			<Int sr="arg2" val="0"/>
+			<Int sr="arg3" val="0"/>
+			<Int sr="arg4" val="0"/>
+			<Int sr="arg5" val="3"/>
+			<Int sr="arg6" val="1"/>
+		</Action>
+		<Action sr="act1" ve="7">
+			<code>49</code>
+			<Str sr="arg0" ve="3">RZ_Menu</Str>
+		</Action>
+		<Action sr="act2" ve="7">
+			<code>130</code>
+			<Str sr="arg0" ve="3">RZ_MenuSendMode</Str>
+			<Int sr="arg1" val="0"/>
+			<Int sr="arg10" val="1"/>
+			<Str sr="arg2" ve="3"/>
+			<Str sr="arg3" ve="3"/>
+			<Str sr="arg4" ve="3"/>
+			<Int sr="arg5" val="0"/>
+			<Int sr="arg6" val="0"/>
+			<Str sr="arg7" ve="3"/>
+			<Int sr="arg8" val="0"/>
+			<Int sr="arg9" val="0"/>
+		</Action>
+	</Task>
+	<Task sr="task52">
+		<cdate>1778677179992</cdate>
+		<edate>1778900000001</edate>
+		<id>52</id>
+		<pri>104</pri>
+		<Action sr="act0" ve="7">
+			<code>547</code>
+			<Str sr="arg0" ve="3">%RZmenuBtn</Str>
+			<Str sr="arg1" ve="3">btn_fixe</Str>
+			<Int sr="arg2" val="0"/>
+			<Int sr="arg3" val="0"/>
+			<Int sr="arg4" val="0"/>
+			<Int sr="arg5" val="3"/>
+			<Int sr="arg6" val="1"/>
+		</Action>
+		<Action sr="act1" ve="7">
+			<code>49</code>
+			<Str sr="arg0" ve="3">RZ_Menu</Str>
+		</Action>
+		<Action sr="act2" ve="7">
+			<code>130</code>
+			<Str sr="arg0" ve="3">RZ_MenuSendMode</Str>
+			<Int sr="arg1" val="0"/>
+			<Int sr="arg10" val="1"/>
+			<Str sr="arg2" ve="3"/>
+			<Str sr="arg3" ve="3"/>
+			<Str sr="arg4" ve="3"/>
+			<Int sr="arg5" val="0"/>
+			<Int sr="arg6" val="0"/>
+			<Str sr="arg7" ve="3"/>
+			<Int sr="arg8" val="0"/>
+			<Int sr="arg9" val="0"/>
+		</Action>
+	</Task>
+	<Task sr="task54">
+		<cdate>1778677179992</cdate>
+		<edate>1778900000001</edate>
+		<id>54</id>
+		<pri>104</pri>
+		<Action sr="act0" ve="7">
+			<code>547</code>
+			<Str sr="arg0" ve="3">%RZparam</Str>
+			<Str sr="arg1" ve="3">On</Str>
+			<Int sr="arg2" val="0"/>
+			<Int sr="arg3" val="0"/>
+			<Int sr="arg4" val="0"/>
+			<Int sr="arg5" val="3"/>
+			<Int sr="arg6" val="1"/>
+		</Action>
+		<Action sr="act1" ve="7">
+			<code>547</code>
+			<Str sr="arg0" ve="3">%RZappliTask</Str>
+			<Str sr="arg1" ve="3">RZ_Maps</Str>
+			<Int sr="arg2" val="0"/>
+			<Int sr="arg3" val="0"/>
+			<Int sr="arg4" val="0"/>
+			<Int sr="arg5" val="3"/>
+			<Int sr="arg6" val="1"/>
+		</Action>
+		<Action sr="act2" ve="7">
+			<code>547</code>
+			<Str sr="arg0" ve="3">%RZappliNom</Str>
+			<Str sr="arg1" ve="3">Maps</Str>
+			<Int sr="arg2" val="0"/>
+			<Int sr="arg3" val="0"/>
+			<Int sr="arg4" val="0"/>
+			<Int sr="arg5" val="3"/>
+			<Int sr="arg6" val="1"/>
+		</Action>
+		<Action sr="act3" ve="7">
+			<code>49</code>
+			<Str sr="arg0" ve="3">RZ_Menu</Str>
+		</Action>
+		<Action sr="act4" ve="7">
+			<code>130</code>
+			<Str sr="arg0" ve="3">RZ_AppStart</Str>
+			<Int sr="arg1" val="0"/>
+			<Int sr="arg10" val="1"/>
+			<Str sr="arg2" ve="3"/>
+			<Str sr="arg3" ve="3"/>
+			<Str sr="arg4" ve="3"/>
+			<Int sr="arg5" val="0"/>
+			<Int sr="arg6" val="0"/>
+			<Str sr="arg7" ve="3"/>
+			<Int sr="arg8" val="0"/>
+			<Int sr="arg9" val="0"/>
+		</Action>
+	</Task>
+	<Task sr="task55">
+		<cdate>1778677179992</cdate>
+		<edate>1778900000001</edate>
+		<id>55</id>
+		<pri>104</pri>
+		<Action sr="act0" ve="7">
+			<code>547</code>
+			<Str sr="arg0" ve="3">%RZparam</Str>
+			<Str sr="arg1" ve="3">On</Str>
+			<Int sr="arg2" val="0"/>
+			<Int sr="arg3" val="0"/>
+			<Int sr="arg4" val="0"/>
+			<Int sr="arg5" val="3"/>
+			<Int sr="arg6" val="1"/>
+		</Action>
+		<Action sr="act1" ve="7">
+			<code>547</code>
+			<Str sr="arg0" ve="3">%RZappliTask</Str>
+			<Str sr="arg1" ve="3">RZ_Zoom</Str>
+			<Int sr="arg2" val="0"/>
+			<Int sr="arg3" val="0"/>
+			<Int sr="arg4" val="0"/>
+			<Int sr="arg5" val="3"/>
+			<Int sr="arg6" val="1"/>
+		</Action>
+		<Action sr="act2" ve="7">
+			<code>547</code>
+			<Str sr="arg0" ve="3">%RZappliNom</Str>
+			<Str sr="arg1" ve="3">Zoom</Str>
+			<Int sr="arg2" val="0"/>
+			<Int sr="arg3" val="0"/>
+			<Int sr="arg4" val="0"/>
+			<Int sr="arg5" val="3"/>
+			<Int sr="arg6" val="1"/>
+		</Action>
+		<Action sr="act3" ve="7">
+			<code>49</code>
+			<Str sr="arg0" ve="3">RZ_Menu</Str>
+		</Action>
+		<Action sr="act4" ve="7">
+			<code>130</code>
+			<Str sr="arg0" ve="3">RZ_AppStart</Str>
+			<Int sr="arg1" val="0"/>
+			<Int sr="arg10" val="1"/>
+			<Str sr="arg2" ve="3"/>
+			<Str sr="arg3" ve="3"/>
+			<Str sr="arg4" ve="3"/>
+			<Int sr="arg5" val="0"/>
+			<Int sr="arg6" val="0"/>
+			<Str sr="arg7" ve="3"/>
+			<Int sr="arg8" val="0"/>
+			<Int sr="arg9" val="0"/>
+		</Action>
+	</Task>
+	<Task sr="task56">
+		<cdate>1778677179992</cdate>
+		<edate>1778677179992</edate>
+		<id>56</id>
+		<pri>104</pri>
+		<Action sr="act0" ve="7">
+			<code>49</code>
+			<Str sr="arg0" ve="3">RZ_Menu</Str>
+		</Action>
+		<Action sr="act1" ve="7">
+			<code>130</code>
+			<Str sr="arg0" ve="3">RZ_CamStart</Str>
+			<Int sr="arg1" val="0"/>
+			<Int sr="arg10" val="1"/>
+			<Str sr="arg2" ve="3"/>
+			<Str sr="arg3" ve="3"/>
+			<Str sr="arg4" ve="3"/>
+			<Int sr="arg5" val="0"/>
+			<Int sr="arg6" val="0"/>
+			<Str sr="arg7" ve="3"/>
+			<Int sr="arg8" val="0"/>
+			<Int sr="arg9" val="0"/>
+		</Action>
+	</Task>
+	<Task sr="task57">
+		<cdate>1778900000003</cdate>
+		<edate>1781595802579</edate>
+		<id>57</id>
+		<nme>RZ_Baby</nme>
+		<Action sr="act0" ve="7">
+			<code>20</code>
+			<label>Lancer BabyCam</label>
+			<App sr="arg0">
+				<appClass>com.arjonasoftware.babycam.SplashScreenActivity</appClass>
+				<appPkg>com.arjonasoftware.babycam</appPkg>
+				<label>BabyCam</label>
+			</App>
+			<Str sr="arg1" ve="3"/>
+			<Int sr="arg2" val="0"/>
+			<Int sr="arg3" val="0"/>
+			<ConditionList sr="if">
+				<Condition sr="c0" ve="3">
+					<lhs>%RZparam</lhs>
+					<op>2</op>
+					<rhs>On</rhs>
+				</Condition>
+			</ConditionList>
+		</Action>
+		<Action sr="act1" ve="7">
+			<code>18</code>
+			<label>Fermer BabyCam</label>
+			<App sr="arg0">
+				<appClass>com.arjonasoftware.babycam.SplashScreenActivity</appClass>
+				<appPkg>com.arjonasoftware.babycam</appPkg>
+				<label>BabyCam</label>
+			</App>
+			<Int sr="arg1" val="0"/>
+			<ConditionList sr="if">
+				<Condition sr="c0" ve="3">
+					<lhs>%RZparam</lhs>
+					<op>2</op>
+					<rhs>Off</rhs>
+				</Condition>
+			</ConditionList>
+		</Action>
+	</Task>
+	<Task sr="task58">
+		<cdate>1778900000004</cdate>
+		<edate>1780557423514</edate>
+		<id>58</id>
+		<nme>RZ_Zoom</nme>
+		<Action sr="act0" ve="7">
+			<code>20</code>
+			<label>Lancer Zoom</label>
+			<App sr="arg0">
+				<appClass>com.zipow.videobox.LauncherActivity</appClass>
+				<appPkg>us.zoom.videomeetings</appPkg>
+				<label>Zoom</label>
+			</App>
+			<Str sr="arg1" ve="3"/>
+			<Int sr="arg2" val="0"/>
+			<Int sr="arg3" val="0"/>
+			<ConditionList sr="if">
+				<Condition sr="c0" ve="3">
+					<lhs>%RZparam</lhs>
+					<op>2</op>
+					<rhs>On</rhs>
+				</Condition>
+			</ConditionList>
+		</Action>
+		<Action sr="act1" ve="7">
+			<code>18</code>
+			<label>Fermer Zoom</label>
+			<App sr="arg0">
+				<appClass>com.zipow.videobox.LauncherActivity</appClass>
+				<appPkg>us.zoom.videomeetings</appPkg>
+				<label>Zoom</label>
+			</App>
+			<Int sr="arg1" val="0"/>
+			<ConditionList sr="if">
+				<Condition sr="c0" ve="3">
+					<lhs>%RZparam</lhs>
+					<op>2</op>
+					<rhs>Off</rhs>
+				</Condition>
+			</ConditionList>
+		</Action>
+	</Task>
+	<Task sr="task59">
+		<cdate>1778900000005</cdate>
+		<edate>1778900000005</edate>
+		<id>59</id>
+		<nme>RZ_NavGPS</nme>
+		<Action sr="act0" ve="7">
+			<code>20</code>
+			<label>Lancer Google Maps</label>
+			<App sr="arg0">
+				<appClass>com.google.android.maps.MapsActivity</appClass>
+				<appPkg>com.google.android.apps.maps</appPkg>
+				<label>Maps</label>
+			</App>
+			<Str sr="arg1" ve="3"/>
+			<Int sr="arg2" val="0"/>
+			<Int sr="arg3" val="0"/>
+			<ConditionList sr="if">
+				<Condition sr="c0" ve="3">
+					<lhs>%RZparam</lhs>
+					<op>2</op>
+					<rhs>On</rhs>
+				</Condition>
+			</ConditionList>
+		</Action>
+		<Action sr="act1" ve="7">
+			<code>18</code>
+			<label>Fermer Google Maps</label>
+			<App sr="arg0">
+				<appClass>com.google.android.maps.MapsActivity</appClass>
+				<appPkg>com.google.android.apps.maps</appPkg>
+				<label>Maps</label>
+			</App>
+			<Int sr="arg1" val="0"/>
+			<ConditionList sr="if">
+				<Condition sr="c0" ve="3">
+					<lhs>%RZparam</lhs>
+					<op>2</op>
+					<rhs>Off</rhs>
+				</Condition>
+			</ConditionList>
+		</Action>
+	</Task>
+	<Task sr="task6">
+		<cdate>1778300000013</cdate>
+		<edate>1780676451172</edate>
+		<id>6</id>
+		<nme>RZ_MenuSendAppli</nme>
+		<pri>6</pri>
+		<Action sr="act0" ve="7">
+			<code>129</code>
+			<label>Mapper bouton → commande VPIV application avec toggle</label>
+			<se>false</se>
+			<Str sr="arg0" ve="3">var btn = global('RZmenuBtn') || '';
+var applis = {
+    'btn_cam':   {cat:'V', var:'CamSE',   prop:'modeCam', inst:'rear'},
+    'btn_torch': {cat:'V', var:'TorchSE', prop:'active',  inst:'*'},
+    'btn_zoom':  {cat:'A', var:'Appli',   prop:'Zoom',    inst:'*'},
+    'btn_maps':  {cat:'A', var:'Appli',   prop:'Maps',    inst:'*'}
+};
+var cmd = applis[btn];
+if (cmd) {
+    var etatKey = 'RZetat_' + btn;
+    var etat = global(etatKey) || 'off';
+    var val;
+    if (btn === 'btn_cam') {
+        val = (etat === 'stream') ? 'off' : 'stream';
+    } else {
+        val = (etat === 'On') ? 'Off' : 'On';
+    }
+    var json = '{"cat":"' + cmd.cat + '","var":"' + cmd.var + '","prop":"' + cmd.prop + '","inst":"' + cmd.inst + '","val":"' + val + '"}';
+    setGlobal('RZmenuCmdJson', json);
+} else {
+    setGlobal('RZmenuCmdJson', '');
+}</Str>
+			<Str sr="arg1" ve="3"/>
+			<Int sr="arg2" val="1"/>
+			<Int sr="arg3" val="5"/>
+		</Action>
+		<Action sr="act1" ve="7">
+			<code>410</code>
+			<label>Écrire menu_cmd.json → déclenche profil 131</label>
+			<Str sr="arg0" ve="3">/sdcard/Tasker/RobotRZ/menu_cmd.json</Str>
+			<Str sr="arg1" ve="3">%RZmenuCmdJson</Str>
+			<Int sr="arg2" val="0"/>
+			<Int sr="arg3" val="0"/>
+		</Action>
+	</Task>
+	<Task sr="task60">
+		<cdate>1749600000000</cdate>
+		<edate>1781166046638</edate>
+		<id>60</id>
+		<nme>RZ_STT_Context</nme>
+		<pri>100</pri>
+		<Action sr="act0" ve="7">
+			<code>547</code>
+			<label>Contexte STT reçu de SP</label>
+			<Str sr="arg0" ve="3">%RZsttContext</Str>
+			<Str sr="arg1" ve="3">%par</Str>
+			<Int sr="arg2" val="0"/>
+			<Int sr="arg3" val="0"/>
+			<Int sr="arg4" val="0"/>
+			<Int sr="arg5" val="3"/>
+			<Int sr="arg6" val="1"/>
+		</Action>
+		<Action sr="act1" ve="7">
+			<code>37</code>
+			<label>Branche Inactif</label>
+			<ConditionList sr="if">
+				<Condition sr="c0" ve="3">
+					<lhs>%par</lhs>
+					<op>2</op>
+					<rhs>Inactif</rhs>
+				</Condition>
+			</ConditionList>
+		</Action>
+		<Action sr="act10" ve="7">
+			<code>130</code>
+			<label>Cmde → démarrer AutoVoice</label>
+			<Str sr="arg0" ve="3">RZ_AVStart</Str>
+			<Int sr="arg1" val="0"/>
+			<Int sr="arg10" val="0"/>
+			<Str sr="arg2" ve="3"/>
+			<Str sr="arg3" ve="3"/>
+			<Str sr="arg4" ve="3"/>
+			<Int sr="arg5" val="0"/>
+			<Int sr="arg6" val="0"/>
+			<Str sr="arg7" ve="3"/>
+			<Int sr="arg8" val="0"/>
+			<Int sr="arg9" val="0"/>
+		</Action>
+		<Action sr="act11" ve="7">
+			<code>130</code>
+			<label>Cmde → fermer Gemini (SP prioritaire)</label>
+			<Str sr="arg0" ve="3">RZ_GeminiStop</Str>
+			<Int sr="arg1" val="0"/>
+			<Int sr="arg10" val="0"/>
+			<Str sr="arg2" ve="3"/>
+			<Str sr="arg3" ve="3"/>
+			<Str sr="arg4" ve="3"/>
+			<Int sr="arg5" val="0"/>
+			<Int sr="arg6" val="0"/>
+			<Str sr="arg7" ve="3"/>
+			<Int sr="arg8" val="0"/>
+			<Int sr="arg9" val="0"/>
+		</Action>
+		<Action sr="act12" ve="7">
+			<code>43</code>
+		</Action>
+		<Action sr="act13" ve="7">
+			<code>37</code>
+			<label>Branche Conv</label>
+			<ConditionList sr="if">
+				<Condition sr="c0" ve="3">
+					<lhs>%par</lhs>
+					<op>2</op>
+					<rhs>Conv</rhs>
+				</Condition>
+			</ConditionList>
+		</Action>
+		<Action sr="act14" ve="7">
+			<code>130</code>
+			<label>Conv → arrêter AutoVoice</label>
+			<Str sr="arg0" ve="3">RZ_AVStop</Str>
+			<Int sr="arg1" val="0"/>
+			<Int sr="arg10" val="0"/>
+			<Str sr="arg2" ve="3"/>
+			<Str sr="arg3" ve="3"/>
+			<Str sr="arg4" ve="3"/>
+			<Int sr="arg5" val="0"/>
+			<Int sr="arg6" val="0"/>
+			<Str sr="arg7" ve="3"/>
+			<Int sr="arg8" val="0"/>
+			<Int sr="arg9" val="0"/>
+		</Action>
+		<Action sr="act15" ve="7">
+			<code>130</code>
+			<label>Conv → Gemini ouvert-seul</label>
+			<Str sr="arg0" ve="3">RZ_GeminiStart</Str>
+			<Int sr="arg1" val="0"/>
+			<Int sr="arg10" val="0"/>
+			<Str sr="arg2" ve="3"/>
+			<Str sr="arg3" ve="3"/>
+			<Str sr="arg4" ve="3"/>
+			<Int sr="arg5" val="0"/>
+			<Int sr="arg6" val="0"/>
+			<Str sr="arg7" ve="3"/>
+			<Int sr="arg8" val="0"/>
+			<Int sr="arg9" val="0"/>
+		</Action>
+		<Action sr="act16" ve="7">
+			<code>43</code>
+			<label>Branche Mixte (défaut)</label>
+		</Action>
+		<Action sr="act17" ve="7">
+			<code>130</code>
+			<label>Mixte → démarrer AutoVoice</label>
+			<Str sr="arg0" ve="3">RZ_AVStart</Str>
+			<Int sr="arg1" val="0"/>
+			<Int sr="arg10" val="0"/>
+			<Str sr="arg2" ve="3"/>
+			<Str sr="arg3" ve="3"/>
+			<Str sr="arg4" ve="3"/>
+			<Int sr="arg5" val="0"/>
+			<Int sr="arg6" val="0"/>
+			<Str sr="arg7" ve="3"/>
+			<Int sr="arg8" val="0"/>
+			<Int sr="arg9" val="0"/>
+		</Action>
+		<Action sr="act18" ve="7">
+			<code>130</code>
+			<label>Mixte → Gemini avec-autovoice</label>
+			<Str sr="arg0" ve="3">RZ_GeminiStart</Str>
+			<Int sr="arg1" val="0"/>
+			<Int sr="arg10" val="0"/>
+			<Str sr="arg2" ve="3"/>
+			<Str sr="arg3" ve="3"/>
+			<Str sr="arg4" ve="3"/>
+			<Int sr="arg5" val="0"/>
+			<Int sr="arg6" val="0"/>
+			<Str sr="arg7" ve="3"/>
+			<Int sr="arg8" val="0"/>
+			<Int sr="arg9" val="0"/>
+		</Action>
+		<Action sr="act19" ve="7">
+			<code>38</code>
+		</Action>
+		<Action sr="act2" ve="7">
+			<code>130</code>
+			<label>Inactif → arrêter AutoVoice</label>
+			<Str sr="arg0" ve="3">RZ_AVStop</Str>
+			<Int sr="arg1" val="0"/>
+			<Int sr="arg10" val="0"/>
+			<Str sr="arg2" ve="3"/>
+			<Str sr="arg3" ve="3"/>
+			<Str sr="arg4" ve="3"/>
+			<Int sr="arg5" val="0"/>
+			<Int sr="arg6" val="0"/>
+			<Str sr="arg7" ve="3"/>
+			<Int sr="arg8" val="0"/>
+			<Int sr="arg9" val="0"/>
+		</Action>
+		<Action sr="act20" ve="7">
+			<code>38</code>
+		</Action>
+		<Action sr="act21" ve="7">
+			<code>38</code>
+		</Action>
+		<Action sr="act3" ve="7">
+			<code>37</code>
+			<label>Gemini demandé par utilisateur ?</label>
+			<ConditionList sr="if">
+				<Condition sr="c0" ve="3">
+					<lhs>%RZiAConvOnOff</lhs>
+					<op>2</op>
+					<rhs>On</rhs>
+				</Condition>
+			</ConditionList>
+		</Action>
+		<Action sr="act4" ve="7">
+			<code>130</code>
+			<label>Inactif + Gemini On → ouvert-seul</label>
+			<Str sr="arg0" ve="3">RZ_GeminiStart</Str>
+			<Int sr="arg1" val="0"/>
+			<Int sr="arg10" val="0"/>
+			<Str sr="arg2" ve="3"/>
+			<Str sr="arg3" ve="3"/>
+			<Str sr="arg4" ve="3"/>
+			<Int sr="arg5" val="0"/>
+			<Int sr="arg6" val="0"/>
+			<Str sr="arg7" ve="3"/>
+			<Int sr="arg8" val="0"/>
+			<Int sr="arg9" val="0"/>
+		</Action>
+		<Action sr="act5" ve="7">
+			<code>43</code>
+		</Action>
+		<Action sr="act6" ve="7">
+			<code>130</code>
+			<label>Inactif + Gemini Off → ferme</label>
+			<Str sr="arg0" ve="3">RZ_GeminiStop</Str>
+			<Int sr="arg1" val="0"/>
+			<Int sr="arg10" val="0"/>
+			<Str sr="arg2" ve="3"/>
+			<Str sr="arg3" ve="3"/>
+			<Str sr="arg4" ve="3"/>
+			<Int sr="arg5" val="0"/>
+			<Int sr="arg6" val="0"/>
+			<Str sr="arg7" ve="3"/>
+			<Int sr="arg8" val="0"/>
+			<Int sr="arg9" val="0"/>
+		</Action>
+		<Action sr="act7" ve="7">
+			<code>38</code>
+		</Action>
+		<Action sr="act8" ve="7">
+			<code>43</code>
+		</Action>
+		<Action sr="act9" ve="7">
+			<code>37</code>
+			<label>Branche Cmde</label>
+			<ConditionList sr="if">
+				<Condition sr="c0" ve="3">
+					<lhs>%par</lhs>
+					<op>2</op>
+					<rhs>Cmde</rhs>
+				</Condition>
+			</ConditionList>
+		</Action>
+	</Task>
+	<Task sr="task61">
+		<cdate>1749600000000</cdate>
+		<edate>1749600000000</edate>
+		<id>61</id>
+		<nme>RZ_GeminiStart</nme>
+		<Action sr="act0" ve="7">
+			<code>37</code>
+			<label>AutoVoice actif → mode avec-autovoice</label>
+			<ConditionList sr="if">
+				<Condition sr="c0" ve="3">
+					<lhs>%RZautoVoice</lhs>
+					<op>2</op>
+					<rhs>actif</rhs>
+				</Condition>
+			</ConditionList>
+		</Action>
+		<Action sr="act1" ve="7">
+			<code>547</code>
+			<label>Gemini + AutoVoice actif</label>
+			<Str sr="arg0" ve="3">%RZappliConv</Str>
+			<Str sr="arg1" ve="3">avec-autovoice</Str>
+			<Int sr="arg2" val="0"/>
+			<Int sr="arg3" val="0"/>
+			<Int sr="arg4" val="0"/>
+			<Int sr="arg5" val="3"/>
+			<Int sr="arg6" val="1"/>
+		</Action>
+		<Action sr="act2" ve="7">
+			<code>43</code>
+		</Action>
+		<Action sr="act3" ve="7">
+			<code>547</code>
+			<label>Gemini seul, AutoVoice inactif</label>
+			<Str sr="arg0" ve="3">%RZappliConv</Str>
+			<Str sr="arg1" ve="3">ouvert-seul</Str>
+			<Int sr="arg2" val="0"/>
+			<Int sr="arg3" val="0"/>
+			<Int sr="arg4" val="0"/>
+			<Int sr="arg5" val="3"/>
+			<Int sr="arg6" val="1"/>
+		</Action>
+		<Action sr="act4" ve="7">
+			<code>38</code>
+		</Action>
+	</Task>
+	<Task sr="task62">
+		<cdate>1749600000000</cdate>
+		<edate>1781588509553</edate>
+		<id>62</id>
+		<nme>Rz_Traite_Ecoute</nme>
+		<pri>6</pri>
+		<Action sr="act0" ve="7">
+			<code>549</code>
+			<label>Init %PhraseRZRetire</label>
+			<Str sr="arg0" ve="3">%PhraseRZRetire</Str>
+			<Int sr="arg1" val="0"/>
+			<Int sr="arg2" val="0"/>
+			<Int sr="arg3" val="0"/>
+		</Action>
+		<Action sr="act1" ve="7">
+			<code>549</code>
+			<label>Init %PhraseConv</label>
+			<Str sr="arg0" ve="3">%PhraseConv</Str>
+			<Int sr="arg1" val="0"/>
+			<Int sr="arg2" val="0"/>
+			<Int sr="arg3" val="0"/>
+		</Action>
+		<Action sr="act10" ve="7">
+			<code>547</code>
+			<label>Phrase conversation Gemini</label>
+			<Str sr="arg0" ve="3">%PhraseConv</Str>
+			<Str sr="arg1" ve="3">%avcommnofilter</Str>
+			<Int sr="arg2" val="0"/>
+			<Int sr="arg3" val="0"/>
+			<Int sr="arg4" val="0"/>
+			<Int sr="arg5" val="3"/>
+			<Int sr="arg6" val="1"/>
+		</Action>
+		<Action sr="act11" ve="7">
+			<code>1256900802</code>
+			<Bundle sr="arg0">
+				<Vals sr="val">
+					<com.termux.execute.arguments>GEMINI:%PhraseConv</com.termux.execute.arguments>
+					<com.termux.execute.arguments-type>java.lang.String</com.termux.execute.arguments-type>
+					<com.termux.tasker.extra.BACKGROUND_CUSTOM_LOG_LEVEL>&lt;null&gt;</com.termux.tasker.extra.BACKGROUND_CUSTOM_LOG_LEVEL>
+					<com.termux.tasker.extra.BACKGROUND_CUSTOM_LOG_LEVEL-type>java.lang.String</com.termux.tasker.extra.BACKGROUND_CUSTOM_LOG_LEVEL-type>
+					<com.termux.tasker.extra.EXECUTABLE>rz_autovoice_bridge.sh</com.termux.tasker.extra.EXECUTABLE>
+					<com.termux.tasker.extra.EXECUTABLE-type>java.lang.String</com.termux.tasker.extra.EXECUTABLE-type>
+					<com.termux.tasker.extra.SESSION_ACTION>&lt;null&gt;</com.termux.tasker.extra.SESSION_ACTION>
+					<com.termux.tasker.extra.SESSION_ACTION-type>java.lang.String</com.termux.tasker.extra.SESSION_ACTION-type>
+					<com.termux.tasker.extra.STDIN>&lt;null&gt;</com.termux.tasker.extra.STDIN>
+					<com.termux.tasker.extra.STDIN-type>java.lang.String</com.termux.tasker.extra.STDIN-type>
+					<com.termux.tasker.extra.TERMINAL>false</com.termux.tasker.extra.TERMINAL>
+					<com.termux.tasker.extra.TERMINAL-type>java.lang.Boolean</com.termux.tasker.extra.TERMINAL-type>
+					<com.termux.tasker.extra.VERSION_CODE>1002</com.termux.tasker.extra.VERSION_CODE>
+					<com.termux.tasker.extra.VERSION_CODE-type>java.lang.Integer</com.termux.tasker.extra.VERSION_CODE-type>
+					<com.termux.tasker.extra.WAIT_FOR_RESULT>true</com.termux.tasker.extra.WAIT_FOR_RESULT>
+					<com.termux.tasker.extra.WAIT_FOR_RESULT-type>java.lang.Boolean</com.termux.tasker.extra.WAIT_FOR_RESULT-type>
+					<com.termux.tasker.extra.WORKDIR>&lt;null&gt;</com.termux.tasker.extra.WORKDIR>
+					<com.termux.tasker.extra.WORKDIR-type>java.lang.String</com.termux.tasker.extra.WORKDIR-type>
+					<com.twofortyfouram.locale.intent.extra.BLURB>rz_autovoice_bridge.sh GEMINI:%PhraseConv
+
+Working Directory ✕
+Stdin ✕
+Custom Log Level null
+Terminal Session ✕
+Wait For</com.twofortyfouram.locale.intent.extra.BLURB>
+					<com.twofortyfouram.locale.intent.extra.BLURB-type>java.lang.String</com.twofortyfouram.locale.intent.extra.BLURB-type>
+					<net.dinglisch.android.tasker.RELEVANT_VARIABLES>&lt;StringArray sr=""&gt;&lt;_array_net.dinglisch.android.tasker.RELEVANT_VARIABLES0&gt;%stdout
+Standard Output
+The &amp;lt;B&amp;gt;stdout&amp;lt;/B&amp;gt; of the command.&lt;/_array_net.dinglisch.android.tasker.RELEVANT_VARIABLES0&gt;&lt;_array_net.dinglisch.android.tasker.RELEVANT_VARIABLES1&gt;%stdout_original_length
+Standard Output Original Length
+The original length of &amp;lt;B&amp;gt;stdout&amp;lt;/B&amp;gt;.&lt;/_array_net.dinglisch.android.tasker.RELEVANT_VARIABLES1&gt;&lt;_array_net.dinglisch.android.tasker.RELEVANT_VARIABLES2&gt;%stderr
+Standard Error
+The &amp;lt;B&amp;gt;stderr&amp;lt;/B&amp;gt; of the command.&lt;/_array_net.dinglisch.android.tasker.RELEVANT_VARIABLES2&gt;&lt;_array_net.dinglisch.android.tasker.RELEVANT_VARIABLES3&gt;%stderr_original_length
+Standard Error Original Length
+The original length of &amp;lt;B&amp;gt;stderr&amp;lt;/B&amp;gt;.&lt;/_array_net.dinglisch.android.tasker.RELEVANT_VARIABLES3&gt;&lt;_array_net.dinglisch.android.tasker.RELEVANT_VARIABLES4&gt;%result
+Exit Code
+The &amp;lt;B&amp;gt;exit code&amp;lt;/B&amp;gt; of the command.0 often means success and anything else is usually a failure of some sort.&lt;/_array_net.dinglisch.android.tasker.RELEVANT_VARIABLES4&gt;&lt;/StringArray&gt;</net.dinglisch.android.tasker.RELEVANT_VARIABLES>
+					<net.dinglisch.android.tasker.RELEVANT_VARIABLES-type>[Ljava.lang.String;</net.dinglisch.android.tasker.RELEVANT_VARIABLES-type>
+					<net.dinglisch.android.tasker.extras.VARIABLE_REPLACE_KEYS>com.termux.tasker.extra.EXECUTABLE com.termux.execute.arguments com.termux.tasker.extra.WORKDIR com.termux.tasker.extra.STDIN com.termux.tasker.extra.SESSION_ACTION com.termux.tasker.extra.BACKGROUND_CUSTOM_LOG_LEVEL</net.dinglisch.android.tasker.extras.VARIABLE_REPLACE_KEYS>
+					<net.dinglisch.android.tasker.extras.VARIABLE_REPLACE_KEYS-type>java.lang.String</net.dinglisch.android.tasker.extras.VARIABLE_REPLACE_KEYS-type>
+					<net.dinglisch.android.tasker.subbundled>true</net.dinglisch.android.tasker.subbundled>
+					<net.dinglisch.android.tasker.subbundled-type>java.lang.Boolean</net.dinglisch.android.tasker.subbundled-type>
+				</Vals>
+			</Bundle>
+			<Str sr="arg1" ve="3">com.termux.tasker</Str>
+			<Str sr="arg2" ve="3">com.termux.tasker.EditConfigurationActivity</Str>
+			<Int sr="arg3" val="10"/>
+			<Int sr="arg4" val="0"/>
+		</Action>
+		<Action sr="act12" ve="7">
+			<code>38</code>
+		</Action>
+		<Action sr="act13" ve="7">
+			<code>38</code>
+		</Action>
+		<Action sr="act2" ve="7">
+			<code>37</code>
+			<label>Cas commande vocale (rz*)</label>
+			<ConditionList sr="if">
+				<Condition sr="c0" ve="3">
+					<lhs>%avcommnofilter</lhs>
+					<op>2</op>
+					<rhs>rz*</rhs>
+				</Condition>
+			</ConditionList>
+		</Action>
+		<Action sr="act3" ve="7">
+			<code>37</code>
+			<label>Contexte compatible commandes ?</label>
+			<ConditionList sr="if">
+				<Condition sr="c0" ve="3">
+					<lhs>%RZsttContext</lhs>
+					<op>2</op>
+					<rhs>Cmde/Mixte</rhs>
+				</Condition>
+			</ConditionList>
+		</Action>
+		<Action sr="act4" ve="7">
+			<code>547</code>
+			<label>Copier phrase brute</label>
+			<Str sr="arg0" ve="3">%PhraseRZRetire</Str>
+			<Str sr="arg1" ve="3">%avcommnofilter</Str>
+			<Int sr="arg2" val="0"/>
+			<Int sr="arg3" val="0"/>
+			<Int sr="arg4" val="0"/>
+			<Int sr="arg5" val="3"/>
+			<Int sr="arg6" val="1"/>
+		</Action>
+		<Action sr="act5" ve="7">
+			<code>598</code>
+			<label>Retirer préfixe rz</label>
+			<Str sr="arg0" ve="3">%PhraseRZRetire</Str>
+			<Str sr="arg1" ve="3">^rz\s*</Str>
+			<Int sr="arg2" val="0"/>
+			<Int sr="arg3" val="0"/>
+			<Int sr="arg4" val="0"/>
+			<Str sr="arg5" ve="3"/>
+			<Int sr="arg6" val="1"/>
+			<Str sr="arg7" ve="3"/>
+		</Action>
+		<Action sr="act6" ve="7">
+			<code>1256900802</code>
+			<Bundle sr="arg0">
+				<Vals sr="val">
+					<com.termux.execute.arguments>%PhraseRZRetire</com.termux.execute.arguments>
+					<com.termux.execute.arguments-type>java.lang.String</com.termux.execute.arguments-type>
+					<com.termux.tasker.extra.BACKGROUND_CUSTOM_LOG_LEVEL>&lt;null&gt;</com.termux.tasker.extra.BACKGROUND_CUSTOM_LOG_LEVEL>
+					<com.termux.tasker.extra.BACKGROUND_CUSTOM_LOG_LEVEL-type>java.lang.String</com.termux.tasker.extra.BACKGROUND_CUSTOM_LOG_LEVEL-type>
+					<com.termux.tasker.extra.EXECUTABLE>rz_autovoice_bridge.sh</com.termux.tasker.extra.EXECUTABLE>
+					<com.termux.tasker.extra.EXECUTABLE-type>java.lang.String</com.termux.tasker.extra.EXECUTABLE-type>
+					<com.termux.tasker.extra.SESSION_ACTION>&lt;null&gt;</com.termux.tasker.extra.SESSION_ACTION>
+					<com.termux.tasker.extra.SESSION_ACTION-type>java.lang.String</com.termux.tasker.extra.SESSION_ACTION-type>
+					<com.termux.tasker.extra.STDIN>&lt;null&gt;</com.termux.tasker.extra.STDIN>
+					<com.termux.tasker.extra.STDIN-type>java.lang.String</com.termux.tasker.extra.STDIN-type>
+					<com.termux.tasker.extra.TERMINAL>false</com.termux.tasker.extra.TERMINAL>
+					<com.termux.tasker.extra.TERMINAL-type>java.lang.Boolean</com.termux.tasker.extra.TERMINAL-type>
+					<com.termux.tasker.extra.VERSION_CODE>1002</com.termux.tasker.extra.VERSION_CODE>
+					<com.termux.tasker.extra.VERSION_CODE-type>java.lang.Integer</com.termux.tasker.extra.VERSION_CODE-type>
+					<com.termux.tasker.extra.WAIT_FOR_RESULT>true</com.termux.tasker.extra.WAIT_FOR_RESULT>
+					<com.termux.tasker.extra.WAIT_FOR_RESULT-type>java.lang.Boolean</com.termux.tasker.extra.WAIT_FOR_RESULT-type>
+					<com.termux.tasker.extra.WORKDIR>&lt;null&gt;</com.termux.tasker.extra.WORKDIR>
+					<com.termux.tasker.extra.WORKDIR-type>java.lang.String</com.termux.tasker.extra.WORKDIR-type>
+					<com.twofortyfouram.locale.intent.extra.BLURB>rz_autovoice_bridge.sh %PhraseRZRetire
+
+Working Directory ✕
+Stdin ✕
+Custom Log Level null
+Terminal Session ✕
+Wait For Re</com.twofortyfouram.locale.intent.extra.BLURB>
+					<com.twofortyfouram.locale.intent.extra.BLURB-type>java.lang.String</com.twofortyfouram.locale.intent.extra.BLURB-type>
+					<net.dinglisch.android.tasker.RELEVANT_VARIABLES>&lt;StringArray sr=""&gt;&lt;_array_net.dinglisch.android.tasker.RELEVANT_VARIABLES0&gt;%stdout
+Standard Output
+The &amp;lt;B&amp;gt;stdout&amp;lt;/B&amp;gt; of the command.&lt;/_array_net.dinglisch.android.tasker.RELEVANT_VARIABLES0&gt;&lt;_array_net.dinglisch.android.tasker.RELEVANT_VARIABLES1&gt;%stdout_original_length
+Standard Output Original Length
+The original length of &amp;lt;B&amp;gt;stdout&amp;lt;/B&amp;gt;.&lt;/_array_net.dinglisch.android.tasker.RELEVANT_VARIABLES1&gt;&lt;_array_net.dinglisch.android.tasker.RELEVANT_VARIABLES2&gt;%stderr
+Standard Error
+The &amp;lt;B&amp;gt;stderr&amp;lt;/B&amp;gt; of the command.&lt;/_array_net.dinglisch.android.tasker.RELEVANT_VARIABLES2&gt;&lt;_array_net.dinglisch.android.tasker.RELEVANT_VARIABLES3&gt;%stderr_original_length
+Standard Error Original Length
+The original length of &amp;lt;B&amp;gt;stderr&amp;lt;/B&amp;gt;.&lt;/_array_net.dinglisch.android.tasker.RELEVANT_VARIABLES3&gt;&lt;_array_net.dinglisch.android.tasker.RELEVANT_VARIABLES4&gt;%result
+Exit Code
+The &amp;lt;B&amp;gt;exit code&amp;lt;/B&amp;gt; of the command.0 often means success and anything else is usually a failure of some sort.&lt;/_array_net.dinglisch.android.tasker.RELEVANT_VARIABLES4&gt;&lt;/StringArray&gt;</net.dinglisch.android.tasker.RELEVANT_VARIABLES>
+					<net.dinglisch.android.tasker.RELEVANT_VARIABLES-type>[Ljava.lang.String;</net.dinglisch.android.tasker.RELEVANT_VARIABLES-type>
+					<net.dinglisch.android.tasker.extras.VARIABLE_REPLACE_KEYS>com.termux.tasker.extra.EXECUTABLE com.termux.execute.arguments com.termux.tasker.extra.WORKDIR com.termux.tasker.extra.STDIN com.termux.tasker.extra.SESSION_ACTION com.termux.tasker.extra.BACKGROUND_CUSTOM_LOG_LEVEL</net.dinglisch.android.tasker.extras.VARIABLE_REPLACE_KEYS>
+					<net.dinglisch.android.tasker.extras.VARIABLE_REPLACE_KEYS-type>java.lang.String</net.dinglisch.android.tasker.extras.VARIABLE_REPLACE_KEYS-type>
+					<net.dinglisch.android.tasker.subbundled>true</net.dinglisch.android.tasker.subbundled>
+					<net.dinglisch.android.tasker.subbundled-type>java.lang.Boolean</net.dinglisch.android.tasker.subbundled-type>
+				</Vals>
+			</Bundle>
+			<Str sr="arg1" ve="3">com.termux.tasker</Str>
+			<Str sr="arg2" ve="3">com.termux.tasker.EditConfigurationActivity</Str>
+			<Int sr="arg3" val="10"/>
+			<Int sr="arg4" val="0"/>
+		</Action>
+		<Action sr="act7" ve="7">
+			<code>38</code>
+		</Action>
+		<Action sr="act8" ve="7">
+			<code>43</code>
+		</Action>
+		<Action sr="act9" ve="7">
+			<code>37</code>
+			<label>Contexte compatible Gemini ?</label>
+			<ConditionList sr="if">
+				<Condition sr="c0" ve="3">
+					<lhs>%RZsttContext</lhs>
+					<op>2</op>
+					<rhs>Conv/Mixte</rhs>
+				</Condition>
+			</ConditionList>
+		</Action>
+	</Task>
+	<Task sr="task63">
+		<cdate>1781166088854</cdate>
+		<edate>1781541653482</edate>
+		<id>63</id>
+		<nme>RZ_AVStart</nme>
+		<pri>100</pri>
+		<Action sr="act0" ve="7">
+			<code>269503190</code>
+			<Bundle sr="arg0">
+				<Vals sr="val">
+					<LanguageCode>&lt;null&gt;</LanguageCode>
+					<LanguageCode-type>java.lang.String</LanguageCode-type>
+					<LedColor>&lt;null&gt;</LedColor>
+					<LedColor-type>java.lang.String</LedColor-type>
+					<LedOff>&lt;null&gt;</LedOff>
+					<LedOff-type>java.lang.String</LedOff-type>
+					<LedOn>&lt;null&gt;</LedOn>
+					<LedOn-type>java.lang.String</LedOn-type>
+					<NotificationIcon>&lt;null&gt;</NotificationIcon>
+					<NotificationIcon-type>java.lang.String</NotificationIcon-type>
+					<NotificationText>&lt;null&gt;</NotificationText>
+					<NotificationText-type>java.lang.String</NotificationText-type>
+					<NotificationTitle>&lt;null&gt;</NotificationTitle>
+					<NotificationTitle-type>java.lang.String</NotificationTitle-type>
+					<PersistentNotification>true</PersistentNotification>
+					<PersistentNotification-type>java.lang.Boolean</PersistentNotification-type>
+					<com.twofortyfouram.locale.intent.extra.BLURB>
+Starting continuous voice recognition without headset
+Persistent Notification: true</com.twofortyfouram.locale.intent.extra.BLURB>
+					<com.twofortyfouram.locale.intent.extra.BLURB-type>java.lang.String</com.twofortyfouram.locale.intent.extra.BLURB-type>
+					<continuous>true</continuous>
+					<continuous-type>java.lang.Boolean</continuous-type>
+					<net.dinglisch.android.tasker.RELEVANT_VARIABLES>&lt;StringArray sr=""&gt;&lt;_array_net.dinglisch.android.tasker.RELEVANT_VARIABLES0&gt;%err
+Error Code
+Only available if you select &amp;lt;b&amp;gt;Continue Task After Error&amp;lt;/b&amp;gt; and the action ends in error&lt;/_array_net.dinglisch.android.tasker.RELEVANT_VARIABLES0&gt;&lt;_array_net.dinglisch.android.tasker.RELEVANT_VARIABLES1&gt;%errmsg
+Error Message
+Only available if you select &amp;lt;b&amp;gt;Continue Task After Error&amp;lt;/b&amp;gt; and the action ends in error&lt;/_array_net.dinglisch.android.tasker.RELEVANT_VARIABLES1&gt;&lt;/StringArray&gt;</net.dinglisch.android.tasker.RELEVANT_VARIABLES>
+					<net.dinglisch.android.tasker.RELEVANT_VARIABLES-type>[Ljava.lang.String;</net.dinglisch.android.tasker.RELEVANT_VARIABLES-type>
+					<net.dinglisch.android.tasker.extras.VARIABLE_REPLACE_KEYS>plugininstanceid plugintypeid </net.dinglisch.android.tasker.extras.VARIABLE_REPLACE_KEYS>
+					<net.dinglisch.android.tasker.extras.VARIABLE_REPLACE_KEYS-type>java.lang.String</net.dinglisch.android.tasker.extras.VARIABLE_REPLACE_KEYS-type>
+					<net.dinglisch.android.tasker.subbundled>true</net.dinglisch.android.tasker.subbundled>
+					<net.dinglisch.android.tasker.subbundled-type>java.lang.Boolean</net.dinglisch.android.tasker.subbundled-type>
+					<plugininstanceid>ea652578-9f2b-481f-a971-f5f70746b4bc</plugininstanceid>
+					<plugininstanceid-type>java.lang.String</plugininstanceid-type>
+					<plugintypeid>com.joaomgcd.autovoice.intent.IntentGetVoiceContinuous</plugintypeid>
+					<plugintypeid-type>java.lang.String</plugintypeid-type>
+				</Vals>
+			</Bundle>
+			<Str sr="arg1" ve="3">com.joaomgcd.autovoice</Str>
+			<Str sr="arg2" ve="3">com.joaomgcd.autovoice.activity.ActivityConfigGetVoiceContinuous</Str>
+			<Int sr="arg3" val="10"/>
+			<Int sr="arg4" val="1"/>
+		</Action>
+		<Action sr="act1" ve="7">
+			<code>547</code>
+			<Str sr="arg0" ve="3">%RZautoVoice</Str>
+			<Str sr="arg1" ve="3">actif</Str>
+			<Int sr="arg2" val="0"/>
+			<Int sr="arg3" val="0"/>
+			<Int sr="arg4" val="0"/>
+			<Int sr="arg5" val="3"/>
+			<Int sr="arg6" val="1"/>
+		</Action>
+	</Task>
+	<Task sr="task64">
+		<cdate>1781166088854</cdate>
+		<edate>1781167371902</edate>
+		<id>64</id>
+		<nme>RZ_AVStop</nme>
+		<pri>100</pri>
+		<Action sr="act0" ve="7">
+			<code>269503190</code>
+			<Bundle sr="arg0">
+				<Vals sr="val">
+					<LanguageCode>&lt;null&gt;</LanguageCode>
+					<LanguageCode-type>java.lang.String</LanguageCode-type>
+					<LedColor>&lt;null&gt;</LedColor>
+					<LedColor-type>java.lang.String</LedColor-type>
+					<LedOff>&lt;null&gt;</LedOff>
+					<LedOff-type>java.lang.String</LedOff-type>
+					<LedOn>&lt;null&gt;</LedOn>
+					<LedOn-type>java.lang.String</LedOn-type>
+					<NotificationIcon>&lt;null&gt;</NotificationIcon>
+					<NotificationIcon-type>java.lang.String</NotificationIcon-type>
+					<NotificationText>&lt;null&gt;</NotificationText>
+					<NotificationText-type>java.lang.String</NotificationText-type>
+					<NotificationTitle>&lt;null&gt;</NotificationTitle>
+					<NotificationTitle-type>java.lang.String</NotificationTitle-type>
+					<PersistentNotification>false</PersistentNotification>
+					<PersistentNotification-type>java.lang.Boolean</PersistentNotification-type>
+					<com.twofortyfouram.locale.intent.extra.BLURB>
+Stopping continuous voice recognition </com.twofortyfouram.locale.intent.extra.BLURB>
+					<com.twofortyfouram.locale.intent.extra.BLURB-type>java.lang.String</com.twofortyfouram.locale.intent.extra.BLURB-type>
+					<continuous>false</continuous>
+					<continuous-type>java.lang.Boolean</continuous-type>
+					<net.dinglisch.android.tasker.RELEVANT_VARIABLES>&lt;StringArray sr=""&gt;&lt;_array_net.dinglisch.android.tasker.RELEVANT_VARIABLES0&gt;%err
+Error Code
+Only available if you select &amp;lt;b&amp;gt;Continue Task After Error&amp;lt;/b&amp;gt; and the action ends in error&lt;/_array_net.dinglisch.android.tasker.RELEVANT_VARIABLES0&gt;&lt;_array_net.dinglisch.android.tasker.RELEVANT_VARIABLES1&gt;%errmsg
+Error Message
+Only available if you select &amp;lt;b&amp;gt;Continue Task After Error&amp;lt;/b&amp;gt; and the action ends in error&lt;/_array_net.dinglisch.android.tasker.RELEVANT_VARIABLES1&gt;&lt;/StringArray&gt;</net.dinglisch.android.tasker.RELEVANT_VARIABLES>
+					<net.dinglisch.android.tasker.RELEVANT_VARIABLES-type>[Ljava.lang.String;</net.dinglisch.android.tasker.RELEVANT_VARIABLES-type>
+					<net.dinglisch.android.tasker.extras.VARIABLE_REPLACE_KEYS>plugininstanceid plugintypeid </net.dinglisch.android.tasker.extras.VARIABLE_REPLACE_KEYS>
+					<net.dinglisch.android.tasker.extras.VARIABLE_REPLACE_KEYS-type>java.lang.String</net.dinglisch.android.tasker.extras.VARIABLE_REPLACE_KEYS-type>
+					<net.dinglisch.android.tasker.subbundled>true</net.dinglisch.android.tasker.subbundled>
+					<net.dinglisch.android.tasker.subbundled-type>java.lang.Boolean</net.dinglisch.android.tasker.subbundled-type>
+					<plugininstanceid>ea652578-9f2b-481f-a971-f5f70746b4bc</plugininstanceid>
+					<plugininstanceid-type>java.lang.String</plugininstanceid-type>
+					<plugintypeid>com.joaomgcd.autovoice.intent.IntentGetVoiceContinuous</plugintypeid>
+					<plugintypeid-type>java.lang.String</plugintypeid-type>
+				</Vals>
+			</Bundle>
+			<Str sr="arg1" ve="3">com.joaomgcd.autovoice</Str>
+			<Str sr="arg2" ve="3">com.joaomgcd.autovoice.activity.ActivityConfigGetVoiceContinuous</Str>
+			<Int sr="arg3" val="10"/>
+			<Int sr="arg4" val="1"/>
+		</Action>
+		<Action sr="act1" ve="7">
+			<code>547</code>
+			<Str sr="arg0" ve="3">%RZautoVoice</Str>
+			<Str sr="arg1" ve="3">Inactif</Str>
+			<Int sr="arg2" val="0"/>
+			<Int sr="arg3" val="0"/>
+			<Int sr="arg4" val="0"/>
+			<Int sr="arg5" val="3"/>
+			<Int sr="arg6" val="1"/>
+		</Action>
+	</Task>
+	<Task sr="task7">
+		<cdate>1778300000014</cdate>
+		<edate>1779177284976</edate>
+		<id>7</id>
+		<nme>RZ_OuvreEtat</nme>
+		<pri>100</pri>
+		<Action sr="act0" ve="7">
+			<code>1256900802</code>
+			<label>Copie global.json de SE</label>
+			<Bundle sr="arg0">
+				<Vals sr="val">
+					<com.termux.execute.arguments>&lt;null&gt;</com.termux.execute.arguments>
+					<com.termux.execute.arguments-type>java.lang.String</com.termux.execute.arguments-type>
+					<com.termux.tasker.extra.BACKGROUND_CUSTOM_LOG_LEVEL>&lt;null&gt;</com.termux.tasker.extra.BACKGROUND_CUSTOM_LOG_LEVEL>
+					<com.termux.tasker.extra.BACKGROUND_CUSTOM_LOG_LEVEL-type>java.lang.String</com.termux.tasker.extra.BACKGROUND_CUSTOM_LOG_LEVEL-type>
+					<com.termux.tasker.extra.EXECUTABLE>rz_copy_global.sh</com.termux.tasker.extra.EXECUTABLE>
+					<com.termux.tasker.extra.EXECUTABLE-type>java.lang.String</com.termux.tasker.extra.EXECUTABLE-type>
+					<com.termux.tasker.extra.SESSION_ACTION>&lt;null&gt;</com.termux.tasker.extra.SESSION_ACTION>
+					<com.termux.tasker.extra.SESSION_ACTION-type>java.lang.String</com.termux.tasker.extra.SESSION_ACTION-type>
+					<com.termux.tasker.extra.STDIN>&lt;null&gt;</com.termux.tasker.extra.STDIN>
+					<com.termux.tasker.extra.STDIN-type>java.lang.String</com.termux.tasker.extra.STDIN-type>
+					<com.termux.tasker.extra.TERMINAL>false</com.termux.tasker.extra.TERMINAL>
+					<com.termux.tasker.extra.TERMINAL-type>java.lang.Boolean</com.termux.tasker.extra.TERMINAL-type>
+					<com.termux.tasker.extra.VERSION_CODE>1002</com.termux.tasker.extra.VERSION_CODE>
+					<com.termux.tasker.extra.VERSION_CODE-type>java.lang.Integer</com.termux.tasker.extra.VERSION_CODE-type>
+					<com.termux.tasker.extra.WAIT_FOR_RESULT>false</com.termux.tasker.extra.WAIT_FOR_RESULT>
+					<com.termux.tasker.extra.WAIT_FOR_RESULT-type>java.lang.Boolean</com.termux.tasker.extra.WAIT_FOR_RESULT-type>
+					<com.termux.tasker.extra.WORKDIR>&lt;null&gt;</com.termux.tasker.extra.WORKDIR>
+					<com.termux.tasker.extra.WORKDIR-type>java.lang.String</com.termux.tasker.extra.WORKDIR-type>
+					<com.twofortyfouram.locale.intent.extra.BLURB>rz_copy_global.sh
+
+Working Directory ✕
+Stdin ✕
+Custom Log Level null
+Terminal Session ✕
+Wait For Result ✕</com.twofortyfouram.locale.intent.extra.BLURB>
+					<com.twofortyfouram.locale.intent.extra.BLURB-type>java.lang.String</com.twofortyfouram.locale.intent.extra.BLURB-type>
+					<net.dinglisch.android.tasker.extras.VARIABLE_REPLACE_KEYS>com.termux.tasker.extra.EXECUTABLE com.termux.execute.arguments com.termux.tasker.extra.WORKDIR com.termux.tasker.extra.STDIN com.termux.tasker.extra.SESSION_ACTION com.termux.tasker.extra.BACKGROUND_CUSTOM_LOG_LEVEL</net.dinglisch.android.tasker.extras.VARIABLE_REPLACE_KEYS>
+					<net.dinglisch.android.tasker.extras.VARIABLE_REPLACE_KEYS-type>java.lang.String</net.dinglisch.android.tasker.extras.VARIABLE_REPLACE_KEYS-type>
+					<net.dinglisch.android.tasker.subbundled>true</net.dinglisch.android.tasker.subbundled>
+					<net.dinglisch.android.tasker.subbundled-type>java.lang.Boolean</net.dinglisch.android.tasker.subbundled-type>
+				</Vals>
+			</Bundle>
+			<Str sr="arg1" ve="3">com.termux.tasker</Str>
+			<Str sr="arg2" ve="3">com.termux.tasker.EditConfigurationActivity</Str>
+			<Int sr="arg3" val="10"/>
+			<Int sr="arg4" val="1"/>
+		</Action>
+		<Action sr="act1" ve="7">
+			<code>417</code>
+			<label>Lire global.json depuis sdcard</label>
+			<Str sr="arg0" ve="3">Tasker/RobotRZ/global.json</Str>
+			<Str sr="arg1" ve="3">%RZ_GLOBAL</Str>
+			<Int sr="arg2" val="1"/>
+		</Action>
+		<Action sr="act2" ve="7">
+			<code>47</code>
+			<label>Afficher scène RZ_Etat</label>
+			<Str sr="arg0" ve="3">RZ_Etat</Str>
+			<Int sr="arg1" val="6"/>
+			<Int sr="arg10" val="1"/>
+			<Int sr="arg2" val="100"/>
+			<Int sr="arg3" val="100"/>
+			<Int sr="arg4" val="0"/>
+			<Int sr="arg5" val="1"/>
+			<Int sr="arg6" val="1"/>
+			<Int sr="arg7" val="1"/>
+			<Int sr="arg8" val="1"/>
+			<Int sr="arg9" val="1"/>
+		</Action>
+		<Action sr="act3" ve="7">
+			<code>30</code>
+			<Int sr="arg0" val="500"/>
+			<Int sr="arg1" val="0"/>
+			<Int sr="arg2" val="0"/>
+			<Int sr="arg3" val="0"/>
+			<Int sr="arg4" val="0"/>
+		</Action>
+		<Action sr="act4" ve="7">
+			<code>129</code>
+			<Str sr="arg0" ve="3">var raw = global('RZ_GLOBAL') || '{}';
+var g = {};
+try { g = JSON.parse(raw); } catch(e) { g = {}; }
+var MODES  = {0:'ARRET',1:'VEILLE',2:'FIXE',3:'DEPLACEMENT',4:'AUTONOME',5:'ERREUR'};
+var PTGE   = {0:'Ecran',1:'Vocal',2:'Manette',3:'Laisse',4:'Laisse+Vocal'};
+var modeVal = g.CfgS ? (g.CfgS.modeRZ  !== undefined ? g.CfgS.modeRZ  : '?') : '?';
+var ptgeVal = g.CfgS ? (g.CfgS.typePtge !== undefined ? g.CfgS.typePtge : '?') : '?';
+var reseau  = g.CfgS ? (g.CfgS.typeReseau || '?') : '?';
+setGlobal('RZetatMode',     MODES[modeVal] || ('Mode '+modeVal));
+setGlobal('RZetatPtge',     PTGE[ptgeVal]  || ('Ptge '+ptgeVal));
+setGlobal('RZetatReseau',   reseau);
+setGlobal('RZetatIpSE',     (g.Sys &amp;&amp; g.Sys.ipSE) ? g.Sys.ipSE : '192.168.1.12');
+var ipSP = '?';
+if      (reseau==='WifiInternetBox') ipSP='192.168.1.40 (local)';
+else if (reseau==='Wifi4KSP')        ipSP='DuckDNS (4G SP)';
+else if (reseau==='WifiSPSsI')       ipSP='SP Smart local';
+else if (reseau==='4K')              ipSP='DuckDNS (SIM SE)';
+setGlobal('RZetatIpSP', ipSP);
+var CTX = {
+    'WifiInternetBox':'Wi-Fi box maison - SP RPI local',
+    'Wifi4KSP':       'Wi-Fi partage SP - SP RPI DuckDNS',
+    'WifiSPSsI':      'Wi-Fi SP sans internet - SP Smart local',
+    '4K':             'SIM SE - SP RPI via DuckDNS'
+};
+setGlobal('RZetatCtxReseau', CTX[reseau] || reseau);
+performTask('RZ_EtatMajScene', 5);
+performTask('RZ_EtatRefresh', 5);</Str>
+			<Str sr="arg1" ve="3"/>
+			<Int sr="arg2" val="1"/>
+			<Int sr="arg3" val="45"/>
+		</Action>
+	</Task>
+	<Task sr="task8">
+		<cdate>1778300000021</cdate>
+		<edate>1781018846578</edate>
+		<id>8</id>
+		<nme>RZ_OuvreVoice</nme>
+		<Action sr="act0" ve="7">
+			<code>47</code>
+			<Str sr="arg0" ve="3">RZ_VoiceHelp</Str>
+			<Int sr="arg1" val="6"/>
+			<Int sr="arg10" val="1"/>
+			<Int sr="arg2" val="100"/>
+			<Int sr="arg3" val="100"/>
+			<Int sr="arg4" val="0"/>
+			<Int sr="arg5" val="1"/>
+			<Int sr="arg6" val="1"/>
+			<Int sr="arg7" val="1"/>
+			<Int sr="arg8" val="1"/>
+			<Int sr="arg9" val="1"/>
+		</Action>
+	</Task>
+	<Task sr="task9">
+		<cdate>1778300000022</cdate>
+		<edate>1778666558188</edate>
+		<id>9</id>
+		<nme>RZ_OuvreVoiceDetail</nme>
+		<Action sr="act0" ve="7">
+			<code>47</code>
+			<Str sr="arg0" ve="3">RZ_VoiceDetail</Str>
+			<Int sr="arg1" val="6"/>
+			<Int sr="arg10" val="1"/>
+			<Int sr="arg2" val="100"/>
+			<Int sr="arg3" val="100"/>
+			<Int sr="arg4" val="0"/>
+			<Int sr="arg5" val="1"/>
+			<Int sr="arg6" val="1"/>
+			<Int sr="arg7" val="1"/>
+			<Int sr="arg8" val="1"/>
+			<Int sr="arg9" val="1"/>
+		</Action>
+	</Task>
+	<Variable sr="vars0">
+		<n>%RZtorchEtat</n>
+		<v>Off</v>
+	</Variable>
+	<Variable sr="vars1">
+		<n>%RZemoji_defaut</n>
+		<v>😐</v>
+	</Variable>
+	<Variable sr="vars10">
+		<n>%RZemoji</n>
+		<v>0,0</v>
+	</Variable>
+	<Variable sr="vars11">
+		<n>%RZiAConvOnOff</n>
+		<v>Off</v>
+	</Variable>
+	<Variable sr="vars12">
+		<n>%RZmenuCmdJson</n>
+		<v>{"cat":"V","var":"CfgS","prop":"modeRZ","inst":"*","val":"0"}</v>
+	</Variable>
+	<Variable sr="vars13">
+		<n>%RZsttContext</n>
+		<v>Mixte</v>
+	</Variable>
+	<Variable sr="vars14">
+		<n>%RZvoiceArg</n>
+		<v>%avcommnofilter</v>
+	</Variable>
+	<Variable sr="vars15">
+		<n>%RZ_MENU_JSON</n>
+		<v>{"cat":"V","var":"CfgS","prop":"modeRZ","inst":"*","val":"0"}</v>
+	</Variable>
+	<Variable sr="vars16">
+		<n>%RZmenuBtn</n>
+		<v>btn_arret</v>
+	</Variable>
+	<Variable sr="vars17">
+		<n>%RZ_GLOBAL</n>
+		<v>{
+  "CfgS": {
+    "modeRZ": 2,
+    "typePtge": 1,
+    "reset": false,
+    "typeReseau": "WifiInternetBox"
+  },
+  "Urg": {
+    "source": "URG_NONE",
+    "statut": "cleared",
+    "niveau": "warn"
+  },
+  "COM": {
+    "debug": "",
+    "error": "",
+    "info": "",
+    "warn": ""
+  },
+  "Sys": {
+    "cpu_load": 0,
+    "temp": 0,
+    "storage": 64,
+    "mem": 79,
+    "batt": 89,
+    "uptime": 0,
+    "last_update": "2026-06-05 23:55:05",
+    "cpu": 0,
+    "thermal": 41
+  },
+  "STT": {
+    "context": "Conv"
+  }
+}
+    </v>
+	</Variable>
+	<Variable sr="vars18">
+		<n>%RZetatIpSP</n>
+		<v>192.168.1.40 (local)</v>
+	</Variable>
+	<Variable sr="vars19">
+		<n>%RZtask</n>
+		<v>RZ_STT_Context</v>
+	</Variable>
+	<Variable sr="vars2">
+		<n>%RZ_JSON</n>
+		<v>{"task":"RZ_STT_Context","param":"Mixte","ts":"1780750335"}</v>
+	</Variable>
+	<Variable sr="vars20">
+		<n>%PhraseConv</n>
+		<v>comment tu vas</v>
+	</Variable>
+	<Variable sr="vars21">
+		<n>%RZetatIpSE</n>
+		<v>192.168.1.12</v>
+	</Variable>
+	<Variable sr="vars22">
+		<n>%RZetatTs</n>
+		<v>23:55:16</v>
+	</Variable>
+	<Variable sr="vars23">
+		<n>%RZautoVoice</n>
+		<v>actif</v>
+	</Variable>
+	<Variable sr="vars24">
+		<n>%RZetatCtxReseau</n>
+		<v>Wi-Fi box maison - SP RPI local</v>
+	</Variable>
+	<Variable sr="vars25">
+		<n>%RZvpivOut</n>
+		<v>$V:CfgS:modeRZ:*:0#</v>
+	</Variable>
+	<Variable sr="vars26">
+		<n>%RZparam</n>
+		<v>Off</v>
+	</Variable>
+	<Variable sr="vars27">
+		<n>%RZetatReseau</n>
+		<v>WifiInternetBox</v>
+	</Variable>
+	<Variable sr="vars28">
+		<n>%RZecranEtat</n>
+		<v>A</v>
+	</Variable>
+	<Variable sr="vars29">
+		<n>%RZappliConv</n>
+		<v>ferme</v>
+	</Variable>
+	<Variable sr="vars3">
+		<n>%RZgeminiArg</n>
+		<v>%avcomm</v>
+	</Variable>
+	<Variable sr="vars4">
+		<n>%AVCONTINUOUS</n>
+		<v>true</v>
+	</Variable>
+	<Variable sr="vars5">
+		<n>%RZetatMode</n>
+		<v>FIXE</v>
+	</Variable>
+	<Variable sr="vars6">
+		<n>%RZetatPtge</n>
+		<v>Vocal</v>
+	</Variable>
+	<Variable sr="vars7">
+		<n>%RZretourNeutre</n>
+		<v>0</v>
+	</Variable>
+	<Variable sr="vars8">
+		<n>%RZappliNom</n>
+		<v>Maps</v>
+	</Variable>
+	<Variable sr="vars9">
+		<n>%RZecranPrev</n>
+		<v>A</v>
+	</Variable>
+</TaskerData>

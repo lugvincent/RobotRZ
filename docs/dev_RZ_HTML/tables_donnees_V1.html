@@ -88,8 +88,8 @@ body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,san
       <div class="table-header">
         <div class="table-letter" style="background:rgba(155,124,244,.15);color:var(--purple)">C</div>
         <div>
-          <div class="table-title" style="color:var(--purple)">Table C — courant_init.json</div>
-          <div class="table-file">termux/config/courant_init.json — sur SE</div>
+          <div class="table-title" style="color:var(--purple)">Table C — TableC.json</div>
+          <div class="table-file">Maître : TableC.json — sur SP, éditée par ui_VarG<br>Projection SE : termux/config/courant_init.json</div>
         </div>
       </div>
       <div class="table-body">
@@ -98,6 +98,7 @@ body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,san
         <strong style="color:var(--text)">Fichiers générés :</strong> gyro_runtime.json, mag_runtime.json, sys_runtime.json, cam_config.json, mic_config.json, stt_config.json, appli_config.json.
       </div>
       <div class="table-rule" style="border-color:var(--purple)">Les fichiers *_runtime.json sont générés par check_config.sh — non versionnés dans Git. À relancer si courant_init.json est modifié.</div>
+      <div class="table-rule" style="border-color:var(--amber)">⚠️ Corrigé le 21/10/2026 : la Table C était décrite comme résidant sur SE. C'est faux. La table maître est <strong>TableC.json, sur SP</strong> — 23 variables, 80 propriétés, au modèle enrichedVars — éditée par ui_VarG et à l'origine de la Table B. Le fichier <strong>courant_init.json n'est pas la Table C</strong> : c'en est la projection envoyée à SE à l'initialisation. L'erreur venait de architecture_v2.md (28/04) ; doc_A1 et doc_A2 (mars) donnaient déjà la bonne version. ⚠️ TableC.json n'est à ce jour versionné nulle part — il n'existe que dans le dossier local A.</div>
     </div>
 
     <div class="table-card">
@@ -105,7 +106,7 @@ body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,san
         <div class="table-letter" style="background:rgba(240,168,54,.15);color:var(--amber)">D</div>
         <div>
           <div class="table-title" style="color:var(--amber)">Table D — Catalogue commandes STT</div>
-          <div class="table-file">termux/scripts/sensors/stt/table_d_catalogue.csv</div>
+          <div class="table-file">termux/scripts/sensors/stt/tableD_catalogueV2.csv</div>
         </div>
       </div>
       <div class="table-body">
@@ -114,6 +115,7 @@ body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,san
         <strong style="color:var(--text)">Contexte dynamique :</strong> rz_state-manager.sh recalcule le sous-ensemble de commandes valides à chaque changement de modeRZ.
       </div>
       <div class="table-rule" style="border-color:var(--amber)">Module STT à développer. La Table D existe en structure mais le manager rz_stt_manager.sh n'est pas encore opérationnel.</div>
+      <div class="table-rule" style="border-color:var(--red)">🔴 Corrigé le 21/10/2026 : cette page affichait <strong>table_d_catalogue.csv</strong>, un fichier qui n'existe pas. Quatrième nom donné à la Table D, propagé depuis doc_A2 (mars 2026) puis architecture_v2.md. Le seul fichier réel est <strong>tableD_catalogueV2.csv</strong>, généré par original_init.sh (ligne 641) et lu par rz_build_system.py (ligne 107) et rz_build_grammar.py (ligne 65). Le nom est codé en dur à ces trois endroits : tout renommage doit les corriger ensemble. La V3 à 72 commandes n'a à ce jour aucun chemin vers le téléphone.</div>
     </div>
   </div>
 

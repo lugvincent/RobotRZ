@@ -1,10 +1,10 @@
-# SYNTHÈSE D'ÉTAT — RobotRZ — 19 octobre 2026
+# SYNTHÈSE D'ÉTAT — RobotRZ — 22 octobre 2026
 
 **Fichier** : `docs/synthese_etat.md` (dépôt Git) — copie archivée de `claude/synthese_etat_oct2026.md` (Project Knowledge)
-**Objectif** : donner à toute conversation du projet l'état réel au 19/10/2026, et signaler les points où `instructions_projet_RobotRZ.md` (v1.3, juillet) est périmé.
+**Objectif** : donner à toute conversation du projet l'état réel au 22/10/2026, et signaler les points où `instructions_projet_RobotRZ.md` (v1.3, juillet) est périmé.
 **Articulation** : complète `instructions_projet_RobotRZ.md`. **En cas de divergence, ce fichier fait foi pour l'état d'octobre 2026.** Le dossier technique complet avec schémas est dans `docs/dev_RZ_HTML/dossier_technique_V1.html`, accessible depuis `index.html`.
 **Précaution** : document d'état, pas de référence normative. Les références normatives restent Table A (`TableA_updatedV3_corrige.csv`) et Table D (v3).
-**Version** : 3.3 — 19/10/2026
+**Version** : 3.4 — 22/10/2026 — ajout du §9 (chantier documentation et sécurité des 20-22/10), correction de la Table C, du nom réel de la Table D, et des pièges associés. 3.3 — 19/10/2026
 
 ---
 
@@ -35,7 +35,10 @@ Ce document existe à **deux endroits**, avec des rôles distincts. Ne pas les c
 
 | Source | État | Fraîcheur |
 |---|---|---|
-| Dépôt Git `lugvincent/RobotRZ` (public) | Lisible par Claude **sans jeton** | **19/10/2026** |
+| Dépôt Git `lugvincent/RobotRZ` (public) | Lisible par Claude **sans jeton** | **22/10/2026** |
+| `docs/tables_RZ_descripteur.md` | **Référence normative des quatre tables.** Remplace `table_A_structure_regles` et `protocoleVPIV.odt` | **21/10/2026** |
+| `docs/installation_RPI_serveur.md` | Procédure d'installation du RPi serveur | **22/10/2026** |
+| `TableC.json` | **Table C maître — n'est versionnée nulle part**, voir §5.1 | 18/04/2026 |
 | `node-red/flows/flows-RPI-2026-10-18.json` | Référence courante, 298 nœuds | **18/10/2026** |
 | `node-red/flows/flows-XIAOMI-2026-10-18.json` | Archive, 6 onglets uniques | 18/10/2026 |
 | `node-red/functions/` | Copie lisible des nœuds function | 18/10/2026 |
@@ -50,7 +53,9 @@ Ce document existe à **deux endroits**, avec des rôles distincts. Ne pas les c
 - **RÈGLE ABSOLUE : ne jamais coller le résultat de `git remote -v` dans une conversation → token Doro visible en clair dans l'URL. Toujours passer par `set_git_remote.sh`.**
 - **JAMAIS coller une clé API en clair dans une conversation ou un log partagé.**
 - **Charger les credentials dans une variable shell sans jamais les afficher, vérifier par la longueur (`${#TOKEN}`), jamais par la valeur affichée.**
-- `RobotRZ-horsIO/` et `InstallationServeur/` sont exclus du dépôt (`.gitignore` v2.0) — ne jamais lever cette exclusion, `Id-code-clef.txt` s'y trouve.
+- `AA-Doc-horsGit/` (ex `RobotRZ-horsIO/`, renommé le 20/10) et `InstallationServeur/` sont exclus du dépôt (`.gitignore` v2.2) — ne jamais lever cette exclusion, `Id-code-clef.txt` s'y trouve. **Si ce dossier est renommé à nouveau, ajouter le nouveau nom au `.gitignore` dans le même geste** : un `.gitignore` ne s'applique qu'aux fichiers que Git ne suit pas déjà.
+- **Un seul fichier porte les identifiants** : `AA-Doc-horsGit\Z - Secret\RZ_Codes_Identifiants.odt`, créé le 22/10, à chiffrer dans LibreOffice (*Enregistrer avec mot de passe*, AES-256). Toute valeur recopiée dedans est supprimée de son emplacement d'origine.
+- **Ne jamais publier une adresse IPv6 globale.** Contrairement à l'IPv4, elle désigne la machine elle-même et ne passe par aucun NAT. L'adresse MAC la trahit également : l'identifiant d'interface en dérive (EUI-64).
 
 ---
 
@@ -193,6 +198,21 @@ Rien de tout cela n'est un lot en soi : **chaque élément est une matière prem
 
 Cette règle était déjà à moitié écrite : l'en-tête de `courant_init.sh` dit « *en production, ce fichier JSON est reçu directement depuis SP via MQTT* ».
 
+**Précision du 22/10/2026 — la Table C n'est pas où on la croyait.** Plusieurs documents, dont `architecture_v2.md`, la décrivaient comme résidant sur SE sous le nom `courant_init.json`. C'est faux, et la chaîne réelle est :
+
+```
+TableC.json        maître, sur SP, 23 variables, 80 propriétés, modèle enrichedVars
+                   éditée par l'onglet ui_VarG
+      ↓
+globalSave.json    Table B, node-red/config/ — générée depuis la Table C
+      ↓
+courant_init.json  projection envoyée à SE à l'initialisation
+```
+
+`courant_init.json` **n'est pas la Table C**, c'en est la projection. `doc_A1` et `doc_A2` (mars 2026) donnaient déjà la bonne version ; `architecture_v2.md` (28/04) était la source de l'erreur, et il est désormais dans `old\`.
+
+> 🔴 **`TableC.json` n'est versionné nulle part.** Il n'existe que dans `AA-Doc-horsGit\A - Architecture_Tables_Schemas\Tables\`. La table maître du projet n'a donc aucune sauvegarde ni historique. À verser au dépôt.
+
 **Conséquence à traiter** : la Table D n'a aujourd'hui **aucune existence sur le RPi**. Sa vraie source génératrice est une section de `original_init.sh`, un script d'installation qui tourne **sur le Doro** (balise `=== SECTION CATALOGUE STT ===`). Le CSV du projet en est une copie corrigée. C'est très probablement la cause du décalage **70 commandes déployées contre 72 annoncées** (`APP_IA_CONV_ON/OFF` ne sont jamais arrivées). Premier geste : extraire la Table D de `original_init.sh` vers un fichier autonome hébergé sur le RPi, avec un numéro de version pour que SE ne reconstruise ses index que si la version change.
 
 ### 5.2 Protocole et exécution
@@ -261,7 +281,14 @@ Surtout : **le firmware Arduino et les managers SE existent déjà**, et la cha�
 
 ### Pièges à ne pas réveiller
 
-- **`rz_build_system.py` hardcode `tableD_catalogueV2.csv`.** Le régénérer tel quel ferait silencieusement disparaître la colonne `id_traitement`.
+- **`rz_build_system.py` hardcode `tableD_catalogueV2.csv`.** Le régénérer tel quel ferait silencieusement disparaître la colonne `id_traitement`. Le nom est codé en dur à **trois** endroits — `original_init.sh` (641), `rz_build_system.py` (107), `rz_build_grammar.py` (65) — à corriger ensemble.
+- **`table_d_catalogue.csv` n'existe pas.** Ce quatrième nom de la Table D est né dans `doc_A2` (mars), a été repris par `architecture_v2.md`, et avait atteint la page publiée `tables_donnees_V1.html`. Corrigé le 21/10. Si vous le rencontrez encore quelque part, c'est une erreur.
+- **Un `.gitignore` ne protège que ce que Git ne suit pas déjà.** `.env` y figurait depuis février alors qu'il était suivi depuis le commit `7e4ba5c` : la ligne n'avait aucun effet et donnait une fausse assurance. Vérifié le 20/10, il ne contient que trois chemins, aucun secret ; la ligne trompeuse a été retirée et remplacée par une explication.
+- **Un `.odt` ou un `.ods` est une archive ZIP.** `grep` et `Select-String` n'y voient rien — ni les mots de passe, ni le contenu. Une recherche de secrets qui ignore ces formats ne trouve rien là où il y en a le plus. `H - Outils\RZ_Chercher_Secrets.ps1` les ouvre.
+- **Lire un `.ods` naïvement produit des différences fantômes.** Le 18/10, une comparaison hâtive a fait croire à 65 écarts entre la Table A `.ods` et son `.csv` : les paragraphes multiples d'une cellule étaient concaténés sans séparateur et les `number-columns-repeated` non développés. Revérifié le 21/10 avec un lecteur correct : **250 lignes sur 254 strictement identiques**, les quatre écarts étant trois doubles espaces et l'en-tête (`Srce` contre `SOURCE`).
+- **`cfg_urg_messages[]` est désynchronisé de l'énumération `UrgReason`.** Le tableau de `config.cpp` (191) compte 8 entrées avec un `"OVERHEAT"` surnuméraire en position 1 ; l'énumération de `urg.h` en compte 10 et n'a pas d'`URG_OVERHEAT`. Indexer l'un par l'autre donne des libellés décalés d'un cran et **deux lectures hors limites**. Ce n'est pas un bug aujourd'hui — le tableau n'est lu nulle part, la fonction réellement utilisée est `urg_reason_str()` dans `urg.cpp`, qui est correcte. Mais les deux symboles sont déclarés à trois lignes l'un de l'autre dans `config.h` : à supprimer ou à aligner avant que quelqu'un ne les associe.
+- **Tester l'accès distant depuis le réseau local ne prouve rien** (NAT hairpin). Voir `docs/installation_RPI_serveur.md` §6.
+- **Sur Raspberry Pi OS récent, `/etc/dhcpcd.conf` n'est plus lu** et `dhcpcd.service` n'existe pas. L'éditer ne produit ni effet ni message d'erreur. Le réseau est géré par NetworkManager (`nmtui`).
 - **Le catalogue déployé compte 70 commandes, pas 72.** Voir §5.1.
 - **Ne jamais supprimer `flows-XIAOMI-2026-10-18.json`** tant que le tableau §4.10 n'est pas entièrement soldé. C'est la seule copie de six onglets.
 - **Norton contre Git, sur le PC Windows (18/10/2026).** Deux pannes distinctes du même antivirus, à reconnaître vite si ça recommence.
@@ -292,3 +319,54 @@ Vincent penche pour l'option SP. Deux chemins possibles : rétablir la boucle SE
 | 2 | Wi-Fi d'un tiers | SP RPI via DuckDNS | `WifiInternetBox` |
 | 3 | Hotspot Xiaomi + 4G | SP RPI via DuckDNS | `Wifi4KSP` |
 | 4 | Hotspot Xiaomi sans 4G | SP Smart, local | `WifiSPSsI` |
+
+---
+
+## 9. Chantier documentation et sécurité — 20 au 22 octobre 2026
+
+Trois jours consacrés à remettre en ordre la documentation et à retirer ce qui n'aurait jamais dû être publié. Ce chantier **n'est pas le cœur du projet** et ne doit pas le rester : ce qui en reste ouvert est listé en fin de section, avec sa destination.
+
+### 9.1 Ce qui est clos
+
+**Le dossier documentaire local est rangé.** 1 752 fichiers et 215 Mo ramenés à 567 fichiers et 74 Mo de documentation réelle. La cause du désordre était structurelle : deux axes de classement concurrents, le temporel dupliquant le thématique à l'intérieur de ses propres sous-dossiers. Règle retenue, écrite dans `AA-Doc-horsGit\LISEZ-MOI.md` et dans `docs/dev_RZ_HTML/vademecum_documentation_V1.html` : **le thème décide du dossier, l'âge décide de la place à l'intérieur**. Une version dépassée descend dans le `old\` de sa propre lettre, elle ne part pas ailleurs.
+
+**Le dossier A est trié et renommé** `A - Architecture_Tables_Schemas`, avec `Tables\`, `Schemas\` et `old\`. Vingt fichiers basculés en `old` après vérification pièce par pièce. Il reste 14 documents à la racine, tous vérifiés utiles et sans recouvrement entre eux : mesuré, le recouvrement maximal entre deux d'entre eux est de 8 %, hors `descriptionRZ` à 32 %. **Il n'y avait pas de redondance dans ce dossier — il y avait un problème de nommage.**
+
+**Trois documents ont été identifiés sous des noms qui ne les désignaient pas :**
+
+| Nom trouvé | Ce que c'est réellement |
+|---|---|
+| `ListeTT_Module.odt` → `reference_modules_arduino_2026-02.odt` | **La documentation module par module de l'Arduino** : 1 128 blocs, 293 titres, table des matières. Lring, Lrub, FS, Ctrl_L, US, MvtIR, Mic, Mtr, Odom, Srv, SecMvt, Urg, CfgS, Gyro — propriétés VPIV, algorithmes, brochage. Les **12 constantes matérielles citées correspondent exactement à `config.h`**. C'est le document d'assemblage cherché pendant des jours |
+| `tableC.csv` → `old\TableA-instantane-18avril2026_ex-tableC.csv` | Une **Table A** d'avril, pas une Table C. Strict sous-ensemble de la Table A actuelle, qui a gagné 8 lignes depuis : `Appli.IA_Conv` ×2, `Voice.output`, `Voice.ttsRate`, `Voice.vol`, `LockSE.camera`, `LockSE.microphone`, `STT.state` |
+| `vtravailSyntheseRZV2.odt` | Le document d'assemblage **des documents du dossier A**, pas des condensés de modules. Absorbe `SmartPiloteAutonome` à 88 % |
+
+**Les erreurs de documentation sont corrigées et poussées** : la Table C replacée sur SP, le nom réel de la Table D, l'ordre VPIV. Chaque correction porte un encart daté expliquant l'erreur, selon la convention de journalisation de ces pages.
+
+**`docs/tables_RZ_descripteur.md` v3.0** est la référence normative des quatre tables. Il remplace `table_A_structure_regles` et `protocoleVPIV.odt`, tous deux en `old\`, et porte un journal des erreurs à huit entrées.
+
+**`docs/installation_RPI_serveur.md`** comble un manque : le dépôt documentait l'installation de SE mais rien pour le RPi. Reconstruit depuis un journal de 9 066 lignes conservé hors dépôt.
+
+**Le dépôt public est propre.** Deux pages publiaient l'IPv4 de la box et **l'adresse IPv6 complète du RPi** — la plus exposante des deux. Les neuf occurrences sont remplacées par des adresses réservées à la documentation (RFC 5737 et RFC 3849). Elles restent dans l'historique Git : l'historique n'a volontairement pas été réécrit, l'IPv4 d'une ligne résidentielle de juin ayant selon toute vraisemblance déjà changé. **La vraie mitigation est de revoir les redirections de ports de la box.**
+
+Le reste du code est vérifié sain : `rz_ai_conversation.py`, `mqtt_bridge.py` et `set_git_remote.sh` lisent tout depuis `keys.json`, lui-même exclu du dépôt. Aucun identifiant en dur.
+
+### 9.2 Vérifications utiles à ne pas refaire
+
+- **`ui_VarG` est bien présent sur le RPi** — 50 nœuds, mêmes types et mêmes noms que sur le Xiaomi, page `P_admin-VarG` visible à `/admin_varG`. Seul écart : le groupe « Aide enrichedVars » du Xiaomi n'y est pas rattaché, et le tableau de bord du RPi n'a que 4 pages contre 11, donc rien n'y mène depuis l'accueil.
+- **Les quatre fichiers `Diagrap*` de janvier-février 2025 ne sont pas de l'ancienne génération.** Ce sont les schémas de la version actuelle, non actualisés. 47 et 56 boîtes, exploitables comme modèles. Leur poids vient de 86 images incorporées. ⚠ `DiagrapRZCom-Protocole-Appli` contient une boîte « Adresses » avec des identifiants SSH : **il reste hors dépôt**, et cette boîte saute avant tout export.
+- **`TableA_updatedV3_corrige.ods` et son `.csv` sont en phase** malgré cinq semaines d'écart de date.
+
+### 9.3 Ce qui reste ouvert, et où cela va
+
+| Chantier | État | Destination |
+|---|---|---|
+| **`TablesRZ_reference.ods`** — classeur unique, feuilles `_Version`, `TableA`, `TableC`, `TableD`, `Legende`, plus `TablesRZ_travaux.ods` pour les feuilles de travail | Pas commencé | **Chat Documentation centrale** |
+| **`genese_et_evolution_RZ.md`** — fusion de `RZ-info-historique` et de la partie I de `historique.odt` (la partie II est de l'architecture, pas de l'histoire, et tous ses chiffres réseau sont faux) | Pas commencé | **Chat Documentation centrale** |
+| **Synthèse unique agglomérée** avec index — l'objectif de départ | Pas commencé ; la carte de recouvrement des 9 documents est faite | **Chat Documentation centrale** |
+| Remplir et chiffrer `RZ_Codes_Identifiants.odt` ; vider `InstallationServeur\` ; revoir les redirections de la box ; corriger l'anonymiseur (adresses MAC, frontières de mot) | En cours | **Nouveau chat « Sécurité et identifiants »** |
+| Rénover les deux schémas `.drawio` | Analysés, non rénovés | À décider le moment venu |
+| Verser `TableC.json`, `doc_A1` et `doc_A2` au dépôt | À faire | **Chat Documentation centrale** |
+
+### 9.4 Correction à la feuille de route
+
+Le lot F de la §6 et de précédentes versions listaient « `Appli.IA_Conv` : ajouter la ligne Table A manquante ». **Ces lignes existent** dans la Table A normative. Ne restent que l'entrée `ui_VarG` et le déploiement de la Table D.

@@ -384,6 +384,75 @@ Le reste du code est vérifié sain : `rz_ai_conversation.py`, `mqtt_bridge.py` 
 | Rénover les deux schémas `.drawio` | Analysés, non rénovés | À décider le moment venu |
 | Verser `TableC.json`, `doc_A1` et `doc_A2` au dépôt | À faire | **Chat Documentation centrale** |
 
+### 9.5 🔴 Arduino — défaut bloquant, vérifié sur le matériel le 22/10/2026
+
+**La Mega ne peut recevoir aucune commande.** Découvert en lisant le code pour rédiger sa
+documentation, puis confirmé sur la carte, firmware du dépôt téléversé.
+
+#### Le mécanisme
+
+Le fil transporte `$CAT:VAR:PROP:INST:VAL#` — c'est ce que `mqtt_bridge.py` documente (ligne 149),
+ce que valide son `VPIV_REGEX`, et ce que `sendVPIV()` émet. **Mais la réception est construite pour
+l'ordre inverse.** `communication.h` (lignes 41-47) l'explique de bonne foi : elle suppose que les
+tokens 3 et 4 arrivent dans l'ordre INST puis PROP, et « compense » en permutant les arguments à
+l'appel du routeur, lignes 179 et 190 :
+
+```c
+dispatchVPIV(msg.module, msg.inst, msg.prop, msg.value);   // actuel
+// signature reelle, vpiv_dispatch.h ligne 87 :
+// bool dispatchVPIV(const char *var, const char *prop, const char *inst, const char *value)
+```
+
+Le fil ayant changé de convention et pas la réception, cette compensation **introduit** l'erreur.
+Les commentaires des dispatchers portent la même croyance : `dispatch_CfgS.cpp` s'annote
+`// $V:CfgS:*:modeRZ:<n>#`, instance en position 3.
+
+#### La preuve, lisible dans la sortie de la carte
+
+```
+envoyé  : $V:Urg:clear:*:1#
+reçu    : $E:Urg:*:clear:urgence active#
+```
+
+La carte renvoie une erreur où `*` occupe la place de la propriété et `clear` celle de l'instance :
+elle recopie les arguments tels qu'elle les a reçus après la permutation.
+
+#### Trois défauts qui s'enchaînent
+
+1. **Le chien de garde verrouille sur un seul dépassement.** `main.cpp` lignes 137-144 : au-delà de
+   `LOOP_MAX_MS = 80`, `urg_handle(URG_LOOP_TOO_SLOW_A)`. Ni période de grâce au démarrage, ni
+   exigence de répétition. Observé 1,5 s après le boot — mais **la carte était sans aucun capteur
+   connecté** : NewPing attend l'expiration pour chacun des 9 ultrasons et le HX711 attend une
+   donnée qui ne vient pas. À revérifier robot assemblé avant d'incriminer le seuil.
+   Au passage, le `snprintf` qui construit `buf` dans ce bloc ne sert à rien.
+2. **L'effacement est impossible**, par la permutation ci-dessus. Le verrou est donc définitif :
+   seul le bouton reset agit, et il ramène au même point.
+3. **Les deux portes d'effacement divergent.** `vpiv_dispatch.cpp` autorise `CfgS:emg:clear` ET
+   `Urg:clear` ; le filtre amont de `communication.cpp` n'autorise que `Urg:clear`. La voie par
+   CfgS est condamnée avant d'atteindre le routeur qui l'accepterait.
+
+#### Correction
+
+Lignes 179 et 190 de `communication.cpp` :
+
+```c
+dispatchVPIV(msg.module, msg.prop, msg.inst, msg.value);
+```
+
+Puis corriger le bloc de commentaires de `communication.h` (41-47) et les annotations des
+dispatchers, qui propagent la croyance fausse. Élargir le filtre amont à `CfgS:emg:clear`.
+Reconsidérer le chien de garde après essai avec les capteurs.
+
+**Non appliqué à ce jour** : correction firmware, à faire et à téléverser par Vincent.
+
+#### Ce que cela réhabilite
+
+Les documents archivés les 21 et 22/10 pour « ordre VPIV inversé » — les deux fichiers de légende,
+`IMP encodage et code arduino.odt` (58 trames sur 88), le `$Var,Instance,Prop,Valeur#` de la genèse
+— **décrivaient fidèlement ce que la réception attend réellement**. Ils n'étaient pas négligents :
+ils sont les témoins d'une migration de convention jamais achevée côté réception. Leur place reste
+`old\` (la convention à suivre est bien PROP:INST), mais leur inversion avait une cause.
+
 ### 9.4 Correction à la feuille de route
 
 Le lot F de la §6 et de précédentes versions listaient « `Appli.IA_Conv` : ajouter la ligne Table A manquante ». **Ces lignes existent** dans la Table A normative. Ne restent que l'entrée `ui_VarG` et le déploiement de la Table D.

@@ -90,10 +90,11 @@ Résultat : **code nu identique octet pour octet**, et diff équilibré (89 ajou
 ## Point de retour
 
 ```bash
-git reset --hard avant-correction-VPIV_EX-2026-10-22
+git reset --hard origin/sauvegarde/avant-correction-VPIV-2026-10-22
 ```
 
-Étiquette annotée posée avant la première modification de la campagne.
+Branche distante poussée sur GitHub avant la première modification de la campagne.
+(Une étiquette avait été posée d'abord : le jeton refuse `refs/tags` en HTTP 403.)
 
 ---
 

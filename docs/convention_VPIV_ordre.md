@@ -215,10 +215,14 @@ le `//` d'une URL dans une chaîne.
 ## 7. Point de retour
 
 ```bash
-git reset --hard avant-correction-VPIV_EX-2026-10-22
+git reset --hard origin/sauvegarde/avant-correction-VPIV-2026-10-22
 ```
 
-Étiquette annotée posée avant toute modification de cette campagne.
+Branche distante poussée sur GitHub avant toute modification de cette campagne.
+
+> Une étiquette annotée `avant-correction-VPIV_EX-2026-10-22` avait été posée d'abord,
+> mais le jeton d'accès refuse l'écriture sur `refs/tags` (HTTP 403) alors qu'il accepte
+> les branches. Le point de retour est donc une **branche**, et il est bien sur GitHub.
 
 ---
 

@@ -549,7 +549,7 @@ Garantie de non-régression sur le firmware : **aucune trame inversée ne se tro
 commentaire**. Le code nu des 17 fichiers, commentaires retirés, est identique octet pour octet
 avant et après ; le diff est équilibré (89 / 89).
 
-Point de retour : `git reset --hard avant-correction-VPIV_EX-2026-10-22`.
+Point de retour : `git reset --hard origin/sauvegarde/avant-correction-VPIV-2026-10-22`.
 
 #### 🔴 La nuance à retenir, qui corrige une consigne répétée toute la semaine
 

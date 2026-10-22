@@ -38,6 +38,7 @@ Ce document existe à **deux endroits**, avec des rôles distincts. Ne pas les c
 | Dépôt Git `lugvincent/RobotRZ` (public) | Lisible par Claude **sans jeton** | **22/10/2026** |
 | `docs/tables_RZ_descripteur.md` | **Référence normative des quatre tables.** Remplace `table_A_structure_regles` et `protocoleVPIV.odt` | **21/10/2026** |
 | `docs/installation_RPI_serveur.md` | Procédure d'installation du RPi serveur | **22/10/2026** |
+| `docs/travaux_robot_assemble.md` | Registre des travaux exigeant le robot monté | **22/10/2026** |
 | `TableC.json` | **Table C maître — n'est versionnée nulle part**, voir §5.1 | 18/04/2026 |
 | `node-red/flows/flows-RPI-2026-10-18.json` | Référence courante, 298 nœuds | **18/10/2026** |
 | `node-red/flows/flows-XIAOMI-2026-10-18.json` | Archive, 6 onglets uniques | 18/10/2026 |
@@ -273,7 +274,7 @@ Surtout : **le firmware Arduino et les managers SE existent déjà**, et la cha�
 
 **Ce qui n'est pas tranché, et qui décide du volume.** `roadmap_nodered_V1.html` pose explicitement la question, sans y répondre : *« Un flow Node-RED par VAR (13 pour Arduino) ou des flows groupés par catégorie, ex. un seul flow Capteurs Arduino couvrant Mic/US/FS/IRmvt ? Impacte directement le volume de travail. »* L'estimation « plusieurs mois » retenait implicitement l'hypothèse la plus coûteuse. Un flow par VAR donne 14 unités ; un regroupement par famille en donne 5 ou 6.
 
-**Ce qui coûte réellement du temps**, et ce n'est pas Node-RED : la **validation physique**. Vérifier 9 ultrasons, calibrer l'odométrie sur un vrai sol, faire tourner des moteurs. Cela demande le robot alimenté et l'Arduino connecté, séance après séance. C'est du temps de calendrier, pas de l'effort de développement — la nuance change tout quand on travaille par créneaux courts.
+**Ce qui coûte réellement du temps**, et ce n'est pas Node-RED : la **validation physique** — recensée dans `docs/travaux_robot_assemble.md`, qui groupe tout ce qui exige le robot monté. Vérifier 9 ultrasons, calibrer l'odométrie sur un vrai sol, faire tourner des moteurs. Cela demande le robot alimenté et l'Arduino connecté, séance après séance. C'est du temps de calendrier, pas de l'effort de développement — la nuance change tout quand on travaille par créneaux courts.
 
 **Lecture honnête du lot.** Une quinzaine de petits travaux semblables. Le premier coûte plus cher que les autres parce qu'il fixe le gabarit ; les suivants sont des soirées. La roadmap précise d'ailleurs que **les modules sont indépendants entre eux**. C'est donc l'un des lots les mieux adaptés à un travail fractionné — l'inverse d'un mur.
 

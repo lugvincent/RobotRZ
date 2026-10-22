@@ -1,10 +1,10 @@
-# SYNTHÈSE D'ÉTAT — RobotRZ — 22 octobre 2026
+# SYNTHÈSE D'ÉTAT — RobotRZ — 22 octobre 2026 (17 h)
 
 **Fichier** : `docs/synthese_etat.md` (dépôt Git) — copie archivée de `claude/synthese_etat_oct2026.md` (Project Knowledge)
 **Objectif** : donner à toute conversation du projet l'état réel au 22/10/2026, et signaler les points où `instructions_projet_RobotRZ.md` (v1.3, juillet) est périmé.
 **Articulation** : complète `instructions_projet_RobotRZ.md`. **En cas de divergence, ce fichier fait foi pour l'état d'octobre 2026.** Le dossier technique complet avec schémas est dans `docs/dev_RZ_HTML/dossier_technique_V1.html`, accessible depuis `index.html`.
 **Précaution** : document d'état, pas de référence normative. Les références normatives restent Table A (`TableA_updatedV3_corrige.csv`) et Table D (v3).
-**Version** : 3.4 — 22/10/2026 — ajout du §9 (chantier documentation et sécurité des 20-22/10), correction de la Table C, du nom réel de la Table D, et des pièges associés. 3.3 — 19/10/2026
+**Version** : 3.5 — 22/10/2026 — §9.3 refait (bilan des trois jours), trois références de sous-systèmes ajoutées, douze fichiers vides du dépôt signalés. 3.4 — ajout du §9 (chantier documentation et sécurité des 20-22/10), correction de la Table C, du nom réel de la Table D, et des pièges associés. 3.3 — 19/10/2026
 
 ---
 
@@ -377,16 +377,42 @@ Le reste du code est vérifié sain : `rz_ai_conversation.py`, `mqtt_bridge.py` 
 - **Les quatre fichiers `Diagrap*` de janvier-février 2025 ne sont pas de l'ancienne génération.** Ce sont les schémas de la version actuelle, non actualisés. 47 et 56 boîtes, exploitables comme modèles. Leur poids vient de 86 images incorporées. ⚠ `DiagrapRZCom-Protocole-Appli` contient une boîte « Adresses » avec des identifiants SSH : **il reste hors dépôt**, et cette boîte saute avant tout export.
 - **`TableA_updatedV3_corrige.ods` et son `.csv` sont en phase** malgré cinq semaines d'écart de date.
 
-### 9.3 Ce qui reste ouvert, et où cela va
+### 9.3 État des chantiers au 22/10/2026, 17 h
+
+#### ✅ Terminé
+
+| | |
+|---|---|
+| **Rangement du dossier documentaire** | 1 752 fichiers / 215 Mo → 567 / 74 Mo. Dossier A trié de 29 à 14 fichiers, renommé `A - Architecture_Tables_Schemas`, sous-dossiers `Tables\`, `Schemas\`, `old\` |
+| **`TablesRZ_reference.ods`** | Six feuilles : `_Version`, `_Audit`, `TableA` (253), `TableC` (80), `TableD` (72), `Legende` (47). La feuille `_Audit` chiffre l'écart Table C / Table A : 16 renommages, 5 propriétés absentes, 1 variable manquante |
+| **`tables_RZ_descripteur.md` v3.0** | Référence normative des quatre tables |
+| **`genese_et_evolution_RZ.md`** | Fusion de `RZ-info-historique` et de la partie I de `historique.odt` |
+| **`installation_RPI_serveur.md`** | Procédure complète, reconstruite depuis un journal de 9 066 lignes |
+| **`travaux_robot_assemble.md`** | Registre des huit travaux exigeant le robot monté |
+| **`reference_firmware_arduino.md`** | Le code Arduino, depuis les sources — 12 sections, 8 pièges |
+| **`reference_SE_termux_tasker.md`** | Le code SE, depuis les sources — 14 sections, 7 pièges |
+| **`reference_Tasker.md`** | La couche Android, depuis l'export — 12 sections, 6 pièges |
+| **`synthese_generale_RobotRZ.md`** | L'entrée unique : charpente et index complets |
+| **Corrections de documentation** | Table C replacée sur SP · nom réel de la Table D · adresses réseau retirées des pages publiées |
+| **🔴 Défaut bloquant Arduino** | Trouvé, corrigé, **vérifié sur matériel** — §9.5 |
+| **Chaîne de compilation** | `avr-gcc` et `avrdude` restaurés après disparition de leurs exécutables et DLL |
+
+#### ⏳ En cours ou différé
 
 | Chantier | État | Destination |
 |---|---|---|
-| **`TablesRZ_reference.ods`** — classeur unique, feuilles `_Version`, `TableA`, `TableC`, `TableD`, `Legende`, plus `TablesRZ_travaux.ods` pour les feuilles de travail | Pas commencé | **Chat Documentation centrale** |
-| **`genese_et_evolution_RZ.md`** — fusion de `RZ-info-historique` et de la partie I de `historique.odt` (la partie II est de l'architecture, pas de l'histoire, et tous ses chiffres réseau sont faux) | Pas commencé | **Chat Documentation centrale** |
-| **Synthèse unique agglomérée** avec index — l'objectif de départ | Pas commencé ; la carte de recouvrement des 9 documents est faite | **Chat Documentation centrale** |
-| Remplir et chiffrer `RZ_Codes_Identifiants.odt` ; vider `InstallationServeur\` ; revoir les redirections de la box ; corriger l'anonymiseur (adresses MAC, frontières de mot) | En cours | **Nouveau chat « Sécurité et identifiants »** |
-| Rénover les deux schémas `.drawio` | Analysés, non rénovés | À décider le moment venu |
-| Verser `TableC.json`, `doc_A1` et `doc_A2` au dépôt | À faire | **Chat Documentation centrale** |
+| **Synthèse agglomérée** | v1 écrite — charpente et index justes. **Pas encore l'agglomération** : cinq documents du dossier A portent de la matière unique à verser. Son §8 les nomme, chapitre par chapitre | **Ici** |
+| **`reference_SP_nodered.md`** | Volontairement différée : SP est le chantier en cours, et documenter un chantier en cours revient à écrire sur du sable | Après stabilisation |
+| **🔴 Douze fichiers vides dans le dépôt** | Six dans `termux/` (`docs/api_vpiv.md`, `architecture.md`, `installation.md`, les trois de `install/`), six dans `tasker/archive/` (les trois expressions, `rz_apps_manager`, `rz_tts_task`, `rz_zoom_profile`). **Tous présents avec du contenu dans le Project Knowledge, seule copie survivante.** À restaurer | **Ici**, priorité |
+| **85 commentaires à l'ancien ordre VPIV** | Dans 15 fichiers du firmware, contre 45 au bon ordre. Balayage à faire dans un commit séparé, après validation de la correction | Chat Arduino |
+| **Deux scripts en double exemplaire** | `rz_autovoice_bridge.sh` et `rz_copy_global.sh`, même MD5, deux emplacements chacun. Lequel fait foi ? | **Ici** |
+| **`Odom.coeff` absent de la Table A** | Le code l'accepte, `reference_modules_arduino_2026-02.odt` le documente, la Table A l'ignore. Une ligne à ajouter | **Ici** |
+| **Chien de garde Arduino** | Verrouille sur un seul dépassement de 80 ms. Essai sur établi non concluant — aucun capteur connecté | `travaux_robot_assemble.md` §1.1 |
+| **Sécurité et identifiants** | Remplir et chiffrer `RZ_Codes_Identifiants.odt` (25 valeurs dans la table de correspondances) · vider `InstallationServeur\` · revoir les redirections de la box · corriger l'anonymiseur (adresses MAC, frontières de mot) | **Chat « Sécurité et identifiants »** |
+| **Verser au dépôt** | `TableC.json` — la table maître n'est versionnée nulle part · `doc_A1` et `doc_A2`, les deux documents les mieux écrits et les seuls sans protection | **Ici** |
+| **Corriger `doc_A2.odt`** | Flux 1 : `table_d_catalogue.csv` → `tableD_catalogueV2.csv`. Correction manuelle, une ligne | Vincent |
+| **Rénover les deux schémas `.drawio`** | Analysés, exploitables comme modèles. ⚠ `DiagrapRZCom` porte des identifiants SSH : reste hors dépôt | À décider |
+| **Dépouiller `M - Bilans de seance`** | Apporterait l'état de validation des tâches Tasker, que les XML ne disent pas | v2 de `reference_Tasker.md` |
 
 ### 9.5 🔴 Arduino — défaut bloquant, vérifié sur le matériel le 22/10/2026
 

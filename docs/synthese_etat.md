@@ -574,3 +574,93 @@ Huit autres écarts du même document sont listés en §5.4 de `convention_VPIV_
 ---
 
 *V3.6 — 22/10/2026 — ajout de la §9.6 : cause racine identifiée, campagne de correction menée.*
+
+---
+
+### 9.7 Les 14 fichiers vides — supprimés le 22/10/2026
+
+Quatorze fichiers suivis par Git pesaient **0 octet**, tous créés le 11/03/2026 et jamais
+remplis. Vérification faite le 21/10 : ils étaient vides **aussi** dans Project Knowledge —
+rien n'avait donc été perdu, c'étaient des emplacements réservés puis abandonnés quand la
+documentation a pris la forme du site HTML.
+
+| Groupe | Fichiers | Ce qui les remplace |
+|---|---|---|
+| `tasker/archive/` | 6 `.xml` | Le contenu Tasker réel est dans `tasker/backup/`, `profiles/`, `scenes/` ; la doc dans `tasker_V4.html`, `guide_tasker_bonnes_pratiques.html` et `reference_Tasker.md` |
+| `termux/docs/` | `api_vpiv.md`, `architecture.md`, `installation.md` | `vpiv_protocol_V1.html` + `convention_VPIV_ordre.md` ; `se_smartphone_V2.html` + `reference_SE_termux_tasker.md` |
+| `termux/install/` | `README.md`, `setup_python.sh`, `setup_termux.sh` | ⚠️ **rien** — voir ci-dessous |
+| `termux/scripts/tests/` | `old_test_mqtt.py`, `old_test_stt.sh` | préfixés `old_`, vides : rien à archiver |
+
+Les trois dossiers `tasker/archive/`, `termux/docs/` et `termux/install/` ont disparu avec
+eux. `termux/scripts/tests/` conserve ses deux simulateurs réels.
+
+#### ⚠️ Le manque que ces fichiers dissimulaient
+
+**Il n'existe aucune procédure d'installation de Termux dans le projet.** Ni dans `docs/`,
+ni sur le site HTML. `installation_RPI_serveur.md` ne couvre que le Raspberry Pi ; les
+`pkg install` sont éparpillés dans une dizaine de scripts, sans ordre ni prérequis.
+
+`termux/install/setup_termux.sh` et `setup_python.sh`, vides, en étaient le seul vestige.
+**Un fichier vide est une mauvaise façon de noter un manque** : il ressemble à du contenu.
+Le manque est donc inscrit ici, et il reste entier :
+
+> **À écrire : `docs/installation_SE_termux.md`** — installation de Termux sur le Doro,
+> paquets, Python et ses modules, Termux:API, Termux:Tasker, droits, premier démarrage.
+> Même forme que `installation_RPI_serveur.md`. **Ne demande pas le robot monté.**
+
+
+---
+
+### 9.8 Trois corrections de code et un audit SP — 22/10/2026, soir
+
+Prolongement de la §9.6. En cherchant la cohérence sur deux points en suspens, trois
+défauts de plus sont sortis.
+
+#### 🔴 Le module ultrason écrivait son nom en minuscule
+
+```
+RÉCEPTION   vpiv_dispatch.cpp:36   {"US", US::dispatch}   accepte "US"    ✅
+ÉMISSION    11 sites               sendInfo("Us", …)      SP n'y voit rien ❌
+```
+
+La Table A dit `US`, Node-RED dit `US`, **personne n'attend `Us`**. La Mega obéissait donc
+aux commandes ultrason, mais ses accusés et ses mesures étaient jetés en silence par SP —
+un capteur qui a l'air mort alors qu'il fonctionne. Les onze sites sont corrigés.
+
+#### `act` : les deux derniers dispatcheurs alignés
+
+La Table A déclare les 20 lignes `act` en `boolean 0|1`, sans exception ; 9 dispatcheurs
+sur 11 répondaient déjà `on ? "1" : "0"`. `Ctrl_L` et `US` répondaient `"OK"` — un accusé
+qui ne dit pas dans quel état le module s'est mis. Alignés.
+
+#### `CfgS.boot` vaut `1`
+
+Tranché par la ligne elle-même : `TYPE=boolean`, `FORMAT_VALUE=1|true`, et le firmware
+émet `"1"`. C'était l'exemple qui mentait. Même chose pour `Ctrl_L.act` et `US.act` :
+trois exemples `boolean` à `"OK"`, ramenés à `"1"`.
+
+> Ces trois-là ont été trouvés par un **second contrôle de cohérence**, indépendant du
+> premier : l'ordre des champs était faux, mais la **valeur** l'était aussi sur trois
+> lignes. Script `outils/vpiv/audit_valeurs.py`. Il ne reste aucun écart.
+
+#### 🔴 Et une conséquence inattendue de la correction du firmware
+
+Le joystick du **Xiaomi** construit `$V:Mtr:*:cmd:…`, à l'ancien ordre. Il fonctionnait
+**grâce** au défaut : avant le 22/10, seules les trames inversées passaient. **La
+correction le casse.** Un caractère à déplacer, inscrit en §1.9 de
+`travaux_robot_assemble.md`.
+
+Le reste de Node-RED est sain : parseur JS correct, **zéro** trame inversée dans les flux
+RPi. Rapport complet dans **`docs/audit_nodered_ordre_VPIV.md`** — `node-red/` n'a **pas**
+été modifié, c'est le chantier en cours.
+
+#### ⚠️ Aucune de ces corrections n'est vérifiée sur matériel
+
+Le robot n'est pas monté. Les quatre corrections de code du 22/10 au soir (11 × `US`,
+2 × `act`, et le joystick Xiaomi qui reste à faire) sont des **déductions tirées des
+sources**, solides mais non observées. Inscrites en §1.9 et §1.10 de
+`travaux_robot_assemble.md`.
+
+---
+
+*V3.7 — 22/10/2026, soir — §9.7 (fichiers vides) et §9.8 (corrections de code, audit SP).*

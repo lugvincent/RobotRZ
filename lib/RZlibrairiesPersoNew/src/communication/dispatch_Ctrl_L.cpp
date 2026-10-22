@@ -21,7 +21,13 @@ namespace Ctrl_L
         {
             bool on = value && (strcmp(value, "1") == 0 || strcmp(value, "true") == 0);
             ctrl_L_setEnabled(on);
-            sendInfo("Ctrl_L", "act", "*", "OK");
+            // 22/10/2026 — renvoie l'ÉTAT OBTENU, plus un simple "OK".
+            // Même motif que les 9 autres dispatcheurs, et conforme à la
+            // Table A : Ctrl_L.act est TYPE=boolean, FORMAT_VALUE=0|1.
+            // ⚠ La copie de Table A embarquée dans node-red/config/varBrute.csv
+            //   déclare encore « enum OK|OFF » pour cette ligne : c'est une
+            //   version antérieure. Voir docs/convention_VPIV_ordre.md §5.5.
+            sendInfo("Ctrl_L", "act", "*", on ? "1" : "0");
             return true;
         }
 

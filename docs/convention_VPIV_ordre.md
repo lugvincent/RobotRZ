@@ -162,14 +162,76 @@ Quatre trames à l'ancien ordre subsistent **exprès** dans `docs/` : ce sont le
 
 Ne pas les « corriger » : elles perdraient leur sens.
 
-### 5.3 Divergences Table A ↔ code relevées au passage
+### 5.3 Divergences Table A ↔ code — tranchées le 22/10 au soir
 
-| Point | Table A | Code | Action |
-|---|---|---|---|
-| `CfgS.boot`, valeur | `OK` | `sendInfo("CfgS","boot","*","1")` → `1` | ⏳ à trancher |
-| `Odom.coeff` | absente | présente | ⏳ à ajouter en Table A |
-| `Mic.rms` | absente | absente aussi | ✅ exemple supprimé |
-| `System`, `ctrl_L` (minuscule) | n'existent pas | n'existent pas | ✅ commentaires corrigés |
+Trois d'entre elles ont été arbitrées **par la cohérence**, pas au jugé.
+
+#### `CfgS.boot` : la valeur est `1`, pas `OK`
+
+La réponse était dans la ligne elle-même :
+
+```
+CfgS.boot   TYPE = boolean    FORMAT_VALUE = 1|true    NATURE = Etat
+            VPIV_EX = $I:CfgS:boot:*:OK#      ← contredit sa propre ligne
+```
+
+Et le firmware émet bien `sendInfo("CfgS","boot","*","1")`. **C'est l'exemple qui mentait**,
+troisième victime de la colonne non migrée. Corrigé en `$I:CfgS:boot:*:1#`.
+
+La convention du projet se lit en creux : `TYPE=enum` avec `OK` dans `FORMAT_VALUE` →
+accusé de réception ; `TYPE=boolean` → état `1`/`0`.
+
+#### `act` : `1`/`0` partout, 9 contre 2
+
+| | `1`/`0` | `OK` |
+|---|---|---|
+| Table A, les 20 lignes `act` | **20** | 0 |
+| Firmware, les 11 dispatcheurs | **9** | 2 — `Ctrl_L`, `US` |
+
+Les deux retardataires ont été alignés sur le motif majoritaire, qui renvoie **l'état
+obtenu** (`on ? "1" : "0"`) et non un « OK » qui n'apprend rien à SP :
+
+```c
+sendInfo("Ctrl_L", "act", "*",  on ? "1" : "0");            // dispatch_Ctrl_L.cpp
+sendInfo("US",     "act", inst, cfg_us_active ? "1" : "0"); // dispatch_Us.cpp
+```
+
+Les exemples `$I:Ctrl_L:act:*:OK#` et `$I:US:act:*:OK#` de la Table A ont suivi.
+
+#### 🔴 `Us` au lieu de `US` — un vrai défaut, pas une erreur de documentation
+
+Les **onze** émissions du module ultrason écrivaient la variable en minuscule :
+
+```
+RÉCEPTION   vpiv_dispatch.cpp:36   {"US", US::dispatch}   accepte "US"    ✅
+ÉMISSION    11 sites               sendInfo("Us", …)      SP n'y voit rien ❌
+Table A     US          Node-RED   US          personne n'attend "Us"
+```
+
+**La Mega obéissait aux commandes ultrason, mais ses accusés et ses mesures étaient jetés
+en silence par SP** — un capteur qui a l'air mort alors qu'il fonctionne. Corrigé sur les
+onze sites. ⚠️ **Non vérifié sur matériel** : le robot n'est pas monté.
+
+#### Restent ouvertes
+
+| Point | État |
+|---|---|
+| `Odom.coeff` présente dans le code, absente de la Table A | ⏳ à ajouter |
+| `Mic.rms`, `System`, `ctrl_L` minuscule | ✅ exemples corrigés — n'existaient nulle part |
+
+### 5.5 Node-RED — audité, non modifié
+
+Rapport complet : **`docs/audit_nodered_ordre_VPIV.md`**. L'essentiel :
+
+- le parseur JS vivant découpe **dans le bon ordre** ;
+- flux **RPi** (en service) : **zéro** trame inversée ;
+- 🔴 flux **Xiaomi** : le joystick construit `$V:Mtr:*:cmd:…`, à l'ancien ordre. Il
+  fonctionnait **grâce** au défaut du firmware — deux erreurs se compensaient. **La
+  correction du 22/10 le casse** ;
+- `node-red/config/varBrute.csv` est une **troisième copie de la Table A**, antérieure à
+  plusieurs renommages (`System.boot`, `Lring.int`) et inversée à 151/245. Elle n'est
+  chargée par rien, mais **c'est d'elle que venait le `$I:System:boot:*:OK#` des
+  commentaires de `main.cpp`**.
 
 ### 5.4 Erreurs de la synthèse générale SE (02/26) — document externe
 
@@ -228,14 +290,20 @@ Branche distante poussée sur GitHub avant toute modification de cette campagne.
 
 ## 8. Ce qui reste à faire
 
-| Tâche | Où |
-|---|---|
-| Réinjecter `VPIV_EX` corrigée dans le `.ods` de travail | `A - Architecture_Tables_Schemas\Tables\` |
-| Trancher `CfgS.boot` : valeur `OK` ou `1` | Table A **ou** code |
-| Ajouter `Odom.coeff` à la Table A | Table A |
-| Corriger §8.1 de la synthèse SE, ou la marquer périmée | document externe |
-| Verser `TableC.json`, `doc_A1`, `doc_A2` au dépôt | dépôt |
-| `reference_SP_nodered.md` | différé — chantier en cours |
+| Tâche | Où | Demande le robot monté ? |
+|---|---|---|
+| 🔴 Corriger le joystick Xiaomi : `$V:Mtr:*:cmd:…` → `$V:Mtr:cmd:*:…` | `flows-XIAOMI`, nœud `→ v,omega` | **oui**, pour l'essai |
+| 🔴 Vérifier les 11 émissions `US` et les 2 `act` sur matériel | Mega | **oui** |
+| Réinjecter `VPIV_EX` corrigée dans le `.ods` de travail | `A - Architecture_Tables_Schemas\Tables\` | non |
+| Remplacer `varBrute.csv` par la Table A corrigée | `node-red/config/` | non |
+| Ajouter `Odom.coeff` à la Table A | Table A | non |
+| Écrire `installation_SE_termux.md` — **rien n'existe** | `docs/` | non |
+| Corriger §8.1 de la synthèse SE, ou la marquer périmée | document externe | non |
+| Verser `TableC.json`, `doc_A1`, `doc_A2` au dépôt | dépôt | non |
+| `reference_SP_nodered.md` | différé — chantier en cours | non |
+
+✅ Tranchées le 22/10 : `CfgS.boot` → `1` ; `Ctrl_L.act` et `US.act` → `1`/`0` ;
+`Us` → `US` ; les 14 fichiers vides supprimés.
 
 ---
 

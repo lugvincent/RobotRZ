@@ -179,6 +179,68 @@ print(f"   VPIV_EX : {_n_perm} permutees + {_n_etoile} etoiles parasites "
       f"= {_n_perm + _n_etoile} corrigees | {_n_ok} deja bonnes | {_n_amb} ambigues")
 assert _n_amb == 0, "Cas ambigu detecte : relecture humaine obligatoire avant generation"
 
+# ---------------------------------------------------------------------------
+# 2ter. VALEURS D'EXEMPLE CONTREDISANT LEUR PROPRE LIGNE   (ajout v1.2)
+# ---------------------------------------------------------------------------
+#  Second controle de coherence, independant du precedent : l'ordre des champs
+#  etait faux, mais trois VALEURS l'etaient aussi. Elles ont ete trouvees en
+#  confrontant la valeur de VPIV_EX au FORMAT_VALUE declare sur la MEME ligne.
+#
+#     CfgS.boot    TYPE=boolean  FORMAT=1|true   exemple disait "OK"
+#     Ctrl_L.act   TYPE=boolean  FORMAT=0|1      exemple disait "OK"
+#     US.act       TYPE=boolean  FORMAT=0|1      exemple disait "OK"
+#
+#  ARBITRAGE : la coherence, pas le gout.
+#    - Les 20 lignes « act » de la Table A declarent TYPE=boolean, FORMAT=0|1,
+#      sans une seule exception.
+#    - Cote firmware, 9 dispatcheurs sur 11 repondaient deja « on ? 1 : 0 ».
+#      Les deux restants (Ctrl_L, US) ont ete alignes le 22/10 — ce sont
+#      exactement les deux que ces exemples decrivaient.
+#    - CfgS.boot : sa propre ligne dit boolean / 1|true, et le firmware emet
+#      bien sendInfo("CfgS","boot","*","1"). C'est l'exemple qui mentait.
+#  On retient "1" : valeur affirmative, presente dans « 1|true » comme dans
+#  « 0|1 », et c'est ce que le code emet apres une activation reussie.
+#
+#  Le controle est generalise a toute la table pour qu'un futur ecart du meme
+#  genre soit signale au lieu de passer inapercu.
+# ---------------------------------------------------------------------------
+_LITTERAL = _re.compile(r'^[A-Za-z0-9_.\-]+$')
+_iT, _iF = ENT_A.index("TYPE"), ENT_A.index("FORMAT_VALUE")
+_n_val = 0
+_restants = []
+
+for _lg in LIG_A:
+    _ex = (_lg[_iE] or "").strip()
+    _fv = (_lg[_iF] or "").strip()
+    if not _ex or not _fv or _fv == "_":
+        continue
+    _m = _MOTIF.match(_ex)
+    if not _m:
+        continue
+    _valeur = _m.group(5).strip()
+    _toks = [t.strip() for t in _fv.split("|")]
+    # On ne juge que les enumerations de litteraux courts, et une valeur
+    # elle-meme litterale : tout gabarit (<val>, JSON, plage) est hors sujet.
+    if not all(_LITTERAL.match(t) and len(t) <= 24 for t in _toks):
+        continue
+    if not _LITTERAL.match(_valeur):
+        continue
+    if _valeur in _toks:
+        continue
+
+    if (_lg[_iT] or "").strip() == "boolean" and _valeur == "OK":
+        _lg[_iE] = f"${_m.group(1)}:{_m.group(2)}:{_m.group(3)}:{_m.group(4)}:1#"
+        _n_val += 1
+    else:
+        # Ecart d'une autre nature : on ne devine pas, on le remonte.
+        _restants.append(f"{_lg[ENT_A.index('VAR')]}.{_lg[_iP]} : "
+                         f"« {_valeur} » hors de « {_fv} »")
+
+print(f"   Valeurs : {_n_val} exemple(s) boolean a \"OK\" ramene(s) a \"1\" | "
+      f"{len(_restants)} ecart(s) non traite(s)")
+for _r in _restants:
+    print(f"      a relire : {_r}")
+
 td = lire(U + "d0880137-tableD_catalogueV3_corrige.ods")["TableD_Catalogue"]
 ENT_D, LIG_D = td[0], td[1:]
 print(f"   TableD : {len(LIG_D)} commandes")
@@ -234,7 +296,7 @@ def L(vals, style=ST_NEUTRE):
 L(["TablesRZ_reference.ods", "", "", ""], ST_TITRE)
 L(["Classeur unique des tables normatives — projet RobotRZ", "", "", ""], ST_SOUSTIT)
 L(["", "", "", ""])
-L(["Version", "1.1", "", ""])
+L(["Version", "1.2", "", ""])
 L(["Date", AUJ, "", ""])
 L(["Auteur", "Vincent Philippe", "", ""])
 L(["Emplacement",

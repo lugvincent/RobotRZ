@@ -132,6 +132,41 @@ C'est aussi la seule manière de valider le lot D (`SF_Init_4`) une fois écrit.
 
 ---
 
+### 1.9 🔴 Le joystick du Xiaomi — cassé par la correction du 22/10
+
+Le nœud `→ v,omega` de `flows-XIAOMI-2026-10-18.json` construit sa commande moteur à
+l'**ancien** ordre :
+
+```js
+msg.payload = `$V:Mtr:*:cmd:${v},${omega},${A}#`;   // instance en position 3
+```
+
+Il fonctionnait **grâce** au défaut de réception du firmware : avant le 22/10, seules les
+trames inversées étaient acceptées. Deux erreurs se compensaient. La correction remet le
+firmware dans la norme et fait tomber ce consommateur.
+
+**Le geste** — un caractère déplacé :
+
+```js
+msg.payload = `$V:Mtr:cmd:*:${v},${omega},${A}#`;
+```
+
+**Ce que l'essai tranche** : que le secours Xiaomi pilote de nouveau, et que la correction
+du firmware n'a pas d'autre victime du même genre. Déduit du code des deux côtés, **jamais
+observé** — le robot n'est pas monté. Détail en §2 de `docs/audit_nodered_ordre_VPIV.md`.
+
+### 1.10 Les onze émissions `US` et les deux `act` corrigées le 22/10
+
+Trois corrections de code, toutes non vérifiées sur matériel :
+
+| Correction | Ce que l'essai tranche |
+|---|---|
+| 11 × `sendInfo("Us", …)` → `sendInfo("US", …)` | que SP reçoit enfin les mesures et accusés ultrason — ils étaient jetés en silence |
+| `Ctrl_L.act` et `US.act` renvoient l'état `1`/`0` au lieu de `"OK"` | que SP ne se bloque pas sur l'ancienne réponse |
+
+À grouper avec l'essai des neuf ultrasons (§1.2), qui exige le même démontage.
+
+
 ## 2. Ce qui n'a PAS besoin du robot
 
 Pour mémoire, afin de ne pas reporter à tort :
@@ -165,6 +200,10 @@ physique attend le robot.
 L'ordre suit une logique : **rien ne bouge avant que la sécurité ne réponde.**
 
 ---
+
+*V1.1 — 22/10/2026, soir. Ajout des §1.9 et §1.10 : les corrections de code du
+22/10 (graphie `US`, `act` renvoyant l'état, joystick Xiaomi) sont toutes des
+déductions tirées des sources, aucune n'a été vérifiée sur matériel.*
 
 *V1 — 22/10/2026. Créé après la découverte du défaut bloquant de réception VPIV
 (§9.5 de la synthèse d'état), qui a montré qu'un essai sur établi sans capteurs

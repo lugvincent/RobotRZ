@@ -28,7 +28,7 @@ static void send_one(int i, int v)
     char inst[4];
     snprintf(inst, sizeof(inst), "%d", i);
 
-    sendInfo("Us", "one", inst, buf);
+    sendInfo("US", "one", inst, buf);
 }
 
 // ----------------------------------------------------------
@@ -48,7 +48,7 @@ static void send_all()
             strcat(buf, ",");
     }
 
-    sendInfo("Us", "val", "*", buf);
+    sendInfo("US", "val", "*", buf);
 }
 
 // ----------------------------------------------------------
@@ -129,7 +129,7 @@ void us_processPeriodic()
             int lvl = max(1, cfg_us_danger_thresholds[i] / max(1, d));
             char buf[8];
             snprintf(buf, sizeof(buf), "%d", lvl);
-            sendInfo("Us", "alert", String(i).c_str(), buf);
+            sendInfo("US", "alert", String(i).c_str(), buf);
         }
     }
 

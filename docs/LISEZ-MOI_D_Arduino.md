@@ -44,6 +44,15 @@ corrigé depuis (commit `bf0e422`), et l'histoire complète est en §9.5 de `doc
 > **Le code fait foi sur ce que fait le firmware. La Table A fait foi sur la norme.**
 > Les documents de ce dossier ne font foi sur rien.
 
+> 🔴 **Nuance ajoutée le 22/10/2026, et elle est capitale.** « La Table A fait foi »
+> vaut pour ses colonnes `VAR`, `PROP` et `INSTANCE`. **Pas pour sa colonne `VPIV_EX`** :
+> 150 de ses 251 exemples étaient écrits à l'ancien ordre, parce que cette colonne n'a
+> jamais été migrée quand la convention a changé. C'est d'elle que tout le monde a
+> recopié — les commentaires du firmware, les documents archivés, les légendes, et
+> jusqu'au code de réception de la Mega. **Elle est la cause racine de tout.**
+> Toute l'histoire est dans `docs/convention_VPIV_ordre.md`. La colonne est corrigée
+> depuis le 22/10 ; une copie de la Table A antérieure à cette date reste fausse à 61 %.
+
 Ils gardent une valeur historique — les raisonnements de conception, les justifications de choix —
 mais **aucune de leurs valeurs techniques ne doit être reprise sans vérification dans le code**.
 

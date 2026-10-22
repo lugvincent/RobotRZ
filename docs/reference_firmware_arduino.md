@@ -347,12 +347,26 @@ réception qui était fautive, jamais l'émission.
 
 Relevés en lisant les sources. Aucun n'est corrigé à ce jour, sauf mention.
 
-**1. 85 exemples de trames en commentaire emploient l'ordre ancien**, dans
-15 fichiers — contre 45 au bon ordre. `dispatch_Odom.cpp`, `dispatch_Mtr.cpp`
-et `urg.cpp` sont les plus touchés. Un commentaire comme
-`// $V:Odom:*:read:pos#` place l'instance en position 3. **Ne pas s'y fier :
-le tableau du §9 et la Table A font foi.** C'est cette croyance répandue qui a
-produit le défaut de réception corrigé le 22/10.
+**1. ✅ CORRIGÉ le 22/10/2026 — les exemples en commentaire employaient l'ordre ancien.**
+
+État au moment de la rédaction de ce document : 85 exemples à l'ancien ordre dans
+15 fichiers, contre 45 au bon ordre. Un commentaire comme `// $V:Odom:*:read:pos#`
+plaçait l'instance en position 3.
+
+**Corrigé depuis**, commit `9787ef8` : 89 exemples remis dans l'ordre normatif sur
+17 fichiers, dont 81 permutations `INST`↔`PROP`. Aucune trame inversée ne se trouvait
+hors commentaire — le code vivant était déjà sain, et la preuve en est faite dans le
+message de commit.
+
+**La cause racine a été trouvée le même jour, et ce n'était pas une négligence de
+rédaction** : la colonne `VPIV_EX` de la Table A n'avait jamais été migrée lors du
+changement de convention. 150 de ses 251 exemples portaient l'ancien ordre, et c'est
+d'elle que tout le monde recopiait — y compris le code de réception de la Mega.
+Lire `docs/convention_VPIV_ordre.md`.
+
+⚠️ Quatre trames à l'ancien ordre subsistent **volontairement** dans `docs/` (une ici
+au §9, trois dans `synthese_etat.md`) : ce sont les pièces à conviction du défaut.
+Ne pas les corriger.
 
 **2. Deux constantes pour le chien de garde, dont une morte.** `config.h`
 ligne 19 définit `LOOP_MAX_TIME_MS 100` — qui n'est utilisé nulle part.

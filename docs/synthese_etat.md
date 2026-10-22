@@ -509,3 +509,68 @@ ils sont les témoins d'une migration de convention jamais achevée côté réce
 ### 9.4 Correction à la feuille de route
 
 Le lot F de la §6 et de précédentes versions listaient « `Appli.IA_Conv` : ajouter la ligne Table A manquante ». **Ces lignes existent** dans la Table A normative. Ne restent que l'entrée `ui_VarG` et le déploiement de la Table D.
+
+---
+
+### 9.6 🔴 LA CAUSE RACINE — trouvée et traitée le 22/10/2026, en fin de journée
+
+Tout ce qui précède dans cette section — le défaut de réception de la Mega, les 85 commentaires
+fautifs, les 58 trames de `IMP encodage`, les deux légendes mises en `old\` — **remonte à une
+seule et même source, identifiée en vérifiant la Table A elle-même** :
+
+```
+Colonne VPIV_EX de la Table A, avant le 22/10 :
+      101 exemples au bon ordre
+      150 À L'ANCIEN ORDRE  ($CAT:VAR:INST:PROP:VAL#)
+        2 vides
+```
+
+Treize variables touchées : `CfgS`, `Ctrl_L`, `FS`, `IRmvt`, `Lring`, `Lrub`, `Mic`, `Mtr`,
+`Odom`, `SecMvt`, `Srv`, `US`, `Urg`.
+
+#### Le mécanisme, en une phrase
+
+Quand la convention est passée de `INST:PROP` à `PROP:INST`, **les colonnes `PROP` et `INSTANCE`
+de la Table A ont été migrées, la colonne `VPIV_EX` ne l'a pas été.** Or `VPIV_EX` est la seule
+colonne qui montre une trame entière : c'est donc celle que tout le monde lit, et celle dont
+tout le monde a recopié.
+
+> Ce n'étaient pas des fautes indépendantes. **C'était une colonne non migrée, recopiée partout.**
+
+#### Ce qui a été corrigé
+
+| Objet | Volume | Commit / fichier |
+|---|---|---|
+| Réception de la Mega | 2 lignes | `bf0e422` — vérifié sur matériel |
+| Commentaires du firmware | **89** sur 17 fichiers | `9787ef8` |
+| Colonne `VPIV_EX` de la Table A | **150** sur 251 | `TableA_VPIV_EX_corrige.csv` + `audit_vpiv_ex.csv` |
+
+Garantie de non-régression sur le firmware : **aucune trame inversée ne se trouvait hors
+commentaire**. Le code nu des 17 fichiers, commentaires retirés, est identique octet pour octet
+avant et après ; le diff est équilibré (89 / 89).
+
+Point de retour : `git reset --hard avant-correction-VPIV_EX-2026-10-22`.
+
+#### 🔴 La nuance à retenir, qui corrige une consigne répétée toute la semaine
+
+« La Table A fait foi » vaut pour ses colonnes **`VAR`, `PROP`, `INSTANCE`**.
+**Pas pour sa colonne `VPIV_EX`** si la copie est antérieure au 22/10/2026 — elle est alors
+fausse à 61 %. Le tableau de confiance complet est en §5.1 de `docs/convention_VPIV_ordre.md`.
+
+#### Divergences relevées au passage, non tranchées
+
+| Point | Table A | Code |
+|---|---|---|
+| `CfgS.boot`, valeur | `OK` | `sendInfo("CfgS","boot","*","1")` → `1` |
+| `Odom.coeff` | absente | présente |
+
+#### 🔴 Synthèse générale SE (02/26) — §8.1 dangereux
+
+Le document inverse `typePtge` : il annonce `1 = JOYSTICK, 2 = VOCALE`. **`config.cpp` ligne 22
+et la Table A disent `0=ÉCRAN 1=VOCALE 2=JOYSTICK 3=LAISSE 4=LAISSE+VOCALE`.** Suivre le document
+reviendrait à demander le pilotage vocal et à obtenir la manette — sur une variable de sécurité.
+Huit autres écarts du même document sont listés en §5.4 de `convention_VPIV_ordre.md`.
+
+---
+
+*V3.6 — 22/10/2026 — ajout de la §9.6 : cause racine identifiée, campagne de correction menée.*

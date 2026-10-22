@@ -63,6 +63,7 @@ choix de conception :
 |---|---|
 | **`synthese_etat.md`** | **Où en est le projet ?** Avancement, lots, bugs ouverts, pièges connus. Change à chaque séance |
 | `tables_RZ_descripteur.md` | Les quatre tables, les quinze champs de la Table A, les règles du protocole VPIV |
+| 🔴 **`convention_VPIV_ordre.md`** | **Pourquoi l'ordre des champs a été faux partout, et ce qui fait foi désormais.** À lire avant de recopier le moindre exemple de trame |
 | `reference_firmware_arduino.md` | Le code Arduino : organisation, boucle, traitement d'une trame, urgences, pièges |
 | `reference_SE_termux_tasker.md` | Le code SE : démarrage, parser VPIV, FIFOs, état, managers, chaîne vocale, pièges |
 | `reference_Tasker.md` | La couche Android : démarrage du robot, routeur, arbitrage vocal, scènes, pièges |
@@ -110,6 +111,18 @@ $CAT:VAR:PROP:INST:VAL#
 | **VAR** | Module concerné | `Gyro`, `Mtr`, `CfgS`, `Urg` |
 | **PROP** | Propriété | `modeRZ`, `angle`, `dataContCpu` |
 | **INST** | Instance, ou `*` | `TGD`, `rear`, `*` |
+
+> 🔴 **La propriété précède l'instance, et c'est le piège numéro un du projet.**
+> La convention a changé en cours de route, mais la colonne `VPIV_EX` de la Table A
+> n'a pas suivi : 150 de ses 251 exemples sont restés à l'ancien ordre
+> `$CAT:VAR:INST:PROP:VAL#`. Comme c'est la colonne que tout le monde lit, l'erreur
+> s'est propagée aux commentaires du firmware, aux documents archivés, aux légendes,
+> et jusqu'au **code de réception de la Mega — qui ne pouvait donc recevoir aucune
+> commande**. Tout a été corrigé le 22/10/2026.
+>
+> **Avant de recopier un exemple de trame, vérifier sa source** : `convention_VPIV_ordre.md` §5.1
+> donne le tableau de confiance. En deux mots — le dépôt est fiable depuis le 22/10,
+> `AA-Doc-horsGit/` ne l'est pas.
 | **VAL** | Valeur | `3`, `90`, `[x,y,z]` |
 
 > 🔴 **PROP en position 3, INST en position 4.** Ne jamais intervertir. Cette

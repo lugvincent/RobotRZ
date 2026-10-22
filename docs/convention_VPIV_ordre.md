@@ -150,17 +150,23 @@ déterministe et rejouable.
 | `docs/` du dépôt | ✅ fiables |
 | `AA-Doc-horsGit/` et les ODT archivés | 🔴 **non migrés, jamais** |
 
-### 5.2 Les quatre citations volontairement fausses
+### 5.2 Les seize citations volontairement fausses
 
-Quatre trames à l'ancien ordre subsistent **exprès** dans `docs/` : ce sont les
-*pièces à conviction* du défaut.
+Seize trames à l'ancien ordre subsistent **exprès** dans `docs/` : ce sont les
+*pièces à conviction* du défaut. Un balayage automatique les signalera toutes —
+c'est normal, il ne sait pas lire une intention.
 
-| Fichier | Ligne | Pourquoi |
+| Fichier | Occurrences | Pourquoi |
 |---|---|---|
-| `reference_firmware_arduino.md` | ~353 | illustre le piège |
-| `synthese_etat.md` | ~438, ~444, ~485 | sortie réelle de la carte avant correction |
+| `convention_VPIV_ordre.md` *(ici même)* | 6 | les trois `Urg` à six champs, la trame d'erreur de la carte, le joystick Xiaomi |
+| `audit_nodered_ordre_VPIV.md` | 4 | le code Xiaomi tel qu'il est écrit aujourd'hui |
+| `synthese_etat.md` | 4 | sortie réelle de la carte avant correction, et le joystick |
+| `reference_firmware_arduino.md` | 1 | illustre le piège |
+| `travaux_robot_assemble.md` | 1 | le geste à faire sur le Xiaomi |
 
-Ne pas les « corriger » : elles perdraient leur sens.
+**Ne pas les « corriger » : elles perdraient leur sens.** Le repère pour les distinguer
+d'un oubli : une citation volontaire est toujours accompagnée, à moins de deux lignes, de
+sa version juste ou de la mention de ce qu'elle démontre.
 
 ### 5.3 Divergences Table A ↔ code — tranchées le 22/10 au soir
 

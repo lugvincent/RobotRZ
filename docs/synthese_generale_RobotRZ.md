@@ -65,6 +65,7 @@ choix de conception :
 | `tables_RZ_descripteur.md` | Les quatre tables, les quinze champs de la Table A, les règles du protocole VPIV |
 | `reference_firmware_arduino.md` | Le code Arduino : organisation, boucle, traitement d'une trame, urgences, pièges |
 | `reference_SE_termux_tasker.md` | Le code SE : démarrage, parser VPIV, FIFOs, état, managers, chaîne vocale, pièges |
+| `reference_Tasker.md` | La couche Android : démarrage du robot, routeur, arbitrage vocal, scènes, pièges |
 | `genese_et_evolution_RZ.md` | Pourquoi ce robot existe, et comment il est passé de la V0 à la V6 |
 | `installation_RPI_serveur.md` | Installer le RPi serveur de zéro — réseau, Node-RED, Mosquitto, accès distant |
 | `travaux_robot_assemble.md` | Tout ce qui exige le robot monté, groupé en une campagne |
@@ -220,6 +221,12 @@ Détail complet : `reference_firmware_arduino.md`.
 Gère ce que seul Android sait faire : Zoom, caméra de surveillance, GPS,
 expressions faciales sur l'écran, synthèse vocale. Reçoit des trames de
 catégorie `A`, que l'Arduino ignore totalement.
+
+> 🔴 **C'est Tasker qui démarre le robot.** La tâche `RZ_Init_Tasker` lance
+> `rz_start.sh` par le greffon Termux:Tasker, attend les démons, puis met en
+> place l'affichage. Un SE qui ne démarre pas se diagnostique d'abord ici.
+
+Détail complet : `reference_Tasker.md`.
 
 ---
 

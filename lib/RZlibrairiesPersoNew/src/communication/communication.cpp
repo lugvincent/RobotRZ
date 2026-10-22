@@ -166,7 +166,14 @@ void communication_processInput()
                 // Si URG actif, n'accepter que les commandes de remise en état
                 if (urg_isActive())
                 {
-                    //  - Urg:clear:*:...   (clear via module Urg direct)
+                    // Deux voies d'effacement, les mêmes que celles que
+                    // vpiv_dispatch.cpp autorise déjà en aval :
+                    //   - $V:Urg:clear:*:...       effacement direct
+                    //   - $V:CfgS:emg:*:clear#     effacement par CfgS
+                    // ⚠️ Avant le 22/10/2026 ce filtre ne laissait passer que
+                    //    la première : la voie CfgS était condamnée ici alors
+                    //    que le routeur l'acceptait. Les deux portes doivent
+                    //    rester d'accord.
                     bool allowClear = false;
 
                     if (strcmp(msg.module, "Urg") == 0 && strcmp(msg.prop, "clear") == 0)
@@ -174,9 +181,16 @@ void communication_processInput()
                         allowClear = true;
                     }
 
+                    if (strcmp(msg.module, "CfgS") == 0 &&
+                        strcmp(msg.prop, "emg") == 0 &&
+                        strcmp(msg.value, "clear") == 0)
+                    {
+                        allowClear = true;
+                    }
+
                     if (allowClear)
                     {
-                        dispatchVPIV(msg.module, msg.inst, msg.prop, msg.value);
+                        dispatchVPIV(msg.module, msg.prop, msg.inst, msg.value);
                     }
                     else
                     {
@@ -186,8 +200,16 @@ void communication_processInput()
                 }
                 else
                 {
-                    // Dispatch standard : on suit la signature dispatchVPIV(module, inst, prop, value)
-                    dispatchVPIV(msg.module, msg.inst, msg.prop, msg.value);
+                    // Dispatch standard. Signature réelle, vpiv_dispatch.h ligne 87 :
+                    //   dispatchVPIV(var, prop, inst, value)
+                    // ⚠️ CORRIGÉ LE 22/10/2026 — ne pas permuter prop et inst.
+                    //    L'appel passait msg.inst en 2e argument et msg.prop en
+                    //    3e, pour « compenser » une convention de fil INST:PROP
+                    //    qui n'a plus cours. Résultat : aucun dispatcher ne
+                    //    reconnaissait sa propriété, toute commande entrante
+                    //    était rejetée en silence. Voir communication.h et
+                    //    §9.5 de docs/synthese_etat.md.
+                    dispatchVPIV(msg.module, msg.prop, msg.inst, msg.value);
                 }
             }
             else

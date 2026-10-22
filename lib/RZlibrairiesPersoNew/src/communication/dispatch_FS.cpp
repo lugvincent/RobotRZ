@@ -14,22 +14,22 @@
  * ------------------------------
  *   read  : lecture immédiate — valeur = "force" (défaut) ou "raw"
  *           Ex : $V:FS:*:read:force#   → publie $F:FS:force:*:<val>#
- *           Ex : $V:FS:*:read:raw#     → publie $F:FS:raw:*:<val>#
+ *           Ex : $V:FS:read:*:raw#     → publie $F:FS:raw:*:<val>#
  *
  *   tare  : remise à zéro (offset = valeur actuelle à vide)
- *           Ex : $V:FS:*:tare:1#       → confirme $I:FS:tare:*:OK#
+ *           Ex : $V:FS:tare:*:1#       → confirme $I:FS:tare:*:OK#
  *
  *   cal   : facteur de calibration (entier, stocké x1000 dans Table A)
- *           Ex : $V:FS:*:cal:950#      → confirme $I:FS:cal:*:OK#
+ *           Ex : $V:FS:cal:*:950#      → confirme $I:FS:cal:*:OK#
  *
  *   act   : active (1) ou désactive (0) le module
- *           Ex : $V:FS:*:act:1#        → confirme $I:FS:act:*:1#
+ *           Ex : $V:FS:act:*:1#        → confirme $I:FS:act:*:1#
  *
  *   freq  : fréquence de publication périodique (ms)
- *           Ex : $V:FS:*:freq:200#     → confirme $I:FS:freq:*:OK#
+ *           Ex : $V:FS:freq:*:200#     → confirme $I:FS:freq:*:OK#
  *
  *   thd   : seuil de déclenchement alerte (même unité que force)
- *           Ex : $V:FS:*:thd:80#       → confirme $I:FS:thd:*:OK#
+ *           Ex : $V:FS:thd:*:80#       → confirme $I:FS:thd:*:OK#
  *
  * PROPRIÉTÉS PUBLIÉES EN RETOUR (A->SP)
  * ---------------------------------------

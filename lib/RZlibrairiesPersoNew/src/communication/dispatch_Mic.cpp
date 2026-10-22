@@ -17,14 +17,14 @@
  * ---------------------------------------------------------------
  *   Valeurs : "OFF" | "MOY" | "ANGLE" | "PIC"
  *   Ex : $V:Mic:*:modeMicsF:MOY#
- *        $V:Mic:*:modeMicsF:OFF#
+ *        $V:Mic:modeMicsF:*:OFF#
  *
  * modeMicsI  — mode de détection événements (exclusif)
  * ---------------------------------------------------------------
  *   Valeurs : "OFF" | "InfoNuisce" | "DetectPresence"
- *   Ex : $V:Mic:*:modeMicsI:InfoNuisce#
- *        $V:Mic:*:modeMicsI:DetectPresence#
- *        $V:Mic:*:modeMicsI:OFF#
+ *   Ex : $V:Mic:modeMicsI:*:InfoNuisce#
+ *        $V:Mic:modeMicsI:*:DetectPresence#
+ *        $V:Mic:modeMicsI:*:OFF#
  *
  * paraMicsF  — paramètres du mode flux (FORMAT_VALUE objet CSV)
  * ---------------------------------------------------------------
@@ -39,7 +39,7 @@
  *                      0 = toujours publier (pas d'anti-bruit)
  *   deltaAngle  (°)  : variation min d'angle pour publier micAngle
  *                      0 = toujours publier
- *   Ex : $V:Mic:*:paraMicsF:200,100,200,100,5,10#
+ *   Ex : $V:Mic:paraMicsF:*:200,100,200,100,5,10#
  *
  * paraMicsI  — paramètres de détection événements (FORMAT_VALUE objet CSV)
  * ---------------------------------------------------------------
@@ -57,7 +57,7 @@
  *   cooldown    (ms) : délai min entre deux signalements du même type
  *                      (bruitNiv1, bruitNiv2 et detectPresenceSon
  *                       ont chacun leur propre compteur cooldown)
- *   Ex : $V:Mic:*:paraMicsI:30,300,600,100,500,300,2000#
+ *   Ex : $V:Mic:paraMicsI:*:30,300,600,100,500,300,2000#
  *
  * ============================================================
  * PROPRIÉTÉS PUBLIÉES EN RETOUR (A->SP)

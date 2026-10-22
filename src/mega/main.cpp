@@ -14,7 +14,7 @@
 // --------------
 //   RZ_initAll() initialise tous les modules dans le bon ordre :
 //   config → comm → urg → actionneurs → capteurs → navigation → sécurité
-//   RZ_initAll() émet lui-même $I:System:boot:*:OK# via sendInfo()
+//   RZ_initAll() émet lui-même $I:CfgS:boot:*:1# via sendInfo()
 //
 //   ⚠ initConfig() (appelé en 1er par RZ_initAll()) ouvre Serial
 //   et MOTEURS_SERIAL. NE PAS ouvrir les ports série dans setup() :
@@ -79,7 +79,7 @@ void setup()
     // Initialisation de tous les modules (config → comm → capteurs → navigation…)
     // initConfig() — appelé en premier par RZ_initAll() — ouvre Serial et MOTEURS_SERIAL.
     // ⚠ Ne PAS appeler Serial.begin() ici : initConfig() le fait déjà (évite double init).
-    // RZ_initAll() émet $I:System:boot:*:OK# via sendInfo() en fin d'init.
+    // RZ_initAll() émet $I:CfgS:boot:*:1# via sendInfo() en fin d'init.
     RZ_initAll();
 }
 

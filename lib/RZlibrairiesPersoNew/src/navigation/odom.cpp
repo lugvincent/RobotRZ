@@ -452,10 +452,10 @@ void odom_requestReport()
  * Voir déclaration dans odom.h pour description complète.
  *
  * Séquence recommandée depuis SP pour calibration :
- *   $V:Odom:*:act:0#
- *   $V:Odom:*:paraOdom:wheel_mm,track_mm,cpr,gainG,gainD,fCalc,fPos,fVel#
- *   $V:Odom:*:reset:1#
- *   $V:Odom:*:act:1#
+ *   $V:Odom:act:*:0#
+ *   $V:Odom:paraOdom:*:wheel_mm,track_mm,cpr,gainG,gainD,fCalc,fPos,fVel#
+ *   $V:Odom:reset:*:1#
+ *   $V:Odom:act:*:1#
  */
 void odom_setPhysical(int wheel_mm, int track_mm, int cpr,
                       int gainG_x1000, int gainD_x1000,

@@ -21,22 +21,22 @@
  *   omega   : rotation     (-100..+100)  +100=droite, -100=gauche
  *   accelLevel : lissage   (0..4)        0=direct, 4=très doux
  *   Ex : $V:Mtr:*:cmd:80,0,2#       → avance droit, lissage moyen
- *   Ex : $V:Mtr:*:cmd:0,-60,2#      → tourne gauche sur place
- *   Ex : $V:Mtr:*:cmd:-50,30,1#     → recule en virant droite
+ *   Ex : $V:Mtr:cmd:*:0,-60,2#      → tourne gauche sur place
+ *   Ex : $V:Mtr:cmd:*:-50,30,1#     → recule en virant droite
  *
  * stop — arrêt propre
  * --------------------
  *   Format  : "1" (toute valeur non vide est acceptée)
  *   Remet v=0, omega=0, envoie <0,0,0> à l'UNO.
- *   Ex : $V:Mtr:*:stop:1#
+ *   Ex : $V:Mtr:stop:*:1#
  *
  * override — arrêt forcé / lever d'arrêt forcé
  * ---------------------------------------------
  *   Format  : "stop" ou "clear"
  *   "stop"  → arrêt immédiat, toutes les cmd suivantes ignorées
  *   "clear" → reprend les commandes normales
- *   Ex : $V:Mtr:*:override:stop#
- *   Ex : $V:Mtr:*:override:clear#
+ *   Ex : $V:Mtr:override:*:stop#
+ *   Ex : $V:Mtr:override:*:clear#
  *
  * scale — facteur de réduction des vitesses
  * ------------------------------------------
@@ -45,8 +45,8 @@
  *     0    = arrêt complet (sans modifier les consignes cibles)
  *     500  = moitié de la vitesse nominale
  *     1000 = vitesse normale
- *   Ex : $V:Mtr:*:scale:500#    → moitié de vitesse (= 0.500)
- *   Ex : $V:Mtr:*:scale:750#    → 3/4 de vitesse    (= 0.750)
+ *   Ex : $V:Mtr:scale:*:500#    → moitié de vitesse (= 0.500)
+ *   Ex : $V:Mtr:scale:*:750#    → 3/4 de vitesse    (= 0.750)
  *   Conversion interne : s_float = s_int / 1000.0f
  *
  * kturn — coefficient de rotation
@@ -56,21 +56,21 @@
  *     500  = rotation douce
  *     1000 = standard
  *     1500 = rotation franche
- *   Ex : $V:Mtr:*:kturn:800#    → coefficient 0.800
- *   Ex : $V:Mtr:*:kturn:1000#   → coefficient 1.000 (standard)
+ *   Ex : $V:Mtr:kturn:*:800#    → coefficient 0.800
+ *   Ex : $V:Mtr:kturn:*:1000#   → coefficient 1.000 (standard)
  *   Conversion interne : k_float = k_int / 1000.0f
  *
  * act — activation du module
  * ---------------------------
  *   Format  : "1" ou "0"
  *   0 → le module calcule mais n'envoie plus de trame à l'UNO
- *   Ex : $V:Mtr:*:act:1#
+ *   Ex : $V:Mtr:act:*:1#
  *
  * read — lecture de l'état courant
  * ----------------------------------
  *   Format  : toute valeur (ignorée)
  *   Publie $I:Mtr:state:*:L,R,A# avec les consignes cibles actuelles
- *   Ex : $V:Mtr:*:read:1#
+ *   Ex : $V:Mtr:read:*:1#
  *
  * ============================================================
  * PROPRIÉTÉS PUBLIÉES EN RETOUR (A->SP)

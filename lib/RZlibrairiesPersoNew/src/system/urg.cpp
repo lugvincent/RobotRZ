@@ -15,7 +15,7 @@
  *   et une action de l'opérateur (ou de SP) pour être levée.
  *   → Elle est déclenchée en interne par le firmware (jamais depuis VPIV).
  *   → Elle est levée (effacée) uniquement sur commande explicite :
- *       $V:Urg:*:clear:1#  via dispatch_Urg.cpp
+ *       $V:Urg:clear:*:1#  via dispatch_Urg.cpp
  *
  * CAUSES GÉRÉES (enum UrgReason dans urg.h)
  * ------------------------------------------
@@ -143,7 +143,7 @@ void urg_handle(uint8_t code)
 }
 
 /* ================================================================
- * EFFACEMENT DE L'URGENCE (sur commande $V:Urg:*:clear:1#)
+ * EFFACEMENT DE L'URGENCE (sur commande $V:Urg:clear:*:1#)
  *
  * Remet le système en état opérationnel.
  * La confirmation est publiée en CAT=I (simple ACK, pas d'urgence).

@@ -38,7 +38,7 @@ long fs_lastForce();
 /**
  * Fréquence de monitoring (ms) - Contrôle l'envoi des propriétés F (value, raw, angle)
  * Valeur par défaut : FS_FREQ_DEFAULT (ex: 100ms)
- * Configurable via VPIV : $V:FS:*:freq:XX#
+ * Configurable via VPIV : $V:FS:freq:*:XX#
  */
 extern unsigned long cfg_fs_freq_ms;
 

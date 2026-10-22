@@ -33,7 +33,7 @@ namespace CfgS
         // MODE GLOBAL ROBOT (modeRZ)
         // strcmp compare la valeur de prop et le second argument "modeRZ" si égaux renvoie 0
         // ce qui signifie qu'ils sont identiques -> vrai
-        // $V:CfgS:*:modeRZ:<n>#
+        // $V:CfgS:modeRZ:*:<n>#
         // --------------------------------------------------
         if (strcmp(prop, "modeRZ") == 0) // strcmp compare la valeur de prop et le second argument 0
         {
@@ -48,7 +48,7 @@ namespace CfgS
         // --------------------------------------------------
         // Activation du pilotage par laisse ctrl_L
         // Dépend du TYPE DE PILOTAGE GLOBAL
-        // $V:CfgS:*:typePtge:<n># -> n : 3 laisse seul ou 4 laisse et vocal
+        // $V:CfgS:typePtge:*:<n># -> n : 3 laisse seul ou 4 laisse et vocal
         // --------------------------------------------------
         if (strcmp(prop, "typePtge") == 0)
         {
@@ -69,7 +69,7 @@ namespace CfgS
 
         // --------------------------------------------------
         // EFFACEMENT URGENCE : clear uniquement
-        // $V:CfgS:*:emg:clear#
+        // $V:CfgS:emg:*:clear#
         // --------------------------------------------------
         if (strcmp(prop, "emg") == 0)
         {
@@ -91,7 +91,7 @@ namespace CfgS
 
         // --------------------------------------------------
         // RESET SYSTEME -> RZ_initAll() + (optionnel) remise en mode veille
-        // $V:CfgS:*:reset:true# -> Accepte true ou "1" pour la compatibilité
+        // $V:CfgS:reset:*:true# -> Accepte true ou "1" pour la compatibilité
         // --------------------------------------------------
         if (strcmp(prop, "reset") == 0)
         {

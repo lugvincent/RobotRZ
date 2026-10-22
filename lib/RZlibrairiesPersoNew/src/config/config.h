@@ -165,7 +165,7 @@ extern int cfg_mtr_targetA;
 /*   - gains correctifs G/D pour compenser l'asymétrie mécanique         */
 /*                                                                        */
 /* Ces valeurs sont injectées au runtime via VPIV :                      */
-/*   $V:Odom:*:paraOdom:wheel_mm,track_mm,cpr,gainG,gainD,fCalc,fPos,fVel# */
+/*   $V:Odom:paraOdom:*:wheel_mm,track_mm,cpr,gainG,gainD,fCalc,fPos,fVel# */
 /* ===================================================================== */
 
 /* Broches (pins) encodeurs — connectées aux interruptions matérielles    */
@@ -176,7 +176,7 @@ extern int cfg_mtr_targetA;
 
 /* ---------------------------------------------------------------------- */
 /* Valeurs par défaut — À MESURER sur le robot réel et ajuster via test   */
-/* Utiliser $V:Odom:*:paraOdom:...# pour modifier sans recompiler         */
+/* Utiliser $V:Odom:paraOdom:*:...# pour modifier sans recompiler         */
 /* ---------------------------------------------------------------------- */
 
 /* Géométrie du robot */

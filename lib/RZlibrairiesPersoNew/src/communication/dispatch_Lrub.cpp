@@ -16,23 +16,23 @@
  *                Ex : $V:Lrub:*:col:255,128,0#
  *
  *   lumin      : intensité lumineuse — valeur = 0..255
- *                (ex : $V:Lrub:*:lumin:128#)
+ *                (ex : $V:Lrub:lumin:*:128#)
  *                NOTE : anciennement "int" — renommé car "int" est un type C++,
  *                ce qui prête à confusion lors de la lecture du code.
  *
  *   act        : activation — 1/0 ou true/false
- *                Ex : $V:Lrub:*:act:1#
+ *                Ex : $V:Lrub:act:*:1#
  *
  *   timeout    : extinction automatique après N millisecondes
  *                valeur = durée en ms (ex : "5000" = 5 secondes)
  *                valeur = "0" pour annuler un timeout en cours
- *                Ex : $V:Lrub:*:timeout:5000#
+ *                Ex : $V:Lrub:timeout:*:5000#
  *
  *   effetFuite : effet visuel "fuite" — 1 pour activer, 0 pour revenir couleur config
- *                Ex : $V:Lrub:*:effetFuite:1#
+ *                Ex : $V:Lrub:effetFuite:*:1#
  *
  *   init       : réinitialise le module (couleur et état par défaut config)
- *                Ex : $V:Lrub:*:init:1#
+ *                Ex : $V:Lrub:init:*:1#
  *
  * INSTANCES
  * ---------

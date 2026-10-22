@@ -90,7 +90,7 @@ static bool ctrlL_test = false;     // mode test : calcule sans commander les mo
 static char last_status[8] = "OFF"; // dernier état publié (anti-spam)
 
 /* ----------------------------------------------------------------
- * Paramètres dynamiques — modifiables via VPIV ($V:Ctrl_L:*:dist:xxx#)
+ * Paramètres dynamiques — modifiables via VPIV ($V:Ctrl_L:dist:*:xxx#)
  * ---------------------------------------------------------------- */
 static uint16_t target_dist_mm; // distance cible utilisateur/robot (mm)
 static int16_t max_speed;       // vitesse longitudinale max (avant/arrière)

@@ -5,7 +5,7 @@
 //
 // Format VPIV canonique (validé) :
 //    $<CAT>:<MODULE>:<PROP>:<INST>:<VALUE>#
-// Exemple : $I:Mic:rms:0:512#
+// Exemple : $I:Mic:micMoy:*:512#
 // ----------------------------------------------------------------------
 // Ce fichier expose :
 //  - initialisation / boucle : communication_init(), communication_processInput()
@@ -54,7 +54,7 @@
 //   compensation INTRODUISAIT l'erreur : plus aucune commande entrante
 //   n'était reconnue, et l'urgence devenait ineffaçable.
 //   Démontré sur matériel : à $V:Urg:clear:*:1# la carte répondait
-//   $E:Urg:*:clear:urgence active# — les champs permutés, visibles dans sa
+//   $E:Urg:clear:*:urgence active# — les champs permutés, visibles dans sa
 //   propre sortie. Détail en §9.5 de docs/synthese_etat.md.
 // ---------------------------------------------------------------
 typedef struct

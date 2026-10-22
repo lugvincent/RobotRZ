@@ -29,10 +29,10 @@
  *
  * INTERFACE VPIV PUBLIÉE (A->SP)
  * --------------------------------
- *   $I:ctrl_L:status:*:OK#      — fonctionnement normal
- *   $I:ctrl_L:status:*:OFF#     — module désactivé
- *   $I:ctrl_L:status:*:FceKO#   — traction excessive sur la laisse
- *   $I:ctrl_L:status:*:VtKO#    — utilisateur trop rapide (non impl. pour l'instant)
+ *   $I:Ctrl_L:status:*:OK#      — fonctionnement normal
+ *   $I:Ctrl_L:status:*:OFF#     — module désactivé
+ *   $I:Ctrl_L:status:*:FceKO#   — traction excessive sur la laisse
+ *   $I:Ctrl_L:status:*:VtKO#    — utilisateur trop rapide (non impl. pour l'instant)
  *   Publié uniquement si l'état change (anti-spam).
  *
  * USAGE DANS loop()
@@ -69,7 +69,7 @@ void ctrl_L_setEnabled(bool on);
 bool ctrl_L_isEnabled();
 
 /* ================================================================
- * PARAMÈTRES DYNAMIQUES — modifiables via VPIV ($V:Ctrl_L:*:...:...#)
+ * PARAMÈTRES DYNAMIQUES — modifiables via VPIV ($V:Ctrl_L:<prop>:*:<valeur>#)
  * ================================================================ */
 
 /* Distance cible utilisateur/robot (mm)

@@ -12,16 +12,16 @@
 //
 // VPIV PRODUITS — conformes Table A Arduino v3.1
 // -----------------------------------------------
-//   $F:FS:*:force:<val>#     — force calibrée (périodique CAT=F + réponse read)
-//   $F:FS:*:raw:<val>#       — valeur brute HX711 (réponse read:raw, CAT=F)
-//   $I:FS:*:alerte:<val>#    — valeur force au moment du dépassement du seuil (CAT=I)
-//   $I:FS:*:status:alerte#   — changement d'état → alerte active (CAT=I)
-//   $I:FS:*:status:actif#    — changement d'état → retour sous le seuil (CAT=I)
-//   $I:FS:*:tare:OK#         — confirmation tare
-//   $I:FS:*:cal:<val>#       — confirmation calibration
-//   $I:FS:*:act:0|1#         — confirmation activation
-//   $I:FS:*:freq:OK#         — confirmation fréquence
-//   $I:FS:*:thd:OK#          — confirmation seuil
+//   $F:FS:force:*:<val>#     — force calibrée (périodique CAT=F + réponse read)
+//   $F:FS:raw:*:<val>#       — valeur brute HX711 (réponse read:raw, CAT=F)
+//   $I:FS:alerte:*:<val>#    — valeur force au moment du dépassement du seuil (CAT=I)
+//   $I:FS:status:*:alerte#   — changement d'état → alerte active (CAT=I)
+//   $I:FS:status:*:actif#    — changement d'état → retour sous le seuil (CAT=I)
+//   $I:FS:tare:*:OK#         — confirmation tare
+//   $I:FS:cal:*:<val>#       — confirmation calibration
+//   $I:FS:act:*:0|1#         — confirmation activation
+//   $I:FS:freq:*:OK#         — confirmation fréquence
+//   $I:FS:thd:*:OK#          — confirmation seuil
 //
 // ARTICULATION
 // ------------
@@ -71,7 +71,7 @@ void fs_init()
 
 // =====================================================================
 // fs_doRead()
-// Lecture immédiate sur demande SP ($V:FS:*:read:force# ou read:raw).
+// Lecture immédiate sur demande SP ($V:FS:read:*:force# ou read:raw).
 // type = "force" (défaut) | "raw"
 // =====================================================================
 void fs_doRead(const char *type)
@@ -88,7 +88,7 @@ void fs_doRead(const char *type)
         // Valeur brute HX711 → CAT=F (Table A L47)
         char buf[20];
         snprintf(buf, sizeof(buf), "%ld", raw);
-        sendFlux("FS", "raw", "*", buf); // $F:FS:*:raw:<val>#
+        sendFlux("FS", "raw", "*", buf); // $F:FS:raw:*:<val>#
     }
     else
     {
@@ -98,7 +98,7 @@ void fs_doRead(const char *type)
                          : 0;
         char buf[20];
         snprintf(buf, sizeof(buf), "%ld", _lastForce);
-        sendFlux("FS", "force", "*", buf); // $F:FS:*:force:<val>#
+        sendFlux("FS", "force", "*", buf); // $F:FS:force:*:<val>#
     }
 }
 
@@ -108,7 +108,7 @@ void fs_doRead(const char *type)
 void fs_doTare()
 {
     fs_hw_tare();
-    sendInfo("FS", "tare", "*", "OK"); // $I:FS:*:tare:OK#
+    sendInfo("FS", "tare", "*", "OK"); // $I:FS:tare:*:OK#
 }
 
 // =====================================================================
@@ -127,7 +127,7 @@ void fs_doCal(long factor)
 
     char buf[20];
     snprintf(buf, sizeof(buf), "%ld", factor);
-    sendInfo("FS", "cal", "*", buf); // $I:FS:*:cal:<val>#
+    sendInfo("FS", "cal", "*", buf); // $I:FS:cal:*:<val>#
 }
 
 // =====================================================================
@@ -136,7 +136,7 @@ void fs_doCal(long factor)
 void fs_setActive(bool on)
 {
     cfg_fs_active = on;
-    sendInfo("FS", "act", "*", on ? "1" : "0"); // $I:FS:*:act:0|1#
+    sendInfo("FS", "act", "*", on ? "1" : "0"); // $I:FS:act:*:0|1#
 }
 
 // =====================================================================
@@ -147,7 +147,7 @@ void fs_setActive(bool on)
 void fs_setFreq(unsigned long ms)
 {
     cfg_fs_freq_ms = ms;               // 0 = mode "pour alerte", géré dans processPeriodic
-    sendInfo("FS", "freq", "*", "OK"); // $I:FS:*:freq:OK#
+    sendInfo("FS", "freq", "*", "OK"); // $I:FS:freq:*:OK#
 }
 
 // =====================================================================
@@ -156,7 +156,7 @@ void fs_setFreq(unsigned long ms)
 void fs_setThreshold(int th)
 {
     cfg_fs_threshold = th;
-    sendInfo("FS", "thd", "*", "OK"); // $I:FS:*:thd:OK#
+    sendInfo("FS", "thd", "*", "OK"); // $I:FS:thd:*:OK#
 }
 
 // =====================================================================
@@ -171,12 +171,12 @@ int fs_lastAngle() { return 0; } // HX711 axe unique — angle non implémenté
 // Appelé depuis fs_processPeriodic() après chaque lecture.
 //
 // Montée seuil :
-//   $I:FS:*:status:alerte#          (Table A L58)
-//   $I:FS:*:alerte:<val_force>#     (Table A L59 — valeur au dépassement)
+//   $I:FS:status:*:alerte#          (Table A L58)
+//   $I:FS:alerte:*:<val_force>#     (Table A L59 — valeur au dépassement)
 //
 // Descente seuil :
-//   $I:FS:*:status:actif#           (Table A L58 — retour normal)
-//   $I:FS:*:alerte:0#               (information : seuil levé)
+//   $I:FS:status:*:actif#           (Table A L58 — retour normal)
+//   $I:FS:alerte:*:0#               (information : seuil levé)
 // =====================================================================
 static void _handleAlert(long force)
 {
@@ -186,17 +186,17 @@ static void _handleAlert(long force)
     {
         // Passage en alerte
         _alertActive = true;
-        sendInfo("FS", "status", "*", "alerte"); // $I:FS:*:status:alerte#
+        sendInfo("FS", "status", "*", "alerte"); // $I:FS:status:*:alerte#
         char buf[20];
         snprintf(buf, sizeof(buf), "%ld", force);
-        sendInfo("FS", "alerte", "*", buf); // $I:FS:*:alerte:<val>#
+        sendInfo("FS", "alerte", "*", buf); // $I:FS:alerte:*:<val>#
     }
     else if (!over && _alertActive)
     {
         // Retour sous le seuil
         _alertActive = false;
-        sendInfo("FS", "status", "*", "actif"); // $I:FS:*:status:actif#
-        sendInfo("FS", "alerte", "*", "0");     // $I:FS:*:alerte:0# (seuil levé)
+        sendInfo("FS", "status", "*", "actif"); // $I:FS:status:*:actif#
+        sendInfo("FS", "alerte", "*", "0");     // $I:FS:alerte:*:0# (seuil levé)
     }
 }
 

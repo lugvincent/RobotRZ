@@ -41,21 +41,21 @@
  *
  * EXEMPLES VPIV :
  *   Configuration complète (3 params min) :
- *     $V:Odom:*:paraOdom:65,200,256#
+ *     $V:Odom:paraOdom:*:65,200,256#
  *   Configuration avec tous les réglages :
- *     $V:Odom:*:paraOdom:65,200,256,1000,1000,50,200,40#
+ *     $V:Odom:paraOdom:*:65,200,256,1000,1000,50,200,40#
  *   Lecture position actuelle :
- *     $V:Odom:*:read:pos#
+ *     $V:Odom:read:*:pos#
  *   Reset de la pose :
- *     $V:Odom:*:reset:1#
+ *     $V:Odom:reset:*:1#
  *   Réception gyro SE (via SP) :
- *     $V:Odom:*:gyro:12,170932#
+ *     $V:Odom:gyro:*:12,170932#
  *
  * SÉQUENCE D'INITIALISATION RECOMMANDÉE (depuis SP au démarrage) :
- *   $V:Odom:*:act:0#
- *   $V:Odom:*:paraOdom:65,200,256,1000,1000,50,200,40#
- *   $V:Odom:*:reset:1#
- *   $V:Odom:*:act:1#
+ *   $V:Odom:act:*:0#
+ *   $V:Odom:paraOdom:*:65,200,256,1000,1000,50,200,40#
+ *   $V:Odom:reset:*:1#
+ *   $V:Odom:act:*:1#
  *
  * PRÉCAUTIONS :
  *   - Pas de String() → snprintf() uniquement

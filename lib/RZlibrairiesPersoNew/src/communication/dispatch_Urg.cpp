@@ -15,7 +15,7 @@
  *   (urg_handle() appelé depuis mvt_safe, communication, watchdog loop...).
  *   Elles ne peuvent jamais être déclenchées via VPIV depuis SP.
  *
- *   La seule commande acceptée est l'effacement : $V:Urg:*:clear:1#
+ *   La seule commande acceptée est l'effacement : $V:Urg:clear:*:1#
  *   Elle appelle urg_clear() qui :
  *     - remet le système en état opérationnel
  *     - publie lui-même $I:Urg:etat:*:cleared# (pas de doublon ici)
@@ -23,7 +23,7 @@
  * PROPRIÉTÉ SUPPORTÉE (SP->A)
  * ----------------------------
  *   clear : efface l'urgence active
- *     Ex : $V:Urg:*:clear:1#
+ *     Ex : $V:Urg:clear:*:1#
  *
  * PROPRIÉTÉ PUBLIÉE EN RETOUR (A->SP)
  * -------------------------------------

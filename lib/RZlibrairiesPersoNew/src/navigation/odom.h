@@ -106,7 +106,7 @@ void odom_requestReport();
  * si nécessaire).
  *
  * Appelée par dispatch_Odom.cpp lors d'une trame paraOdom :
- *   $V:Odom:*:paraOdom:wheel_mm,track_mm,cpr[,gainG,gainD,fCalc,fPos,fVel]#
+ *   $V:Odom:paraOdom:*:wheel_mm,track_mm,cpr[,gainG,gainD,fCalc,fPos,fVel]#
  * Les 3 premiers paramètres sont obligatoires, les 5 suivants optionnels.
  * Passer 0 pour un paramètre optionnel = garder la valeur actuelle.
  *

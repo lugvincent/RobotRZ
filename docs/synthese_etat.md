@@ -444,7 +444,30 @@ Puis corriger le bloc de commentaires de `communication.h` (41-47) et les annota
 dispatchers, qui propagent la croyance fausse. Élargir le filtre amont à `CfgS:emg:clear`.
 Reconsidérer le chien de garde après essai avec les capteurs.
 
-**Non appliqué à ce jour** : correction firmware, à faire et à téléverser par Vincent.
+#### ✅ Corrigé et vérifié sur matériel — commit `bf0e422`, 22/10/2026
+
+Les deux appels ne permutent plus, les commentaires de `communication.h` décrivent le format réel
+avec un avertissement daté, et le filtre d'urgence accepte désormais aussi `CfgS:emg:clear`.
+
+**Vérification sur la carte, firmware corrigé téléversé :**
+
+```
+envoyé : $V:Urg:clear:*:1#
+reçu   : $I:Urg:etat:*:cleared#        ← avant la correction : $E:Urg:*:clear:urgence active#
+```
+
+Même code, même trame, deux lignes changées, comportement inversé. Pour que cette trame agisse, il
+a fallu que `clear` parvienne comme **propriété** au routeur puis à `Urg::dispatch()`, et que
+`urg_clear()` s'exécute. La chaîne de réception fonctionne.
+
+**Reste ouvert — le chien de garde.** Dans la seconde qui suit l'effacement, l'urgence revient :
+`URG_LOOP_TOO_SLOW_A` se redéclenche à la fin du tour de boucle où on vient de l'effacer. Sans
+capteurs connectés, le dépassement des 80 ms se produit à peu près à **chaque itération**.
+Conséquence pratique : **aucune commande ne peut être testée sur établi**, puisque le verrou
+revient entre deux trames. À trancher robot assemblé — `docs/travaux_robot_assemble.md` §1.1.
+
+**Non traité** : 85 exemples en commentaire, dans 15 fichiers, emploient encore l'ancien ordre.
+Balayage à faire dans un commit séparé.
 
 #### Ce que cela réhabilite
 

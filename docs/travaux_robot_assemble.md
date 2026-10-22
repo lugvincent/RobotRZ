@@ -53,9 +53,16 @@ seule raison.
 seuil est bon et il n'y a rien à corriger. Sinon, il faut une période de grâce
 au démarrage, ou exiger plusieurs dépassements consécutifs.
 
-> À faire **après** la correction de la réception VPIV (§9.5 de la synthèse) :
-> tant qu'elle n'est pas appliquée, l'urgence ne peut pas être effacée et
-> chaque essai se termine sur un reset.
+**Précision du 22/10/2026, après correction de la réception** : l'effacement fonctionne
+désormais (`$I:Urg:etat:*:cleared#`), mais l'urgence **revient dans la seconde**, à la fin du tour
+de boucle où on vient de l'effacer. Sans capteurs, le dépassement se produit à peu près à chaque
+itération. Deux trames envoyées coup sur coup ne passent pas : le verrou se replace entre les deux.
+
+> **Conséquence pratique : aucune commande ne peut être testée sur établi.** C'est le seul obstacle
+> qui reste côté Arduino, et il tombera peut-être de lui-même une fois les capteurs branchés — ou
+> révélera qu'il faut une période de grâce au démarrage et une exigence de dépassements
+> consécutifs. Un contournement temporaire existe pour l'établi — porter `LOOP_MAX_MS` à 2000 dans
+> `main.cpp` — mais c'est une modification à défaire impérativement ensuite.
 
 ### 1.2 Les neuf ultrasons
 

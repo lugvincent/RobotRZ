@@ -51,6 +51,7 @@ tr:last-child td{border-bottom:none}
 </style>
 </head>
 <body>
+<div style="background:#fff4e5;border:1px solid #e0a040;border-left:4px solid #e0a040;border-radius:8px;padding:12px 16px;margin:16px 0;font-size:14px;line-height:1.5"><strong>⚠️ Adresses d'exemple — corrigé le 22/10/2026.</strong> Cette page publiait l'adresse IPv4 publique de la box et l'adresse IPv6 complète du RPi. Le dépôt étant public, elles ont été remplacées par des adresses réservées à la documentation (<code>203.0.113.17</code>, RFC&nbsp;5737 ; <code>2001:db8::/32</code>, RFC&nbsp;3849), qui ne routent nulle part. Les explications restent exactes ; seules les valeurs sont fictives. Les vraies adresses se trouvent dans <code>Z - Secret\RZ_Codes_Identifiants.odt</code>, hors dépôt.</div>
 <nav class="nav">
   <a href="index.html" class="nav-logo">RobotRZ</a>
   <span class="nav-version">V2 — 28 Juin 2026</span>
@@ -172,7 +173,7 @@ tr:last-child td{border-bottom:none}
         <tr><td>SSH Termux (SE)</td><td>port 8022, mot de passe</td><td>installation_v2.md / securite_V1.html</td><td><span class="tag tag-confirmed">Confirmé</span></td></tr>
         <tr><td>SSH via NAT box</td><td>port 5800 → redirige vers 8022 Termux</td><td>installation_v2.md / securite_V1.html</td><td><span class="tag tag-unknown">À reconfirmer</span></td></tr>
         <tr><td>DuckDNS hostname</td><td><strong>robotz-vincent</strong>.duckdns.org (Z après "robot" — volontaire, ne pas corriger)</td><td>session 28/06 — confirmé</td><td><span class="tag tag-confirmed">Confirmé</span></td></tr>
-        <tr><td>DuckDNS — résolution</td><td>IPv6 en priorité (préfixe 2a01:cb08:930f:cb00::/56) + IPv4 90.27.242.153</td><td>session 28/06</td><td><span class="tag tag-confirmed">Confirmé</span></td></tr>
+        <tr><td>DuckDNS — résolution</td><td>IPv6 en priorité (préfixe 2001:db8:1234:5600::/56) + IPv4 203.0.113.17</td><td>session 28/06</td><td><span class="tag tag-confirmed">Confirmé</span></td></tr>
         <tr><td>Broker MQTT (SP RPI)</td><td>192.168.1.40:1883 — <strong>seule IP valide</strong></td><td>architecture.md + bail DHCP statique confirmé 28/06</td><td><span class="tag tag-confirmed">✅ Tranché</span></td></tr>
         <tr><td>Bail DHCP RPi</td><td>serveurRZrpi3 → 192.168.1.40, MAC B8:27:EB:72:DD:54</td><td>session 28/06 — confirmé stable</td><td><span class="tag tag-confirmed">Confirmé</span></td></tr>
         <tr><td>Règle NAT/PAT Livebox</td><td>httpsRPI3 (renommée depuis SitePerso) — 443→443 TCP → 192.168.1.40 (IP directe)</td><td>session 28/06</td><td><span class="tag tag-confirmed">✅ Validée fonctionnelle</span></td></tr>

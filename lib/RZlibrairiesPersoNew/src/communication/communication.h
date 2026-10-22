@@ -33,25 +33,36 @@
 //
 // ⚠️  CONVENTION — à lire avant toute modification
 // ---------------------------------------------------------------
-// Le format VPIV réel sur la liaison série est :
-//   $<CAT>:<MODULE>:<INST>:<PROP>:<VALUE>#
-//   ex : $V:Mic:*:modeMicsF:MOY#
-//        → MODULE=Mic, INST=*, PROP=modeMicsF, VALUE=MOY
+// Le format VPIV sur la liaison série est :
+//   $<CAT>:<MODULE>:<PROP>:<INST>:<VALUE>#
+//   ex : $V:Mic:modeMicsF:*:MOY#
+//        → MODULE=Mic, PROP=modeMicsF, INST=*, VALUE=MOY
 //
-// parseVPIV() remplit les champs dans l'ordre d'arrivée (token 3 et 4) :
-//   out.prop  ← INST (token 3)  ⚠️ contient l'INSTANCE, pas la propriété
-//   out.inst  ← PROP (token 4)  ⚠️ contient la PROPRIÉTÉ, pas l'instance
+//   PROP en position 3, INST en position 4. Source de vérité : la Table A
+//   (docs/tables_RZ_descripteur.md §5). Confirmé côté SE par mqtt_bridge.py,
+//   qui transmet la trame telle quelle, et côté émission par sendVPIV().
 //
-// Cette inversion est compensée dans l'appel au routeur :
-//   dispatchVPIV(msg.module, msg.inst, msg.prop, msg.value)
-// Les dispatchers reçoivent bien (prop=PROP, inst=INST).
+// parseVPIV() remplit donc les champs sans aucune permutation :
+//   out.prop  ← token 3 = PROP
+//   out.inst  ← token 4 = INST
+//
+// ⚠️ CORRIGÉ LE 22/10/2026 — ne pas rétablir l'ancienne version.
+//   Ce bloc affirmait que le fil portait INST avant PROP, et que les champs
+//   de cette structure contenaient l'inverse de leur nom. communication.cpp
+//   « compensait » en permutant les arguments à l'appel de dispatchVPIV().
+//   Le fil ayant changé de convention et pas la réception, cette
+//   compensation INTRODUISAIT l'erreur : plus aucune commande entrante
+//   n'était reconnue, et l'urgence devenait ineffaçable.
+//   Démontré sur matériel : à $V:Urg:clear:*:1# la carte répondait
+//   $E:Urg:*:clear:urgence active# — les champs permutés, visibles dans sa
+//   propre sortie. Détail en §9.5 de docs/synthese_etat.md.
 // ---------------------------------------------------------------
 typedef struct
 {
-    char type;                    // 'V','I','F','E'...
-    char module[VPIV_MAX_TOKEN];  // ex "Mic", "Us", "CfgS"
-    char prop[VPIV_MAX_TOKEN];    // ⚠️ contient l'INST de la trame (ex "*", "0")
-    char inst[VPIV_MAX_TOKEN];    // ⚠️ contient la PROP de la trame (ex "modeMicsF")
+    char type;                    // 'V','I','F','E','A'
+    char module[VPIV_MAX_TOKEN];  // token 2 — ex "Mic", "US", "CfgS"
+    char prop[VPIV_MAX_TOKEN];    // token 3 — la PROPRIÉTÉ (ex "modeMicsF")
+    char inst[VPIV_MAX_TOKEN];    // token 4 — l'INSTANCE   (ex "*", "0", "TGD")
     char value[VPIV_MAX_MSG_LEN]; // le reste (peut contenir des ',','[]' etc.)
 } MessageVPIV;
 

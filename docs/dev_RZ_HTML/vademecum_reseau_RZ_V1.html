@@ -135,6 +135,7 @@
 </style>
 </head>
 <body>
+<div style="background:#fff4e5;border:1px solid #e0a040;border-left:4px solid #e0a040;border-radius:8px;padding:12px 16px;margin:16px 0;font-size:14px;line-height:1.5"><strong>⚠️ Adresses d'exemple — corrigé le 22/10/2026.</strong> Cette page publiait l'adresse IPv4 publique de la box et l'adresse IPv6 complète du RPi. Le dépôt étant public, elles ont été remplacées par des adresses réservées à la documentation (<code>203.0.113.17</code>, RFC&nbsp;5737 ; <code>2001:db8::/32</code>, RFC&nbsp;3849), qui ne routent nulle part. Les explications restent exactes ; seules les valeurs sont fictives. Les vraies adresses se trouvent dans <code>Z - Secret\RZ_Codes_Identifiants.odt</code>, hors dépôt.</div>
 <div class="wrap">
 
 <header class="page">
@@ -183,7 +184,7 @@ Une adresse IP est l'équivalent d'une adresse postale pour un appareil sur un r
 
 <table>
 <tr><th></th><th>IPv4</th><th>IPv6</th></tr>
-<tr><td>Apparence</td><td><code>90.27.242.153</code></td><td><code>2a01:cb08:930f:cb00:ba27:ebff:fe72:dd54</code></td></tr>
+<tr><td>Apparence</td><td><code>203.0.113.17</code></td><td><code>2001:db8:1234:5600:ba27:ebff:fe72:dd54</code></td></tr>
 <tr><td>Nombre d'adresses possibles</td><td>~4 milliards (épuisé depuis longtemps)</td><td>Astronomique (340 sextillions)</td></tr>
 <tr><td>Adresse publique par appareil ?</td><td>Non — une seule adresse publique pour toute la maison (celle de la box)</td><td>Oui — chaque appareil peut avoir sa propre adresse publique mondiale</td></tr>
 <tr><td>Besoin de NAT ?</td><td>Oui, presque toujours</td><td>Non, en général</td></tr>
@@ -191,12 +192,12 @@ Une adresse IP est l'équivalent d'une adresse postale pour un appareil sur un r
 
 <div class="analogy">
 <span class="label">Analogie</span>
-L'IPv4, c'est l'adresse d'un immeuble : <code>90.27.242.153</code> est l'adresse de l'immeuble entier (ta box), et il faut un concierge (le NAT) pour savoir à quel appartement (quel appareil derrière la box) remettre le courrier qui arrive pour le numéro de porte 443.
+L'IPv4, c'est l'adresse d'un immeuble : <code>203.0.113.17</code> est l'adresse de l'immeuble entier (ta box), et il faut un concierge (le NAT) pour savoir à quel appartement (quel appareil derrière la box) remettre le courrier qui arrive pour le numéro de porte 443.
 L'IPv6, c'est comme si chaque appartement avait sa propre adresse postale complète et unique au monde — le facteur (le réseau Internet) livre directement à la bonne porte, sans concierge intermédiaire.
 </div>
 
 <p>
-C'est exactement ce qu'on a observé dans le projet : ton Raspberry Pi a une adresse IPv6 globale (<code>2a01:cb08:930f:cb00:ba27:ebff:fe72:dd54</code>) qui le désigne <strong>lui, et lui seul</strong>, directement joignable depuis l'extérieur sans rien configurer côté box. Alors qu'en IPv4, ton RPi n'a qu'une adresse <strong>locale</strong> (<code>192.168.1.40</code>), invisible depuis Internet — c'est l'adresse publique de la box (<code>90.27.242.153</code>) qui est visible, et il faut une règle pour rediriger vers le RPi.
+C'est exactement ce qu'on a observé dans le projet : ton Raspberry Pi a une adresse IPv6 globale (<code>2001:db8:1234:5600:ba27:ebff:fe72:dd54</code>) qui le désigne <strong>lui, et lui seul</strong>, directement joignable depuis l'extérieur sans rien configurer côté box. Alors qu'en IPv4, ton RPi n'a qu'une adresse <strong>locale</strong> (<code>192.168.1.40</code>), invisible depuis Internet — c'est l'adresse publique de la box (<code>203.0.113.17</code>) qui est visible, et il faut une règle pour rediriger vers le RPi.
 </p>
 
 <div class="callout">
@@ -218,7 +219,7 @@ C'est exactement le rôle de la table que tu as vue dans l'admin Livebox — cha
 
 <div class="schema">┌─────────────┐        443         ┌──────────────┐   443    ┌─────────────────┐
 │  Internet   │ ─────────────────▶ │   Livebox    │ ───────▶ │ <span class="hl1">RPi (192.168.1.40)</span> │
-│ (4G, autre  │   90.27.242.153    │  (NAT/PAT)   │  (règle  │   nginx :443    │
+│ (4G, autre  │   203.0.113.17    │  (NAT/PAT)   │  (règle  │   nginx :443    │
 │  Wi-Fi...)  │                    │              │   httpsRPI3)│              │
 └─────────────┘                    └──────────────┘          └─────────────────┘
 </div>
@@ -232,7 +233,7 @@ Le problème qu'on a rencontré le 28/06 : la règle <em>existait</em>, semblait
 <h2>4. Le piège du "NAT hairpin" — pourquoi tester depuis chez soi peut mentir</h2>
 
 <p>
-On a buté sur un comportement déroutant : <code>curl https://90.27.242.153</code> exécuté <strong>depuis le RPi lui-même</strong> restait bloqué indéfiniment sur <code>Trying...</code> — alors que l'accès réel en 4G, lui, fonctionnait. Ce n'est pas une contradiction, c'est un phénomène connu.
+On a buté sur un comportement déroutant : <code>curl https://203.0.113.17</code> exécuté <strong>depuis le RPi lui-même</strong> restait bloqué indéfiniment sur <code>Trying...</code> — alors que l'accès réel en 4G, lui, fonctionnait. Ce n'est pas une contradiction, c'est un phénomène connu.
 </p>
 
 <div class="analogy">

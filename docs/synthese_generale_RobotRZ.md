@@ -64,6 +64,7 @@ choix de conception :
 | **`synthese_etat.md`** | **Où en est le projet ?** Avancement, lots, bugs ouverts, pièges connus. Change à chaque séance |
 | `tables_RZ_descripteur.md` | Les quatre tables, les quinze champs de la Table A, les règles du protocole VPIV |
 | `reference_firmware_arduino.md` | Le code Arduino : organisation, boucle, traitement d'une trame, urgences, pièges |
+| `reference_SE_termux_tasker.md` | Le code SE : démarrage, parser VPIV, FIFOs, état, managers, chaîne vocale, pièges |
 | `genese_et_evolution_RZ.md` | Pourquoi ce robot existe, et comment il est passé de la V0 à la V6 |
 | `installation_RPI_serveur.md` | Installer le RPi serveur de zéro — réseau, Node-RED, Mosquitto, accès distant |
 | `travaux_robot_assemble.md` | Tout ce qui exige le robot monté, groupé en une campagne |
@@ -212,6 +213,8 @@ au matériel.
 
 Détail complet : `reference_firmware_arduino.md`.
 
+> Le pendant SE est `reference_SE_termux_tasker.md`.
+
 ### 5.4 Tasker — les applications Android
 
 Gère ce que seul Android sait faire : Zoom, caméra de surveillance, GPS,
@@ -279,7 +282,7 @@ unique qui n'a pas d'autre foyer, et qui n'y est pas encore entrée.
 |---|---|---|
 | `synthèseRZ.odt` *(103 Ko, 133 titres)* | Le plus riche du dossier. Règles de mise en forme Table A, modèle URG complet, séquences VPIV, rôle de CfgS dans la sécurité | 3, 4, 6 |
 | `urgence and co.odt` *(67 Ko)* | Gestion des urgences et des erreurs, vue SE et vue Arduino | nouveau chapitre « Urgences » |
-| `Synhtèse générale SE-02-26.odt` *(443 Ko)* | La documentation SE détaillée | 5.2 |
+| ~~`Synhtèse générale SE-02-26.odt`~~ | ✅ Couvert depuis les sources par `reference_SE_termux_tasker.md` — reste à confronter pour ce qu'il ajouterait | 5.2 |
 | `synthèse Communication robot.odt` | La chaîne Arduino → USB → SE → MQTT → Node-RED, pas à pas | 1, 5 |
 | `descriptionRZ.odt` | Rôle des variables centrales — CfgS, Urg, COM | 4, 6 |
 

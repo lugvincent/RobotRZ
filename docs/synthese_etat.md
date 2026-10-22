@@ -40,6 +40,7 @@ Ce document existe à **deux endroits**, avec des rôles distincts. Ne pas les c
 | `docs/installation_RPI_serveur.md` | Procédure d'installation du RPi serveur | **22/10/2026** |
 | `docs/travaux_robot_assemble.md` | Registre des travaux exigeant le robot monté | **22/10/2026** |
 | `docs/reference_firmware_arduino.md` | Référence du code Arduino, écrite depuis les sources | **22/10/2026** |
+| `docs/reference_SE_termux_tasker.md` | Référence du code SE, écrite depuis les sources | **22/10/2026** |
 | `TableC.json` | **Table C maître — n'est versionnée nulle part**, voir §5.1 | 18/04/2026 |
 | `node-red/flows/flows-RPI-2026-10-18.json` | Référence courante, 298 nœuds | **18/10/2026** |
 | `node-red/flows/flows-XIAOMI-2026-10-18.json` | Archive, 6 onglets uniques | 18/10/2026 |

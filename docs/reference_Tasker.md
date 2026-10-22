@@ -230,12 +230,18 @@ du Bash complexe, alors il appelle.
 
 ## 11. 🔴 Pièges, doublons et limites
 
-**1. Six fichiers de `tasker/archive/` sont vides.** `rz_apps_manager.xml`,
-`rz_tts_task.xml`, `rz_zoom_profile.xml`, et les trois expressions —
-`angry.xml`, `neutral.xml`, `smile.xml`. Zéro octet. **Or ces six fichiers
-existent avec du contenu dans le Project Knowledge.** Comme les six de
-`termux/`, le dépôt a perdu ce qu'ils contenaient : **douze fichiers vides au
-total**, et le Project Knowledge est la seule copie survivante.
+**1. Six fichiers de `tasker/archive/` sont vides** — depuis toujours.
+`rz_apps_manager.xml`, `rz_tts_task.xml`, `rz_zoom_profile.xml`, et les trois
+expressions — `angry.xml`, `neutral.xml`, `smile.xml`. Zéro octet.
+
+> ⚠️ **Correction du 22/10/2026** : j'avais écrit que le Project Knowledge en
+> détenait le contenu. **C'est faux** — ils y sont vides aussi, créés le
+> 11 mars 2026 dans le même lot que ceux de `termux/`. Quatorze emplacements
+> réservés, jamais remplis, nulle part. Rien n'a été perdu.
+
+Conséquence pour les expressions : **le visage du robot n'est pas versionné.**
+Les emojis affichés par la scène `RZ_Expression` ne sont définis que dans
+l'export Tasker et sur le téléphone.
 
 **2. `rz_autovoice_bridge.sh` existe en deux exemplaires identiques** —
 `tasker/` et `termux/scripts/sensors/stt/`, même empreinte MD5. Lequel fait

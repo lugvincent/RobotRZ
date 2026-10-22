@@ -382,11 +382,19 @@ dépôt**. À régénérer après toute modification de `courant_init.json`.
 
 ## 13. 🔴 Les pièges et les points ouverts
 
-**1. Six fichiers du dépôt sont vides.** `termux/docs/api_vpiv.md`,
-`architecture.md`, `installation.md`, et les trois de `termux/install/` —
-`README.md`, `setup_python.sh`, `setup_termux.sh`. Zéro octet. Or trois d'entre
-eux existent avec du contenu dans le Project Knowledge : **le dépôt a perdu ce
-qu'ils contenaient.** À restaurer depuis le Project Knowledge.
+**1. Six fichiers du dépôt sont vides** — et le sont depuis toujours.
+`termux/docs/api_vpiv.md`, `architecture.md`, `installation.md`, et les trois de
+`termux/install/` — `README.md`, `setup_python.sh`, `setup_termux.sh`. Zéro
+octet.
+
+> ⚠️ **Correction du 22/10/2026** : j'avais d'abord écrit que le Project
+> Knowledge en détenait le contenu et que le dépôt l'avait perdu. **C'est
+> faux** — vérification faite, ils y sont vides aussi, tous créés le 11 mars
+> 2026 dans un même lot. Ce sont des **emplacements réservés jamais remplis**,
+> pas des fichiers perdus. Rien n'a disparu.
+
+Reste à décider : les écrire, ou les supprimer. Des fichiers vides dans un
+dépôt donnent l'illusion d'une documentation qui n'existe pas.
 
 **2. `fifo.manager.sh` ne connaît que quatre FIFOs sur cinq.** `fifo_voice_in`
 lui manque. Sans effet à l'exécution, mais `fifo_manager.sh check` répond à

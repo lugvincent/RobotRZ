@@ -295,6 +295,23 @@ Surtout : **le firmware Arduino et les managers SE existent déjà**, et la cha�
   - *Symptôme 1* : toute commande Git répond `BUG (fork bomb): C:\Program Files\Git\bin\git.exe`. Norton avait supprimé le vrai binaire ; `bin\` et `cmd\` ne contiennent que des lanceurs, qui finissent par se trouver eux-mêmes. Diagnostic : `Get-ChildItem "C:\Program Files\Git" -Recurse -Filter git.exe` — s'il ne renvoie que ces deux chemins, le binaire manque. Remède : réinstaller Git depuis `git-scm.com`.
   - *Symptôme 2* : `git pull` échoue sur `unable to write file .git/objects/… : Permission denied`. C'est la **Protection des données** de Norton, qui interdit aux programmes inconnus d'écrire dans Documents. Remède : Norton → Paramètres → **Autorisations des applications** → ajouter les exécutables de Git et leur donner l'autorisation « dossiers protégés » (icône en forme de dossier).
   - **Depuis Git 2.56, le vrai binaire est dans `ucrt64\`, plus dans `mingw64\`** : `C:\Program Files\Git\ucrt64\bin\git.exe` et `C:\Program Files\Git\ucrt64\libexec\git-core\git.exe`. C'est le second qui écrit pendant un `pull`.
+  - **Troisième incident, 22/10/2026 — PlatformIO cette fois.** L'extension se réinstalle, puis
+    l'extension C/C++ signale `Impossible de résoudre la configuration avec le compilerPath
+    "…/toolchain-atmelavr/bin/avr-gcc.exe"`. Le paquet `toolchain-atmelavr` est bien présent et son
+    arborescence intacte — seuls certains exécutables manquent. **La signature est caractéristique** :
+    tout ce qui FABRIQUE un exécutable avait disparu (`avr-gcc`, `avr-g++`, `avr-as`, `avr-ld`,
+    `avr-ar`, `avr-objcopy`, `avr-objdump`, `avr-nm`, `avr-ranlib`, `avr-strip`, `avr-readelf`),
+    tout ce qui se contente de LIRE était resté (`avr-gdb`, `avr-gcov`, `avr-gprof`, `avr-size`,
+    `avr-strings`, `avr-addr2line`, `avr-c++filt`, `avr-cpp`). Détail qui achève la démonstration :
+    `avr-gcc-ar.exe` survit, `avr-ar.exe` non. C'est une sélection heuristique, pas un téléchargement
+    incomplet. Remède : exclure `C:\Users\<profil>\.platformio` dans Norton (Antivirus → Analyses et
+    risques → Éléments à exclure, **et** exclusions SONAR), PUIS réinstaller le paquet —
+    `pio pkg uninstall --global --tool "platformio/toolchain-atmelavr"` puis `pio pkg install` idem.
+    Sans l'exclusion posée d'abord, le retrait se reproduit.
+  - **`pio` n'est pas dans le PATH de Windows.** L'exécutable est dans
+    `%USERPROFILE%\.platformio\penv\Scripts\pio.exe`. Poser un alias pour la session :
+    `Set-Alias pio "<ce chemin>"`. Et `pio run` doit connaître le projet : depuis un autre dossier,
+    utiliser `pio run -d "<chemin du projet>" -e megaatmega2560` plutôt que de se déplacer.
   - Réglages retenus à la réinstallation : fins de ligne **« Checkout as-is, commit Unix-style »** — indispensable, les scripts `.sh` tournent sous Linux et bash refuse les fins de ligne Windows.
 
 **Différé** : branche PLAN de `rz_stt_handler.sh` · caméra en modes 2 et 3 · pages HTML `sp_nodeRED_V1`, `schema_sp_flows_V1`, `roadmap_nodered_V1` (marquées « Page historique », mais leur **contenu de fond reste valable** — c'est leur état d'avancement qui est périmé) · ROS 2 sur RPi 4 · MQTT TLS · erreur IntelliSense `avr-gcc.exe` introuvable (extension C/C++ et PlatformIO, sans effet sur la compilation).

@@ -377,7 +377,7 @@ Le reste du code est vérifié sain : `rz_ai_conversation.py`, `mqtt_bridge.py` 
 - **Les quatre fichiers `Diagrap*` de janvier-février 2025 ne sont pas de l'ancienne génération.** Ce sont les schémas de la version actuelle, non actualisés. 47 et 56 boîtes, exploitables comme modèles. Leur poids vient de 86 images incorporées. ⚠ `DiagrapRZCom-Protocole-Appli` contient une boîte « Adresses » avec des identifiants SSH : **il reste hors dépôt**, et cette boîte saute avant tout export.
 - **`TableA_updatedV3_corrige.ods` et son `.csv` sont en phase** malgré cinq semaines d'écart de date.
 
-### 9.3 État des chantiers au 22/10/2026, 17 h
+### 9.3 État des chantiers au 23/10/2026
 
 #### ✅ Terminé
 
@@ -396,6 +396,10 @@ Le reste du code est vérifié sain : `rz_ai_conversation.py`, `mqtt_bridge.py` 
 | **Corrections de documentation** | Table C replacée sur SP · nom réel de la Table D · adresses réseau retirées des pages publiées |
 | **🔴 Défaut bloquant Arduino** | Trouvé, corrigé, **vérifié sur matériel** — §9.5 |
 | **Chaîne de compilation** | `avr-gcc` et `avrdude` restaurés après disparition de leurs exécutables et DLL |
+| **🔴 Cause racine de l'ordre VPIV** | La colonne `VPIV_EX` de la Table A, jamais migrée : 150 exemples sur 251 à l'ancien ordre. Corrigée, ainsi que les 89 commentaires du firmware — §9.6 |
+| **Cohérence des valeurs** | 3 exemples `boolean` à `"OK"` ramenés à `"1"` · les 11 émissions `Us` → `US` · `Ctrl_L.act` et `US.act` renvoient l'état — §9.8 |
+| **Les 14 emplacements vides** | Supprimés. Vérifiés vides aussi dans Project Knowledge : rien n'a été perdu — §9.7 |
+| **Audit de Node-RED** | `audit_nodered_ordre_VPIV.md`. Flux RPi sains, parseur correct ; une trame fautive côté Xiaomi. `node-red/` non modifié |
 
 #### ⏳ En cours ou différé
 
@@ -403,10 +407,11 @@ Le reste du code est vérifié sain : `rz_ai_conversation.py`, `mqtt_bridge.py` 
 |---|---|---|
 | **Synthèse agglomérée** | v1 écrite — charpente et index justes. **Pas encore l'agglomération** : cinq documents du dossier A portent de la matière unique à verser. Son §8 les nomme, chapitre par chapitre | **Ici** |
 | **`reference_SP_nodered.md`** | Volontairement différée : SP est le chantier en cours, et documenter un chantier en cours revient à écrire sur du sable | Après stabilisation |
-| **Quatorze emplacements réservés jamais remplis** | Six dans `termux/`, six dans `tasker/archive/`, plus `rz_facial_scene.sh` et `rz_launch_app.sh` absents du dépôt. ⚠️ **Correction du 22/10 17 h** : annoncés d'abord comme « perdus par le dépôt, le Project Knowledge en étant la seule copie ». **Faux** — vérifié, ils y sont vides aussi, tous créés le 11/03/2026 dans un même lot. Rien n'a disparu. Reste à décider : les écrire ou les supprimer | **Ici**, sans urgence |
-| **85 commentaires à l'ancien ordre VPIV** | Dans 15 fichiers du firmware, contre 45 au bon ordre. Balayage à faire dans un commit séparé, après validation de la correction | Chat Arduino |
 | **Deux scripts en double exemplaire** | `rz_autovoice_bridge.sh` et `rz_copy_global.sh`, même MD5, deux emplacements chacun. Lequel fait foi ? | **Ici** |
 | **`Odom.coeff` absent de la Table A** | Le code l'accepte, `reference_modules_arduino_2026-02.odt` le documente, la Table A l'ignore. Une ligne à ajouter | **Ici** |
+| 🔴 **Joystick du Xiaomi** | Construit `$V:Mtr:*:cmd:…`, à l'ancien ordre. Fonctionnait **grâce** au défaut du firmware ; la correction le casse. Un caractère à déplacer | `travaux_robot_assemble.md` §1.9 |
+| **Aucune installation de Termux documentée** | Ni dans `docs/`, ni sur le site. À écrire : `docs/installation_SE_termux.md`. **Ne demande pas le robot monté** | **Ici** |
+| **`varBrute.csv`, 3ᵉ copie de la Table A** | Périmée (`System.boot`, `Lring.int`) et inversée à 151/245. Chargée par rien. À remplacer | Chantier SP |
 | **Chien de garde Arduino** | Verrouille sur un seul dépassement de 80 ms. Essai sur établi non concluant — aucun capteur connecté | `travaux_robot_assemble.md` §1.1 |
 | **Sécurité et identifiants** | Remplir et chiffrer `RZ_Codes_Identifiants.odt` (25 valeurs dans la table de correspondances) · vider `InstallationServeur\` · revoir les redirections de la box · corriger l'anonymiseur (adresses MAC, frontières de mot) | **Chat « Sécurité et identifiants »** |
 | **Verser au dépôt** | `TableC.json` — la table maître n'est versionnée nulle part · `doc_A1` et `doc_A2`, les deux documents les mieux écrits et les seuls sans protection | **Ici** |

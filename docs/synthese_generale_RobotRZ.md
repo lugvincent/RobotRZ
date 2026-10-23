@@ -270,7 +270,98 @@ Node-RED ne versionne rien.
 
 ---
 
-## 7. Le système documentaire
+## 7. Urgences et erreurs
+
+*Versé le 23/10/2026 depuis `urgence-gestion.odt` et `synthèseRZ.odt` (28/02/2026),
+après confrontation ligne à ligne au code des deux côtés. Les noms de propriétés de ces
+documents étaient périmés ; la structure qu'ils décrivaient, non.*
+
+### 7.1 Le principe : urgence et erreur ne sont pas la même chose
+
+| | Urgence | Erreur non critique |
+|---|---|---|
+| Variable | `Urg` | `COM` |
+| Catégorie | `E` à la détection, `I` pour l'état | `I` |
+| Effet | arrêt moteur, verrouillage des commandes | **aucun** — trace seulement |
+| Levée | explicite, par `$V:Urg:clear:*:1#` | sans objet |
+
+Confondre les deux est le piège : une erreur de parsing ne doit pas immobiliser le robot,
+une batterie faible doit l'immobiliser.
+
+### 7.2 Les quatre propriétés de `Urg`
+
+| Propriété | CAT | Rôle | Exemple réel |
+|---|---|---|---|
+| `source` | `E` | la cause, normalisée | `$E:Urg:source:SE:URG_CPU_CHARGE#` |
+| `statut` | `I` | active ou levée | `$I:Urg:statut:SE:active#` |
+| `niveau` | `I` | `warn` ou `danger` | `$I:Urg:niveau:SE:danger#` |
+| `etat` | `E` / `I` | état consolidé | `$I:Urg:etat:A:cleared#` |
+| `clear` | `V` | lever l'urgence | `$V:Urg:clear:*:1#` |
+
+### 7.3 La chaîne réelle, côté SE
+
+Lue dans `termux/scripts/utils/error_handler.sh`, lignes 138-148. **Trois trames, puis une
+quatrième si une raison est fournie** — et toutes passent par `fifo_termux_in`, jamais par
+`mosquitto_pub` :
+
+```
+$E:Urg:source:SE:<code>#          la cause
+$I:Urg:statut:*:active#           l'urgence est active
+$I:Urg:niveau:SE:<warn|danger>#   sa gravité
+$I:COM:error:SE:"<raison>"#       le texte libre, s'il y en a un
+```
+
+> **Le texte libre existe bien, mais il ne voyage pas sur `Urg`.** Les documents de février
+> prévoyaient une propriété `urgRaison` : elle n'a jamais été créée. L'explication en clair
+> part sur `COM.error`, ce qui sépare proprement la mécanique de l'urgence de son récit.
+
+Le niveau est validé avant émission : toute valeur autre que `danger` ou `warn` retombe
+sur `warn`.
+
+### 7.4 La levée, côté Arduino
+
+`lib/RZlibrairiesPersoNew/src/system/urg.cpp` ligne 164 :
+
+```c
+sendInfo("Urg", "etat", "*", "cleared");
+```
+
+`sendInfo()` et non `sendErr()` : la confirmation d'effacement est une information, pas un
+événement critique. La distinction est volontaire et commentée dans le fichier.
+
+⚠️ Rappel du défaut du 22/10 : avant sa correction, la carte répondait
+`$E:Urg:*:clear:urgence active#` à toute tentative de levée — la trame d'erreur portait
+l'inversion dans sa propre sortie. Voir `convention_VPIV_ordre.md`.
+
+### 7.5 Les codes d'urgence qui existent réellement
+
+```
+URG_APPLI_FAIL      URG_BUFFER_OVERFLOW   URG_CPU_CHARGE     URG_LOOP_TOO_SLOW_A
+URG_LOOP_TOO_SLOW_SE  URG_LOW_BAT         URG_MOTOR_STALL    URG_MVT_DANGER
+URG_OVERHEAT        URG_PARSING_ERROR     URG_NONE           URG_CLEAR
+```
+
+> Les documents de février citaient `URG_SENSOR_FAIL`, `URG_MQTT_LOST` et
+> `URG_LOW_BAT_SE` : **aucun des trois n'existe**. Et le code distingue deux boucles
+> trop lentes, `_A` pour l'Arduino et `_SE` pour le smartphone, là où les documents
+> n'en voyaient qu'une.
+
+### 7.6 Deux règles de mise en forme, dont une qui n'a pas été retenue
+
+**Retenue — les ENUM sont locaux, seul le texte circule.** Un `enum` C++ numérote
+localement, mais **l'indice ne voyage jamais** : c'est la valeur textuelle qui part sur
+le fil (`URG_MOTOR_STALL`, pas `2`). Aucun décalage possible entre modules si l'un
+renumérote. C'est ce qui rend les codes ci-dessus lisibles dans un journal MQTT.
+
+**Non retenue — les parenthèses.** Les documents de février proposaient d'écrire entre
+parenthèses les propriétés non persistantes, celles qui déclenchent une action ponctuelle :
+`(clear)`, `(reset)`, `(init)`. **Aucune propriété de la Table A n'en porte** : la
+convention a été abandonnée. L'intention reste lisible autrement — ces propriétés sont
+en `CAT V` avec `TYPE=boolean`.
+
+---
+
+## 8. Le système documentaire
 
 Quatre emplacements, quatre rôles distincts :
 
@@ -295,7 +386,7 @@ Détail et procédures : `dev_RZ_HTML/vademecum_documentation_V1.html`.
 
 ---
 
-## 8. Ce qui reste à verser dans ce document
+## 9. Ce qui reste à verser dans ce document
 
 Ce document est une charpente complète et un index exact. **Il n'est pas encore
 l'agglomération promise** : cinq documents du dossier A portent de la matière
@@ -303,8 +394,8 @@ unique qui n'a pas d'autre foyer, et qui n'y est pas encore entrée.
 
 | Source | Ce qu'elle apporterait | Chapitre visé |
 |---|---|---|
-| `synthèseRZ.odt` *(103 Ko, 133 titres)* | Le plus riche du dossier. Règles de mise en forme Table A, modèle URG complet, séquences VPIV, rôle de CfgS dans la sécurité | 3, 4, 6 |
-| `urgence and co.odt` *(67 Ko)* | Gestion des urgences et des erreurs, vue SE et vue Arduino | nouveau chapitre « Urgences » |
+| `synthèseRZ.odt` *(133 titres)* | ⏳ **Partiellement versé le 23/10** — son modèle URG et ses deux règles de mise en forme sont au chapitre 7. Restent : rôle de CfgS dans la sécurité, articulation des tables A/B/C, règles sur les valeurs acceptées par l'Arduino, objets complexes (LRUB) | 3, 4, 6 |
+| ~~`urgence and co.odt`~~ et ~~`urgence-gestion.odt`~~ | ✅ **Versés le 23/10** — chapitre 7. Quasi-doublons (55 lignes d'écart) ; `urgence-gestion` était la version la plus complète. Noms de propriétés périmés, structure juste |
 | ~~`Synhtèse générale SE-02-26.odt`~~ | ✅ Couvert depuis les sources par `reference_SE_termux_tasker.md` — reste à confronter pour ce qu'il ajouterait | 5.2 |
 | `synthèse Communication robot.odt` | La chaîne Arduino → USB → SE → MQTT → Node-RED, pas à pas | 1, 5 |
 | `descriptionRZ.odt` | Rôle des variables centrales — CfgS, Urg, COM | 4, 6 |

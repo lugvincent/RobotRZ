@@ -353,11 +353,47 @@ localement, mais **l'indice ne voyage jamais** : c'est la valeur textuelle qui p
 le fil (`URG_MOTOR_STALL`, pas `2`). Aucun décalage possible entre modules si l'un
 renumérote. C'est ce qui rend les codes ci-dessus lisibles dans un journal MQTT.
 
-**Non retenue — les parenthèses.** Les documents de février proposaient d'écrire entre
-parenthèses les propriétés non persistantes, celles qui déclenchent une action ponctuelle :
-`(clear)`, `(reset)`, `(init)`. **Aucune propriété de la Table A n'en porte** : la
-convention a été abandonnée. L'intention reste lisible autrement — ces propriétés sont
-en `CAT V` avec `TYPE=boolean`.
+**Retenue, mais sous une autre forme — la colonne `NATURE = Event`.**
+
+Les documents de février proposaient d'écrire entre parenthèses les propriétés qui
+déclenchent une action ponctuelle au lieu de décrire un état : `(clear)`, `(reset)`,
+`(init)`. Aucune propriété de la Table A n'en porte, et j'ai d'abord conclu — à tort —
+que la convention avait été abandonnée.
+
+**Elle ne l'a pas été. Elle a été promue d'un indice typographique à une colonne.**
+Vérification faite le 23/10 : les trois propriétés citées portent toutes, dans leur
+forme `CAT=V`, la valeur `NATURE = Event`.
+
+| Propriété | `CAT=V` | `CAT=I` |
+|---|---|---|
+| `CfgS.reset` | `Event` | `ACK` |
+| `Odom.reset` | `Event` | `ACK` |
+| `Lring.init`, `Lrub.init` | `Event` | `ACK` |
+| `Urg.clear` | `Event` | — |
+
+La règle se lit maintenant en une ligne : **`NATURE = Event` marque l'action ponctuelle,
+`NATURE = ACK` son accusé, et le reste décrit un état ou une configuration.** Vingt-cinq
+propriétés sont dans ce cas :
+
+```
+Appli.ExprTasker  CamSE.error  CamSE.snap   CfgS.emg     CfgS.reset
+Ctrl_L.status     FS.read      FS.tare      IRmvt.read   Lring.clr
+Lring.expr        Lring.init   Lrub.effetFuite  Lrub.init  Mtr.override
+Mtr.read          Mtr.stop     Odom.reset   SecMvt.status  Srv.read
+US.read           Urg.clear    Voice.tts
+```
+
+Le changement est un progrès, pas un renoncement : une parenthèse dans un nom de
+propriété aurait fini par voyager dans une trame VPIV, où elle n'a rien à faire. Une
+colonne est lisible par un script et ne part jamais sur le fil.
+
+> **Ce que la Table C en dit.** Ces propriétés y sont bien présentes — elles ne sont pas
+> exclues de la persistance — mais leur `descriptionP` porte le mot « Event » :
+> *« Reset Odom - Event »*, *« Initialisation … - Event »*. Le marquage est donc tenu des
+> deux côtés.
+>
+> Une seule incohérence relevée : `Lring.init` est dans la Table A mais **absente** de la
+> Table C, alors que `Lrub.init` y figure. À trancher.
 
 ---
 

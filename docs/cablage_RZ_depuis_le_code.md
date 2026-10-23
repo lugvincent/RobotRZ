@@ -254,7 +254,7 @@ vient du Doro, par la trame VPIV, et entre dans l'odométrie par `odom_receiveGy
 | Masses communes autres que Mega ↔ UNO | idem |
 | Brochage réel du bouclier Pololu | bibliothèque non versionnée |
 | Couleurs de fils | seul `Pin-Old-Pour_exemple.ods` les porte — à reprendre de là |
-| Placement physique des 9 ultrasons | les noms disent l'intention (`Ar`, `Av`, `Tt`), pas la position |
+| Orientation gauche/droite | ⚠️ **à confirmer** — voir ci-dessous |
 | Résistances, condensateurs, protections | aucune trace |
 
 Les couleurs de fils de votre tableau sont la seule information qu'il porte et que le
@@ -263,3 +263,62 @@ code ne portera jamais. **À conserver**, même après mise à jour du reste.
 ---
 
 *Fin du document. Table régénérable : `python3 outils/vpiv/extraire_pins.py .`*
+
+---
+
+## 9. Ce que les noms disent — précisions de Vincent, 23/10/2026
+
+Le code en sait plus que ses `#define` : les **noms d'instance** portent la géométrie, et
+les commentaires de `lring` et `lrub` portent en plus les numéros de LED.
+
+### Les neuf ultrasons
+
+| Préfixe | Position |
+|---|---|
+| `Tt` | **Tête** — `TtG` gauche, `TtD` droite, `TtC` centre |
+| `Ar` | **Arrière** — `ArG` gauche, `ArC` centre, `ArD` droite |
+| `Av` | **Avant** — `AvG` gauche, `AvC` centre, `AvD` droite |
+
+> ⚠️ Le tableau `Pin-Old-Pour_exemple.ods` écrit `Stg`, `StD`, `StE` pour la tête. Le `S`
+> et le `E` final n'ont plus cours : le code et la Table A disent `Tt` et `TtC`.
+
+### Les trois servomoteurs — ils s'empilent
+
+De haut en bas, sous la tête qui portera le Doro :
+
+```
+        ┌──────────────┐
+        │  Tête + Doro │
+        └──────┬───────┘
+     SERVO_TGD │  broche 4   — rotation de la tête, Gauche ↔ Droite
+     SERVO_THB │  broche 5   — inclinaison de la tête, Haut ↔ Bas
+    SERVO_BASE │  broche 9   — sous les deux autres, mouvement de la base
+        ┌──────┴───────┐
+        │    Châssis   │
+        └──────────────┘
+```
+
+`TGD` = **T**ête **G**auche-**D**roite · `THB` = **T**ête **H**aut-**B**as.
+
+### 🔴 Un point non tranché : l'orientation
+
+> *« Reste à vérifier l'orientation de la gauche et de la droite, je crois que j'ai pris
+> comme référence le robot. »*
+
+**Rien dans le code ne le dit.** Un `ArG` peut désigner l'arrière-gauche *du robot* ou
+celui *de l'observateur qui lui fait face* — et les deux sont opposés.
+
+Cela concerne les neuf ultrasons, les deux encodeurs (`ODO_ENCODER_G*` / `D*`), les deux
+moteurs via `<L,R,A>`, les trois micros (`MIC_G_PIN`, `MIC_D_PIN`) et `SERVO_TGD`.
+
+**La vérification tient en un geste**, à faire au montage : poser la main devant un seul
+ultrason et lire quelle instance réagit. Une mesure tranche les cinq familles d'un coup,
+puisqu'elles suivent toutes la même convention. Inscrit en §1.2 de
+`travaux_robot_assemble.md`.
+
+### Les LED portent leurs numéros dans les commentaires
+
+`LRING_PIN` (broche 6) et `LRUB_PIN` (broche 10) ne sont qu'une broche chacun : la
+distinction se fait par **index de LED** dans la chaîne — 12 instances pour l'anneau,
+15 pour le ruban. Ces correspondances sont dans les commentaires de `lring.cpp` et
+`lrub.cpp`, pas dans la table des broches, qui ne peut pas les porter.

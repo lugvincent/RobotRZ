@@ -66,6 +66,21 @@ itération. Deux trames envoyées coup sur coup ne passent pas : le verrou se re
 
 ### 1.2 Les neuf ultrasons
 
+#### 🔴 À trancher d'abord : l'orientation gauche/droite
+
+Vincent, 23/10 : *« je crois que j'ai pris comme référence le robot »* — **à confirmer**.
+Rien dans le code ne le dit, et les deux lectures sont opposées : `ArG` peut désigner
+l'arrière-gauche *du robot* ou celui *de l'observateur qui lui fait face*.
+
+Cela engage d'un coup les neuf ultrasons, les deux encodeurs (`ODO_ENCODER_G*`/`D*`),
+les deux moteurs via `<L,R,A>`, les trois micros et `SERVO_TGD`.
+
+**Le geste** : poser la main devant **un seul** ultrason et lire quelle instance réagit.
+Une mesure tranche les cinq familles, puisqu'elles suivent la même convention. À faire
+avant tout étalonnage, sous peine de tout refaire.
+
+
+
 **Question** : chaque capteur répond-il, et à quelle distance ?
 
 Les seuils de `SecMvt` — `warn` et `danger` — n'ont jamais été réglés sur des

@@ -1,0 +1,72 @@
+flowchart TB
+%% =============================================================================
+%%  Fichier : docs/schemas/RZ_architecture_ensemble.mmd
+%%  Projet  : RobotRZ — vue d'ensemble des quatre sous-systemes
+%% 
+%%  OBJECTIF
+%%    Le frontispice du projet : qui parle a qui, par quel support, et avec
+%%    quel protocole. Reprend la structure de DiagrapProjetRobotNewV1Fok
+%%    (« ROBOT RZ - Architecture de la nouvelle version ») en la limitant a
+%%    ce qui est verifie dans le code.
+%% 
+%%  LES TROIS FAITS QUE CE SCHEMA EXISTE POUR RENDRE EVIDENTS
+%%    1. SP est le maitre absolu. Les trois branches ne se parlent jamais
+%%       entre elles : tout passe par lui.
+%%    2. Le Raspberry n'est relie a l'Arduino par AUCUN fil. C'est le Doro
+%%       qui tient le cable USB ; le RPi parle MQTT en Wi-Fi au Doro.
+%%    3. L'UNO ne connait pas VPIV. La Mega traduit en <L,R,A>.
+%% 
+%%  SOURCES
+%%    mqtt_bridge.py l.73,77-78 · rz_vpiv_parser.sh l.137 · config.h l.21-25
+%%    src/uno/main.cpp l.29-36 · docs/cablage_RZ_depuis_le_code.md
+%% 
+%%  V1 — 23/10/2026 — Vincent Philippe / Claude
+%% =============================================================================
+
+    SPP["Smartphone PILOTE<br/>point d'acces Wi-Fi<br/>tableau de bord Node-RED"]
+
+    subgraph SP["SP — Raspberry Pi 3 · 192.168.1.40 · MAITRE ABSOLU"]
+        NR["Node-RED<br/>toute la decision"]
+        MOS["Mosquitto<br/>authentifie"]
+    end
+
+    subgraph SE["SE — Doro sous Termux · pas de carte SIM"]
+        PARS["rz_vpiv_parser.sh<br/>passerelle MQTT du SE"]
+        MANS["managers capteurs<br/>Gyro · Mag · MicroSE · Sys<br/>CamSE · TorchSE · STT · Voice"]
+        TASK["Tasker + AutoVoice<br/>applications Android"]
+        BRID["mqtt_bridge.py<br/>relais Arduino"]
+    end
+
+    subgraph ARD["Arduino — le temps reel"]
+        MEGA["Mega 2560<br/>13 modules · 37 broches"]
+        UNO["UNO<br/>bouclier Pololu VNH5019"]
+    end
+
+    MOT["2 moteurs"]
+    CAPT["9 ultrasons · 3 micros<br/>capteur de force · infrarouge<br/>2 encodeurs"]
+    ACT["3 servos<br/>anneau et ruban de LED"]
+
+    SPP -->|"partage de connexion"| SE
+    SPP <-->|"tableau de bord HTML"| NR
+    NR --- MOS
+
+    MOS <-->|"SE/commande · SE/statut<br/>VPIV"| PARS
+    PARS <--> MANS
+    PARS <--> TASK
+
+    MOS <-->|"SE/arduino · SE/arduino/data<br/>VPIV"| BRID
+    BRID <-->|"USB · 115200<br/>une trame par ligne"| MEGA
+    MEGA -->|"Serial3 · &lt;L,R,A&gt;<br/>PAS de VPIV"| UNO
+
+    CAPT --> MEGA
+    MEGA --> ACT
+    UNO --> MOT
+
+    classDef maitre fill:#f9f,stroke:#333,stroke-width:2px,color:#000
+    classDef se fill:#ff9,stroke:#333,color:#000
+    classDef ard fill:#9cf,stroke:#333,color:#000
+    classDef mat fill:#f96,stroke:#333,color:#000
+    class NR,MOS maitre
+    class PARS,MANS,TASK,BRID se
+    class MEGA,UNO ard
+    class MOT,CAPT,ACT,SPP mat

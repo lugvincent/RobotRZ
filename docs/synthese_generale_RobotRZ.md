@@ -55,6 +55,75 @@ choix de conception :
 
 ---
 
+### Le robot en un schéma
+
+```mermaid
+flowchart TB
+
+    SPP["Smartphone PILOTE<br/>point d'acces Wi-Fi<br/>tableau de bord Node-RED"]
+
+    subgraph SP["SP — Raspberry Pi 3 · 192.168.1.40 · MAITRE ABSOLU"]
+        NR["Node-RED<br/>toute la decision"]
+        MOS["Mosquitto<br/>authentifie"]
+    end
+
+    subgraph SE["SE — Doro sous Termux · pas de carte SIM"]
+        PARS["rz_vpiv_parser.sh<br/>passerelle MQTT du SE"]
+        MANS["managers capteurs<br/>Gyro · Mag · MicroSE · Sys<br/>CamSE · TorchSE · STT · Voice"]
+        TASK["Tasker + AutoVoice<br/>applications Android"]
+        BRID["mqtt_bridge.py<br/>relais Arduino"]
+    end
+
+    subgraph ARD["Arduino — le temps reel"]
+        MEGA["Mega 2560<br/>13 modules · 37 broches"]
+        UNO["UNO<br/>bouclier Pololu VNH5019"]
+    end
+
+    MOT["2 moteurs"]
+    CAPT["9 ultrasons · 3 micros<br/>capteur de force · infrarouge<br/>2 encodeurs"]
+    ACT["3 servos<br/>anneau et ruban de LED"]
+
+    SPP -->|"partage de connexion"| SE
+    SPP <-->|"tableau de bord HTML"| NR
+    NR --- MOS
+
+    MOS <-->|"SE/commande · SE/statut<br/>VPIV"| PARS
+    PARS <--> MANS
+    PARS <--> TASK
+
+    MOS <-->|"SE/arduino · SE/arduino/data<br/>VPIV"| BRID
+    BRID <-->|"USB · 115200<br/>une trame par ligne"| MEGA
+    MEGA -->|"Serial3 · &lt;L,R,A&gt;<br/>PAS de VPIV"| UNO
+
+    CAPT --> MEGA
+    MEGA --> ACT
+    UNO --> MOT
+
+    classDef maitre fill:#f9f,stroke:#333,stroke-width:2px,color:#000
+    classDef se fill:#ff9,stroke:#333,color:#000
+    classDef ard fill:#9cf,stroke:#333,color:#000
+    classDef mat fill:#f96,stroke:#333,color:#000
+    class NR,MOS maitre
+    class PARS,MANS,TASK,BRID se
+    class MEGA,UNO ard
+    class MOT,CAPT,ACT,SPP mat
+```
+
+**Trois choses que ce schéma existe pour rendre évidentes.**
+
+**SP est le maître absolu, et les trois branches ne se parlent jamais entre elles.**
+Un capteur du Doro qui doit agir sur un moteur ne s'adresse pas à l'Arduino : il signale
+à SP, qui décide et commande. C'est l'invariant du §6, et il se voit.
+
+**Le Raspberry n'est relié à l'Arduino par aucun fil.** C'est le Doro qui tient le câble
+USB ; le Raspberry lui parle MQTT en Wi-Fi. Tout document qui mentionne une liaison série
+« RPi ↔ Mega » décrit l'architecture antérieure.
+
+**L'UNO ne connaît pas VPIV.** La Mega traduit en `<L,R,A>` avant de lui transmettre.
+Détail en §3 de `docs/cablage_RZ_depuis_le_code.md`.
+
+---
+
 ## 2. L'index — où trouver quoi
 
 ### Les documents de référence, dans le dépôt
@@ -168,6 +237,12 @@ TableC.json  →  globalSave.json (B)  →  courant_init.json (projection vers S
 ---
 
 ## 5. Les sous-systèmes
+
+> **Trois schémas détaillent ce chapitre** — `docs/schemas_SE.md` : le circuit d'une
+> trame dans le SE, le routage d'une commande vocale, et les capteurs avec leur
+> arbitrage de ressources. Sources Mermaid dans `docs/schemas/`, toutes rendues
+> avant publication.
+
 
 ### 5.1 SP — le maître
 
@@ -587,7 +662,93 @@ parle pas à l'Arduino : il signale à SP, qui commande. Les schémas du chapitr
 
 ---
 
-## 10. Le système documentaire
+## 10. Ce que l'Arduino accepte — et ce qu'il refusera toujours
+
+*Versé le 23/10/2026 depuis `synthèseRZ.odt`, dont l'auteur avait lu `vpiv_dispatch.cpp`
+et `vpiv_utils.cpp` pour l'écrire. Ce chapitre résout aussi une contradiction apparente
+entre deux documents sources.*
+
+### 10.1 Les quatre formes de valeur admises
+
+| Forme | Exemple |
+|---|---|
+| Scalaire texte | `"1"`, `"true"`, `"123"` |
+| Liste CSV | `"255,0,0"` |
+| Liste d'indices | `"*"`, `"3"`, `"[1,2,4]"` |
+| Couple encodé en texte | `"10,30"` pour un seuil |
+
+### 10.2 Et ce qui ne passera jamais
+
+- du **JSON** — accolades, crochets imbriqués ;
+- des **objets complexes** ;
+- des **tableaux JSON** ;
+- des **booléens ou nombres natifs** : sur le fil, tout est chaîne.
+
+> **La règle qui résume tout :** *le VPIV transporte des commandes atomiques, pas des
+> objets.* Le VPIV est le fil de commande, le JSON est le modèle interne de Node-RED et
+> du SE. **Les deux ne se mélangent jamais.**
+
+### 10.3 La contradiction apparente, et comment elle se résout
+
+Deux documents sources se contredisent en apparence :
+
+| | |
+|---|---|
+| `synthèseRZ.odt` | *« Arduino ne parsera JAMAIS ton objet JSON »* |
+| `descriptionRZ.odt` | *« La Table A accepte explicitement le TYPE object… VPIV transporte une représentation sérialisée »* |
+
+**Les deux ont raison, parce qu'ils parlent de deux côtés différents.** Vérification faite
+sur la Table A le 23/10 :
+
+```
+Trames dont la valeur est du JSON  : 12
+          dont côté Arduino        :  0
+Lignes TYPE = object               : 12
+          dont côté Arduino        :  0
+```
+
+Les douze sont `CamSE.paraCam`, `Gyro.paraGyro`, `Mag.paraMg`, `MicroSE.paraMicro`,
+`STT.intent`, `STT.paraSTT`, `Sys.paraSys` — **toutes des variables du SE**, traitées par
+des scripts Termux qui disposent de `jq` et de Python.
+
+> **La règle complète** : `TYPE = object` est admis, mais uniquement pour les variables
+> qui ne descendent pas jusqu'à l'Arduino. Côté Mega, le paramétrage passe en CSV —
+> `$V:Odom:paraOdom:*:wheel_mm,track_mm,cpr,…#` — jamais en JSON.
+
+### 10.4 Les objets complexes : Node-RED garde, VPIV envoie des deltas
+
+Le cas du ruban de LED, dont l'état complet ressemble à ceci côté Node-RED :
+
+```json
+{ "ar_gd0": { "Couleur RGB": "000,000,000",
+              "Intensite_lumineuse": "100",
+              "activation": "false",
+              "mode_fuite": "false" } }
+```
+
+**Cet objet est un état, pas une commande.** Il ne part jamais sur le fil. Ce qui part,
+ce sont des modifications atomiques :
+
+```
+$V:Lrub:col:ar_gd0:255,0,0#      changer la couleur
+$V:Lrub:lumin:ar_gd0:120#        changer l'intensité
+$V:Lrub:act:ar_gd0:1#            activer
+```
+
+La répartition des rôles est nette :
+
+| | |
+|---|---|
+| **Node-RED** | garde l'objet complet, sait que `ar_gd0` veut dire « arrière gauche, diode 0 », affiche le libellé lisible |
+| **Arduino** | ne connaît que variable, propriété, instance, valeur — et c'est très bien ainsi |
+
+> Les exemples du document source écrivaient `$A:Lrub:…` avec la catégorie `A`
+> (application). La catégorie juste pour une consigne vers l'Arduino est **`V`**, et la
+> propriété d'intensité s'appelle `lumin`, pas `int`. Corrigé ci-dessus.
+
+---
+
+## 11. Le système documentaire
 
 Quatre emplacements, quatre rôles distincts :
 
@@ -612,7 +773,7 @@ Détail et procédures : `dev_RZ_HTML/vademecum_documentation_V1.html`.
 
 ---
 
-## 11. Ce qui reste à verser dans ce document
+## 12. Ce qui reste à verser dans ce document
 
 Ce document est une charpente complète et un index exact. **Il n'est pas encore
 l'agglomération promise** : cinq documents du dossier A portent de la matière
@@ -620,7 +781,7 @@ unique qui n'a pas d'autre foyer, et qui n'y est pas encore entrée.
 
 | Source | Ce qu'elle apporterait | Chapitre visé |
 |---|---|---|
-| `synthèseRZ.odt` *(133 titres)* | ⏳ **Partiellement versé le 23/10** — son modèle URG et ses deux règles de mise en forme sont au chapitre 7. Restent : rôle de CfgS dans la sécurité, articulation des tables A/B/C, règles sur les valeurs acceptées par l'Arduino, objets complexes (LRUB) | 3, 4, 6 |
+| ~~`synthèseRZ.odt`~~ *(133 titres)* | ✅ **Versé le 23/10** — modèle URG au chapitre 7, valeurs acceptées par l'Arduino et objets complexes au chapitre 10. Son articulation des tables A/B/C recoupait le chapitre 4, déjà écrit |
 | ~~`urgence and co.odt`~~ et ~~`urgence-gestion.odt`~~ | ✅ **Versés le 23/10** — chapitre 7. Quasi-doublons (55 lignes d'écart) ; `urgence-gestion` était la version la plus complète. Noms de propriétés périmés, structure juste |
 | ~~`Synhtèse générale SE-02-26.odt`~~ | ✅ Couvert depuis les sources par `reference_SE_termux_tasker.md` — reste à confronter pour ce qu'il ajouterait | 5.2 |
 | ~~`synthèse Communication robot.odt`~~ | ✅ **Versé le 23/10** — chapitre 8. Doublement périmé (app passerelle, JSON) mais seul à porter le réglage Mosquitto, la survie Android et l'architecture du point d'accès |

@@ -483,7 +483,111 @@ trame VPIV par ligne. Cohérent avec `docs/cablage_RZ_depuis_le_code.md` §2.
 
 ---
 
-## 9. Le système documentaire
+## 9. Les règles d'écriture de la Table A
+
+*Versé le 23/10/2026 depuis `descriptionRZ.odt`. C'est le document le plus **normatif** du
+dossier : il ne décrit pas le robot, il dit comment remplir la table qui le décrit. Ses
+règles ont été confrontées une à une à la Table A telle qu'elle est aujourd'hui.*
+
+### 9.1 Une propriété, ou une commande ponctuelle ?
+
+C'est la distinction que les documents notaient par des parenthèses, et qui vit
+aujourd'hui dans la colonne `NATURE` (voir §7.6).
+
+> *« Quand dans le champ propriété un nom est entre parenthèses, il ne s'agit pas d'une
+> propriété mais d'une **commande ponctuelle** : une propriété qui ne fait qu'un effet
+> immédiat. On les note comme des propriétés, mais ce sont plus des fonctions. »*
+
+Six exemples étaient donnés. **Quatre existent, et tous les quatre confirment la règle :**
+
+| Commande | `CAT=V` | `CAT=I` | |
+|---|---|---|---|
+| `CfgS.emg` | `Event` | `ACK` | ✅ |
+| `CfgS.reset`, `Odom.reset` | `Event` | `ACK` | ✅ |
+| `Urg.clear` | `Event` | — | ✅ |
+| `Lring.init`, `Lrub.init` | `Event` | `ACK` | ✅ |
+| `(reboot)`, `(calibrate)` | — | — | jamais implémentées |
+
+> ⚠️ **Une anomalie** : `FS.cal` est une calibration, donc une commande ponctuelle au sens
+> de cette règle. Sa `NATURE` est pourtant `Config` en `CAT=V`, et non `Event`. Seule
+> exception sur les vingt-cinq. À trancher.
+
+**Le piège voisin, que le document prend soin de nommer** : une propriété qu'on pourrait
+diffuser en flux mais dont on ne veut qu'une valeur ponctuelle n'est **pas** une commande.
+On l'écrit normalement et **on choisit `CAT V` au lieu de `CAT F`**. C'est la différence
+entre « fais ceci une fois » et « donne-moi cette valeur une fois ».
+
+### 9.2 Le type `object` est admis, sous quatre conditions
+
+La Table A accepte `TYPE = object`. Ce n'est pas une dérive : c'est prévu pour les
+paramètres de calibration, les constantes algorithmiques et les blocs de configuration
+rarement modifiés — un paquet cohérent vaut mieux que douze trames atomiques.
+
+| | Règle |
+|---|---|
+| 1 | **Configuration, jamais de temps réel.** Un objet sert à l'initialisation, pas à un flux continu |
+| 2 | **VPIV transporte, n'interprète pas.** La valeur est une chaîne sérialisée ; c'est Node-RED ou le SE qui désérialise |
+| 3 | **`TYPE = enum` ne crée pas d'enum sur le fil.** Il signifie que la chaîne est normalisée, et liste les valeurs admises |
+| 4 | **Pas de flottant implicite.** Les facteurs ×10, ×100, ×1000 doivent être documentés, jamais sous-entendus |
+
+La règle 4 est la règle d'or du projet, et elle recoupe l'invariant du §6.
+
+### 9.3 Le champ `CYCLE` — quand la propriété prend sa valeur
+
+| Valeur | Sens |
+|---|---|
+| `ini` | initialisée par SP au démarrage depuis son JSON ; peut évoluer ensuite ; remise à zéro par `reset` |
+| `Dyn` | non initialisée ; produite uniquement en fonctionnement |
+| `Cste` | constante en exécution ; ne se modifie que hors marche — flash, compilation, calibration d'usine |
+
+### 9.4 `ETAT` n'est pas une intention
+
+Une propriété de nature `Etat` est **un retour de terrain** : elle n'est pas pilotable
+directement, elle résulte d'une mesure ou d'un calcul. D'où sa `CAT = I` presque
+systématique. `Mtr.targets`, `Urg.etat` en sont.
+
+> La formule du document mérite d'être retenue telle quelle : *« ETAT = information de
+> statut réel, pas une intention. »*
+
+### 9.5 `modeRZ` — les six modes, vérifiés
+
+```
+0 = ARRET   1 = VEILLE   2 = FIXE   3 = DEPLACEMENT   4 = AUTONOME   5 = ERREUR
+```
+
+**Conforme à la Table A**, sur ses quatre lignes. Côté Arduino la valeur est un nombre
+interne, mais la numérotation est la même — cohérence voulue et notée dans la table.
+L'accusé est publié par `handle_state_transition()` dans `rz_state-manager.sh`, après
+mise à jour atomique.
+
+> À la différence de `typePtge`, où la synthèse SE de février inverse `1` et `2`,
+> `modeRZ` est cohérent partout. Voir `convention_VPIV_ordre.md` §5.4.
+
+### 9.6 `Urg.statut` ne vient que de SP
+
+Propriété à sens unique : **seul SP l'émet**. `active` signifie arrêt des moteurs et
+blocage des commandes, `cleared` le fonctionnement normal. Ni le SE ni l'Arduino ne
+décident de ce statut — ils signalent une cause, SP décide de l'état.
+
+C'est l'application directe de l'invariant « SP est le maître absolu » du §6.
+
+### 9.7 Les trois branches parallèles
+
+SP étant seul décideur, les échanges se répartissent en trois couples indépendants :
+
+```
+Arduino (A)              ↔  SP
+Tasker (CAT Appli)       ↔  SP
+SE — capteurs Termux     ↔  SP
+```
+
+Ils ne communiquent pas entre eux. Un capteur du Doro qui veut agir sur un moteur ne
+parle pas à l'Arduino : il signale à SP, qui commande. Les schémas du chapitre 5 et de
+`docs/schemas_SE.md` montrent ce cloisonnement.
+
+---
+
+## 10. Le système documentaire
 
 Quatre emplacements, quatre rôles distincts :
 
@@ -508,7 +612,7 @@ Détail et procédures : `dev_RZ_HTML/vademecum_documentation_V1.html`.
 
 ---
 
-## 10. Ce qui reste à verser dans ce document
+## 11. Ce qui reste à verser dans ce document
 
 Ce document est une charpente complète et un index exact. **Il n'est pas encore
 l'agglomération promise** : cinq documents du dossier A portent de la matière
@@ -520,7 +624,7 @@ unique qui n'a pas d'autre foyer, et qui n'y est pas encore entrée.
 | ~~`urgence and co.odt`~~ et ~~`urgence-gestion.odt`~~ | ✅ **Versés le 23/10** — chapitre 7. Quasi-doublons (55 lignes d'écart) ; `urgence-gestion` était la version la plus complète. Noms de propriétés périmés, structure juste |
 | ~~`Synhtèse générale SE-02-26.odt`~~ | ✅ Couvert depuis les sources par `reference_SE_termux_tasker.md` — reste à confronter pour ce qu'il ajouterait | 5.2 |
 | ~~`synthèse Communication robot.odt`~~ | ✅ **Versé le 23/10** — chapitre 8. Doublement périmé (app passerelle, JSON) mais seul à porter le réglage Mosquitto, la survie Android et l'architecture du point d'accès |
-| `descriptionRZ.odt` | Rôle des variables centrales — CfgS, Urg, COM | 4, 6 |
+| ~~`descriptionRZ.odt`~~ | ✅ **Versé le 23/10** — chapitre 9. Le plus normatif du dossier : règles d'écriture de la Table A, type `object`, champ `CYCLE`, `modeRZ`, les trois branches parallèles |
 
 **La méthode qui a fonctionné** jusqu'ici, et qu'il faut garder : lire la
 source, confronter au code ou aux tables, ne verser que ce qui est vérifié, et

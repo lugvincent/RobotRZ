@@ -20,7 +20,7 @@
  *   v       : translation  (-100..+100)  +100=avance, -100=recule
  *   omega   : rotation     (-100..+100)  +100=droite, -100=gauche
  *   accelLevel : lissage   (0..4)        0=direct, 4=très doux
- *   Ex : $V:Mtr:*:cmd:80,0,2#       → avance droit, lissage moyen
+ *   Ex : $V:Mtr:cmd:*:80,0,2#       → avance droit, lissage moyen
  *   Ex : $V:Mtr:cmd:*:0,-60,2#      → tourne gauche sur place
  *   Ex : $V:Mtr:cmd:*:-50,30,1#     → recule en virant droite
  *

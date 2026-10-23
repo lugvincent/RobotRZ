@@ -285,7 +285,7 @@ stt_lib_path="lib_pocketsphinx"
 #   ex "avance de 2 mètres" → trame Mtr:cmd = speed_cruise, omega, accel
 #
 # kturn : facteur de rotation. Stocké ×1000, MÊME ÉCHELLE que le VPIV Arduino
-#   (Table A, module Mtr, propriété kturn — $V:Mtr:*:kturn:800#).
+#   (Table A, module Mtr, propriété kturn — $V:Mtr:kturn:*:800#).
 #   Côté Arduino : kturn_reel = kturn / 1000  (ex: 800 → 0.8)
 #   Formule : L = (v - omega×0.8)  |  R = (v + omega×0.8)
 #   ⚠️ Harmonisé V2 (juin 2026) : auparavant stocké ×10 (valeur 8). Passage à

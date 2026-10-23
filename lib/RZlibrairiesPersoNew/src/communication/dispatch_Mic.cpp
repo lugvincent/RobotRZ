@@ -16,7 +16,7 @@
  * modeMicsF  — mode de publication flux (un seul actif à la fois)
  * ---------------------------------------------------------------
  *   Valeurs : "OFF" | "MOY" | "ANGLE" | "PIC"
- *   Ex : $V:Mic:*:modeMicsF:MOY#
+ *   Ex : $V:Mic:modeMicsF:*:MOY#
  *        $V:Mic:modeMicsF:*:OFF#
  *
  * modeMicsI  — mode de détection événements (exclusif)

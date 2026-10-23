@@ -236,6 +236,34 @@ for _lg in LIG_A:
         _restants.append(f"{_lg[ENT_A.index('VAR')]}.{_lg[_iP]} : "
                          f"« {_valeur} » hors de « {_fv} »")
 
+# ---------------------------------------------------------------------------
+# 2quater. LA COLONNE NOTES PORTE AUSSI DES TRAMES      (ajout v1.3)
+# ---------------------------------------------------------------------------
+#  Trouve le 23/10 par audit_ordre_global.py : la colonne NOTES contient
+#  cinq trames d'exemple, dont une a l'ancien ordre. Les corrections
+#  precedentes ne touchaient que VPIV_EX — d'ou l'oubli. Meme regle : la
+#  colonne PROP de la ligne fait seule autorite.
+# ---------------------------------------------------------------------------
+_iN = ENT_A.index("NOTES")
+_MOTIF_L = _re.compile(
+    r'\$([A-Za-z]+):([A-Za-z_][A-Za-z0-9_]*):([^:#<>\n]{0,24}):([^:#<>\n]{0,24}):([^#<>\n]{0,60})#')
+_n_notes = 0
+for _lg in LIG_A:
+    _txt = _lg[_iN] or ""
+    if "$" not in _txt:
+        continue
+    def _corr(_m):
+        global _n_notes
+        _cat, _var, _c3, _c4, _v = _m.groups()
+        _c3s, _c4s = _c3.strip(), _c4.strip()
+        _p = {x[_iP].strip() for x in LIG_A if x[ENT_A.index("VAR")].strip() == _var}
+        if _c3s in _p or _c4s not in _p:
+            return _m.group(0)
+        _n_notes += 1
+        return f"${_cat}:{_var}:{_c4s}:{_c3s}:{_v}#"
+    _lg[_iN] = _MOTIF_L.sub(_corr, _txt)
+print(f"   NOTES   : {_n_notes} trame(s) remise(s) dans l'ordre")
+
 print(f"   Valeurs : {_n_val} exemple(s) boolean a \"OK\" ramene(s) a \"1\" | "
       f"{len(_restants)} ecart(s) non traite(s)")
 for _r in _restants:

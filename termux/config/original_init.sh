@@ -364,7 +364,7 @@ voice_ttsRate=1.0       # vitesse de synthèse TTS (1.0 = normale, >1 = plus rap
 #   utilisée pour générer les intents vocaux PLAN type vitesse/distance.
 #
 # kturn : facteur de rotation. Stocké ×1000, MÊME ÉCHELLE que le VPIV Arduino
-#   (Table A, module Mtr, propriété kturn — $V:Mtr:*:kturn:800#).
+#   (Table A, module Mtr, propriété kturn — $V:Mtr:kturn:*:800#).
 #   Côté Arduino : kturn_reel = kturn / 1000  (ex: 800 → 0.8)
 #   Formule : L = (v - omega×0.8)  |  R = (v + omega×0.8)
 #   ⚠️ Harmonisé V2 (juin 2026) : auparavant stocké ×10 (valeur 8). Passage à

@@ -13,7 +13,7 @@
  * PROPRIÉTÉS SUPPORTÉES (SP->A)
  * ------------------------------
  *   col        : couleur RGB — valeur = "R,G,B"  (ex : "255,0,0" = rouge)
- *                Ex : $V:Lrub:*:col:255,128,0#
+ *                Ex : $V:Lrub:col:*:255,128,0#
  *
  *   lumin      : intensité lumineuse — valeur = 0..255
  *                (ex : $V:Lrub:lumin:*:128#)

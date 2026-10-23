@@ -13,7 +13,7 @@
  * PROPRIÉTÉS SUPPORTÉES (SP->A)
  * ------------------------------
  *   read  : lecture immédiate — valeur = "force" (défaut) ou "raw"
- *           Ex : $V:FS:*:read:force#   → publie $F:FS:force:*:<val>#
+ *           Ex : $V:FS:read:*:force#   → publie $F:FS:force:*:<val>#
  *           Ex : $V:FS:read:*:raw#     → publie $F:FS:raw:*:<val>#
  *
  *   tare  : remise à zéro (offset = valeur actuelle à vide)

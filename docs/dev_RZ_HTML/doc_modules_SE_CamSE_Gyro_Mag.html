@@ -469,7 +469,7 @@ bash ~/robotRZ-smartSE/termux/scripts/sensors/cam/rz_camera_manager.sh modeCam s
         </div>
 
         <h3>Prochaines étapes</h3>
-        <div class="step"><div class="sn">1</div><div class="sc">Implémenter le relai Odom dans Node-RED : à la réception de <code>dataContGyro</code>, extraire Gz et publier <code>$V:Odom:*:gyro:&lt;gz_dps&gt;,&lt;ts_ms&gt;#</code> vers Arduino.</div></div>
+        <div class="step"><div class="sn">1</div><div class="sc">Implémenter le relai Odom dans Node-RED : à la réception de <code>dataContGyro</code>, extraire Gz et publier <code>$V:Odom:gyro:*:&lt;gz_dps&gt;,&lt;ts_ms&gt;#</code> vers Arduino.</div></div>
         <div class="step"><div class="sn">2</div><div class="sc">Tester le mode <strong>DATAMoy</strong> : envoyer <code>$V:Gyro:modeGyro:*:DATAMoy#</code> et vérifier les trames <code>dataMoyGyro</code>.</div></div>
         <div class="step"><div class="sn">3</div><div class="sc">Tester le mode <strong>ALERTE</strong> et vérifier les seuils (seuilAlerte x/y).</div></div>
 
@@ -610,7 +610,7 @@ $V:Gyro:modeGyro:*:DATACont#   → topic SE/commande</pre>
 
         <h3>Prochaines étapes</h3>
         <div class="step"><div class="sn">1</div><div class="sc">Tester le mode <strong>DATAGeoCont</strong> : envoyer <code>$V:Mag:modeMg:*:DATAGeoCont#</code> pour obtenir le cap géographique (corrigé de la déclinaison magnétique).</div></div>
-        <div class="step"><div class="sn">2</div><div class="sc">Implémenter le relai compass dans Node-RED : à la réception de <code>DataContGeo</code>, publier <code>$V:Odom:*:compass:&lt;deg&gt;,&lt;quality&gt;#</code> vers Arduino.</div></div>
+        <div class="step"><div class="sn">2</div><div class="sc">Implémenter le relai compass dans Node-RED : à la réception de <code>DataContGeo</code>, publier <code>$V:Odom:compass:*:&lt;deg&gt;,&lt;quality&gt;#</code> vers Arduino.</div></div>
         <div class="step"><div class="sn">3</div><div class="sc">Réaliser la <strong>calibration magnétique</strong> : faire tourner le téléphone sur les 3 axes pour corriger les perturbations locales (fer du châssis robot).</div></div>
         <div class="step"><div class="sn">4</div><div class="sc">Tester le mode <strong>DATAMgMoy</strong> et <strong>DATAGeoMoy</strong>.</div></div>
 

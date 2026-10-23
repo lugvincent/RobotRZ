@@ -61,6 +61,7 @@ choix de conception :
 
 | Document | Répond à |
 |---|---|
+| **`BRANCHES.md`** *(racine)* | **Quelle branche est laquelle.** `main` seule sert au développement ; `master`, `vMars` et la sauvegarde sont figées |
 | **`synthese_etat.md`** | **Où en est le projet ?** Avancement, lots, bugs ouverts, pièges connus. Change à chaque séance |
 | `tables_RZ_descripteur.md` | Les quatre tables, les quinze champs de la Table A, les règles du protocole VPIV |
 | 🔴 **`convention_VPIV_ordre.md`** | **Pourquoi l'ordre des champs a été faux partout, et ce qui fait foi désormais.** À lire avant de recopier le moindre exemple de trame |

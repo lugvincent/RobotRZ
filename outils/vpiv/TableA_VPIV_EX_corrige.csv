@@ -237,7 +237,7 @@ P;Mic;paraMicsF;V;string;"""fMoy,fPic,wMoy,wPic,dSeuil,dAngle""";ms/ms/ms/ms/ADC
  *                      0 = toujours publier (pas d'anti-bruit)
  *   deltaAngle  (°)  : variation min d'angle pour publier micAngle
  *                      0 = toujours publier
- *   Ex : $V:Mic:*:paraMicsF:200,100,200,100,5,10#
+ *   Ex : $V:Mic:paraMicsF:*:200,100,200,100,5,10#
  *"
 A;Mic;paraMicsI;I;enum;OK;_;A→SP;*;_;Ini;ACK;_;$I:Mic:paraMicsI:*:OK#;_
 P;Mic;paraMicsI;V;string;"""s0,s1,s2,sP,dNuisce,dPresence,cooldown""";ADC×4/ms×3;SP→A;*;_;Ini;Config;oui;$V:Mic:paraMicsI:*:30,300,600,100,500,300,2000#;"7 entiers CSV paramètres détection : seuil0Parasite,seuil1Bruit,seuil2Bruit,seuilPresence,dureeNuisce,dureePresence,cooldown.  *   dureeNuisce (ms) : durée soutenue avant signalement InfoNuisce

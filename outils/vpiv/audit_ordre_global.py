@@ -71,6 +71,7 @@ CITATIONS = {
     'docs/convention_VPIV_ordre.md', 'docs/audit_nodered_ordre_VPIV.md',
     'docs/synthese_etat.md', 'docs/reference_firmware_arduino.md',
     'docs/travaux_robot_assemble.md', 'docs/schemas_SE.md',
+    'docs/synthese_generale_RobotRZ.md',   # §7.4 cite la trame d'erreur d'avant la correction
     # Les scripts d'outillage citent la trame AVANT correction dans leur
     # entete, pour expliquer ce qu'ils reparent. Legitime.
     'outils/vpiv/corriger_vpiv_ex.py', 'outils/vpiv/genere_classeur_tables.py',

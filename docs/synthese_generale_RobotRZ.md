@@ -141,8 +141,10 @@ Détail en §3 de `docs/cablage_RZ_depuis_le_code.md`.
 | `installation_RPI_serveur.md` | Installer le RPi serveur de zéro — réseau, Node-RED, Mosquitto, accès distant |
 | `travaux_robot_assemble.md` | Tout ce qui exige le robot monté, groupé en une campagne |
 | `cablage_RZ_depuis_le_code.md` | Les trois liaisons, le brochage de la Mega, les pièges de montage — **extrait du code, régénérable** |
+| **`preparation_chantier_SP_nodered.md`** | **Pour ouvrir le chantier SP** : état des lieux, les quatre points à traiter dans l'ordre, les questions à trancher |
 | `schemas_SE.md` | Trois schémas du SE : circuit d'une trame, routage vocal, capteurs et verrous — sources Mermaid dans `docs/schemas/` |
 | `dev_RZ_HTML/index.html` | Le site de documentation, une vingtaine de pages thématiques |
+| `dev_RZ_HTML/schemas_architecture_V1.html` | **Les quatre schémas rendus**, pour les voir hors d'un lecteur Markdown |
 | `dev_RZ_HTML/vademecum_documentation_V1.html` | Où ranger un document, lequel fait foi en cas d'écart |
 
 ### Les données
@@ -775,9 +777,9 @@ Détail et procédures : `dev_RZ_HTML/vademecum_documentation_V1.html`.
 
 ## 12. Ce qui reste à verser dans ce document
 
-Ce document est une charpente complète et un index exact. **Il n'est pas encore
-l'agglomération promise** : cinq documents du dossier A portent de la matière
-unique qui n'a pas d'autre foyer, et qui n'y est pas encore entrée.
+**L'agglomération est faite.** Les cinq documents du dossier A qui portaient de la
+matière unique ont été versés le 23/10/2026, chacun après confrontation au code. Ce
+tableau garde la trace de ce qu'ils ont apporté — et de ce qu'ils disaient de faux.
 
 | Source | Ce qu'elle apporterait | Chapitre visé |
 |---|---|---|

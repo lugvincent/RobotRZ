@@ -406,7 +406,7 @@ Le reste du code est vérifié sain : `rz_ai_conversation.py`, `mqtt_bridge.py` 
 | Chantier | État | Destination |
 |---|---|---|
 | **Synthèse agglomérée** | v1 écrite — charpente et index justes. **Pas encore l'agglomération** : cinq documents du dossier A portent de la matière unique à verser. Son §8 les nomme, chapitre par chapitre | **Ici** |
-| **`reference_SP_nodered.md`** | Volontairement différée : SP est le chantier en cours, et documenter un chantier en cours revient à écrire sur du sable | Après stabilisation |
+| **`reference_SP_nodered.md`** | Volontairement différée : documenter un chantier en cours revient à écrire sur du sable. **`preparation_chantier_SP_nodered.md` la précède** : état des lieux, quatre points à traiter dans l'ordre, questions à trancher | Après stabilisation |
 | **Deux scripts en double exemplaire** | `rz_autovoice_bridge.sh` et `rz_copy_global.sh`, même MD5, deux emplacements chacun. Lequel fait foi ? | **Ici** |
 | **`Odom.coeff` absent de la Table A** | Le code l'accepte, `reference_modules_arduino_2026-02.odt` le documente, la Table A l'ignore. Une ligne à ajouter | **Ici** |
 | 🔴 **Joystick du Xiaomi** | Construit `$V:Mtr:*:cmd:…`, à l'ancien ordre. Fonctionnait **grâce** au défaut du firmware ; la correction le casse. Un caractère à déplacer | `travaux_robot_assemble.md` §1.9 |

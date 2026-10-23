@@ -2,7 +2,14 @@
  * Code de RZunoV6.ino  actualisé pour RZ version sans RPI et reprise dans main.cpp
  *
  * UNO : Contrôleur moteurs (Dual VNH5019)
- * Reçoit via Serial1 (depuis la Mega) des trames :
+ *
+ * ⚠ Correction du 23/10/2026 — cette ligne annonçait « Reçoit via Serial1 ».
+ *   Un UNO n'a pas de Serial1. Le reste de cet entête (plus bas : masse
+ *   commune, RX 0 / TX 1 vers Serial3 de la Mega, débrancher pour téléverser)
+ *   était déjà juste : seul le nom du port était faux.
+ *   Schéma d'ensemble : docs/cablage_RZ_depuis_le_code.md §3.
+ *
+ * Reçoit de la Mega, sur Serial (broches 0/1) à 115200 bauds, des trames :
  *    <L,R,A>    -> mode moderne (L,R signés, A = 0..4)
  * OU <acc,spd,dir> -> mode legacy (valeurs 0..9)
  *

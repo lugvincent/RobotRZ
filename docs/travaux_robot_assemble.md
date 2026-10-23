@@ -209,3 +209,23 @@ déductions tirées des sources, aucune n'a été vérifiée sur matériel.*
 (§9.5 de la synthèse d'état), qui a montré qu'un essai sur établi sans capteurs
 peut mener à une conclusion fausse — le chien de garde y paraissait trop sévère
 alors que c'est peut-être le montage qui le faisait sonner.*
+
+---
+
+## 4. Le câblage — ce qui est désormais connu sans le robot
+
+`docs/cablage_RZ_depuis_le_code.md`, écrit le 23/10 en lisant le code, donne les trois
+liaisons, les 37 broches de la Mega et les 33 libres. **Il ne reste à relever au montage
+que ce que le code ne peut pas savoir** : alimentations, masses autres que Mega ↔ UNO,
+brochage réel du bouclier Pololu, placement physique des neuf ultrasons, et les couleurs
+de fils — que seul `Pin-Old-Pour_exemple.ods` porte.
+
+Deux points de ce document à vérifier en priorité, parce qu'un vieux tableau induit en
+erreur dessus :
+
+| À vérifier | Le piège |
+|---|---|
+| La liaison Mega ↔ UNO | un tableau ancien indique « Uno - 11 ». **C'est faux** : l'UNO utilise son Serial matériel, broches 0 et 1. Croisement 14→0, 15→1, plus la masse |
+| La liaison Doro ↔ Mega | le même tableau l'appelle « com RPI Mega ». **Le RPi n'est relié à la Mega par aucun fil** : il parle MQTT en WiFi au Doro, et c'est le Doro qui tient le câble USB |
+
+La broche 7, marquée `BUZZER` dans le tableau, **est libre** : aucun buzzer dans le code.

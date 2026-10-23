@@ -1,0 +1,65 @@
+flowchart TB
+%% =============================================================================
+%%  Fichier : docs/schemas/SE_capteurs_et_verrous.mmd
+%%  Projet  : RobotRZ — capteurs du Doro, leurs variables VPIV, et l'arbitrage
+%%             des ressources partagees
+%% 
+%%  OBJECTIF
+%%    Montrer quel manager porte quelle variable de la Table A, et surtout le
+%%    mecanisme que l'ancien schema ignorait : camera et microphone sont des
+%%    ressources EXCLUSIVES, arbitrees par resource_locks.json. Deux modules
+%%    qui les veulent en meme temps ne s'ignorent pas, l'un est REFUSE.
+%% 
+%%  LECTURE
+%%    De gauche a droite : le materiel, son manager, puis le circuit VPIV
+%%    commun. Les trois managers qui touchent a une ressource exclusive sont
+%%    relies en plus au verrou, au centre.
+%% 
+%%  SOURCES  (variables comptees dans les emissions reelles)
+%%    rz_gyro_manager 17x Gyro · rz_mg_manager 17x Mag
+%%    rz_microSe_manager 14x MicroSE · rz_sys_monitor 15x Sys
+%%    rz_torch_manager 8x TorchSE · rz_camera_manager 20x CamSE
+%%    rz_voice_manager 11x Voice · rz_appli_manager Appli
+%%    termux/config/resource_locks.json : verrous camera et microphone
+%%    rz_appli_manager.sh l.161-190 : refus si verrou deja detenu
+%% 
+%%  V1 — 23/10/2026 — Vincent Philippe / Claude
+%% =============================================================================
+
+    HGY["Centrale inertielle<br/>LSM6DS3C"] --> GY["rz_gyro_manager.sh<br/><b>Gyro</b>"]
+    HMG["Magnetometre"] --> MG["rz_mg_manager.sh<br/><b>Mag</b>"]
+    HSYS["CPU · memoire<br/>batterie · thermique"] --> SYS["rz_sys_monitor.sh<br/><b>Sys</b>"]
+    HTOR["Torche LED"] --> TOR["rz_torch_manager.sh<br/><b>TorchSE</b>"]
+    HMIC["Microphone"] --> MIC["rz_microSe_manager.sh<br/><b>MicroSE</b>"]
+    HCAM["Cameras<br/>avant et arriere"] --> CAM["rz_camera_manager.sh<br/><b>CamSE</b>"]
+    HHP["Haut-parleur<br/>jack · Bluetooth"] --> VOI["rz_voice_manager.sh<br/><b>Voice</b>"]
+    APP["rz_appli_manager.sh<br/><b>Appli</b> — Zoom ..."]
+
+    GY --> CIRCUIT
+    MG --> CIRCUIT
+    SYS --> CIRCUIT
+    TOR --> CIRCUIT
+    MIC --> CIRCUIT
+    CAM --> CIRCUIT
+    VOI --> CIRCUIT
+    APP --> CIRCUIT
+
+    CIRCUIT["fifo_termux_in<br/>puis rz_vpiv_parser.sh<br/>puis MQTT vers SP"]
+
+    MIC -.-> LOCK
+    CAM -.-> LOCK
+    VOI -.-> LOCK
+    APP -.->|"REFUS si deja detenu"| LOCK
+    LOCK[("resource_locks.json<br/>camera · microphone<br/>un seul detenteur a la fois")]
+
+    SYS -->|"seuils depasses"| EH["error_handler.sh"]
+    EH -->|"$E:Urg:source:SE:...#"| CIRCUIT
+
+    classDef materiel fill:#f96,stroke:#333,color:#000
+    classDef manager fill:#ff9,stroke:#333,color:#000
+    classDef verrou fill:#f99,stroke:#333,color:#000
+    classDef circuit fill:#bbf,stroke:#333,color:#000
+    class HGY,HMG,HMIC,HCAM,HTOR,HSYS,HHP materiel
+    class GY,MG,MIC,CAM,TOR,SYS,VOI,APP manager
+    class LOCK,EH verrou
+    class CIRCUIT circuit

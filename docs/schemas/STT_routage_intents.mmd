@@ -1,0 +1,62 @@
+flowchart TB
+%% =============================================================================
+%%  Fichier : docs/schemas/STT_routage_intents.mmd
+%%  Projet  : RobotRZ — routage d'une commande vocale, de la voix a l'action
+%% 
+%%  OBJECTIF
+%%    Montrer la vraie bifurcation du traitement vocal : la colonne Traitement
+%%    de la Table D decide si le SE resout seul, ou s'il transmet BRUT a SP.
+%%    C'est le point que l'ancien schema manquait entierement.
+%% 
+%%  SOURCES
+%%    rz_stt_handler.sh  entete l.1-32 : coeur decisionnel, filtres, bascule IA
+%%    rz_state-manager.sh l.153-170 : contexte calcule depuis CfgS.typePtge
+%%                        (1 = VOCALE, 4 = LAISSE+VOCALE)
+%%    fn_stt_intent_router.js l.106-130 : decapsulage cote SP
+%%    Table A : proprietes STT = context, intent, modeSTT, paraSTT, state
+%% 
+%%  V1 — 23/10/2026 — Vincent Philippe / Claude
+%% =============================================================================
+    MIC["Microphone du Doro"]
+    STTENG["Moteur STT<br/>rz_stt_manager.py"]
+    HANDLER["rz_stt_handler.sh<br/>coeur decisionnel"]
+    CAT[("stt_catalog.json<br/>Table D operationnelle<br/>copiee de tableD_catalogueV2_corrige.csv")]
+    FILTRE{"Filtres de securite<br/>CPU · modeRZ · laisse"}
+    CTX{"CfgS.typePtge<br/>vaut-il 1 ou 4 ?"}
+    TRAIT{"Colonne Traitement<br/>de la ligne trouvee"}
+    LOCAL["Resolu dans le SE<br/>SIMPLE · LocalSE"]
+    BRUT["Transmis BRUT a SP<br/>TRADUCTION · CALCUL · MACRO"]
+    FIFO["fifo_termux_in"]
+    SP["SP — fn_stt_intent_router.js<br/>decapsule et resout via ui_Traitement"]
+    ACTION["Action : Mtr · Srv · Lring · Appli ..."]
+    IA["rz_ai_conversation.py<br/>bascule IA, reponse vocale"]
+    TTS["rz_voice_manager.sh<br/>$A:Voice:tts:*:texte#"]
+
+    MIC --> STTENG
+    STTENG -->|"texte reconnu"| HANDLER
+    CAT -.->|"recherche de la commande"| HANDLER
+    HANDLER --> FILTRE
+    FILTRE -->|"refuse"| REFUS["$E:Urg:source:SE:...#<br/>via error_handler.sh"]
+    FILTRE -->|"accepte"| CTX
+    CTX -->|"non : pilotage vocal inactif"| INACTIF["$I:STT:context:SE:Inactif#"]
+    CTX -->|"oui"| TRAIT
+
+    TRAIT --> LOCAL
+    TRAIT --> BRUT
+    LOCAL --> FIFO
+    BRUT --> FIFO
+    FIFO -->|"$A:STT:intent:id_requete:{id_traitement:cat:var:prop:inst:val}#"| SP
+    SP --> ACTION
+    ACTION -->|"accuse"| RETOUR["$I:VAR:PROP:INST:valeur#"]
+
+    HANDLER -->|"commande introuvable — code retour 1"| IA
+    IA --> TTS
+
+    classDef decision fill:#ff9,stroke:#333,color:#000
+    classDef sp fill:#f9f,stroke:#333,color:#000
+    classDef erreur fill:#f99,stroke:#333,color:#000
+    classDef fichier fill:#bbf,stroke:#333,color:#000
+    class FILTRE,CTX,TRAIT decision
+    class SP,ACTION sp
+    class REFUS,INACTIF erreur
+    class CAT,FIFO fichier

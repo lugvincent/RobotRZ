@@ -1,0 +1,83 @@
+flowchart TB
+%% =============================================================================
+%%  Fichier : docs/schemas/SE_architecture.mmd
+%%  Projet  : RobotRZ — architecture du sous-systeme SE (Doro sous Termux)
+%% 
+%%  OBJECTIF
+%%    Montrer le circuit reel d'une trame VPIV dans le SE : par ou elle entre,
+%%    quelle FIFO la porte, quel manager la traite, et par ou part la reponse.
+%% 
+%%  SOURCES  (tout a ete lu, rien recopie d'un schema anterieur)
+%%    rz_vpiv_parser.sh  l.137 topic SE/commande, l.456 lecture fifo_termux_in
+%%    rz_start.sh        l.264-269 la liste des CINQ FIFO
+%%    mqtt_bridge.py     l.73 /dev/ttyACM0, l.77-78 topics SE/arduino*
+%%    rz_appli_manager.sh l.280, rz_voice_manager.sh l.284,
+%%    rz_tasker_bridge.sh l.240  (lecteurs de leurs FIFO respectives)
+%% 
+%%  V1 — 23/10/2026 — Vincent Philippe / Claude
+%% =============================================================================
+    subgraph SP["SP — Node-RED, Raspberry Pi 3 — maitre absolu"]
+        MOS["Mosquitto"]
+        NR["Flux Node-RED"]
+    end
+
+    subgraph DORO["SE — Doro sous Termux"]
+        PARSER["rz_vpiv_parser.sh<br/>SEULE passerelle MQTT du SE"]
+        FT["fifo_termux_in<br/>sortie unique de tous les modules"]
+        FA["fifo_appli_in"]
+        FK["fifo_tasker_in"]
+        FV["fifo_voice_in"]
+        FR["fifo_return<br/>creee, aucun lecteur trouve"]
+        MA["rz_appli_manager.sh<br/>verrous camera et micro"]
+        MV["rz_voice_manager.sh<br/>Voice tts vol output ttsRate"]
+        MT["rz_tasker_bridge.sh"]
+        CAPT["managers capteurs<br/>gyro · Mg · microSE · sys · torch · cam · STT"]
+        TOUT["rz_tasker_out.sh<br/>publie SE/statut"]
+        BRIDGE["mqtt_bridge.py<br/>relais Arduino, independant"]
+        CFG[("config/global.json<br/>config/courant_init.json")]
+        LOG[("logs/")]
+    end
+
+    TASKER["Tasker + AutoVoice<br/>via Termux:Tasker"]
+    MEGA["Arduino Mega<br/>/dev/ttyACM0 @ 115200"]
+
+    NR --- MOS
+    MOS -->|"SE/commande"| PARSER
+    PARSER -->|"SE/statut"| MOS
+    TOUT -->|"SE/statut"| MOS
+
+    PARSER --> FA
+    PARSER --> FK
+    PARSER --> FV
+    PARSER -.->|"creee au demarrage"| FR
+
+    FA --> MA
+    FK --> MT
+    FV --> MV
+    MT --> TASKER
+    TASKER --> TOUT
+
+    MA --> FT
+    MV --> FT
+    CAPT --> FT
+    FT --> PARSER
+
+    MOS <-->|"SE/arduino<br/>SE/arduino/data"| BRIDGE
+    BRIDGE <-->|"USB serie · VPIV en texte"| MEGA
+
+    CFG -.-> MA
+    CFG -.-> MV
+    CFG -.-> CAPT
+    PARSER -.-> LOG
+    CAPT -.-> LOG
+
+    classDef passerelle fill:#f9f,stroke:#333,color:#000
+    classDef fifo fill:#bbf,stroke:#333,color:#000
+    classDef manager fill:#ff9,stroke:#333,color:#000
+    classDef fichier fill:#ddd,stroke:#333,color:#000
+    classDef externe fill:#f96,stroke:#333,color:#000
+    class PARSER,BRIDGE passerelle
+    class FT,FA,FK,FV,FR fifo
+    class MA,MV,MT,CAPT,TOUT manager
+    class CFG,LOG fichier
+    class TASKER,MEGA,MOS,NR externe

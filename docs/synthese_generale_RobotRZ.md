@@ -71,6 +71,7 @@ choix de conception :
 | `installation_RPI_serveur.md` | Installer le RPi serveur de zéro — réseau, Node-RED, Mosquitto, accès distant |
 | `travaux_robot_assemble.md` | Tout ce qui exige le robot monté, groupé en une campagne |
 | `cablage_RZ_depuis_le_code.md` | Les trois liaisons, le brochage de la Mega, les pièges de montage — **extrait du code, régénérable** |
+| `schemas_SE.md` | Trois schémas du SE : circuit d'une trame, routage vocal, capteurs et verrous — sources Mermaid dans `docs/schemas/` |
 | `dev_RZ_HTML/index.html` | Le site de documentation, une vingtaine de pages thématiques |
 | `dev_RZ_HTML/vademecum_documentation_V1.html` | Où ranger un document, lequel fait foi en cas d'écart |
 

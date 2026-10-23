@@ -397,7 +397,93 @@ colonne est lisible par un script et ne part jamais sur le fil.
 
 ---
 
-## 8. Le système documentaire
+## 8. Le réseau, le broker et la survie du Doro
+
+*Versé le 23/10/2026 depuis `synthèse Communication robot.odt`. Ce document est
+**doublement périmé** — il décrit l'app « Arduino IoT UART Gateway », remplacée par
+`mqtt_bridge.py`, et une communication en **JSON** (`{"cmd":"MOVE","speed":80}`),
+abandonnée au profit de VPIV. Mais quatre choses y survivent, qui n'existent nulle part
+ailleurs.*
+
+### 8.1 L'architecture réseau
+
+| | |
+|---|---|
+| Le Doro (SE) | **n'a pas de carte SIM** |
+| Le smartphone pilote (SP) | crée un **point d'accès** auquel le Doro se connecte |
+| Le Raspberry Pi | `192.168.1.40` en Wi-Fi local |
+| Accès extérieur | par DuckDNS |
+
+C'est ce qui explique que le Doro dépende du pilote pour l'accès internet, et pourquoi
+le partage de connexion figure sur le schéma d'architecture.
+
+### 8.2 Le broker exige une authentification — et c'est vérifié
+
+`mosquitto.conf` :
+
+```
+allow_anonymous false
+password_file /etc/mosquitto/passwd
+listener 1883
+```
+
+Création d'un compte :
+
+```bash
+sudo mosquitto_passwd -c /etc/mosquitto/passwd <utilisateur>
+sudo systemctl restart mosquitto
+```
+
+> **Vérifié dans le code vivant le 23/10** : `rz_start.sh` et `rz_vpiv_parser.sh` lisent
+> `MQTT_USER` et `MQTT_PASS` depuis `keys.json` par `jq`, et les passent à
+> `mosquitto_pub`/`mosquitto_sub` en `-u` / `-P`. **Le broker n'est pas ouvert.**
+>
+> C'est une bonne nouvelle pour le chantier sécurité : la faille constatée le 23/10 porte
+> sur l'éditeur Node-RED, pas sur MQTT.
+
+### 8.3 Empêcher Android de tuer le robot
+
+Le point que ce document est seul à porter, et sans lequel le robot s'arrête tout seul
+au bout de quelques minutes. Sur le Doro :
+
+- aucune restriction de batterie sur Termux ;
+- exécution en arrière-plan autorisée ;
+- démarrage automatique activé ;
+- **Termux verrouillé dans le multitâche** (l'icône cadenas) ;
+- Wi-Fi maintenu actif en veille ;
+- `termux-wake-lock` au démarrage — *absence d'erreur = c'est pris*.
+
+> ⚠️ **`termux-wake-lock` n'apparaît nulle part dans le dépôt.** Ni dans `rz_start.sh`,
+> ni ailleurs. Soit il est lancé à la main, soit il manque. À vérifier : c'est le genre
+> d'oubli qui produit un robot qui « s'endort » sans explication.
+
+### 8.4 Les réglages série, qui confirment le câblage
+
+| Paramètre | Valeur |
+|---|---|
+| Débit | **115200** |
+| Format | 8 bits, sans parité, 1 stop |
+| Découpage | sur caractère, ASCII **10** (`\n`) |
+
+Le découpage sur `\n` est ce qui rend `Serial.println()` directement exploitable : une
+trame VPIV par ligne. Cohérent avec `docs/cablage_RZ_depuis_le_code.md` §2.
+
+### 8.5 Ce qui a été abandonné, et qu'il ne faut pas réintroduire
+
+| Abandonné | Remplacé par |
+|---|---|
+| L'app **Arduino IoT UART Gateway** | `termux/scripts/core/mqtt_bridge.py` |
+| Les topics `robot/status` et `robot/cmd` | `SE/arduino/data` et `SE/arduino` |
+| Le **JSON** sur le fil — `{"cmd":"MOVE","speed":80,"dir":"FORWARD"}` | le protocole **VPIV** |
+| `ArduinoJson` côté Mega | l'analyseur VPIV de `communication.cpp` |
+
+> Le JSON n'a pas disparu pour autant : il subsiste **dans la valeur** d'une trame, pour
+> les propriétés de paramétrage — `$V:Gyro:paraGyro:*:{"freqCont":20,…}#`. Ce qui a été
+> abandonné, c'est le JSON **comme protocole**.
+
+---
+
+## 9. Le système documentaire
 
 Quatre emplacements, quatre rôles distincts :
 
@@ -422,7 +508,7 @@ Détail et procédures : `dev_RZ_HTML/vademecum_documentation_V1.html`.
 
 ---
 
-## 9. Ce qui reste à verser dans ce document
+## 10. Ce qui reste à verser dans ce document
 
 Ce document est une charpente complète et un index exact. **Il n'est pas encore
 l'agglomération promise** : cinq documents du dossier A portent de la matière
@@ -433,7 +519,7 @@ unique qui n'a pas d'autre foyer, et qui n'y est pas encore entrée.
 | `synthèseRZ.odt` *(133 titres)* | ⏳ **Partiellement versé le 23/10** — son modèle URG et ses deux règles de mise en forme sont au chapitre 7. Restent : rôle de CfgS dans la sécurité, articulation des tables A/B/C, règles sur les valeurs acceptées par l'Arduino, objets complexes (LRUB) | 3, 4, 6 |
 | ~~`urgence and co.odt`~~ et ~~`urgence-gestion.odt`~~ | ✅ **Versés le 23/10** — chapitre 7. Quasi-doublons (55 lignes d'écart) ; `urgence-gestion` était la version la plus complète. Noms de propriétés périmés, structure juste |
 | ~~`Synhtèse générale SE-02-26.odt`~~ | ✅ Couvert depuis les sources par `reference_SE_termux_tasker.md` — reste à confronter pour ce qu'il ajouterait | 5.2 |
-| `synthèse Communication robot.odt` | La chaîne Arduino → USB → SE → MQTT → Node-RED, pas à pas | 1, 5 |
+| ~~`synthèse Communication robot.odt`~~ | ✅ **Versé le 23/10** — chapitre 8. Doublement périmé (app passerelle, JSON) mais seul à porter le réglage Mosquitto, la survie Android et l'architecture du point d'accès |
 | `descriptionRZ.odt` | Rôle des variables centrales — CfgS, Urg, COM | 4, 6 |
 
 **La méthode qui a fonctionné** jusqu'ici, et qu'il faut garder : lire la

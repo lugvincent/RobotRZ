@@ -36,7 +36,18 @@ registre.
 
 ## 1. Ce qui est bloqué, et ce que chaque essai trancherait
 
-### 1.1 🔴 Le chien de garde est-il trop sévère ?
+### 1.1 ✅ Le chien de garde — RÉPONDU le 24/10, sans le robot
+
+> **Cette entrée n'a plus lieu d'être ici.** La question est tranchée, et elle ne
+> demandait pas le robot monté : `9 capteurs × 30 ms de pulseIn = 270 ms` contre un seuil
+> de 80 ms. Le chien de garde n'est pas trop sévère, il signale correctement une boucle
+> trop lente. Explication complète en §9.10 de `docs/synthese_etat.md`.
+>
+> 🔴 **Ce qui reste, et qui est plus grave** : trois capteurs face au vide suffisent à
+> dépasser le seuil, capteurs branchés ou non. À corriger **avant** tout essai en
+> mouvement — sinon le robot se verrouillera au milieu d'une pièce.
+
+#### La question telle qu'elle était posée
 
 **Question** : `main.cpp` verrouille le système dès qu'une itération de `loop()`
 dépasse `LOOP_MAX_MS = 80`. Le 22/10/2026, sur établi, l'urgence

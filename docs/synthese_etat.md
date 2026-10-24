@@ -720,3 +720,78 @@ Table A, ou renommer dans le firmware.
 | Il n'avait pas de verdict pour « refusé par l'urgence » | Verdict `🔒 REFUSE` ajouté, distinct de `ECART` |
 | Aucun moyen de lever l'urgence | Option `--lever-urgence`, jamais appliquée d'office : l'arrêt d'urgence est un état de sécurité qui peut avoir une bonne raison d'être là |
 
+
+---
+
+### 9.10 🔴 LE CHIEN DE GARDE EXPLIQUÉ — 24/10/2026, par le banc de test
+
+Le second passage du banc, avec `--lever-urgence`, a donné la réponse à une question
+ouverte depuis mercredi et classée à tort « nécessite le robot monté » (§1.1 de
+`travaux_robot_assemble.md`).
+
+#### Le symptôme
+
+```
+Levee de l'urgence demandee : envoi de $V:Urg:clear:*:1#
+   reponse : $I:Urg:etat:*:cleared#
+   ✅ urgence levee
+  1/60 ✅ CfgS.emg      -> $I:CfgS:emg:*:0#
+  2/60 🔒 CfgS.modeRZ   -> $E:Urg:lock:*:STOP actif#
+```
+
+**L'urgence est levée, et elle revient au cas suivant.** Quelque chose la redéclenche en
+permanence.
+
+#### L'explication, en trois nombres
+
+| | |
+|---|---|
+| `pulseIn(usEchoPins[i], HIGH, 30000UL)` — `us_hardware.cpp` l.33 | **30 ms** d'attente quand l'écho ne vient jamais |
+| `for (int i = 0; i < US_NUM_SENSORS; i++)` — `us.cpp` l.88, puis `us_measureOnce(i)` l.95 | les **9** capteurs dans la **même** passe |
+| `LOOP_MAX_MS = 80UL` — `main.cpp` l.72 | le chien de garde se déclenche au-delà de **80 ms** |
+
+```
+9 capteurs × 30 ms = 270 ms   contre un seuil de 80 ms
+```
+
+**Le chien de garde n'est pas trop sévère. Il signale correctement une boucle à 270 ms.**
+Sans capteur branché, l'écho n'arrive jamais et `pulseIn` attend son délai complet, neuf
+fois de suite. L'urgence se redéclenche à chaque tour.
+
+> C'est la réponse à `travaux_robot_assemble.md` §1.1, et **elle ne demandait pas le robot
+> monté** : elle était lisible dans trois lignes de code. Il a fallu que le banc fasse
+> apparaître le symptôme pour qu'on aille les chercher.
+
+#### 🔴 Et le problème ne disparaîtra pas avec les capteurs branchés
+
+`US_MAX_DISTANCE_CM` vaut 400. Un capteur qui ne voit rien à moins de quatre mètres
+**attend aussi ses 30 ms** — c'est le même code.
+
+```
+80 ms / 30 ms = 2,67
+```
+
+**Trois capteurs face au vide suffisent à dépasser le seuil.** Un robot au milieu d'une
+pièce, ou dehors, avec trois de ses neuf capteurs sans obstacle proche, se verrouillerait
+tout seul.
+
+À traiter avant tout essai en mouvement. Trois pistes, non tranchées :
+
+| Piste | Effet |
+|---|---|
+| Réduire le délai de `pulseIn` à la portée réelle utile | 2 m → 12 ms ; 9 × 12 = 108 ms, encore trop |
+| Répartir les capteurs sur plusieurs tours de boucle | un capteur par tour → 30 ms, largement sous le seuil |
+| Sortir la mesure de la boucle principale | la plus propre, la plus lourde |
+
+La deuxième est la plus simple et suffit.
+
+#### Au passage : deux constantes pour un seul seuil
+
+| Constante | Valeur | Utilisée ? |
+|---|---|---|
+| `LOOP_MAX_TIME_MS` — `config.h` l.19 | 100 | 🔴 **jamais** |
+| `LOOP_MAX_MS` — `main.cpp` l.72 | 80 | ✅ c'est elle qui agit |
+
+Qui irait régler le seuil dans `config.h`, l'endroit naturel, **ne changerait rien**. À
+unifier.
+

@@ -1,11 +1,61 @@
-*.sh     text eol=lf
-*.py     text eol=lf
-*.json   text eol=lf
-*.md     text eol=lf
-*.cpp    text
-*.c      text
-*.h      text
-*.ino    text
-*.yml    text eol=lf
-.yaml   text eol=lf
-node-red/flows/.json text eol=lf
+# =============================================================================
+#  Fichier : .gitattributes
+#  Chemin  : ProjetRZ\.gitattributes
+#  Projet  : RobotRZ
+#
+#  OBJECTIF
+#    Fixer les fins de ligne (line endings) a LF dans le depot, quelle que
+#    soit la machine qui commite. Sans cela, un meme fichier apparait
+#    « modifie » apres un simple aller-retour entre Windows et Linux, alors
+#    que pas un caractere n'a change.
+#
+#  POURQUOI eol=lf ET PAS « text » SEUL
+#    « text » laisse Git convertir selon la machine ; « text eol=lf » impose
+#    LF dans le depot ET sur le disque. C'est ce qu'il faut pour tout ce qui
+#    est lu par un Raspberry, un Termux ou un Arduino : un script shell en
+#    CRLF echoue sous Linux avec un message incomprehensible
+#    (« bad interpreter: No such file or directory »).
+#
+#  CORRECTIONS DU 24/10/2026
+#    - .yaml et node-red/flows/.json avaient perdu leur asterisque : les
+#      deux regles ne s'appliquaient donc a AUCUN fichier.
+#    - les .csv n'etaient pas couverts : d'ou un TableA_VPIV_EX_corrige.csv
+#      vu comme « modifie » apres un simple passage sous Windows, pour 254
+#      octets d'ecart qui n'etaient que des retours chariot.
+#
+#  Version 2.0 — 24/10/2026 — Vincent Philippe / Claude
+# =============================================================================
+
+# --- Scripts et donnees lus par Linux, Termux ou le Raspberry ---------------
+#     Ceux-la DOIVENT rester en LF, sous peine de ne plus s'executer.
+*.sh      text eol=lf
+*.py      text eol=lf
+*.json    text eol=lf
+*.yml     text eol=lf
+*.yaml    text eol=lf
+
+# --- Tables et documentation -------------------------------------------------
+*.csv     text eol=lf
+*.md      text eol=lf
+*.mmd     text eol=lf
+
+# --- Sources Arduino ---------------------------------------------------------
+#     « text » seul : PlatformIO et l'IDE s'accommodent des deux conventions.
+*.cpp     text
+*.c       text
+*.h       text
+*.ino     text
+
+# --- Flux Node-RED -----------------------------------------------------------
+#     Redondant avec *.json ci-dessus, garde pour l'intention explicite.
+node-red/flows/*.json  text eol=lf
+
+# --- Binaires : Git ne doit y toucher sous aucun pretexte --------------------
+*.ods     binary
+*.odt     binary
+*.xlsx    binary
+*.docx    binary
+*.pdf     binary
+*.png     binary
+*.jpg     binary
+*.svg     text eol=lf

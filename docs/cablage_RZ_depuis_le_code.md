@@ -152,8 +152,8 @@ est construit sans argument, donc avec les broches par défaut de la bibliothèq
 |---|---|---|---|
 | **0** | `Serial RX` | `com` | liaison USB vers le Doro (SE) @ 115200 |
 | **1** | `Serial TX` | `com` | liaison USB vers le Doro (SE) @ 115200 |
-| **2** | `ODO_ENCODER_GA_PIN` | `odom` | encodeur roue **gauche**, voie A |
-| **3** | `ODO_ENCODER_DB_PIN` | `odom` | encodeur roue **droite**, voie B |
+| **2** | `ODOM_LEFT_A_PIN` | `odom` | encodeur roue **gauche**, voie A |
+| **3** | `ODOM_RIGHT_B_PIN` | `odom` | encodeur roue **droite**, voie B |
 | **4** | `SERVO_TGD_PIN` | `srv` | servo tête, mouvement horizontal |
 | **5** | `SERVO_THB_PIN` | `srv` | servo tête, mouvement vertical |
 | **6** | `LRING_PIN` | `lring` | anneau de LED — 12 instances |
@@ -162,8 +162,8 @@ est construit sans argument, donc avec les broches par défaut de la bibliothèq
 | **10** | `LRUB_PIN` | `lrub` | ruban de LED — 15 instances |
 | **14** | `Serial3 TX` | `com` | vers l'UNO moteurs @ 115200 |
 | **15** | `Serial3 RX` | `com` | depuis l'UNO moteurs @ 115200 |
-| **18** | `ODO_ENCODER_DA_PIN` | `odom` | encodeur roue **droite**, voie A |
-| **19** | `ODO_ENCODER_GB_PIN` | `odom` | encodeur roue **gauche**, voie B |
+| **18** | `ODOM_RIGHT_A_PIN` | `odom` | encodeur roue **droite**, voie A |
+| **19** | `ODOM_LEFT_B_PIN` | `odom` | encodeur roue **gauche**, voie B |
 | **26 / 27** | `usTrigPins[6]` / `usEchoPins[6]` | `us` | ultrason **TtG** |
 | **28 / 29** | `usTrigPins[7]` / `usEchoPins[7]` | `us` | ultrason **TtD** |
 | **30 / 31** | `usTrigPins[8]` / `usEchoPins[8]` | `us` | ultrason **TtC** |
@@ -178,6 +178,13 @@ est construit sans argument, donc avec les broches par défaut de la bibliothèq
 | **A3** | `MIC_D_PIN` | `mic` | micro droit |
 | **A4** | `FS_DOUT_PIN` | `fs` | capteur de force HX711 — DATA |
 | **A5** | `FS_SCK_PIN` | `fs` | capteur de force HX711 — CLOCK |
+
+> ⚠️ **Correction du 24/10.** Ce tableau citait d'abord `ODO_ENCODER_*_PIN`, les
+> constantes de `config.h`. Elles sont **mortes** : `odom_hardware.cpp` définit ses
+> propres `ODOM_*_PIN` sous un garde `#ifndef` qui, les noms différant, ne se déclenche
+> jamais. Les valeurs concordent — 2, 19, 18, 3 — donc aucun défaut de fonctionnement,
+> mais **régler les broches dans `config.h` ne changerait rien**. Voir §9.11 de
+> `docs/synthese_etat.md`.
 
 ### Les quatre broches d'encodeur sont un choix, pas un hasard
 
@@ -212,11 +219,11 @@ les 37 concordent avec le code, sans exception. Ce qui a vieilli, ce sont les li
 | 1 | Broches 0/1 : « com RPI Mega » | liaison vers le **Doro**, en USB | 🔴 induit en erreur sur l'architecture |
 | 2 | Broches 14/15 : « Uno - 11 » | l'UNO utilise son **Serial matériel, broches 0/1** | 🔴 ferait câbler au mauvais endroit |
 | 3 | Broche 7 : `BUZZER` | **aucun buzzer dans le code** — la broche est libre | ⚠️ votre propre commentaire le disait déjà |
-| 4 | Broche 18 : abréviation `encL` | c'est l'encodeur **droit** (`ODO_ENCODER_DA_PIN`) | ⚠️ la colonne « Ref PIN » est juste, l'abréviation non |
-| 5 | Broche 19 : abréviation `encR` | c'est l'encodeur **gauche** (`ODO_ENCODER_GB_PIN`) | ⚠️ idem |
+| 4 | Broche 18 : abréviation `encL` | c'est l'encodeur **droit** (`ODOM_RIGHT_A_PIN`) | ⚠️ la colonne « Ref PIN » est juste, l'abréviation non |
+| 5 | Broche 19 : abréviation `encR` | c'est l'encodeur **gauche** (`ODOM_LEFT_B_PIN`) | ⚠️ idem |
 | 6 | Broches 18/19 : « Serial 1 TX / RX » | ce **sont** les broches de `Serial1`, mais elles servent d'entrées encodeur | ℹ️ à reformuler, pas faux |
 | 7 | Ultrasons de tête : `Stg`, `StD`, `StE` | `TtG`, `TtD`, `TtC` — comme la Table A | ⚠️ trois noms d'instance |
-| 8 | `HX_DOUT`, `HX_CLK`, `IR_PIN`, `ODOM_LEFT_A_PIN`… | `FS_DOUT_PIN`, `FS_SCK_PIN`, `MVT_IR_PIN`, `ODO_ENCODER_GA_PIN`… | ℹ️ renommages, sans conséquence |
+| 8 | `HX_DOUT`, `HX_CLK`, `IR_PIN`, `ODOM_LEFT_A_PIN`… | `FS_DOUT_PIN`, `FS_SCK_PIN`, `MVT_IR_PIN`, `ODOM_LEFT_A_PIN`… | ℹ️ renommages, sans conséquence |
 
 Les écarts 1 et 2 sont les seuls qui coûteraient cher au montage.
 

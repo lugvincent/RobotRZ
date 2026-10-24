@@ -21,7 +21,7 @@
  *        src/configuration/config.h / config.cpp
  *
  *   Le bas-niveau est dans :
- *        src/hardware/servos_hardware.cpp
+ *        src/hardware/srv_hardware.cpp
  ************************************************************/
 
 #ifndef SRV_H

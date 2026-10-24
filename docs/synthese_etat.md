@@ -795,3 +795,88 @@ La deuxième est la plus simple et suffit.
 Qui irait régler le seuil dans `config.h`, l'endroit naturel, **ne changerait rien**. À
 unifier.
 
+
+---
+
+### 9.11 Audit de concordance des commentaires — 24/10/2026
+
+Outil écrit à la demande de Vincent, avant de stabiliser le firmware :
+`outils/vpiv/audit_commentaires.py`. Il cherche mécaniquement ce qu'un compilateur ne
+voit pas — **un commentaire ne compile pas, donc rien ne le contredit jamais.**
+
+#### Le résultat principal est rassurant
+
+```
+69 fichiers · 76 constantes numériques
+🔴 valeurs contredites        0
+🔴 fonctions citées inexistantes  0
+🔴 fichiers référencés absents    1  (corrigé)
+```
+
+**Pas un seul commentaire ne donne une valeur que le code contredit.** Sur un firmware
+aussi abondamment commenté, c'est un résultat qui mérite d'être noté : la documentation
+interne est fiable.
+
+Le seul renvoi faux : `srv.h` citait `servos_hardware.cpp`, qui n'existe pas — le fichier
+s'appelle `srv_hardware.cpp`. Corrigé.
+
+#### 🔴 Mais sept constantes sont définies et jamais employées
+
+C'est le piège du faux réglage : **qui irait régler la valeur à l'endroit naturel ne
+changerait rien.**
+
+| Constante | Valeur | Où | Conséquence |
+|---|---|---|---|
+| `ODO_ENCODER_GA_PIN` et ses trois sœurs | 2, 19, 18, 3 | `config.h:172-175` | 🔴 voir ci-dessous |
+| `LOOP_MAX_TIME_MS` | 100 | `config.h:19` | le seuil réel est `LOOP_MAX_MS = 80` dans `main.cpp:72` |
+| `HYSTERESIS_CM` | 5 | `mvt_safe.cpp:31` | 🔴 voir ci-dessous |
+| `MVTSAFE_STATE_DISABLED` | 3 | `mvt_safe.h:28` | 🔴 voir ci-dessous |
+
+#### 🔴 Les broches d'encodeur sont définies deux fois
+
+```c
+config.h:172          #define ODO_ENCODER_GA_PIN 2      ← jamais utilisée
+odom_hardware.cpp:19  #ifndef ODOM_LEFT_A_PIN
+odom_hardware.cpp:20  #define ODOM_LEFT_A_PIN 2         ← celle qui agit
+```
+
+Le garde `#ifndef` existe pour permettre à `config.h` d'imposer les broches. **Mais les
+noms diffèrent**, donc le garde ne se déclenche jamais et la définition locale gagne
+toujours.
+
+Les valeurs concordent — 2, 19, 18, 3 — donc **aucun défaut de fonctionnement
+aujourd'hui**. Le danger est pour demain : modifier `config.h` donnerait l'illusion
+d'avoir changé le brochage.
+
+*`docs/cablage_RZ_depuis_le_code.md` citait les constantes mortes. Corrigé le même jour.*
+
+#### 🔴 L'hystérésis est déclarée et jamais appliquée
+
+```c
+mvt_safe.cpp:31   static const int HYSTERESIS_CM = 5;
+```
+
+Elle n'apparaît nulle part ailleurs. L'auteur voulait éviter l'oscillation d'état au
+voisinage d'un seuil — un capteur lisant 20, 21, 20, 21 cm fait basculer `WARN`/`OK` à
+chaque passe. **L'intention est là, l'application manque.**
+
+Non corrigé : c'est du code de sécurité et un changement de comportement.
+
+#### 🔴 Le quatrième état est inatteignable — et c'est votre blanc
+
+```c
+mvt_safe.h:25-28   OK 0 · WARN 1 · DANGER 2 · DISABLED 3
+```
+
+`MVTSAFE_STATE_DISABLED` n'est jamais retourné ni assigné. `mvtsafe_evaluer()` ne rend
+que les trois premiers.
+
+> **Même famille que le défaut `US_DISABLED` de la §9.10.** Vincent se souvenait d'un
+> écran Node-RED à quatre couleurs — vert, jaune-orange, rouge, **blanc pour la panne**.
+> Les deux états « hors service » du firmware, `US_DISABLED` et `MVTSAFE_STATE_DISABLED`,
+> étaient inatteignables tous les deux. Le blanc ne pouvait pas s'afficher, et ce n'était
+> pas un défaut de l'écran.
+>
+> Le premier est réparé depuis la §9.10. Le second reste ouvert : faut-il que
+> `mvtsafe_evaluer()` rende `DISABLED` quand tous les capteurs le sont ?
+

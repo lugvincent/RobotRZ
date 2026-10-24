@@ -10,6 +10,8 @@
 
 // valeurs internes
 static int lastReported[US_NUM_SENSORS];
+// Curseur de la passe echelonnee : quel capteur « exploration » vient ensuite.
+static uint8_t prochainExplore = 0;
 static int currValue[US_NUM_SENSORS];
 
 static unsigned long suspectSince[US_NUM_SENSORS];
@@ -85,18 +87,88 @@ void us_processPeriodic()
         return;
     lastCycle = now;
 
-    for (int i = 0; i < US_NUM_SENSORS; i++)
+    // ------------------------------------------------------------------
+    //  PASSE ECHELONNEE AVEC PRIORITE AU SENS DE MARCHE  (24/10/2026)
+    //
+    //  AVANT : les neuf capteurs etaient mesures dans la meme passe. Chaque
+    //  capteur qui ne voit rien coute le delai complet de pulseIn, soit
+    //  9 x 30 ms = 270 ms pour un chien de garde regle a 80 ms. L'urgence se
+    //  redeclenchait a chaque passe, et le banc de test ne mesurait plus que
+    //  le filtre d'urgence.
+    //
+    //  MAINTENANT, par passe :
+    //    - les TROIS capteurs du sens de marche, delai sécurité (1 m, 6 ms)
+    //      Les seuils de danger sont a 10 et 20 cm : un metre est cinq fois
+    //      le seuil d'alerte, largement suffisant, et vingt fois moins cher.
+    //    - UN SEUL des six autres, a tour de role, portee complete (30 ms)
+    //      pour la navigation, qui n'a pas besoin de temps reel.
+    //  Cout au pire : 3 x 6 + 30 = 48 ms. Sous le seuil, avec de la marge.
+    //
+    //  CE QUE CELA NE CHANGE PAS : currValue[] est statique et persistant,
+    //  donc les neuf valeurs restent disponibles en aval a tout instant.
+    //  Echelonner change la fraicheur, jamais la presence.
+    //
+    //  Raisonnement complet : docs/decision_US_detection_panne.md
+    // ------------------------------------------------------------------
+    static const uint8_t US_AVANT[3] = {3, 4, 5};   // AvD, AvC, AvG
+    static const uint8_t US_ARRIERE[3] = {0, 1, 2}; // ArG, ArC, ArD
+
+    // Marche arriere : les DEUX consignes negatives. Une rotation sur place
+    // (signes opposes) n'est pas une marche arriere — on garde l'avant.
+    const bool enArriere = (cfg_mtr_targetL < 0 && cfg_mtr_targetR < 0);
+    const uint8_t *prioritaires = enArriere ? US_ARRIERE : US_AVANT;
+
+    // Les indices a mesurer cette passe : les trois prioritaires, plus un
+    // seul des six autres, choisi a tour de role.
+    uint8_t aMesurer[4];
+    unsigned long delais[4];
+    uint8_t n = 0;
+    for (uint8_t k = 0; k < 3; k++)
     {
+        aMesurer[n] = prioritaires[k];
+        delais[n++] = US_TIMEOUT_SECURITE_US;
+    }
+    for (uint8_t essai = 0; essai < US_NUM_SENSORS; essai++)
+    {
+        uint8_t cand = prochainExplore;
+        prochainExplore = (prochainExplore + 1) % US_NUM_SENSORS;
+        bool estPrioritaire = (cand == prioritaires[0] ||
+                               cand == prioritaires[1] ||
+                               cand == prioritaires[2]);
+        if (!estPrioritaire)
+        {
+            aMesurer[n] = cand;
+            delais[n++] = US_TIMEOUT_EXPLORATION_US;
+            break;
+        }
+    }
+
+    for (uint8_t k = 0; k < n; k++)
+    {
+        const int i = aMesurer[k];
+
         if (sensorDisabled[i])
         {
             currValue[i] = US_DISABLED;
             continue;
         }
 
-        int d = us_measureOnce(i);
+        int d = us_measureOnce(i, delais[k]);
 
         // ----- gestion du mode suspect -----
-        if (d < 0)
+        //  🔴 CORRIGE le 24/10/2026. La condition etait « if (d < 0) », qui
+        //  n'est JAMAIS vraie : us_measureOnce rend un unsigned int, et son
+        //  entete documente « 0 si timeout ». La branche entiere — suspicion,
+        //  desactivation, US_DISABLED — n'avait donc jamais ete executee.
+        //  Consequences avant correction :
+        //    - la detection de panne n'existait que sur le papier ;
+        //    - US_DISABLED etait inatteignable, donc le blanc de l'ecran
+        //      Node-RED ne pouvait pas s'afficher ;
+        //    - un timeout tombait en « mesure valide » a 0 cm, donc sous le
+        //      seuil de danger : chaque capteur muet emettait une alerte de
+        //      danger a chaque passe.
+        //  us_handleReadList(), plus bas, testait deja « v == 0 » correctement.
+        if (d == US_SILENCE)
         {
             if (suspectSince[i] == 0)
                 suspectSince[i] = now;
@@ -178,6 +250,15 @@ void us_processPeriodic()
 // ----------------------------------------------------------
 void us_handleReadList(const int *idxs, int n)
 {
+    // ⚠ CAS CONNU, NON CORRIGE le 24/10/2026 — a trancher
+    //   « $V:US:read:*:1# » mesure les NEUF capteurs a portee complete dans
+    //   la meme passe : 9 x 30 = 270 ms, soit plus de trois fois le seuil du
+    //   chien de garde (LOOP_MAX_MS = 80). Cette commande declenche donc une
+    //   urgence a elle seule quand les capteurs ne voient rien.
+    //   Contrairement a us_processPeriodic(), on ne l'echelonne PAS : « read »
+    //   est une demande explicite de mesures fraiches, pas une veille. Soit
+    //   on accepte le cout, soit on refuse « * » et on impose une liste.
+    //   Voir §7 de docs/decision_US_detection_panne.md
     if (n == 0) // "*" -> tous
     {
         for (int i = 0; i < US_NUM_SENSORS; i++)

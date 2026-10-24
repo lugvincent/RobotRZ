@@ -257,7 +257,15 @@ extern bool cfg_srv_active[SERVO_COUNT];
 
 #define US_PING_CYCLE_MS_DEFAULT 200
 #define US_DELTA_THRESHOLD_DEFAULT 5
-#define US_SUSPECT_TIMEOUT_MS_DEFAULT 1000
+/* Delai avant de declarer un capteur en panne.
+ * Porte de 1 s a 30 s le 24/10/2026 : en mode FIXE (surveillance) un capteur
+ * en parfait etat peut legitimement faire face a une piece vide pendant des
+ * heures. Une seconde le declarait en panne, et l'ecran virait au blanc en
+ * permanence. Reglable en marche par $V:US:suspect_ms:*:<ms>#.
+ * ⚠ Ce delai ne DISCRIMINE pas vraiment : avec pulseIn seul, « rien a moins
+ *   de 4 m » et « capteur mort » rendent tous deux 0. Piste de vraie
+ *   discrimination en §6 de docs/decision_US_detection_panne.md */
+#define US_SUSPECT_TIMEOUT_MS_DEFAULT 30000
 #define US_MAX_DISTANCE_CM 400
 extern const uint8_t usTrigPins[US_NUM_SENSORS];
 extern const uint8_t usEchoPins[US_NUM_SENSORS];

@@ -671,3 +671,52 @@ sources**, solides mais non observées. Inscrites en §1.9 et §1.10 de
 ---
 
 *V3.7 — 22/10/2026, soir — §9.7 (fichiers vides) et §9.8 (corrections de code, audit SP).*
+
+---
+
+### 9.9 Premier passage du banc de test — 24/10/2026, 07 h 29
+
+Le banc `outils/test/banc_vpiv_arduino.py` a tourné pour la première fois sur la Mega,
+sans capteur branché. Soixante commandes envoyées. **Trois enseignements, dont deux sur
+le robot et un sur le banc lui-même.**
+
+#### 🔒 La carte est en arrêt d'urgence — et elle s'est comportée correctement
+
+Cinquante-huit commandes sur soixante ont reçu `$E:Urg:lock:*:STOP actif#`, émis par le
+filtre d'urgence de `communication.cpp` ligne 198. Pendant une urgence, **seules
+`CfgS:emg` et `Urg:clear` passent** — et ce sont exactement les deux qui ont fonctionné :
+
+```
+$V:CfgS:emg:*:clear#   ->  $I:Urg:etat:*:cleared#
+$V:Urg:clear:*:1#      ->  $I:Urg:etat:*:cleared#
+```
+
+Ce n'est donc pas un échec : c'est la confirmation que le verrouillage d'urgence
+fonctionne. Le banc a mesuré le filtre, pas les commandes.
+
+#### 🔴 La carte porte un firmware antérieur aux corrections du 22/10 au soir
+
+Elle émet `$I:Us:alert:0:20#` — **`Us` en minuscule**. Le dépôt dit `sendInfo("US", …)`
+depuis la correction des onze émissions du module ultrason.
+
+> **Le défaut déduit du code le 22/10 est donc confirmé sur matériel.** La carte émet bien
+> une graphie que SP ne reconnaît pas. Il reste à téléverser le firmware corrigé — la
+> correction du dispatcheur (`bf0e422`) est en place, celle de la graphie ne l'est pas.
+
+#### 🔴 `Urg.lock` n'existe pas dans la Table A
+
+Le firmware émet `$E:Urg:lock:*:STOP actif#`. Les propriétés déclarées de `Urg` sont
+`clear`, `etat`, `niveau`, `source`, `statut`. **`lock` n'en fait pas partie.**
+
+Divergence trouvée par le banc, au premier passage. À trancher : ajouter la ligne à la
+Table A, ou renommer dans le firmware.
+
+#### Deux défauts du banc, corrigés le jour même
+
+| Défaut | Correction |
+|---|---|
+| Il prenait **la première trame venue** pour la réponse. Or la carte diffuse ses mesures en continu : 59 cas sur 60 ont été jugés sur du bruit | Lecture **corrélée** : on collecte tout pendant le délai, puis on retient la trame portant la bonne variable. Le reste est conservé en colonne `bruit` |
+| Il s'effondrait à l'écriture du rapport, sur une clé non déclarée | Champ ajouté. Le rapport du premier passage a été perdu |
+| Il n'avait pas de verdict pour « refusé par l'urgence » | Verdict `🔒 REFUSE` ajouté, distinct de `ECART` |
+| Aucun moyen de lever l'urgence | Option `--lever-urgence`, jamais appliquée d'office : l'arrêt d'urgence est un état de sécurité qui peut avoir une bonne raison d'être là |
+

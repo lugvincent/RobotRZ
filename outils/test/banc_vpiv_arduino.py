@@ -177,6 +177,8 @@ def main():
                     help="n'ouvre aucun port : montre ce qui serait envoye")
     ap.add_argument('--avec-mouvement', action='store_true',
                     help="inclut les commandes qui font bouger le materiel")
+    ap.add_argument('--lever-urgence', action='store_true',
+                    help="envoie $V:Urg:clear:*:1# avant le banc, si la carte est verrouillee")
     ap.add_argument('--perturbateurs', action='store_true',
                     help="inclut les resets, places en dernier")
     ap.add_argument('--attente', type=float, default=1.0,
@@ -238,26 +240,76 @@ def main():
     time.sleep(3)
     lien.reset_input_buffer()
 
+    # --- Lever l'urgence, si demande ----------------------------------------
+    #  Une carte en arret d'urgence refuse TOUT sauf CfgS:emg et Urg:clear.
+    #  Sans cela le banc ne mesure qu'une chose : que le filtre fonctionne.
+    #  On ne leve jamais d'office : c'est un etat de securite, et il peut
+    #  avoir une bonne raison d'etre la.
+    if a.lever_urgence:
+        print("  Levee de l'urgence demandee : envoi de $V:Urg:clear:*:1#")
+        lien.write(b"$V:Urg:clear:*:1#\n")
+        time.sleep(0.5)
+        echo = []
+        t0 = time.time()
+        while time.time() - t0 < 2.0:
+            l = lien.readline().decode(errors='replace').strip()
+            if l.startswith('$') and l.endswith('#'):
+                echo.append(l)
+        leve = any('cleared' in x for x in echo)
+        print(f"     reponse : {echo[0] if echo else '(rien)'}")
+        print(f"     {'✅ urgence levee' if leve else '⚠️  non confirmee — le banc continue quand meme'}")
+        lien.reset_input_buffer()
+
     resultats = []
     compte = {}
     for i, c in enumerate(matrice, 1):
         lien.reset_input_buffer()
         lien.write((c['trame'] + "\n").encode())
+
+        # --- Lecture CORRELEE (corrige le defaut du 24/10 au matin) --------
+        #  La carte diffuse ses mesures en continu : ultrasons, odometrie,
+        #  flux divers. Prendre la PREMIERE trame venue revenait a comparer
+        #  la commande a un bulletin de capteur arrive entre-temps — c'est
+        #  ce qu'a montre le premier essai, ou 59 cas sur 60 etaient juges
+        #  sur du bruit.
+        #  On collecte donc tout ce qui arrive pendant le delai, puis on
+        #  choisit : d'abord un refus d'urgence, sinon une trame portant la
+        #  bonne variable, sinon rien. Le reste est garde comme « bruit »
+        #  pour que le rapport en porte la trace.
         t0 = time.time()
-        reponse = ''
+        recoltees = []
+        reponse, refus = '', ''
         while time.time() - t0 < a.attente:
             ligne = lien.readline().decode(errors='replace').strip()
-            if ligne.startswith('$') and ligne.endswith('#'):
-                reponse = ligne
+            if not (ligne.startswith('$') and ligne.endswith('#')):
+                continue
+            recoltees.append(ligne)
+            m = MOTIF.match(ligne)
+            if not m:
+                continue
+            _c, var_r, p3, _p4, _v = m.groups()
+            if var_r == 'Urg' and p3.strip() == 'lock':
+                refus = ligne          # commande refusee : urgence active
                 break
-        verdict, note = juger(reponse, c)
+            if var_r == c['var']:
+                reponse = ligne        # la vraie reponse, enfin correlee
+                break
+
+        if refus:
+            verdict, note = 'REFUSE', "urgence active — seuls CfgS:emg et Urg:clear passent"
+            reponse = refus
+        else:
+            verdict, note = juger(reponse, c)
+        bruit = ' | '.join(x for x in recoltees if x != reponse)[:300]
         compte[verdict] = compte.get(verdict, 0) + 1
-        marque = {'OK': '✅', 'ECART': '🔴', 'MUET': '⚠️ ', 'A LIRE': '👁 '}[verdict]
+        marque = {'OK': '✅', 'ECART': '🔴', 'MUET': '⚠️ ',
+                  'A LIRE': '👁 ', 'REFUSE': '🔒'}[verdict]
         print(f"  {i:>3}/{len(matrice)} {marque} {c['var']+'.'+c['prop']:<20} "
               f"{c['trame']:<40} -> {reponse or '(rien)'}")
         if note:
             print(f"            {note}")
-        resultats.append({**c, 'reponse': reponse, 'verdict': verdict, 'note': note})
+        resultats.append({**c, 'reponse': reponse, 'verdict': verdict,
+                          'note': note, 'bruit': bruit})
     lien.close()
 
     # --- Rapport --------------------------------------------------------------
@@ -266,14 +318,16 @@ def main():
     with open(chemin, 'w', encoding='utf-8-sig', newline='') as f:
         w = csv.DictWriter(f, delimiter=';', lineterminator='\r\n',
                            fieldnames=['var', 'prop', 'trame', 'attendu',
-                                       'retour_meme_prop', 'reponse', 'verdict', 'note'])
+                                       'retour_meme_prop', 'perturbateur',
+                                       'reponse', 'verdict', 'note', 'bruit'],
+                           extrasaction='ignore')
         w.writeheader()
         w.writerows(resultats)
 
     print("\n" + "=" * 74)
     print("BILAN")
     print("=" * 74)
-    for v in ('OK', 'A LIRE', 'ECART', 'MUET'):
+    for v in ('OK', 'A LIRE', 'REFUSE', 'ECART', 'MUET'):
         if v in compte:
             print(f"  {v:<10} {compte[v]:>3}")
     print(f"\n  Rapport : {chemin}")
@@ -281,7 +335,14 @@ def main():
     print("    ✅ OK      la carte accepte et repond au format declare")
     print("    👁  A LIRE  elle repond sur une autre propriete — les 7 cas connus")
     print("    🔴 ECART   la reponse contredit la Table A : a instruire")
-    print("    ⚠️  MUET    rien dans le delai — commande refusee, ou urgence active")
+    print("    🔒 REFUSE  urgence active — la carte repond $E:Urg:lock:*:STOP actif#")
+    print("    ⚠️  MUET    rien dans le delai")
+    if compte.get('REFUSE'):
+        print()
+        print("  🔒 LA CARTE EST EN ARRET D'URGENCE.")
+        print("     Les commandes refusees ne sont PAS en defaut : le filtre a fait")
+        print("     son office. Lever l'urgence, puis relancer le banc :")
+        print("         python outils/test/banc_vpiv_arduino.py --table ... --port ... --lever-urgence")
     return 1 if compte.get('ECART') else 0
 
 
